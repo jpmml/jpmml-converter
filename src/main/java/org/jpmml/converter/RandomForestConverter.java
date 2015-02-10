@@ -34,7 +34,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.dmg.pmml.AbstractVisitor;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -59,6 +58,7 @@ import org.dmg.pmml.TreeModel;
 import org.dmg.pmml.True;
 import org.dmg.pmml.Value;
 import org.dmg.pmml.VisitorAction;
+import org.jpmml.model.visitors.AbstractVisitor;
 import rexp.Rexp;
 import rexp.Rexp.STRING;
 
@@ -151,7 +151,7 @@ public class RandomForestConverter extends Converter {
 		}
 
 		FieldTypeAnalyzer fieldTypeAnalyzer = new FieldTypeAnalyzer();
-		pmml.accept(fieldTypeAnalyzer);
+		fieldTypeAnalyzer.applyTo(pmml);
 
 		List<DataField> dataFields = this.dataFields;
 		for(DataField dataField : dataFields){
@@ -282,7 +282,7 @@ public class RandomForestConverter extends Converter {
 
 		Set<FieldName> forestFields = new LinkedHashSet<FieldName>();
 
-		Segmentation segmentation = new Segmentation(multipleModelMethod);
+		List<Segment> segments = Lists.newArrayList();
 
 		for(int i = 0; i < treeModels.size(); i++){
 			TreeModel treeModel = treeModels.get(i);
@@ -290,7 +290,7 @@ public class RandomForestConverter extends Converter {
 			Node root = treeModel.getNode();
 
 			FieldCollector fieldCollector = new FieldCollector();
-			root.accept(fieldCollector);
+			fieldCollector.applyTo(root);
 
 			Set<FieldName> treeFields = fieldCollector.getFields();
 
@@ -304,17 +304,19 @@ public class RandomForestConverter extends Converter {
 				.withPredicate(new True())
 				.withModel(treeModel);
 
-			segmentation = segmentation.withSegments(segment);
+			segments.add(segment);
 		}
 
 		DataDictionary dataDictionary = encodeDataDictionary(forestFields);
 
 		MiningSchema miningSchema = encodeMiningSchema(forestFields);
 
-		MiningModel miningModel = new MiningModel(miningSchema, miningFunction)
+		Segmentation segmentation = new Segmentation(multipleModelMethod, segments);
+
+		MiningModel miningModel = new MiningModel(miningFunction, miningSchema)
 			.withSegmentation(segmentation);
 
-		PMML pmml = new PMML(new Header(), dataDictionary, "4.2")
+		PMML pmml = new PMML("4.2", new Header(), dataDictionary)
 			.withModels(miningModel);
 
 		return pmml;
@@ -402,13 +404,13 @@ public class RandomForestConverter extends Converter {
 		switch(dataType){
 			case STRING:
 				return dataField.withDataType(DataType.STRING)
-					.withOptype(OpType.CATEGORICAL);
+					.withOpType(OpType.CATEGORICAL);
 			case DOUBLE:
 				return dataField.withDataType(DataType.DOUBLE)
-					.withOptype(OpType.CONTINUOUS);
+					.withOpType(OpType.CONTINUOUS);
 			case BOOLEAN:
 				return dataField.withDataType(DataType.BOOLEAN)
-					.withOptype(OpType.CATEGORICAL);
+					.withOpType(OpType.CATEGORICAL);
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -533,7 +535,7 @@ public class RandomForestConverter extends Converter {
 
 		encodeNode(root, 0, leftDaughter, rightDaughter, bestvar, xbestsplit, scoreEncoder, nodepred);
 
-		TreeModel treeModel = new TreeModel(new MiningSchema(), root, miningFunction)
+		TreeModel treeModel = new TreeModel(miningFunction, new MiningSchema(), root)
 			.withSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
 
 		return treeModel;
@@ -608,7 +610,7 @@ public class RandomForestConverter extends Converter {
 	private Array encodeArray(DataField dataField, Integer split, boolean leftDaughter){
 		String value = formatArrayValue(dataField.getValues(), split, leftDaughter);
 
-		Array array = new Array(value, Array.Type.STRING);
+		Array array = new Array(Array.Type.STRING, value);
 
 		return array;
 	}

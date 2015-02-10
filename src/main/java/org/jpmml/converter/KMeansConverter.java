@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.Cluster;
 import org.dmg.pmml.ClusteringField;
@@ -64,19 +65,7 @@ public class KMeansConverter extends Converter {
 			.withMeasure(new SquaredEuclidean())
 			.withCompareFunction(CompareFunctionType.ABS_DIFF);
 
-		ClusteringModel clusteringModel = new ClusteringModel(miningSchema, comparisonMeasure, MiningFunctionType.CLUSTERING, ClusteringModel.ModelClass.CENTER_BASED, rows);
-
-		Rexp.REXP rowNames = dimnames.getRexpValue(0);
-		for(int i = 0; i < rows; i++){
-			STRING name = rowNames.getStringValue(i);
-
-			Cluster cluster = new Cluster()
-				.withName(name.getStrval())
-				.withArray(encodeArray(REXPUtil.getRow(centers.getRealValueList(), i, rows, columns)))
-				.withSize(size.getIntValue(i));
-
-			clusteringModel = clusteringModel.withClusters(cluster);
-		}
+		List<ClusteringField> clusteringFields = Lists.newArrayList();
 
 		Rexp.REXP columnNames = dimnames.getRexpValue(1);
 		for(int i = 0; i < columns; i++){
@@ -89,8 +78,25 @@ public class KMeansConverter extends Converter {
 			miningSchema = miningSchema.withMiningFields(miningField);
 
 			ClusteringField clusteringField = new ClusteringField(miningField.getName());
-			clusteringModel = clusteringModel.withClusteringFields(clusteringField);
+
+			clusteringFields.add(clusteringField);
 		}
+
+		List<Cluster> clusters = Lists.newArrayList();
+
+		Rexp.REXP rowNames = dimnames.getRexpValue(0);
+		for(int i = 0; i < rows; i++){
+			STRING name = rowNames.getStringValue(i);
+
+			Cluster cluster = new Cluster()
+				.withName(name.getStrval())
+				.withArray(encodeArray(REXPUtil.getRow(centers.getRealValueList(), i, rows, columns)))
+				.withSize(size.getIntValue(i));
+
+			clusters.add(cluster);
+		}
+
+		ClusteringModel clusteringModel = new ClusteringModel(MiningFunctionType.CLUSTERING, ClusteringModel.ModelClass.CENTER_BASED, rows, miningSchema, comparisonMeasure, clusteringFields, clusters);
 
 		OutputField predictedValue = new OutputField(FieldName.create("predictedValue"))
 			.withFeature(ResultFeatureType.PREDICTED_VALUE);
@@ -100,7 +106,7 @@ public class KMeansConverter extends Converter {
 
 		clusteringModel = clusteringModel.withOutput(output);
 
-		PMML pmml = new PMML(new Header(), dataDictionary, "4.2")
+		PMML pmml = new PMML("4.2", new Header(), dataDictionary)
 			.withModels(clusteringModel);
 
 		return pmml;
@@ -109,7 +115,7 @@ public class KMeansConverter extends Converter {
 	private Array encodeArray(List<Double> values){
 		String value = formatArrayValue(values);
 
-		Array array = new Array(value, Array.Type.REAL);
+		Array array = new Array(Array.Type.REAL, value);
 
 		return array;
 	}
