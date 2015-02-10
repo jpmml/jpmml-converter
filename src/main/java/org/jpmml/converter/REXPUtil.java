@@ -21,6 +21,7 @@ package org.jpmml.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.math.DoubleMath;
 import rexp.Rexp;
 import rexp.Rexp.STRING;
 
@@ -93,5 +94,31 @@ public class REXPUtil {
 		}
 
 		throw new IllegalArgumentException("Attribute " + name + " not in " + attributes);
+	}
+
+	static
+	public Integer asInteger(Number number){
+
+		if(number instanceof Integer){
+			return (Integer)number;
+		}
+
+		double value = number.doubleValue();
+
+		if(DoubleMath.isMathematicalInteger(value)){
+			return number.intValue();
+		}
+
+		throw new IllegalArgumentException();
+	}
+
+	static
+	public Double asDouble(Number number){
+
+		if(number instanceof Double){
+			return (Double)number;
+		}
+
+		return number.doubleValue();
 	}
 }

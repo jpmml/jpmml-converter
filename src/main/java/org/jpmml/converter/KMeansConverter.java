@@ -129,7 +129,7 @@ public class KMeansConverter extends Converter {
 		for(Double value : values){
 			sb.append(sep);
 
-			sb.append(formatValue(value));
+			sb.append(PMMLUtil.formatValue(value));
 
 			sep = " ";
 		}

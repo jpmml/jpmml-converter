@@ -71,7 +71,7 @@ public class RandomForestConverter extends Converter {
 
 			@Override
 			public SimpleSetPredicate load(PredicateKey key){
-				return encodeSimpleSetPredicate(key.getDataField(), asInteger(key.getSplit()), true);
+				return encodeSimpleSetPredicate(key.getDataField(), REXPUtil.asInteger(key.getSplit()), true);
 			}
 		});
 
@@ -80,7 +80,7 @@ public class RandomForestConverter extends Converter {
 
 			@Override
 			public SimpleSetPredicate load(PredicateKey key){
-				return encodeSimpleSetPredicate(key.getDataField(), asInteger(key.getSplit()), false);
+				return encodeSimpleSetPredicate(key.getDataField(), REXPUtil.asInteger(key.getSplit()), false);
 			}
 		});
 
@@ -89,7 +89,7 @@ public class RandomForestConverter extends Converter {
 
 			@Override
 			public SimplePredicate load(PredicateKey key){
-				return encodeSimplePredicate(key.getDataField(), asDouble(key.getSplit()), true);
+				return encodeSimplePredicate(key.getDataField(), REXPUtil.asDouble(key.getSplit()), true);
 			}
 		});
 
@@ -98,7 +98,7 @@ public class RandomForestConverter extends Converter {
 
 			@Override
 			public SimplePredicate load(PredicateKey key){
-				return encodeSimplePredicate(key.getDataField(), asDouble(key.getSplit()), false);
+				return encodeSimplePredicate(key.getDataField(), REXPUtil.asDouble(key.getSplit()), false);
 			}
 		});
 
@@ -185,7 +185,7 @@ public class RandomForestConverter extends Converter {
 
 			@Override
 			public String encode(Double key){
-				return formatValue(key);
+				return PMMLUtil.formatValue(key);
 			}
 		};
 
@@ -624,7 +624,7 @@ public class RandomForestConverter extends Converter {
 			simplePredicate = new SimplePredicate()
 				.withField(dataField.getName())
 				.withOperator(leftDaughter ? SimplePredicate.Operator.LESS_OR_EQUAL : SimplePredicate.Operator.GREATER_THAN)
-				.withValue(formatValue(split));
+				.withValue(PMMLUtil.formatValue(split));
 		} else
 
 		if((DataType.BOOLEAN).equals(dataType)){
@@ -720,7 +720,7 @@ public class RandomForestConverter extends Converter {
 
 				@Override
 				public Integer apply(Number number){
-					return asInteger(number);
+					return REXPUtil.asInteger(number);
 				}
 			};
 

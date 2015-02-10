@@ -18,12 +18,21 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.PMML;
-import rexp.Rexp;
+import com.google.common.math.DoubleMath;
 
-abstract
-public class Converter {
+public class PMMLUtil {
 
-	abstract
-	public PMML convert(Rexp.REXP rexp);
+	private PMMLUtil(){
+	}
+
+	static
+	public String formatValue(Number number){
+		double value = number.doubleValue();
+
+		if(DoubleMath.isMathematicalInteger(value)){
+			return Long.toString(number.longValue());
+		}
+
+		return Double.toString(value);
+	}
 }
