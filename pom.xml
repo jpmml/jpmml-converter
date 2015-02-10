@@ -32,6 +32,10 @@
 		<url>https://github.com/jpmml/r-to-pmml/issues</url>
 	</issueManagement>
 
+	<properties>
+		<protoc.exe>/usr/bin/protoc</protoc.exe>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jpmml</groupId>
@@ -102,7 +106,7 @@
 				<artifactId>maven-protoc-plugin</artifactId>
 				<version>0.3.2</version>
 				<configuration>
-					<protocExecutable>/usr/bin/protoc</protocExecutable>
+					<protocExecutable>${protoc.exe}</protocExecutable>
 				</configuration>
 				<executions>
 					<execution>
