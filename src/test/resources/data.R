@@ -15,7 +15,7 @@ createAudit = function(){
 
 	names(audit)[ncol(audit)] = "Adjusted"
 
-	storeCsv(audit, "../csv/Audit.csv")
+	storeCsv(audit, "csv/Audit.csv")
 }
 
 loadWineQuality = function(color){
@@ -30,14 +30,14 @@ createWineQuality = function(){
 
 	wine_quality = rbind(red_data, white_data)
 
-	storeCsv(wine_quality, "../csv/WineQuality.csv")
+	storeCsv(wine_quality, "csv/WineQuality.csv")
 
 	wine_color = rbind(red_data, white_data)
 	wine_color$quality = NULL
 	wine_color$color = "white"
 	wine_color$color[1:nrow(red_data)] = "red"
 
-	storeCsv(wine_color, "../csv/WineColor.csv")
+	storeCsv(wine_color, "csv/WineColor.csv")
 }
 
 createAudit()
