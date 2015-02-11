@@ -8,10 +8,11 @@ Fast conversion of R models to PMML
 * Fast, like **really fast**
   * Can produce a 5 GB Random Forest PMML file in less than 1 minute on a desktop PC
 * Supported model types:
-  * KMeans (`stats` package)
-  * Random Forest (`randomForest` package)
-    * Formula interface `rf = randomForest(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, data = iris)`
-    * Matrix interface `rf = randomForest(y = iris[, c("Species")], x = iris[, c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")])`
+  * `stats` package:
+    * `kmeans` - K-Means clustering
+  * [`randomForest` package] (http://cran.r-project.org/web/packages/randomForest/):
+    * `randomForest.formula` ("formula interface") - Random Forest regression and classification
+    * `randomForest` ("matrix interface") - Random Forest regression and classification
 
 # Prerequisites #
 
@@ -42,7 +43,7 @@ A typical fast conversion workflow has the following steps:
 
 ### The R side of operations
 
-The serialization is handled by the [`RProtoBuf` library] (http://cran.r-project.org/web/packages/RProtoBuf/).
+The serialization is handled by the [`RProtoBuf` package] (http://cran.r-project.org/web/packages/RProtoBuf/).
 
 The following R script trains a Random Forest (RF) model and saves it in ProtoBuf data format to a file `rf.pb`:
 ```R
