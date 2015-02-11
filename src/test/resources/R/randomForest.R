@@ -2,9 +2,8 @@ library("randomForest")
 
 source("util.R")
 
-if(!exists("audit", mode = "list")){
-	source("audit.R")
-}
+audit = loadCsv("../csv/Audit.csv")
+audit$Adjusted = as.factor(audit$Adjusted)
 
 generateRandomForestFormulaAudit = function(){
 	audit.formula = randomForest(Adjusted ~ ., data = audit, ntree = 7)
@@ -33,9 +32,7 @@ set.seed(42)
 generateRandomForestFormulaAudit()
 generateRandomForestAudit()
 
-if(!exists("loadWineQuality", mode = "function")){
-	source("winequality.R")
-}
+wine_quality = loadCsv("../csv/WineQuality.csv")
 
 wine_quality_x = wine_quality[, -ncol(wine_quality)]
 wine_quality_y = wine_quality[, ncol(wine_quality)]
@@ -66,6 +63,9 @@ set.seed(42)
 
 generateRandomForestFormulaWineQuality()
 generateRandomForestWineQuality()
+
+wine_color = loadCsv("../csv/WineColor.csv")
+wine_color$color = as.factor(wine_color$color)
 
 wine_color_x = wine_color[, -ncol(wine_color)]
 wine_color_y = wine_color[, ncol(wine_color)]
