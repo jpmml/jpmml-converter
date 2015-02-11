@@ -2,6 +2,37 @@ library("randomForest")
 
 source("util.R")
 
+if(!exists("audit", mode = "list")){
+	source("audit.R")
+}
+
+generateRandomForestFormulaAudit = function(){
+	audit.formula = randomForest(Adjusted ~ ., data = audit, ntree = 7)
+	print(audit.formula)
+
+	adjusted = predict(audit.formula, newdata = audit)
+	result = data.frame("Adjusted" = adjusted)
+
+	storeProtoBuf(audit.formula, "../pb/RandomForestFormulaAudit.pb")
+	storeCsv(result, "../csv/RandomForestFormulaAudit.csv")
+}
+
+generateRandomForestAudit = function(){
+	audit.matrix = randomForest(x = audit[, -ncol(audit)], y = audit[, ncol(audit)], ntree = 7)
+	print(audit.matrix)
+
+	adjusted = predict(audit.matrix, newdata = audit)
+	result = data.frame("_target" = adjusted)
+
+	storeProtoBuf(audit.matrix, "../pb/RandomForestAudit.pb")
+	storeCsv(result, "../csv/RandomForestAudit.csv")
+}
+
+set.seed(42)
+
+generateRandomForestFormulaAudit()
+generateRandomForestAudit()
+
 if(!exists("loadWineQuality", mode = "function")){
 	source("winequality.R")
 }

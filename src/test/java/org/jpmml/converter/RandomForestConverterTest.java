@@ -27,6 +27,24 @@ import static org.junit.Assert.assertTrue;
 public class RandomForestConverterTest extends ConverterTest {
 
 	@Test
+	public void convertFormulaAudit() throws Exception {
+		Converter converter = new RandomForestConverter();
+
+		Batch batch = createBatch(converter, "RandomForestFormula", "Audit");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
+	public void convertAudit() throws Exception {
+		Converter converter = new RandomForestConverter();
+
+		Batch batch = createBatch(converter, "RandomForest", "Audit");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
 	public void convertFormulaWineQuality() throws Exception {
 		Converter converter = new RandomForestConverter();
 
