@@ -118,6 +118,15 @@ public class RandomForestConverter extends Converter {
 			initFormulaFields(terms);
 		} catch(IllegalArgumentException iae){
 			Rexp.REXP xlevels = REXPUtil.field(forest, "xlevels");
+
+			Rexp.REXP xNames;
+
+			try {
+				xNames = REXPUtil.field(randomForest, "xNames");
+			} catch(IllegalArgumentException iaeChild){
+				xNames = REXPUtil.attribute(xlevels, "names");
+			}
+
 			Rexp.REXP ncat = REXPUtil.field(forest, "ncat");
 
 			Rexp.REXP y;
@@ -129,7 +138,7 @@ public class RandomForestConverter extends Converter {
 			}
 
 			// The RF model was trained using the matrix (ie. non-formula) interface
-			initNonFormulaFields(xlevels, ncat, y);
+			initNonFormulaFields(xNames, ncat, y);
 		}
 
 		PMML pmml;
@@ -357,7 +366,7 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private void initNonFormulaFields(Rexp.REXP xlevels, Rexp.REXP ncat, Rexp.REXP y){
+	private void initNonFormulaFields(Rexp.REXP xNames, Rexp.REXP ncat, Rexp.REXP y){
 
 		// Dependent variable
 		{
@@ -377,16 +386,27 @@ public class RandomForestConverter extends Converter {
 			this.dataFields.add(dataField);
 		}
 
-		Rexp.REXP names = REXPUtil.attribute(xlevels, "names");
-
 		// Independent variable(s)
-		for(int i = 0; i < names.getStringValueCount(); i++){
-			STRING name = names.getStringValue(i);
+		for(int i = 0; i < xNames.getStringValueCount(); i++){
+			STRING xName = xNames.getStringValue(i);
 
 			DataField dataField = new DataField()
-				.withName(FieldName.create(name.getStrval()));
+				.withName(FieldName.create(xName.getStrval()));
 
-			boolean categorical = (ncat.getIntValue(i) > 1);
+			boolean categorical;
+
+			if(ncat.getIntValueCount() > 0){
+				categorical = (ncat.getIntValue(i) > 1);
+			} else
+
+			if(ncat.getRealValueCount() > 0){
+				categorical = (ncat.getRealValue(i) > 1d);
+			} else
+
+			{
+				throw new IllegalArgumentException();
+			} // End if
+
 			if(categorical){
 				dataField = initDataField(dataField, DataType.STRING);
 			} else

@@ -1,9 +1,13 @@
+library("caret")
 library("randomForest")
 
 source("util.R")
 
 audit = loadCsv("csv/Audit.csv")
 audit$Adjusted = as.factor(audit$Adjusted)
+
+audit_x = audit[, -ncol(audit)]
+audit_y = audit[, ncol(audit)]
 
 generateRandomForestFormulaAudit = function(){
 	audit.formula = randomForest(Adjusted ~ ., data = audit, ntree = 7)
@@ -17,7 +21,7 @@ generateRandomForestFormulaAudit = function(){
 }
 
 generateRandomForestAudit = function(){
-	audit.matrix = randomForest(x = audit[, -ncol(audit)], y = audit[, ncol(audit)], ntree = 7)
+	audit.matrix = randomForest(x = audit_x, y = audit_y, ntree = 7)
 	print(audit.matrix)
 
 	adjusted = predict(audit.matrix, newdata = audit)
@@ -31,6 +35,33 @@ set.seed(42)
 
 generateRandomForestFormulaAudit()
 generateRandomForestAudit()
+
+generateCaretRandomForestFormulaAuditMatrix = function(){
+	audit.formula = train(Adjusted ~ ., data = audit, method = "rf", ntree = 7)
+	print(audit.formula)
+
+	adjusted = predict(audit.formula, newdata = audit)
+	result = data.frame("_target" = adjusted)
+
+	storeProtoBuf(audit.formula, "pb/CaretRandomForestFormulaAuditMatrix.pb")
+	storeCsv(result, "csv/CaretRandomForestFormulaAuditMatrix.csv")
+}
+
+generateCaretRandomForestAudit = function(){
+	audit.matrix = train(x = audit_x, y = audit_y, ntree = 7)
+	print(audit.matrix)
+
+	adjusted = predict(audit.matrix, newdata = audit)
+	result = data.frame("_target" = adjusted)
+
+	storeProtoBuf(audit.matrix, "pb/CaretRandomForestAudit.pb")
+	storeCsv(result, "csv/CaretRandomForestAudit.csv")
+}
+
+set.seed(42)
+
+generateCaretRandomForestFormulaAuditMatrix()
+generateCaretRandomForestAudit()
 
 wine_quality = loadCsv("csv/WineQuality.csv")
 

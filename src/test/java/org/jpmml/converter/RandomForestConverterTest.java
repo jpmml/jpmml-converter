@@ -28,54 +28,56 @@ public class RandomForestConverterTest extends ConverterTest {
 
 	@Test
 	public void convertFormulaAudit() throws Exception {
-		Converter converter = new RandomForestConverter();
-
-		Batch batch = createBatch(converter, "RandomForestFormula", "Audit");
+		Batch batch = createBatch("RandomForestFormula", "Audit");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}
 
 	@Test
 	public void convertAudit() throws Exception {
-		Converter converter = new RandomForestConverter();
+		Batch batch = createBatch("RandomForest", "Audit");
 
-		Batch batch = createBatch(converter, "RandomForest", "Audit");
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
+	public void convertCaretFormulaAuditMatrix() throws Exception {
+		Batch batch = createBatch("CaretRandomForestFormula", "AuditMatrix");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
+	public void convertCaretAudit() throws Exception {
+		Batch batch = createBatch("CaretRandomForest", "Audit");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}
 
 	@Test
 	public void convertFormulaWineQuality() throws Exception {
-		Converter converter = new RandomForestConverter();
-
-		Batch batch = createBatch(converter, "RandomForestFormula", "WineQuality");
+		Batch batch = createBatch("RandomForestFormula", "WineQuality");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}
 
 	@Test
 	public void convertWineQuality() throws Exception {
-		Converter converter = new RandomForestConverter();
-
-		Batch batch = createBatch(converter, "RandomForest", "WineQuality");
+		Batch batch = createBatch("RandomForest", "WineQuality");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}
 
 	@Test
 	public void convertFormulaWineColor() throws Exception {
-		Converter converter = new RandomForestConverter();
-
-		Batch batch = createBatch(converter, "RandomForestFormula", "WineColor");
+		Batch batch = createBatch("RandomForestFormula", "WineColor");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}
 
 	@Test
 	public void convertWineColor() throws Exception {
-		Converter converter = new RandomForestConverter();
-
-		Batch batch = createBatch(converter, "RandomForest", "WineColor");
+		Batch batch = createBatch("RandomForest", "WineColor");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}

@@ -13,6 +13,9 @@ Fast conversion of R models to PMML
   * [`randomForest` package] (http://cran.r-project.org/web/packages/randomForest/):
     * `randomForest.formula` ("formula interface") - Random Forest regression and classification
     * `randomForest` ("matrix interface") - Random Forest regression and classification
+  * [`caret` package] (http://cran.r-project.org/web/packages/caret/):
+    * `train.formula` ("formula interface") - All supported model types
+    * `train` ("matrix interface") - All supported model types
 
 # Prerequisites #
 

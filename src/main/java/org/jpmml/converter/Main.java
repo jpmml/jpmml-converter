@@ -89,7 +89,11 @@ public class Main {
 			is.close();
 		}
 
-		PMML pmml = convert(rexp);
+		ConverterFactory converterFactory = ConverterFactory.getInstance();
+
+		Converter converter = converterFactory.getConverter(rexp);
+
+		PMML pmml = converter.convert(rexp);
 
 		OutputStream os = new FileOutputStream(this.output);
 
@@ -104,24 +108,6 @@ public class Main {
 		} finally {
 			os.close();
 		}
-	}
-
-	private PMML convert(Rexp.REXP rexp){
-		Converter converter;
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			converter = new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			converter = new RandomForestConverter();
-		} else
-
-		{
-			throw new IllegalArgumentException();
-		}
-
-		return converter.convert(rexp);
 	}
 
 	public File getInput(){

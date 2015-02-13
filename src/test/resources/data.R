@@ -16,6 +16,14 @@ createAudit = function(){
 	names(audit)[ncol(audit)] = "Adjusted"
 
 	storeCsv(audit, "csv/Audit.csv")
+
+	audit.matrix = data.frame(model.matrix(formula("Adjusted ~ ."), audit))
+	names(audit.matrix) = gsub("\\.", "-", names(audit.matrix))
+
+	# Delete the leading "X-Intercept" column
+	audit.matrix = audit.matrix[, 2:ncol(audit.matrix)]
+
+	storeCsv(audit.matrix, "csv/AuditMatrix.csv")
 }
 
 loadWineQuality = function(color){

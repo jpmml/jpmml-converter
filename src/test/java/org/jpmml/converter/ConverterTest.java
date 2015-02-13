@@ -36,7 +36,7 @@ abstract
 public class ConverterTest {
 
 	static
-	public Batch createBatch(final Converter converter, String name, String dataset){
+	public Batch createBatch(String name, String dataset){
 		Batch result = new ArchiveBatch(name, dataset){
 
 			@Override
@@ -45,7 +45,7 @@ public class ConverterTest {
 					InputStream is = open("/pb/" + getName() + getDataset() + ".pb");
 
 					try {
-						return convert(converter, is);
+						return convert(is);
 					} finally {
 						is.close();
 					}
@@ -59,10 +59,14 @@ public class ConverterTest {
 	}
 
 	static
-	private InputStream convert(Converter converter, InputStream is) throws Exception {
+	private InputStream convert(InputStream is) throws Exception {
 		CodedInputStream cis = CodedInputStream.newInstance(is);
 
 		REXP rexp = Rexp.REXP.parseFrom(cis);
+
+		ConverterFactory converterFactory = ConverterFactory.getInstance();
+
+		Converter converter = converterFactory.getConverter(rexp);
 
 		PMML pmml = converter.convert(rexp);
 
