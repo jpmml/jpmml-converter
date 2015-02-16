@@ -48,6 +48,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 64,Private,HSgrad,Widowed,Service,148865.82,Female,FALSE,38,0
 39,Private,Bachelor,Married,Professional,21190.02,Male,FALSE,40,1
 66,Private,Yr5t6,Married-spouse-absent,Cleaner,139087.01,Female,FALSE,40,0
+18,Unemployed,Yr11,Absent,NA,148836.93,Female,FALSE,10,0
 42,PSLocal,College,Married,Executive,48422.28,Male,FALSE,45,1
 31,PSLocal,College,Absent,Clerical,67012.13,Female,FALSE,40,0
 31,Private,Bachelor,Married,Executive,6333,Male,TRUE,45,1
@@ -58,6 +59,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 25,Private,HSgrad,Married,Transport,56417.35,Male,FALSE,30,0
 21,Private,College,Absent,Clerical,43362.93,Male,FALSE,65,0
 33,Consultant,HSgrad,Absent,Farming,214238.62,Male,FALSE,70,0
+43,NA,HSgrad,Absent,NA,61192.65,Female,FALSE,40,0
 31,Private,Bachelor,Absent,Executive,83143.19,Male,TRUE,38,0
 56,PSFederal,Bachelor,Divorced,Clerical,37078.8,Male,FALSE,40,0
 62,Volunteer,Associate,Married,Farming,51230.5,Male,FALSE,50,0
@@ -219,9 +221,11 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 48,Private,HSgrad,Widowed,Machinist,116242.34,Female,FALSE,16,0
 18,Private,HSgrad,Absent,Service,76092.27,Male,FALSE,36,0
 50,Private,College,Married,Sales,33450.41,Male,FALSE,60,0
+72,NA,HSgrad,Married,NA,15651.39,Male,FALSE,8,0
 58,Private,HSgrad,Married,Transport,37168.49,Male,FALSE,40,1
 40,Private,College,Married,Machinist,39443.33,Male,FALSE,40,0
 35,Private,Yr11,Married,Farming,38106.16,Male,FALSE,40,0
+22,NA,HSgrad,Divorced,NA,81137.85,Female,FALSE,40,0
 23,Private,HSgrad,Absent,Sales,106275.4,Male,FALSE,40,0
 41,Private,College,Married,Machinist,12651.15,Male,FALSE,42,1
 18,Private,HSgrad,Absent,Service,209114.75,Female,FALSE,30,0
@@ -255,6 +259,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 20,PSLocal,HSgrad,Absent,Cleaner,171960.33,Male,FALSE,40,0
 30,Private,College,Divorced,Transport,107142.62,Male,FALSE,40,0
 47,PSState,HSgrad,Married,Clerical,146328.63,Female,FALSE,40,1
+18,NA,College,Absent,NA,258160.48,Male,FALSE,16,0
 41,Private,College,Divorced,Clerical,59474.99,Female,FALSE,55,0
 26,PSLocal,Bachelor,Absent,Clerical,64037.85,Male,FALSE,42,0
 45,Consultant,Bachelor,Married,Transport,24800.44,Male,FALSE,40,1
@@ -272,6 +277,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 41,PSLocal,Associate,Married,Support,27621.04,Male,FALSE,40,1
 38,Private,Vocational,Married,Machinist,55660.1,Male,FALSE,40,1
 44,Consultant,College,Divorced,Farming,192599.61,Male,FALSE,40,0
+22,NA,College,Absent,NA,92014.13,Male,FALSE,40,0
 52,Private,HSgrad,Married,Repair,38175.16,Male,FALSE,50,1
 51,PSLocal,Yr9,Married,Transport,50305.81,Male,FALSE,40,0
 67,PSState,Doctorate,Married,Professional,15898.03,Male,FALSE,12,0
@@ -279,6 +285,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 52,SelfEmp,Bachelor,Married,Sales,41019.67,Male,FALSE,55,0
 42,Private,Doctorate,Absent,Professional,105677.14,Male,FALSE,36,1
 41,Private,Master,Married,Professional,39795.37,Male,FALSE,50,1
+21,NA,College,Absent,NA,150958.41,Male,FALSE,30,0
 53,PSState,Yr10,Married,Transport,14646.62,Male,FALSE,40,1
 40,Private,College,Married,Professional,385067.54,Female,FALSE,40,0
 41,Private,Bachelor,Married,Professional,25307.22,Male,FALSE,40,0
@@ -287,12 +294,14 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 29,Private,HSgrad,Divorced,Service,80201.6,Female,FALSE,36,0
 29,Private,Yr11,Absent,Service,152961.87,Female,FALSE,40,0
 28,Consultant,Bachelor,Absent,Professional,88287.76,Male,FALSE,50,1
+75,NA,Yr10,Widowed,NA,126406.52,Female,FALSE,1,0
 40,Private,College,Divorced,Service,55147.82,Female,FALSE,40,0
 21,Private,HSgrad,Absent,Repair,104110.16,Male,FALSE,40,0
 31,Private,College,Absent,Executive,609.72,Male,FALSE,40,0
 23,PSLocal,HSgrad,Absent,Farming,27390.28,Male,FALSE,40,0
 54,Private,Master,Married,Professional,29811.43,Male,FALSE,60,0
 23,Private,Associate,Absent,Sales,36254.32,Male,FALSE,40,0
+18,NA,Yr12,Absent,NA,175051.39,Male,FALSE,20,0
 29,Private,HSgrad,Married,Service,67901.35,Male,FALSE,40,0
 20,PSLocal,College,Absent,Protective,126038.65,Male,FALSE,25,0
 37,Private,College,Divorced,Repair,53249.24,Male,FALSE,50,0
@@ -317,8 +326,10 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 40,Private,College,Divorced,Service,128629.84,Male,FALSE,45,0
 26,Private,Yr12,Absent,Service,199628.02,Male,FALSE,40,0
 27,Private,College,Married,Repair,27932.75,Male,FALSE,60,0
+53,NA,Yr5t6,Widowed,NA,82391.47,Female,FALSE,30,0
 41,PSLocal,HSgrad,Divorced,Transport,108760.33,Female,FALSE,38,0
 29,Private,Bachelor,Married,Repair,30838.37,Male,FALSE,45,0
+35,NA,College,Divorced,NA,84371.66,Female,FALSE,36,0
 32,Private,Yr10,Absent,Repair,229452.89,Male,FALSE,40,0
 60,PSState,Master,Married,Professional,25719.5,Male,FALSE,38,1
 38,Private,HSgrad,Married,Transport,11525.85,Male,FALSE,40,0
@@ -342,6 +353,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 44,Private,Master,Married,Executive,53626.14,Male,FALSE,40,1
 22,Private,College,Absent,Sales,249741.88,Female,FALSE,15,0
 43,PSFederal,Bachelor,Married,Professional,21737.96,Male,FALSE,40,0
+21,NA,College,Absent,NA,119656.67,Male,FALSE,48,0
 34,Private,HSgrad,Absent,Repair,59338.83,Male,FALSE,40,0
 22,Private,HSgrad,Married,Transport,35751.45,Male,FALSE,40,0
 22,Private,Bachelor,Absent,Professional,41992.73,Female,FALSE,9,0
@@ -372,6 +384,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 34,Private,College,Unmarried,Machinist,69650.32,Male,FALSE,40,0
 50,PSLocal,Master,Divorced,Professional,54815.01,Female,FALSE,30,0
 45,Private,Yr12,Married,Clerical,273024.98,Female,FALSE,40,1
+39,NA,HSgrad,Married,NA,24090.81,Male,FALSE,40,0
 46,Private,HSgrad,Divorced,Home,87517.4,Female,FALSE,25,0
 45,Consultant,HSgrad,Married,Executive,45021.81,Male,FALSE,40,0
 33,PSLocal,Vocational,Absent,Protective,83998.37,Male,FALSE,56,0
@@ -386,6 +399,8 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 28,Private,Yr11,Married,Repair,107861.57,Male,FALSE,60,1
 61,Private,HSgrad,Married,Executive,163175.67,Female,FALSE,38,1
 31,Private,HSgrad,Divorced,Transport,105269.72,Male,FALSE,45,0
+20,NA,College,Absent,NA,156892.82,Male,FALSE,36,0
+74,NA,HSgrad,Widowed,NA,43529.53,Female,FALSE,10,0
 54,PSState,Master,Married-spouse-absent,Professional,51958.85,Female,FALSE,40,0
 42,Private,College,Married,Service,58980.99,Male,FALSE,40,1
 28,Private,Doctorate,Absent,Clerical,73107.98,Male,FALSE,18,0
@@ -424,6 +439,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 36,Private,Master,Married,Professional,14220.59,Male,FALSE,55,1
 36,Private,Associate,Married,Professional,68166.53,Male,FALSE,40,1
 62,Consultant,Bachelor,Divorced,Professional,63454.72,Female,FALSE,40,1
+44,NA,Yr12,Unmarried,NA,81371.85,Female,FALSE,36,0
 24,Private,Bachelor,Absent,Farming,47378.48,Male,FALSE,40,0
 46,PSLocal,Yr11,Married,Transport,18752.31,Male,FALSE,30,0
 46,Private,Bachelor,Married,Clerical,23064.1,Male,TRUE,35,1
@@ -472,6 +488,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 43,Private,HSgrad,Divorced,Executive,66707.56,Female,FALSE,40,0
 28,Private,Bachelor,Married,Clerical,81967.31,Female,FALSE,15,0
 40,Private,HSgrad,Absent,Executive,116076.42,Female,FALSE,45,0
+67,NA,HSgrad,Married,NA,262911.83,Female,FALSE,5,0
 19,Private,HSgrad,Absent,Cleaner,183653.58,Male,FALSE,35,0
 68,Private,Yr9,Married,Repair,40478.75,Male,FALSE,44,0
 43,SelfEmp,Professional,Married,Executive,48852.77,Male,FALSE,40,1
@@ -517,6 +534,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 43,Private,HSgrad,Widowed,Machinist,51288.14,Female,FALSE,60,0
 59,Private,College,Absent,Clerical,154292.88,Female,FALSE,34,0
 23,Private,College,Absent,Service,88744.88,Male,FALSE,40,0
+48,NA,College,Married,NA,27415.4,Male,FALSE,40,1
 46,PSLocal,Bachelor,Absent,Professional,62609.31,Female,FALSE,40,0
 45,Private,Bachelor,Married,Executive,40475.97,Male,FALSE,50,1
 35,Consultant,Professional,Married,Professional,24147.69,Male,FALSE,50,1
@@ -546,6 +564,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 50,PSLocal,Bachelor,Married,Protective,41471.41,Male,FALSE,44,1
 35,Private,Vocational,Absent,Service,27632.54,Female,FALSE,65,0
 31,Private,Vocational,Absent,Service,81517.56,Female,FALSE,40,0
+66,NA,College,Married,NA,58054.74,Male,FALSE,40,0
 55,Private,Bachelor,Married,Professional,53577.25,Male,FALSE,40,1
 33,Private,HSgrad,Divorced,Clerical,61991.92,Female,FALSE,65,0
 40,PSFederal,HSgrad,Married,Executive,19944.35,Male,FALSE,40,1
@@ -599,6 +618,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 52,Private,College,Married,Support,36457.74,Male,FALSE,40,1
 48,Private,Master,Absent,Executive,15481.2,Male,FALSE,40,0
 38,Private,Bachelor,Married,Professional,41845.12,Male,FALSE,70,1
+51,NA,Vocational,Married,NA,39195.94,Male,FALSE,50,1
 20,Private,HSgrad,Unmarried,Machinist,176485.25,Male,FALSE,40,0
 57,Private,HSgrad,Widowed,Transport,164663.6,Male,FALSE,50,0
 26,Private,College,Absent,Clerical,92535.68,Female,FALSE,45,0
@@ -627,6 +647,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 45,Private,HSgrad,Absent,Cleaner,54610.25,Female,FALSE,40,0
 32,Private,HSgrad,Absent,Farming,132527.18,Male,FALSE,40,0
 21,Private,College,Absent,Clerical,47414.35,Female,FALSE,25,0
+32,NA,College,Married,NA,40288.08,Male,FALSE,40,0
 31,Private,College,Absent,Sales,71579.7,Male,FALSE,45,0
 30,SelfEmp,HSgrad,Married,Cleaner,43547.15,Male,FALSE,60,0
 44,Consultant,Master,Absent,Farming,189456.13,Male,FALSE,99,0
@@ -653,6 +674,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 18,Private,Yr11,Absent,Service,65037.68,Male,FALSE,20,0
 39,Private,HSgrad,Absent,Repair,45401.02,Male,TRUE,50,1
 55,Private,Master,Married,Executive,32999.58,Male,TRUE,60,1
+41,NA,HSgrad,Absent,NA,82889.32,Female,FALSE,30,0
 24,Private,HSgrad,Absent,Sales,69457.59,Female,FALSE,48,0
 46,Private,HSgrad,Absent,Repair,77205.17,Female,FALSE,48,0
 45,Private,Master,Married,Executive,34120.79,Male,FALSE,40,1
@@ -660,12 +682,16 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 36,Private,Yr10,Married,Repair,29073.78,Male,FALSE,40,0
 25,SelfEmp,Associate,Absent,Sales,13254.73,Male,FALSE,60,0
 42,Private,HSgrad,Married,Machinist,135665.63,Female,FALSE,40,0
+19,NA,HSgrad,Absent,NA,171533.02,Male,FALSE,40,0
 38,Private,College,Absent,Sales,193681.15,Female,FALSE,50,0
 26,Private,College,Absent,Clerical,195976.31,Male,FALSE,20,0
+22,NA,College,Absent,NA,53409.99,Female,FALSE,12,0
+27,NA,Bachelor,Married-spouse-absent,NA,33897.08,Male,FALSE,50,0
 28,Private,Yr7t8,Absent,Clerical,114956.87,Male,FALSE,40,0
 37,Private,HSgrad,Married,Transport,23972.13,Male,FALSE,40,0
 21,Private,College,Absent,Sales,164461.64,Male,FALSE,43,0
 38,Private,Bachelor,Married,Executive,31609.41,Male,FALSE,40,1
+74,NA,College,Widowed,NA,60529.25,Female,FALSE,3,0
 59,PSLocal,HSgrad,Widowed,Farming,110146.06,Male,TRUE,40,0
 45,Private,Doctorate,Married,Professional,25651.97,Male,FALSE,50,1
 39,Private,Associate,Widowed,Clerical,5226.03,Female,FALSE,45,0
@@ -706,6 +732,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 32,Private,Bachelor,Absent,Professional,74199.12,Male,FALSE,40,1
 50,Consultant,HSgrad,Divorced,Professional,43445.15,Female,FALSE,60,0
 47,PSLocal,College,Divorced,Executive,56729.66,Male,FALSE,56,1
+61,NA,Bachelor,Absent,NA,52767.29,Male,FALSE,7,1
 54,Private,HSgrad,Married,Repair,5360.35,Male,FALSE,44,0
 48,Private,Bachelor,Married,Support,113867.76,Female,FALSE,40,1
 37,Private,Bachelor,Married,Professional,39289.48,Male,FALSE,45,1
@@ -722,11 +749,13 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 45,PSState,Professional,Divorced,Professional,105763.11,Female,FALSE,43,0
 42,Private,Vocational,Absent,Clerical,97380.27,Female,FALSE,60,0
 42,Private,Yr7t8,Married,Cleaner,51245.9,Male,FALSE,30,0
+60,NA,HSgrad,Married,NA,13061.1,Male,TRUE,40,1
 53,Private,HSgrad,Divorced,Machinist,102342.44,Male,FALSE,40,0
 45,Private,HSgrad,Divorced,Clerical,130502.82,Female,FALSE,38,0
 57,Private,HSgrad,Married,Executive,37598.92,Male,FALSE,50,0
 61,Consultant,HSgrad,Married,Farming,29392.56,Male,TRUE,50,0
 20,Private,Vocational,Absent,Service,180841.47,Female,FALSE,20,0
+43,NA,HSgrad,Married,NA,47064.34,Male,FALSE,40,0
 31,Private,Bachelor,Married,Professional,36692.7,Male,FALSE,48,1
 29,Private,Yr10,Absent,Professional,78257.05,Male,FALSE,40,0
 29,Private,Doctorate,Absent,Professional,128737.61,Male,FALSE,40,0
@@ -744,6 +773,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 46,Private,Bachelor,Married,Sales,11056.48,Male,FALSE,50,1
 51,PSLocal,Doctorate,Married,Professional,58901.13,Female,FALSE,40,1
 22,Private,HSgrad,Absent,Transport,179631.06,Male,FALSE,40,0
+61,NA,Master,Married,NA,49353.08,Male,FALSE,2,1
 23,Private,HSgrad,Absent,Support,105740.62,Male,FALSE,50,0
 24,Private,Yr7t8,Absent,Cleaner,97678.27,Male,FALSE,40,0
 30,Private,Yr11,Married,Service,24104.35,Male,FALSE,40,0
@@ -773,6 +803,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 59,PSState,Bachelor,Absent,Executive,49513.57,Female,FALSE,40,0
 61,Private,Yr10,Married,Sales,46060.23,Male,FALSE,40,0
 27,Private,HSgrad,Married,Repair,10662.97,Male,FALSE,53,0
+59,NA,Bachelor,Married,NA,6964.85,Male,FALSE,40,0
 39,Private,HSgrad,Divorced,Executive,274431.1,Female,FALSE,45,0
 45,PSFederal,HSgrad,Married,Clerical,21793.84,Male,TRUE,40,0
 47,PSLocal,Bachelor,Married,Professional,16366.22,Male,FALSE,40,0
@@ -795,6 +826,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 21,Private,College,Absent,Clerical,172456.38,Female,FALSE,40,0
 20,Private,College,Absent,Sales,84471.66,Female,FALSE,40,0
 18,Private,College,Absent,Sales,56027.94,Female,FALSE,20,0
+60,NA,Yr9,Divorced,NA,62317.89,Male,FALSE,35,0
 34,Private,Bachelor,Absent,Sales,104055.14,Female,FALSE,40,0
 43,Private,College,Absent,Executive,80053.94,Male,FALSE,50,0
 22,PSLocal,Vocational,Absent,Clerical,82936.28,Female,FALSE,10,0
@@ -803,6 +835,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 27,Private,HSgrad,Absent,Machinist,158458.54,Male,FALSE,45,0
 33,Private,Bachelor,Married,Executive,40925.7,Male,FALSE,55,1
 20,Private,College,Absent,Transport,163772,Male,FALSE,40,0
+19,NA,Yr11,Absent,NA,69773.74,Female,FALSE,30,0
 33,Private,HSgrad,Married,Transport,27661.6,Male,FALSE,55,1
 52,Private,HSgrad,Married,Repair,33379.58,Male,FALSE,40,0
 37,Private,Bachelor,Absent,Clerical,94623.76,Female,FALSE,35,0
@@ -826,6 +859,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 19,Private,HSgrad,Absent,Sales,184671.16,Female,FALSE,20,0
 48,PSLocal,Master,Divorced,Professional,63452.61,Female,FALSE,40,1
 40,Private,College,Married,Clerical,227449.1,Female,FALSE,40,1
+66,NA,HSgrad,Married,NA,17004.3,Male,FALSE,30,0
 29,Private,HSgrad,Divorced,Machinist,192971.42,Male,FALSE,56,0
 50,Private,HSgrad,Married,Clerical,8292.78,Male,FALSE,40,0
 32,PSState,HSgrad,Divorced,Service,45951.16,Female,FALSE,25,0
@@ -844,9 +878,12 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 22,Private,College,Absent,Clerical,154675.1,Female,FALSE,35,0
 49,Private,Vocational,Married-spouse-absent,Cleaner,25113.04,Male,TRUE,42,0
 36,Private,HSgrad,Divorced,Service,93966.02,Female,FALSE,30,0
+73,NA,HSgrad,Widowed,NA,44046.63,Female,FALSE,8,0
 19,PSState,Yr12,Absent,Transport,100155.39,Male,FALSE,20,0
 37,Private,Bachelor,Married,Executive,15834.6,Male,FALSE,50,1
+21,NA,College,Absent,NA,107108.44,Male,FALSE,10,0
 46,Private,Associate,Married,Transport,48465.11,Male,FALSE,36,0
+66,NA,Vocational,Widowed,NA,54347.79,Female,FALSE,40,0
 54,SelfEmp,HSgrad,Married,Executive,45259.14,Male,FALSE,98,1
 65,Private,Bachelor,Married,Executive,43736.99,Male,FALSE,40,1
 45,Private,College,Married,Repair,35352.57,Male,FALSE,40,1
@@ -860,10 +897,12 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 26,Private,College,Absent,Protective,84098.64,Male,FALSE,44,0
 35,Private,Bachelor,Married,Professional,35840.09,Male,FALSE,50,0
 27,Private,HSgrad,Married,Cleaner,33613.77,Male,FALSE,80,1
+50,NA,Master,Absent,NA,85184.47,Male,FALSE,40,0
 57,Private,HSgrad,Married,Executive,180527.55,Female,FALSE,38,0
 45,Private,Bachelor,Married,Executive,49376.01,Male,FALSE,60,1
 33,Private,Bachelor,Married,Executive,32526.41,Male,FALSE,50,1
 34,Private,HSgrad,Divorced,Clerical,193043.03,Male,FALSE,40,0
+67,NA,HSgrad,Married,NA,14349.23,Male,FALSE,11,0
 29,Private,College,Married,Repair,14845.09,Male,FALSE,40,1
 44,Private,Bachelor,Married,Executive,33987.25,Male,FALSE,40,1
 21,Private,HSgrad,Absent,Farming,177077.59,Male,FALSE,20,0
@@ -876,6 +915,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 54,Private,College,Divorced,Clerical,65131.3,Female,FALSE,40,0
 42,Private,HSgrad,Married,Repair,17790.18,Male,TRUE,40,0
 62,Private,College,Married,Transport,55497.9,Male,FALSE,20,0
+20,NA,College,Absent,NA,212562.38,Male,FALSE,35,0
 46,PSFederal,HSgrad,Absent,Clerical,62060.46,Male,FALSE,40,0
 60,PSLocal,HSgrad,Married,Service,29586.54,Male,FALSE,40,0
 27,Private,Bachelor,Absent,Support,287243.51,Female,FALSE,20,0
@@ -883,7 +923,9 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 25,Private,Yr10,Married,Transport,18646.05,Male,FALSE,40,0
 30,Private,College,Divorced,Professional,106945.97,Female,FALSE,40,0
 58,Private,HSgrad,Married,Farming,19546.74,Male,FALSE,20,0
+44,NA,Bachelor,Married,NA,228571.75,Female,FALSE,16,1
 31,Private,Bachelor,Married,Sales,28254.49,Male,FALSE,40,1
+29,NA,Doctorate,Married,NA,46767,Male,FALSE,50,1
 31,Private,HSgrad,Absent,Repair,174203.82,Male,FALSE,42,0
 43,Private,Yr9,Married,Executive,26230.68,Male,FALSE,40,0
 62,Private,Yr5t6,Married,Farming,45312.74,Male,FALSE,40,0
@@ -900,6 +942,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 67,Private,HSgrad,Widowed,Service,99701.35,Female,FALSE,24,0
 28,PSFederal,Bachelor,Absent,Protective,59390.97,Male,FALSE,50,0
 33,Private,Vocational,Divorced,Clerical,27038.17,Male,FALSE,40,0
+63,NA,Doctorate,Married,NA,23044.59,Male,FALSE,12,0
 20,Private,College,Absent,Cleaner,177677.91,Male,FALSE,40,0
 42,Private,Bachelor,Married,Professional,28766.09,Male,FALSE,40,0
 19,Private,College,Absent,Service,155493.78,Female,FALSE,27,0
@@ -910,9 +953,11 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 34,Consultant,Bachelor,Married,Repair,16967.77,Male,FALSE,40,0
 20,Private,College,Absent,Sales,121890.11,Male,FALSE,25,0
 22,Private,College,Absent,Service,194054.26,Male,FALSE,30,0
+32,NA,HSgrad,Married,NA,46526.3,Male,FALSE,40,0
 21,PSState,College,Absent,Protective,26834.22,Male,FALSE,40,0
 45,PSLocal,HSgrad,Divorced,Service,243776.44,Female,FALSE,40,0
 49,SelfEmp,Vocational,Divorced,Executive,100800.81,Male,FALSE,60,0
+26,NA,Bachelor,Absent,NA,96366.7,Male,FALSE,44,0
 25,PSState,HSgrad,Absent,Executive,41771.75,Male,FALSE,40,0
 39,Private,College,Married,Executive,53614.87,Male,FALSE,50,1
 44,PSFederal,Vocational,Married,Repair,17748.54,Male,FALSE,40,1
@@ -922,11 +967,13 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 50,Private,HSgrad,Married,Repair,47316.24,Male,FALSE,40,1
 20,Private,College,Absent,Service,185072.43,Female,FALSE,20,0
 28,Private,Vocational,Married,Service,79749.71,Female,FALSE,40,0
+54,NA,Master,Absent,NA,79612.99,Female,FALSE,40,0
 58,Private,HSgrad,Divorced,Executive,204682.96,Female,FALSE,40,0
 58,Private,HSgrad,Divorced,Service,193492.7,Female,FALSE,25,0
 54,Private,Master,Married,Executive,34550.16,Male,FALSE,45,1
 33,Consultant,Bachelor,Married,Professional,126715.93,Female,FALSE,50,1
 44,PSLocal,HSgrad,Married,Machinist,30781.3,Male,FALSE,40,0
+21,NA,Yr7t8,Absent,NA,185594.22,Male,FALSE,40,0
 27,Private,Yr5t6,Absent,Farming,110499.57,Male,FALSE,48,0
 37,Private,College,Married,Executive,51634.23,Male,FALSE,60,1
 48,SelfEmp,College,Married,Sales,26291.84,Male,FALSE,38,1
@@ -943,6 +990,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 52,Private,College,Married,Executive,39134.45,Male,FALSE,60,0
 19,Private,College,Absent,Service,61766.53,Female,FALSE,25,0
 29,Private,HSgrad,Absent,Farming,84121.07,Male,FALSE,50,0
+67,NA,Vocational,Widowed,NA,44659.18,Female,FALSE,1,0
 27,PSFederal,HSgrad,Married,Service,66816.56,Male,FALSE,40,0
 49,Private,Vocational,Married,Clerical,27486.02,Male,FALSE,40,0
 21,Private,College,Absent,Service,68020.6,Male,FALSE,30,0
@@ -975,6 +1023,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 42,PSState,Associate,Divorced,Professional,42782.43,Male,FALSE,40,0
 22,Private,College,Absent,Service,65127.04,Male,FALSE,50,0
 33,Private,Master,Married,Support,44356.81,Male,FALSE,15,0
+78,NA,Associate,Widowed,NA,87209.25,Female,FALSE,4,0
 41,Private,HSgrad,Married,Repair,59515.36,Male,FALSE,40,0
 20,Private,College,Absent,Repair,97111.81,Male,FALSE,40,0
 41,Private,Bachelor,Married,Professional,45246.6,Male,FALSE,60,0
@@ -992,15 +1041,18 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 57,Private,Yr9,Widowed,Service,299857.24,Male,FALSE,52,0
 39,Private,HSgrad,Unmarried,Clerical,82367.92,Female,FALSE,20,0
 45,Consultant,College,Married,Executive,27896.05,Male,FALSE,80,0
+62,NA,Yr9,Absent,NA,302520.43,Female,FALSE,40,0
 43,Private,Master,Married,Executive,326956.83,Female,FALSE,32,1
 21,Private,College,Absent,Sales,290175.87,Female,FALSE,20,0
 46,Private,Vocational,Divorced,Machinist,216606.07,Male,FALSE,40,0
+64,NA,Yr11,Widowed,NA,83849.61,Female,FALSE,35,0
 50,Private,HSgrad,Married,Cleaner,15828.78,Male,FALSE,45,0
 26,Private,Vocational,Absent,Repair,105608.42,Male,FALSE,48,0
 56,Private,Master,Married,Professional,44065.89,Male,FALSE,40,1
 44,Private,Bachelor,Married,Support,25134.57,Male,FALSE,40,0
 42,Private,Yr10,Absent,Transport,70018.35,Male,FALSE,40,0
 40,Consultant,Bachelor,Married,Repair,49315.87,Male,FALSE,30,0
+18,NA,College,Absent,NA,33319.52,Female,FALSE,30,0
 20,Private,College,Absent,Clerical,176057.51,Female,FALSE,35,0
 55,Private,HSgrad,Divorced,Clerical,53682.58,Female,FALSE,40,0
 35,Private,HSgrad,Divorced,Repair,255402.74,Female,FALSE,48,0
@@ -1021,6 +1073,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 46,Private,Bachelor,Absent,Sales,73276.12,Male,TRUE,40,0
 44,Private,Yr7t8,Divorced,Cleaner,80946.05,Male,FALSE,48,0
 47,Private,Bachelor,Divorced,Executive,14774.29,Male,TRUE,40,1
+19,NA,College,Absent,NA,97296.29,Male,FALSE,40,0
 49,Private,HSgrad,Married,Machinist,28082.43,Male,FALSE,50,0
 45,Private,Yr9,Unmarried,Service,125594.01,Female,FALSE,40,0
 47,PSLocal,College,Married,Transport,31008.6,Male,TRUE,40,1
@@ -1096,6 +1149,8 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 22,Private,Bachelor,Absent,Clerical,29168.49,Female,FALSE,60,0
 21,Private,College,Absent,Service,181792.59,Male,FALSE,40,0
 57,Private,College,Married,Repair,32196.18,Male,TRUE,45,0
+65,NA,HSgrad,Unmarried,NA,23381.42,Female,FALSE,40,0
+30,NA,College,Married,NA,53338.36,Male,FALSE,40,0
 28,Private,College,Absent,Service,120733.61,Male,FALSE,35,0
 50,PSLocal,College,Married,Protective,37962.18,Male,FALSE,52,1
 32,Private,HSgrad,Married,Machinist,15164.11,Male,FALSE,40,0
@@ -1115,11 +1170,13 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 33,Consultant,Professional,Married,Professional,29214.04,Male,FALSE,60,1
 26,Private,College,Absent,Sales,80133.84,Female,FALSE,37,0
 28,Private,College,Absent,Machinist,73042.19,Male,FALSE,42,0
+60,NA,HSgrad,Married,NA,36752.61,Male,FALSE,40,0
 32,Private,HSgrad,Married,Sales,25421.23,Male,FALSE,49,0
 28,Private,HSgrad,Absent,Repair,222955.79,Male,FALSE,40,0
 32,PSLocal,Master,Absent,Professional,42738.27,Female,FALSE,40,0
 20,Private,College,Absent,Repair,237399.45,Male,FALSE,40,0
 34,Private,HSgrad,Unmarried,Service,74884.8,Female,FALSE,35,0
+19,NA,College,Absent,NA,197442.55,Male,FALSE,30,0
 39,PSFederal,Associate,Absent,Executive,88990.52,Male,FALSE,42,0
 28,Consultant,College,Absent,Machinist,53602.12,Male,FALSE,40,0
 43,Consultant,HSgrad,Married,Executive,41057.13,Male,FALSE,35,1
@@ -1226,6 +1283,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 47,PSState,Bachelor,Married,Service,31145.28,Male,FALSE,40,0
 44,PSFederal,Associate,Married,Clerical,36891,Male,FALSE,40,1
 36,Private,HSgrad,Absent,Clerical,69718.88,Female,FALSE,40,0
+29,NA,HSgrad,Unmarried,NA,228913.53,Female,FALSE,20,0
 21,Private,HSgrad,Absent,Cleaner,146282.46,Male,FALSE,38,0
 29,Private,Bachelor,Married,Support,40596.39,Male,FALSE,40,0
 20,Private,College,Absent,Professional,141235.48,Female,FALSE,15,0
@@ -1261,10 +1319,12 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 28,PSLocal,Bachelor,Married,Protective,39495.41,Male,FALSE,42,1
 59,SelfEmp,Associate,Married,Repair,30614.87,Male,FALSE,40,0
 18,Private,HSgrad,Absent,Cleaner,79100.58,Male,FALSE,40,0
+18,NA,Yr11,Absent,NA,109723.67,Male,FALSE,36,0
 42,Private,Yr10,Married,Transport,54238.97,Male,FALSE,50,0
 39,Private,HSgrad,Married,Sales,36839.34,Male,FALSE,40,1
 24,Private,HSgrad,Absent,Repair,65928.98,Male,FALSE,40,0
 40,Consultant,Professional,Married,Professional,17863.06,Male,FALSE,70,1
+66,NA,HSgrad,Married,NA,35298.69,Male,FALSE,18,0
 47,Private,HSgrad,Married,Executive,61082.19,Male,FALSE,40,1
 18,Private,Yr11,Absent,Sales,98383.87,Male,FALSE,18,0
 40,Private,Bachelor,Married,Clerical,187945.04,Female,FALSE,40,0
@@ -1275,6 +1335,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 47,Private,Vocational,Married,Service,30374.41,Male,FALSE,26,0
 44,PSLocal,Associate,Married,Professional,22095.2,Male,FALSE,48,0
 53,PSState,College,Absent,Protective,76997.19,Female,FALSE,40,0
+25,NA,Bachelor,Married,NA,46429.12,Male,FALSE,60,0
 26,Private,HSgrad,Absent,Repair,115213.1,Male,FALSE,40,0
 44,Consultant,College,Divorced,Executive,68879.14,Female,FALSE,40,0
 29,Private,HSgrad,Married,Machinist,210653.92,Female,FALSE,40,0
@@ -1294,9 +1355,11 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 41,PSFederal,Master,Married,Executive,27753.37,Male,TRUE,40,1
 21,Private,HSgrad,Absent,Cleaner,243862.28,Male,FALSE,36,0
 19,Private,HSgrad,Absent,Clerical,151313.3,Female,FALSE,25,0
+61,NA,College,Married,NA,74899.13,Male,FALSE,30,1
 39,Private,Yr11,Married,Repair,38183.12,Male,FALSE,35,0
 41,Private,Bachelor,Divorced,Transport,140899.75,Male,FALSE,40,0
 61,Private,College,Absent,Support,203401.76,Male,FALSE,16,0
+24,NA,Bachelor,Absent,NA,34151.9,Female,FALSE,40,0
 41,Private,HSgrad,Unmarried,Repair,77925.68,Male,FALSE,40,0
 28,PSFederal,Bachelor,Absent,Executive,95210.3,Male,FALSE,40,0
 41,Private,HSgrad,Married,Service,32964.61,Male,FALSE,45,0
@@ -1313,6 +1376,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 34,PSLocal,HSgrad,Absent,Protective,28364,Male,FALSE,40,0
 27,Private,College,Absent,Service,80795.43,Female,FALSE,30,0
 18,Private,Yr12,Absent,Clerical,34914.62,Female,FALSE,30,0
+20,NA,Yr11,Absent,NA,126005.37,Female,FALSE,20,0
 41,PSState,Master,Absent,Professional,173409.55,Female,FALSE,35,0
 21,Private,College,Absent,Clerical,164901.74,Male,FALSE,40,0
 20,PSState,College,Absent,Clerical,143458.2,Female,FALSE,40,0
@@ -1329,14 +1393,17 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 55,Private,College,Married,Protective,56010.67,Male,FALSE,40,1
 24,Private,HSgrad,Married,Repair,56339.72,Male,FALSE,50,0
 48,Private,HSgrad,Married,Transport,42018.75,Male,FALSE,45,0
+57,NA,HSgrad,Married,NA,26957.36,Male,FALSE,60,0
 61,Private,HSgrad,Widowed,Executive,70465.25,Female,FALSE,40,0
 48,Private,Yr11,Divorced,Service,87539.7,Female,FALSE,31,0
 23,Consultant,HSgrad,Absent,Transport,30045.28,Male,FALSE,40,0
 26,Private,HSgrad,Absent,Machinist,206381.36,Male,FALSE,40,0
 32,Private,HSgrad,Absent,Cleaner,132792.04,Female,FALSE,45,0
+33,NA,Yr11,Divorced,NA,137801.39,Male,FALSE,53,0
 42,Private,HSgrad,Unmarried,Service,267843.59,Female,FALSE,25,0
 47,PSState,Vocational,Married,Executive,17357.59,Male,FALSE,38,1
 45,PSLocal,Master,Absent,Professional,54304.38,Female,FALSE,40,0
+45,NA,HSgrad,Widowed,NA,119448.83,Female,FALSE,38,0
 29,Private,HSgrad,Divorced,Service,112370.96,Female,FALSE,40,0
 26,PSFederal,HSgrad,Absent,Clerical,42159.58,Female,FALSE,40,0
 43,Private,HSgrad,Married,Service,14387.48,Male,FALSE,60,0
@@ -1370,6 +1437,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 61,Consultant,HSgrad,Widowed,Service,81250.19,Female,FALSE,40,0
 59,Private,Bachelor,Married,Executive,53336.36,Male,TRUE,50,1
 35,Private,HSgrad,Absent,Transport,175176.75,Male,FALSE,40,0
+62,NA,Master,Married,NA,38844.68,Male,FALSE,50,0
 23,Private,College,Absent,Executive,72222.2,Female,FALSE,35,0
 29,Private,Professional,Absent,Professional,260192.76,Male,FALSE,50,0
 37,Private,HSgrad,Absent,Sales,62936.81,Male,FALSE,44,0
@@ -1401,11 +1469,13 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 47,Private,HSgrad,Married,Repair,19109.03,Male,FALSE,40,1
 48,Private,HSgrad,Married,Transport,33183.44,Male,FALSE,55,1
 64,Private,Doctorate,Married,Professional,15211.52,Male,FALSE,60,1
+17,NA,Yr10,Absent,NA,174482.12,Male,FALSE,40,0
 33,Consultant,HSgrad,Married,Repair,29177.56,Male,FALSE,40,0
 37,Private,Bachelor,Married,Professional,4824.34,Male,FALSE,50,1
 33,Private,Yr7t8,Absent,Sales,59588.77,Male,FALSE,43,0
 35,Private,HSgrad,Married,Sales,17666.7,Male,FALSE,50,0
 35,Private,Vocational,Absent,Clerical,131926.03,Female,FALSE,40,0
+68,NA,HSgrad,Married,NA,44746.05,Male,FALSE,15,0
 29,Private,HSgrad,Absent,Repair,40068.93,Male,FALSE,50,0
 52,Private,College,Divorced,Executive,80043.25,Male,FALSE,60,0
 46,Private,HSgrad,Divorced,Executive,137081.84,Male,FALSE,44,0
@@ -1435,8 +1505,10 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 37,Private,Bachelor,Married,Support,210851.71,Female,FALSE,40,1
 32,PSState,Bachelor,Divorced,Executive,68317.22,Female,FALSE,40,0
 31,SelfEmp,HSgrad,Absent,Repair,16438.72,Male,FALSE,44,0
+22,NA,Vocational,Absent,NA,118931.27,Male,FALSE,20,0
 60,Private,Vocational,Widowed,Repair,23892.12,Female,FALSE,30,0
 43,Private,Master,Widowed,Professional,19841.6,Female,FALSE,37,0
+66,NA,College,Widowed,NA,242869.91,Female,TRUE,40,0
 54,Private,College,Divorced,Executive,63596.65,Female,FALSE,40,0
 33,Private,HSgrad,Divorced,Clerical,303961.49,Female,FALSE,40,0
 64,PSFederal,Associate,Unmarried,Professional,53105.64,Female,FALSE,40,1
@@ -1453,6 +1525,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 58,Consultant,Master,Married,Executive,45803.18,Male,FALSE,50,0
 31,PSLocal,HSgrad,Married,Protective,54288.61,Male,FALSE,48,0
 34,Consultant,Bachelor,Married,Sales,42289.78,Male,FALSE,55,0
+72,NA,Professional,Married,NA,34487.91,Male,FALSE,40,1
 53,Private,HSgrad,Married,Transport,22446.29,Male,FALSE,60,0
 31,Private,Associate,Married,Machinist,59196,Male,FALSE,55,0
 49,SelfEmp,HSgrad,Married,Repair,11703.44,Male,FALSE,40,0
@@ -1461,6 +1534,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 23,Private,Yr5t6,Absent,Cleaner,81443.06,Male,FALSE,55,0
 17,Private,Yr11,Absent,Repair,80669.22,Male,FALSE,10,0
 28,Private,Bachelor,Married,Executive,38719.04,Male,FALSE,45,0
+60,NA,Bachelor,Married,NA,59091.77,Male,FALSE,8,1
 34,Consultant,HSgrad,Married,Transport,15710.66,Male,FALSE,35,0
 37,Private,College,Married,Service,14412.91,Male,FALSE,40,1
 52,Private,HSgrad,Divorced,Transport,91631.97,Male,FALSE,40,0
@@ -1481,6 +1555,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 36,Private,HSgrad,Absent,Repair,80958.09,Male,FALSE,30,0
 32,Consultant,HSgrad,Married,Repair,13173.25,Male,FALSE,45,0
 42,Private,HSgrad,Divorced,Clerical,71600.25,Female,FALSE,40,0
+18,NA,HSgrad,Absent,NA,200908.22,Female,FALSE,20,0
 37,Private,Bachelor,Married,Clerical,39093.3,Male,FALSE,50,1
 57,PSFederal,Master,Married,Executive,34700.45,Male,FALSE,40,1
 64,Private,Yr11,Married,Transport,17142.5,Male,FALSE,40,0
@@ -1488,6 +1563,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 34,Private,HSgrad,Absent,Repair,201033.48,Male,FALSE,40,0
 44,Private,Bachelor,Married,Executive,20924.33,Male,FALSE,45,1
 32,PSLocal,HSgrad,Married,Protective,35745.96,Male,FALSE,43,0
+20,NA,College,Absent,NA,109853.44,Male,FALSE,40,0
 25,Consultant,Yr9,Absent,Repair,74054.02,Male,FALSE,15,0
 60,Private,Yr7t8,Divorced,Machinist,345263.49,Female,FALSE,40,0
 19,Private,College,Absent,Sales,101145.88,Female,FALSE,30,0
@@ -1524,6 +1600,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 40,Private,HSgrad,Married,Machinist,30124.74,Male,FALSE,40,1
 59,Consultant,Master,Married,Repair,27530.79,Male,FALSE,40,1
 26,Private,Bachelor,Absent,Professional,51172.07,Female,FALSE,40,0
+47,NA,Bachelor,Married,NA,36169.71,Male,FALSE,36,1
 32,Private,HSgrad,Unmarried,Clerical,163076.41,Female,FALSE,40,0
 27,Consultant,HSgrad,Absent,Farming,117719.17,Male,FALSE,80,0
 38,PSLocal,HSgrad,Married,Transport,59260.14,Male,FALSE,20,0
@@ -1542,6 +1619,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 31,Private,HSgrad,Divorced,Professional,48582.26,Female,FALSE,40,0
 51,Private,HSgrad,Married,Machinist,174275.99,Female,FALSE,40,0
 38,Private,College,Married,Cleaner,26562.14,Male,FALSE,40,0
+57,NA,Bachelor,Married,NA,48118.23,Male,FALSE,80,1
 28,Private,College,Married,Repair,17654.51,Male,FALSE,60,1
 18,Private,College,Absent,Cleaner,171712.27,Male,FALSE,30,0
 21,Private,Vocational,Absent,Repair,328613.91,Male,FALSE,40,0
@@ -1549,10 +1627,12 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 27,Private,HSgrad,Absent,Cleaner,97778.54,Male,FALSE,40,0
 44,Private,HSgrad,Divorced,Support,99107.21,Male,FALSE,50,1
 74,Consultant,Bachelor,Married,Executive,28421.93,Male,FALSE,10,0
+81,NA,HSgrad,Divorced,NA,46306.58,Female,FALSE,35,0
 42,Private,College,Married,Service,255829.6,Female,FALSE,30,0
 71,PSState,Professional,Married,Service,30615.09,Male,FALSE,28,0
 25,PSLocal,Bachelor,Absent,Support,140931.66,Female,FALSE,40,0
 57,PSState,HSgrad,Married,Executive,42016.25,Male,FALSE,40,1
+69,NA,HSgrad,Married,NA,35555.2,Male,FALSE,60,1
 66,Private,College,Married,Sales,24719.18,Male,FALSE,28,0
 52,Private,Yr5t6,Married-spouse-absent,Repair,21917.9,Male,FALSE,40,0
 48,Private,Associate,Divorced,Clerical,177468.71,Female,FALSE,40,0
@@ -1578,8 +1658,10 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 53,Private,HSgrad,Married,Transport,33204.38,Male,FALSE,40,1
 38,PSFederal,College,Divorced,Clerical,178189.6,Female,FALSE,40,0
 54,PSLocal,College,Absent,Professional,120586.35,Female,FALSE,40,0
+20,NA,College,Absent,NA,118821.36,Male,FALSE,10,0
 36,PSFederal,College,Married,Cleaner,27526.46,Male,FALSE,50,0
 29,Private,Associate,Absent,Sales,69967.33,Male,FALSE,45,0
+57,NA,Yr5t6,Married,NA,38222.19,Male,FALSE,84,1
 33,Consultant,College,Married,Executive,32405.19,Male,FALSE,45,0
 38,Private,HSgrad,Absent,Service,141697.29,Female,FALSE,30,0
 79,Private,Bachelor,Married,Sales,1598.95,Male,FALSE,40,0
@@ -1606,9 +1688,11 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 24,Private,HSgrad,Divorced,Service,225317.12,Female,FALSE,40,0
 49,Consultant,Associate,Divorced,Executive,65953.27,Male,FALSE,25,0
 58,Private,HSgrad,Married,Clerical,76211.05,Male,FALSE,45,1
+17,NA,Yr11,Absent,NA,90852.67,Female,FALSE,30,0
 53,Private,College,Married,Transport,37398.27,Male,FALSE,45,1
 19,Consultant,HSgrad,Absent,Service,57730.91,Male,FALSE,53,0
 23,Private,HSgrad,Married,Transport,20959.54,Male,FALSE,60,0
+37,NA,Vocational,Married,NA,211846.51,Female,FALSE,40,0
 58,Private,Yr11,Married,Repair,21525.26,Male,FALSE,40,0
 41,SelfEmp,HSgrad,Married,Sales,31556.98,Male,FALSE,62,0
 36,Private,Associate,Married,Machinist,46578.97,Male,FALSE,40,0
@@ -1635,6 +1719,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 44,Private,College,Divorced,Executive,92595.95,Female,FALSE,50,0
 35,Consultant,HSgrad,Divorced,Repair,171957.58,Male,FALSE,15,0
 57,PSFederal,HSgrad,Absent,Clerical,3666.87,Male,TRUE,40,0
+58,NA,Yr7t8,Married,NA,9294.49,Male,FALSE,24,0
 64,SelfEmp,HSgrad,Married,Clerical,122906.29,Female,FALSE,40,1
 52,Private,Master,Divorced,Professional,56251.18,Female,FALSE,60,0
 36,Private,College,Divorced,Clerical,110263.49,Male,FALSE,45,0
@@ -1659,6 +1744,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 54,Private,College,Married,Cleaner,31677.52,Male,FALSE,40,0
 43,Private,Bachelor,Absent,Professional,26205.4,Female,FALSE,40,1
 43,Consultant,HSgrad,Married,Repair,41590.24,Male,FALSE,60,0
+46,NA,HSgrad,Divorced,NA,64482.04,Female,FALSE,15,0
 44,Private,Bachelor,Divorced,Professional,143817,Male,FALSE,40,0
 21,Private,College,Absent,Sales,138764.04,Female,FALSE,40,0
 68,Private,Master,Married,Professional,52533.94,Male,FALSE,18,0
@@ -1667,6 +1753,8 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 59,Private,College,Unmarried,Clerical,170528.46,Male,FALSE,40,0
 32,Private,Bachelor,Married,Professional,40586.22,Male,FALSE,60,1
 52,Private,Bachelor,Married,Professional,47326.44,Male,FALSE,40,1
+65,NA,HSgrad,Married,NA,55353.77,Male,FALSE,45,0
+20,NA,College,Absent,NA,103534.35,Female,FALSE,25,0
 50,Private,HSgrad,Married,Repair,35494.55,Male,FALSE,40,0
 65,Consultant,College,Married,Executive,53584.82,Male,FALSE,40,0
 29,Private,Professional,Married,Professional,19685.38,Male,FALSE,50,1
@@ -1688,6 +1776,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 29,Private,Bachelor,Absent,Executive,74954.41,Female,FALSE,45,0
 68,Consultant,College,Married,Service,48124.25,Male,FALSE,30,0
 48,Private,HSgrad,Widowed,Machinist,76466.64,Female,FALSE,48,0
+32,NA,Bachelor,Married,NA,89508.17,Female,FALSE,20,1
 51,PSLocal,Preschool,Married,Service,31754.77,Male,FALSE,40,0
 33,Private,Yr7t8,Married,Clerical,33042.03,Male,FALSE,45,0
 61,PSLocal,Bachelor,Married,Professional,30331.18,Male,FALSE,42,0
@@ -1702,6 +1791,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 57,SelfEmp,HSgrad,Unmarried,Farming,78487.59,Male,FALSE,60,1
 54,Private,HSgrad,Married,Repair,52853.51,Male,TRUE,40,1
 29,Private,HSgrad,Married,Sales,23718.47,Male,FALSE,50,0
+59,NA,Associate,Divorced,NA,32594.61,Male,FALSE,8,0
 20,Private,HSgrad,Married,Sales,20873.96,Male,FALSE,20,0
 42,Private,HSgrad,Unmarried,Repair,118691.41,Male,FALSE,40,0
 48,Private,Master,Married,Executive,45432.97,Male,FALSE,50,1
@@ -1711,6 +1801,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 33,Private,Yr10,Absent,Service,142528.17,Male,FALSE,20,0
 29,Private,HSgrad,Married,Machinist,43062.27,Male,FALSE,40,1
 37,Private,Associate,Married,Machinist,44271.1,Male,FALSE,40,1
+68,NA,Yr1t4,Divorced,NA,55370.84,Female,FALSE,20,0
 38,Private,College,Divorced,Repair,66808.94,Male,TRUE,40,0
 61,Private,Yr7t8,Widowed,Service,78161.84,Female,FALSE,21,0
 31,Private,Yr7t8,Absent,Cleaner,209072.7,Male,FALSE,50,0
@@ -1725,6 +1816,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 60,Consultant,HSgrad,Absent,Farming,154705.59,Male,FALSE,42,0
 49,Private,College,Married,Service,51847.25,Male,FALSE,17,0
 47,Consultant,Bachelor,Married,Professional,49069.97,Male,FALSE,60,0
+25,NA,Bachelor,Married,NA,19814.07,Male,FALSE,40,0
 53,Private,Bachelor,Divorced,Professional,104338.96,Male,FALSE,55,1
 40,Private,Associate,Married,Executive,30194.57,Male,TRUE,55,1
 26,PSLocal,Bachelor,Absent,Protective,69007.71,Male,FALSE,40,0
@@ -1774,6 +1866,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 67,SelfEmp,College,Married,Sales,47593.85,Male,FALSE,40,0
 26,Private,College,Absent,Clerical,88260.51,Male,FALSE,20,0
 17,PSFederal,Yr11,Absent,Clerical,53034.17,Female,TRUE,40,0
+67,NA,Doctorate,Married,NA,35411.77,Male,FALSE,20,1
 38,Private,Master,Married,Executive,12642.83,Male,FALSE,40,0
 30,Private,Bachelor,Married,Professional,28248.62,Male,FALSE,40,1
 36,PSLocal,Bachelor,Married,Professional,50548.68,Male,TRUE,50,0
@@ -1801,6 +1894,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 22,Private,College,Absent,Sales,183027.36,Male,FALSE,34,0
 26,Private,Master,Absent,Executive,33742.92,Female,FALSE,30,0
 27,Private,HSgrad,Divorced,Clerical,107597.36,Male,FALSE,38,0
+67,NA,Yr10,Absent,NA,44937.22,Female,FALSE,35,0
 57,Private,HSgrad,Married,Executive,41397.34,Male,FALSE,60,0
 27,PSLocal,Bachelor,Married,Protective,57082.91,Male,FALSE,68,0
 56,Private,HSgrad,Married,Cleaner,31904.07,Male,FALSE,40,0
@@ -1816,6 +1910,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 21,Private,College,Absent,Service,171878.03,Female,FALSE,60,0
 41,Private,Bachelor,Unmarried,Sales,199258.2,Female,FALSE,30,0
 26,Private,HSgrad,Absent,Clerical,105372.12,Male,FALSE,80,1
+18,NA,College,Absent,NA,180335.08,Male,FALSE,10,0
 54,Private,Bachelor,Divorced,Sales,94127.31,Female,TRUE,38,0
 31,Private,HSgrad,Divorced,Repair,108894.89,Male,TRUE,50,0
 60,Consultant,HSgrad,Married,Sales,230440.99,Female,FALSE,25,0
@@ -1833,6 +1928,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 32,Private,HSgrad,Absent,Service,126572.84,Female,FALSE,40,0
 43,Private,Associate,Married,Sales,59350.35,Male,FALSE,40,0
 37,Private,Bachelor,Married,Executive,59792.76,Male,FALSE,40,1
+17,NA,Yr10,Absent,NA,195065.14,Male,FALSE,40,0
 60,Private,HSgrad,Married,Protective,12224.01,Male,FALSE,40,0
 40,Private,College,Married,Clerical,58086.76,Male,FALSE,55,1
 53,Consultant,HSgrad,Married,Executive,37678.12,Male,FALSE,45,1
@@ -1855,7 +1951,9 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 42,Private,HSgrad,Absent,Repair,81695.14,Male,FALSE,40,0
 23,Private,College,Absent,Sales,88467.13,Male,FALSE,40,0
 32,Private,Bachelor,Married,Sales,30967.52,Male,FALSE,42,1
+62,NA,Yr11,Divorced,NA,65917.57,Female,FALSE,40,0
 27,Private,College,Absent,Executive,62471.07,Male,FALSE,45,0
+90,NA,HSgrad,Widowed,NA,116992.86,Male,FALSE,4,0
 47,Private,Vocational,Married,Professional,53662.76,Male,FALSE,40,1
 31,Private,Yr10,Divorced,Cleaner,48292.84,Male,FALSE,40,0
 54,Private,Master,Married,Transport,42793.14,Male,FALSE,60,1
@@ -1870,11 +1968,13 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 35,Private,College,Absent,Sales,201566.09,Male,FALSE,48,0
 33,Private,HSgrad,Married,Machinist,17660.36,Male,FALSE,40,0
 31,Private,Bachelor,Married,Sales,27154.65,Male,FALSE,40,0
+21,NA,Yr11,Married,NA,279593.02,Female,FALSE,56,0
 57,Private,HSgrad,Married,Cleaner,35863.69,Male,FALSE,40,0
 45,Private,Doctorate,Widowed,Professional,187277.08,Male,FALSE,40,1
 42,Private,Bachelor,Married,Professional,246388.78,Female,FALSE,27,1
 41,Private,Bachelor,Married,Machinist,44503.75,Male,FALSE,40,0
 48,Private,Yr11,Absent,Service,54786.75,Female,FALSE,30,0
+39,NA,College,Divorced,NA,65311.2,Female,FALSE,20,0
 33,Private,College,Absent,Clerical,96552.26,Male,FALSE,36,0
 56,Private,HSgrad,Married,Executive,33984.18,Male,FALSE,55,1
 40,Private,Vocational,Married,Repair,33064.02,Male,FALSE,40,0
@@ -1886,6 +1986,7 @@ Age,Employment,Education,Marital,Occupation,Income,Gender,Deductions,Hours,Adjus
 48,Private,Yr5t6,Absent,Home,190482.6,Female,FALSE,35,0
 51,Private,Associate,Absent,Clerical,52618.68,Female,FALSE,40,0
 35,Private,HSgrad,Divorced,Service,74662.5,Female,FALSE,35,0
+66,NA,Bachelor,Married,NA,54820.12,Male,FALSE,6,0
 63,Consultant,HSgrad,Married,Repair,33182.77,Male,FALSE,32,0
 22,Private,College,Absent,Machinist,91059.97,Female,FALSE,35,0
 24,Private,Bachelor,Absent,Sales,122563.95,Female,FALSE,40,0

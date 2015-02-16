@@ -2,11 +2,7 @@ library("rattle")
 
 source("util.R")
 
-createAudit = function(){
-	data("audit")
-
-	audit = na.omit(audit)
-
+createAudit = function(audit){
 	audit$ID = NULL
 	audit$IGNORE_Accounts = NULL
 	audit$RISK_Adjustment = NULL
@@ -14,6 +10,10 @@ createAudit = function(){
 	audit$Deductions = as.logical(audit$Deductions > 0)
 
 	names(audit)[ncol(audit)] = "Adjusted"
+
+	storeCsv(audit, "csv/AuditNA.csv")
+
+	audit = na.omit(audit)
 
 	storeCsv(audit, "csv/Audit.csv")
 
@@ -48,5 +48,7 @@ createWineQuality = function(){
 	storeCsv(wine_color, "csv/WineColor.csv")
 }
 
-createAudit()
+data(audit)
+
+createAudit(audit)
 createWineQuality()
