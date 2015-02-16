@@ -26,6 +26,27 @@ createAudit = function(audit){
 	storeCsv(audit.matrix, "csv/AuditMatrix.csv")
 }
 
+loadAuto = function(){
+	data = read.table("http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data", quote = "\"", header = FALSE, na.strings = "?", row.names = NULL, col.names = c("mpg", "cylinders", "displacement", "horsepower", "weight", "acceleration", "model_year", "origin", "car_name"))
+
+	return (data)
+}
+
+createAuto = function(){
+	auto = loadAuto()
+
+	auto$"car_name" = NULL
+
+	# Move the "mpg" column to the last position
+	auto = subset(auto, select = c(cylinders:origin, mpg))
+
+	storeCsv(auto, "csv/AutoNA.csv")
+
+	auto = na.omit(auto)
+
+	storeCsv(auto, "csv/Auto.csv")
+}
+
 loadWineQuality = function(color){
 	data = read.table(paste("http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-", color, ".csv", sep = ""), sep = ";", header = TRUE)
 
@@ -51,4 +72,5 @@ createWineQuality = function(){
 data(audit)
 
 createAudit(audit)
+createAuto()
 createWineQuality()

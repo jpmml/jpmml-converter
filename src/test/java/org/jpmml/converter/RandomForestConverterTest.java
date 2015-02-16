@@ -55,6 +55,34 @@ public class RandomForestConverterTest extends ConverterTest {
 	}
 
 	@Test
+	public void convertFormulaAuto() throws Exception {
+		Batch batch = createBatch("RandomForestFormula", "Auto");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
+	public void convertAuto() throws Exception {
+		Batch batch = createBatch("RandomForest", "Auto");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
+	public void convertCaretFormulaAuto() throws Exception {
+		Batch batch = createBatch("CaretRandomForestFormula", "Auto");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
+	public void convertCaretAuto() throws Exception {
+		Batch batch = createBatch("CaretRandomForest", "Auto");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
 	public void convertFormulaWineQuality() throws Exception {
 		Batch batch = createBatch("RandomForestFormula", "WineQuality");
 

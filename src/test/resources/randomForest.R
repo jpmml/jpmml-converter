@@ -48,7 +48,7 @@ generateCaretRandomForestFormulaAuditMatrix = function(){
 }
 
 generateCaretRandomForestAudit = function(){
-	audit.matrix = train(x = audit_x, y = audit_y, ntree = 7)
+	audit.matrix = train(x = audit_x, y = audit_y, method = "rf", ntree = 7)
 	print(audit.matrix)
 
 	adjusted = predict(audit.matrix, newdata = audit)
@@ -62,6 +62,65 @@ set.seed(42)
 
 generateCaretRandomForestFormulaAuditMatrix()
 generateCaretRandomForestAudit()
+
+auto = loadCsv("csv/Auto.csv")
+
+auto_x = auto[, -ncol(auto)]
+auto_y = auto[, ncol(auto)]
+
+generateRandomForestFormulaAuto = function(){
+	auto.formula = randomForest(mpg ~ ., data = auto, ntree = 7)
+	print(auto.formula)
+
+	mpg = predict(auto.formula, newdata = auto)
+	result = data.frame("mpg" = mpg)
+
+	storeProtoBuf(auto.formula, "pb/RandomForestFormulaAuto.pb")
+	storeCsv(result, "csv/RandomForestFormulaAuto.csv")
+}
+
+generateRandomForestAuto = function(){
+	auto.matrix = randomForest(x = auto_x, y = auto_y, ntree = 7)
+	print(auto.matrix)
+
+	mpg = predict(auto.matrix, newdata = auto)
+	result = data.frame("_target" = mpg)
+
+	storeProtoBuf(auto.matrix, "pb/RandomForestAuto.pb")
+	storeCsv(result, "csv/RandomForestAuto.csv")
+}
+
+set.seed(42)
+
+generateRandomForestFormulaAuto()
+generateRandomForestAuto()
+
+generateCaretRandomForestFormulaAuto = function(){
+	auto.formula = train(mpg ~ ., data = auto, method = "rf", ntree = 7)
+	print(auto.formula)
+
+	mpg = predict(auto.formula, newdata = auto)
+	result = data.frame("_target" = mpg)
+
+	storeProtoBuf(auto.formula, "pb/CaretRandomForestFormulaAuto.pb")
+	storeCsv(result, "csv/CaretRandomForestFormulaAuto.csv")
+}
+
+generateCaretRandomForestAuto = function(){
+	auto.matrix = train(x = auto_x, y = auto_y, method = "rf", ntree = 7)
+	print(auto.matrix)
+
+	mpg = predict(auto.matrix, newdata = auto)
+	result = data.frame("_target" = mpg)
+
+	storeProtoBuf(auto.matrix, "pb/CaretRandomForestAuto.pb")
+	storeCsv(result, "csv/CaretRandomForestAuto.csv")
+}
+
+set.seed(42)
+
+generateCaretRandomForestFormulaAuto()
+generateCaretRandomForestAuto()
 
 wine_quality = loadCsv("csv/WineQuality.csv")
 
