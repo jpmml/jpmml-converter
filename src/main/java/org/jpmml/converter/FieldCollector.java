@@ -18,38 +18,31 @@
  */
 package org.jpmml.converter;
 
-import rexp.Rexp.REXP;
+import java.util.HashSet;
+import java.util.Set;
 
-public class ConverterFactory {
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.Visitable;
+import org.jpmml.model.visitors.AbstractVisitor;
 
-	protected ConverterFactory(){
+abstract
+public class FieldCollector extends AbstractVisitor {
+
+	private Set<FieldName> fields = new HashSet<FieldName>();
+
+
+	@Override
+	public void applyTo(Visitable visitable){
+		this.fields.clear();
+
+		super.applyTo(visitable);
 	}
 
-	public Converter getConverter(REXP rexp){
-
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
-		}
-
-		{
-			throw new IllegalArgumentException();
-		}
+	public void addField(FieldName field){
+		this.fields.add(field);
 	}
 
-	static
-	public ConverterFactory getInstance(){
-		return new ConverterFactory();
+	public Set<FieldName> getFields(){
+		return this.fields;
 	}
 }

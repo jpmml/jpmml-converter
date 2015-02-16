@@ -18,38 +18,23 @@
  */
 package org.jpmml.converter;
 
-import rexp.Rexp.REXP;
+import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.SimpleSetPredicate;
+import org.dmg.pmml.VisitorAction;
 
-public class ConverterFactory {
+public class TreeModelFieldCollector extends FieldCollector {
 
-	protected ConverterFactory(){
+	@Override
+	public VisitorAction visit(SimpleSetPredicate simpleSetPredicate){
+		addField(simpleSetPredicate.getField());
+
+		return super.visit(simpleSetPredicate);
 	}
 
-	public Converter getConverter(REXP rexp){
+	@Override
+	public VisitorAction visit(SimplePredicate simplePredicate){
+		addField(simplePredicate.getField());
 
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
-		}
-
-		{
-			throw new IllegalArgumentException();
-		}
-	}
-
-	static
-	public ConverterFactory getInstance(){
-		return new ConverterFactory();
+		return super.visit(simplePredicate);
 	}
 }

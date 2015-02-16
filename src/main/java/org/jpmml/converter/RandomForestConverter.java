@@ -19,26 +19,17 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField;
@@ -47,7 +38,6 @@ import org.dmg.pmml.MiningModel;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.MultipleModelMethodType;
 import org.dmg.pmml.Node;
-import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Segment;
@@ -57,8 +47,6 @@ import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.TreeModel;
 import org.dmg.pmml.True;
 import org.dmg.pmml.Value;
-import org.dmg.pmml.VisitorAction;
-import org.jpmml.model.visitors.AbstractVisitor;
 import rexp.Rexp;
 import rexp.Rexp.STRING;
 
@@ -157,21 +145,6 @@ public class RandomForestConverter extends Converter {
 
 		{
 			throw new IllegalArgumentException();
-		}
-
-		FieldTypeAnalyzer fieldTypeAnalyzer = new FieldTypeAnalyzer();
-		fieldTypeAnalyzer.applyTo(pmml);
-
-		List<DataField> dataFields = this.dataFields;
-		for(DataField dataField : dataFields){
-			DataType dataType = fieldTypeAnalyzer.getDataType(dataField.getName());
-
-			// An unused field
-			if(dataType == null){
-				continue;
-			}
-
-			dataField = initDataField(dataField, dataType);
 		}
 
 		return pmml;
@@ -289,24 +262,10 @@ public class RandomForestConverter extends Converter {
 				throw new IllegalArgumentException();
 		}
 
-		Set<FieldName> forestFields = new LinkedHashSet<FieldName>();
-
 		List<Segment> segments = Lists.newArrayList();
 
 		for(int i = 0; i < treeModels.size(); i++){
 			TreeModel treeModel = treeModels.get(i);
-
-			Node root = treeModel.getNode();
-
-			FieldCollector fieldCollector = new FieldCollector();
-			fieldCollector.applyTo(root);
-
-			Set<FieldName> treeFields = fieldCollector.getFields();
-
-			forestFields.addAll(treeFields);
-
-			MiningSchema miningSchema = treeModel.getMiningSchema();
-			miningSchema = miningSchema.withMiningFields(encodeMiningFields(treeFields));
 
 			Segment segment = new Segment()
 				.withId(String.valueOf(i + 1))
@@ -316,14 +275,30 @@ public class RandomForestConverter extends Converter {
 			segments.add(segment);
 		}
 
-		DataDictionary dataDictionary = encodeDataDictionary(forestFields);
-
-		MiningSchema miningSchema = encodeMiningSchema(forestFields);
-
 		Segmentation segmentation = new Segmentation(multipleModelMethod, segments);
+
+		FieldTypeAnalyzer fieldTypeAnalyzer = new RandomForestFieldTypeAnalyzer();
+		fieldTypeAnalyzer.applyTo(segmentation);
+
+		PMMLUtil.refineDataFields(this.dataFields, fieldTypeAnalyzer);
+
+		MiningSchema miningSchema = new MiningSchema();
+
+		for(int i = 0; i < this.dataFields.size(); i++){
+			DataField dataField = this.dataFields.get(i);
+
+			MiningField miningField = new MiningField()
+				.withName(dataField.getName())
+				.withUsageType(i > 0 ? FieldUsageType.ACTIVE : FieldUsageType.TARGET);
+
+			miningSchema = miningSchema.withMiningFields(miningField);
+		}
 
 		MiningModel miningModel = new MiningModel(miningFunction, miningSchema)
 			.withSegmentation(segmentation);
+
+		DataDictionary dataDictionary = new DataDictionary()
+			.withDataFields(this.dataFields);
 
 		PMML pmml = new PMML("4.2", new Header(), dataDictionary)
 			.withModels(miningModel);
@@ -339,28 +314,9 @@ public class RandomForestConverter extends Converter {
 		for(int i = 0; i < names.getStringValueCount(); i++){
 			STRING name = names.getStringValue(i);
 
-			DataField dataField = new DataField()
-				.withName(FieldName.create(name.getStrval()));
-
 			STRING dataClass = dataClasses.getStringValue(i);
 
-			String type = dataClass.getStrval();
-
-			if("factor".equals(type)){
-				dataField = initDataField(dataField, DataType.STRING);
-			} else
-
-			if("numeric".equals(type)){
-				dataField = initDataField(dataField, DataType.DOUBLE);
-			} else
-
-			if("logical".equals(type)){
-				dataField = initDataField(dataField, DataType.BOOLEAN);
-			} else
-
-			{
-				throw new IllegalArgumentException();
-			}
+			DataField dataField = PMMLUtil.createDataField(name.getStrval(), dataClass.getStrval());
 
 			this.dataFields.add(dataField);
 		}
@@ -370,18 +326,9 @@ public class RandomForestConverter extends Converter {
 
 		// Dependent variable
 		{
-			DataField dataField = new DataField()
-				.withName(FieldName.create("_target"));
+			boolean categorical = (y != null);
 
-			boolean classification = (y != null);
-
-			if(classification){
-				dataField = initDataField(dataField, DataType.STRING);
-			} else
-
-			{
-				dataField = initDataField(dataField, DataType.DOUBLE);
-			}
+			DataField dataField = PMMLUtil.createDataField("_target", categorical);
 
 			this.dataFields.add(dataField);
 		}
@@ -389,9 +336,6 @@ public class RandomForestConverter extends Converter {
 		// Independent variable(s)
 		for(int i = 0; i < xNames.getStringValueCount(); i++){
 			STRING xName = xNames.getStringValue(i);
-
-			DataField dataField = new DataField()
-				.withName(FieldName.create(xName.getStrval()));
 
 			boolean categorical;
 
@@ -405,34 +349,11 @@ public class RandomForestConverter extends Converter {
 
 			{
 				throw new IllegalArgumentException();
-			} // End if
-
-			if(categorical){
-				dataField = initDataField(dataField, DataType.STRING);
-			} else
-
-			{
-				dataField = initDataField(dataField, DataType.DOUBLE);
 			}
 
+			DataField dataField = PMMLUtil.createDataField(xName.getStrval(), categorical);
+
 			this.dataFields.add(dataField);
-		}
-	}
-
-	private DataField initDataField(DataField dataField, DataType dataType){
-
-		switch(dataType){
-			case STRING:
-				return dataField.withDataType(DataType.STRING)
-					.withOpType(OpType.CATEGORICAL);
-			case DOUBLE:
-				return dataField.withDataType(DataType.DOUBLE)
-					.withOpType(OpType.CONTINUOUS);
-			case BOOLEAN:
-				return dataField.withDataType(DataType.BOOLEAN)
-					.withOpType(OpType.CATEGORICAL);
-			default:
-				throw new IllegalArgumentException();
 		}
 	}
 
@@ -472,82 +393,6 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private DataDictionary encodeDataDictionary(Set<FieldName> fields){
-		List<DataField> dataFields = Lists.newArrayList(this.dataFields.subList(1, this.dataFields.size()));
-
-		for(Iterator<DataField> it = dataFields.iterator(); it.hasNext(); ){
-			DataField dataField = it.next();
-
-			if(!(fields).contains(dataField.getName())){
-				it.remove();
-			}
-		}
-
-		Comparator<DataField> comparator = new Comparator<DataField>(){
-
-			@Override
-			public int compare(DataField left, DataField right){
-				return ((left.getName()).getValue()).compareTo((right.getName()).getValue());
-			}
-		};
-		Collections.sort(dataFields, comparator);
-
-		DataDictionary dataDictionary = new DataDictionary()
-			.withDataFields(this.dataFields.subList(0, 1))
-			.withDataFields(dataFields);
-
-		return dataDictionary;
-	}
-
-	private MiningSchema encodeMiningSchema(Set<FieldName> fields){
-		DataField dataField = this.dataFields.get(0);
-
-		MiningField targetField = new MiningField(dataField.getName())
-			.withUsageType(FieldUsageType.TARGET);
-
-		List<MiningField> activeFields = encodeMiningFields(fields);
-
-		MiningSchema miningSchema = new MiningSchema()
-			.withMiningFields(Collections.singletonList(targetField))
-			.withMiningFields(activeFields);
-
-		return miningSchema;
-	}
-
-	private List<MiningField> encodeMiningFields(Set<FieldName> fields){
-		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
-
-			@Override
-			public MiningField apply(FieldName field){
-				return new MiningField(field);
-			}
-		};
-
-		List<MiningField> miningFields = Lists.newArrayList(Iterables.transform(fields, function));
-
-		Comparator<MiningField> comparator = new Comparator<MiningField>(){
-
-			@Override
-			public int compare(MiningField left, MiningField right){
-				boolean leftActive = (left.getUsageType()).equals(FieldUsageType.ACTIVE);
-				boolean rightActive = (right.getUsageType()).equals(FieldUsageType.ACTIVE);
-
-				if(leftActive && !rightActive){
-					return 1;
-				} // End if
-
-				if(!leftActive && rightActive){
-					return -1;
-				}
-
-				return ((left.getName()).getValue()).compareTo((right.getName()).getValue());
-			}
-		};
-		Collections.sort(miningFields, comparator);
-
-		return miningFields;
-	}
-
 	private <P extends Number> TreeModel encodeTreeModel(MiningFunctionType miningFunction, List<Integer> leftDaughter, List<Integer> rightDaughter, ScoreEncoder<P> scoreEncoder, List<P> nodepred, List<Integer> bestvar, List<Double> xbestsplit){
 		Node root = new Node()
 			.withId("1")
@@ -555,7 +400,15 @@ public class RandomForestConverter extends Converter {
 
 		encodeNode(root, 0, leftDaughter, rightDaughter, bestvar, xbestsplit, scoreEncoder, nodepred);
 
-		TreeModel treeModel = new TreeModel(miningFunction, new MiningSchema(), root)
+		FieldCollector fieldCollector = new TreeModelFieldCollector();
+		fieldCollector.applyTo(root);
+
+		List<MiningField> activeFields = PMMLUtil.createMiningFields(fieldCollector);
+
+		MiningSchema miningSchema = new MiningSchema()
+			.withMiningFields(activeFields);
+
+		TreeModel treeModel = new TreeModel(miningFunction, miningSchema, root)
 			.withSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
 
 		return treeModel;
@@ -671,9 +524,7 @@ public class RandomForestConverter extends Converter {
 
 	static
 	private String formatArrayValue(List<Value> values, Integer split, boolean leftDaughter){
-		StringBuilder sb = new StringBuilder();
-
-		String sep = "";
+		List<String> elements = new ArrayList<String>();
 
 		String string = performBinaryExpansion(split);
 
@@ -693,22 +544,13 @@ public class RandomForestConverter extends Converter {
 			} // End if
 
 			if(append){
-				sb.append(sep);
-
 				String element = value.getValue();
-				if(element.indexOf(' ') > -1){
-					sb.append('\"').append(element).append('\"');
-				} else
 
-				{
-					sb.append(element);
-				}
-
-				sep = " ";
+				elements.add(element);
 			}
 		}
 
-		return sb.toString();
+		return PMMLUtil.formatArrayValue(elements);
 	}
 
 	static
@@ -800,114 +642,6 @@ public class RandomForestConverter extends Converter {
 
 		private void setSplit(Number split){
 			this.split = split;
-		}
-	}
-
-	static
-	private class FieldCollector extends AbstractVisitor {
-
-		private Set<FieldName> fields = new LinkedHashSet<FieldName>();
-
-
-		@Override
-		public VisitorAction visit(SimpleSetPredicate simpleSetPredicate){
-			this.fields.add(simpleSetPredicate.getField());
-
-			return super.visit(simpleSetPredicate);
-		}
-
-		@Override
-		public VisitorAction visit(SimplePredicate simplePredicate){
-			this.fields.add(simplePredicate.getField());
-
-			return super.visit(simplePredicate);
-		}
-
-		public Set<FieldName> getFields(){
-			return this.fields;
-		}
-	}
-
-	static
-	private class FieldTypeAnalyzer extends AbstractVisitor {
-
-		private Map<FieldName, DataType> fieldDataTypes = new LinkedHashMap<FieldName, DataType>();
-
-
-		@Override
-		public VisitorAction visit(SimpleSetPredicate simpleSetPredicate){
-			FieldName field = simpleSetPredicate.getField();
-
-			addDataType(field, DataType.STRING);
-
-			return super.visit(simpleSetPredicate);
-		}
-
-		@Override
-		public VisitorAction visit(SimplePredicate simplePredicate){
-			FieldName field = simplePredicate.getField();
-			SimplePredicate.Operator operator = simplePredicate.getOperator();
-			String value = simplePredicate.getValue();
-
-			if((SimplePredicate.Operator.EQUAL).equals(operator) && (("true").equals(value) || ("false").equals(value))){
-				addDataType(field, DataType.BOOLEAN);
-			} else
-
-			if((SimplePredicate.Operator.LESS_OR_EQUAL).equals(operator) && ("0.5").equals(value)){
-				addDataType(field, DataType.BOOLEAN);
-			} else
-
-			if((SimplePredicate.Operator.GREATER_THAN).equals(operator) && ("0.5").equals(value)){
-				addDataType(field, DataType.BOOLEAN);
-			} else
-
-			{
-				addDataType(field, DataType.DOUBLE);
-			}
-
-			return super.visit(simplePredicate);
-		}
-
-		private void addDataType(FieldName field, DataType dataType){
-			DataType fieldDataType = this.fieldDataTypes.get(field);
-			if(fieldDataType == null){
-				this.fieldDataTypes.put(field, dataType);
-
-				return;
-			}
-
-			switch(fieldDataType){
-				case STRING:
-					return;
-				case DOUBLE:
-					switch(dataType){
-						case STRING:
-							this.fieldDataTypes.put(field, dataType);
-							return;
-						case DOUBLE:
-						case BOOLEAN:
-							return;
-						default:
-							throw new IllegalArgumentException();
-					}
-				case BOOLEAN:
-					switch(dataType){
-						case STRING:
-						case DOUBLE:
-							this.fieldDataTypes.put(field, dataType);
-							return;
-						case BOOLEAN:
-							return;
-						default:
-							throw new IllegalArgumentException();
-					}
-				default:
-					return;
-			}
-		}
-
-		public DataType getDataType(FieldName field){
-			return this.fieldDataTypes.get(field);
 		}
 	}
 }

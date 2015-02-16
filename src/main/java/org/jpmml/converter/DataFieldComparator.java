@@ -18,38 +18,12 @@
  */
 package org.jpmml.converter;
 
-import rexp.Rexp.REXP;
+import org.dmg.pmml.DataField;
 
-public class ConverterFactory {
+public class DataFieldComparator extends FieldComparator<DataField> {
 
-	protected ConverterFactory(){
-	}
-
-	public Converter getConverter(REXP rexp){
-
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
-		}
-
-		{
-			throw new IllegalArgumentException();
-		}
-	}
-
-	static
-	public ConverterFactory getInstance(){
-		return new ConverterFactory();
+	@Override
+	public int compare(DataField left, DataField right){
+		return super.compare(left, right);
 	}
 }

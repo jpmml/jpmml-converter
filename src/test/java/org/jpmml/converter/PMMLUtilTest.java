@@ -18,38 +18,25 @@
  */
 package org.jpmml.converter;
 
-import rexp.Rexp.REXP;
+import java.util.Arrays;
 
-public class ConverterFactory {
+import org.junit.Test;
 
-	protected ConverterFactory(){
+import static org.junit.Assert.assertEquals;
+
+public class PMMLUtilTest {
+
+	@Test
+	public void formatValue(){
+		assertEquals("1", PMMLUtil.formatValue(1d));
+		assertEquals("1", PMMLUtil.formatValue(1.0d));
 	}
 
-	public Converter getConverter(REXP rexp){
+	@Test
+	public void formatArrayValue(){
+		assertEquals("", PMMLUtil.formatArrayValue(Arrays.<String>asList()));
 
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
-		}
-
-		{
-			throw new IllegalArgumentException();
-		}
-	}
-
-	static
-	public ConverterFactory getInstance(){
-		return new ConverterFactory();
+		assertEquals("one two three", PMMLUtil.formatArrayValue(Arrays.asList("one", "two", "three")));
+		assertEquals("one \" two \" three", PMMLUtil.formatArrayValue(Arrays.asList("one", " two ", "three")));
 	}
 }

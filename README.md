@@ -14,8 +14,10 @@ Fast conversion of R models to PMML
 * Supported model types:
   * `stats` package:
     * `kmeans` - K-Means clustering
+  * [`gbm` package] (http://cran.r-project.org/web/packages/gbm/):
+    * `gbm` - Gradient Boosting Machine (GBM) regression
   * [`randomForest` package] (http://cran.r-project.org/web/packages/randomForest/):
-    * `randomForest.formula` ("formula interface") - Random Forest regression and classification
+    * `randomForest.formula` ("formula interface") - Random Forest (RF) regression and classification
     * `randomForest` ("matrix interface") - Random Forest regression and classification
   * [`caret` package] (http://cran.r-project.org/web/packages/caret/):
     * `train.formula` ("formula interface") - All supported model types

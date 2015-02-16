@@ -18,38 +18,21 @@
  */
 package org.jpmml.converter;
 
-import rexp.Rexp.REXP;
+import org.dmg.pmml.FieldUsageType;
+import org.dmg.pmml.MiningField;
 
-public class ConverterFactory {
+public class MiningFieldComparator extends FieldComparator<MiningField> {
 
-	protected ConverterFactory(){
-	}
+	@Override
+	public int compare(MiningField left, MiningField right){
+		FieldUsageType leftUsageType = left.getUsageType();
+		FieldUsageType rightUsageType = right.getUsageType();
 
-	public Converter getConverter(REXP rexp){
-
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
+		int usageTypeDiff = (leftUsageType).compareTo(rightUsageType);
+		if(usageTypeDiff != 0){
+			return usageTypeDiff;
 		}
 
-		{
-			throw new IllegalArgumentException();
-		}
-	}
-
-	static
-	public ConverterFactory getInstance(){
-		return new ConverterFactory();
+		return super.compare(left, right);
 	}
 }

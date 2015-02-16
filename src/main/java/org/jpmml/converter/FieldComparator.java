@@ -18,38 +18,37 @@
  */
 package org.jpmml.converter;
 
-import rexp.Rexp.REXP;
+import java.util.Comparator;
 
-public class ConverterFactory {
+import org.dmg.pmml.Field;
+import org.dmg.pmml.FieldName;
 
-	protected ConverterFactory(){
-	}
+abstract
+public class FieldComparator<F extends Field> implements Comparator<F> {
 
-	public Converter getConverter(REXP rexp){
+	private boolean caseSensitive = false;
 
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
+
+	@Override
+	public int compare(F left, F right){
+		FieldName leftName = left.getName();
+		FieldName rightName = right.getName();
+
+		boolean caseSensitive = isCaseSensitive();
+		if(caseSensitive){
+			return (leftName.getValue()).compareTo(rightName.getValue());
 		} else
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
-		}
 
 		{
-			throw new IllegalArgumentException();
+			return (leftName.getValue()).compareToIgnoreCase(rightName.getValue());
 		}
 	}
 
-	static
-	public ConverterFactory getInstance(){
-		return new ConverterFactory();
+	public boolean isCaseSensitive(){
+		return this.caseSensitive;
+	}
+
+	public void setCaseSensitive(boolean caseSensitive){
+		this.caseSensitive = caseSensitive;
 	}
 }
