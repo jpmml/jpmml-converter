@@ -24,7 +24,6 @@ import com.beust.jcommander.internal.Lists;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -56,14 +55,14 @@ public class GBMConverter extends Converter {
 
 	private List<DataField> dataFields = Lists.newArrayList();
 
-	private LoadingCache<ElementKey, SimpleSetPredicate> predicateCache = CacheBuilder.newBuilder()
-		.build(new CacheLoader<ElementKey, SimpleSetPredicate>(){
+	private LoadingCache<ElementKey, Predicate> predicateCache = CacheBuilder.newBuilder()
+		.build(new CacheLoader<ElementKey, Predicate>(){
 
 			@Override
-			public SimpleSetPredicate load(ElementKey key){
+			public Predicate load(ElementKey key){
 				Object[] content = key.getContent();
 
-				return encodeSimpleSetPredicate((DataField)content[0], (List<Integer>)content[1], (Boolean)content[2]);
+				return encodeCategoricalSplit((DataField)content[0], (List<Integer>)content[1], (Boolean)content[2]);
 			}
 		});
 
@@ -206,7 +205,7 @@ public class GBMConverter extends Converter {
 		if(var != -1){
 			DataField dataField = this.dataFields.get(var + 1);
 
-			missingPredicate = encodeIsMissingPredicate(dataField);
+			missingPredicate = encodeIsMissingSplit(dataField);
 
 			Double split = splitCodePred.getRealValue(i);
 
@@ -223,8 +222,8 @@ public class GBMConverter extends Converter {
 					rightPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, splitValues, Boolean.FALSE));
 					break;
 				case CONTINUOUS:
-					leftPredicate = encodeSimplePredicate(dataField, split, true);
-					rightPredicate = encodeSimplePredicate(dataField, split, false);
+					leftPredicate = encodeContinuousSplit(dataField, split, true);
+					rightPredicate = encodeContinuousSplit(dataField, split, false);
 					break;
 				default:
 					throw new IllegalArgumentException();
@@ -271,7 +270,7 @@ public class GBMConverter extends Converter {
 		}
 	}
 
-	private SimplePredicate encodeIsMissingPredicate(DataField dataField){
+	private Predicate encodeIsMissingSplit(DataField dataField){
 		SimplePredicate simplePredicate = new SimplePredicate()
 			.withField(dataField.getName())
 			.withOperator(SimplePredicate.Operator.IS_MISSING);
@@ -279,22 +278,29 @@ public class GBMConverter extends Converter {
 		return simplePredicate;
 	}
 
-	private SimpleSetPredicate encodeSimpleSetPredicate(DataField dataField, List<Integer> splitValues, boolean left){
+	private Predicate encodeCategoricalSplit(DataField dataField, List<Integer> splitValues, boolean left){
+		List<Value> values = selectValues(dataField.getValues(), splitValues, left);
+
+		if(values.size() == 1){
+			Value value = values.get(0);
+
+			SimplePredicate simplePredicate = new SimplePredicate()
+				.withField(dataField.getName())
+				.withOperator(SimplePredicate.Operator.EQUAL)
+				.withValue(value.getValue());
+
+			return simplePredicate;
+		}
+
 		SimpleSetPredicate simpleSetPredicate = new SimpleSetPredicate()
 			.withField(dataField.getName())
 			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.withArray(encodeArray(dataField, splitValues, left));
+			.withArray(PMMLUtil.createArray(dataField.getDataType(), values));
 
 		return simpleSetPredicate;
 	}
 
-	private Array encodeArray(DataField dataField, List<Integer> splitValues, boolean left){
-		List<Value> values = selectValues(dataField.getValues(), splitValues, left);
-
-		return PMMLUtil.createArray(dataField.getDataType(), values);
-	}
-
-	private SimplePredicate encodeSimplePredicate(DataField dataField, Double split, boolean left){
+	private Predicate encodeContinuousSplit(DataField dataField, Double split, boolean left){
 		SimplePredicate simplePredicate = new SimplePredicate()
 			.withField(dataField.getName())
 			.withOperator(left ? SimplePredicate.Operator.LESS_THAN : SimplePredicate.Operator.GREATER_OR_EQUAL)

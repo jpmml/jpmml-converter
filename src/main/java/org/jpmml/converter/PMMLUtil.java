@@ -243,4 +243,26 @@ public class PMMLUtil {
 
 		return dataType;
 	}
+
+	static
+	public DataType getDataType(String string){
+
+		try {
+			Integer.parseInt(string);
+
+			return DataType.INTEGER;
+		} catch(NumberFormatException nfe){
+			// Ignored
+		}
+
+		try {
+			Double.parseDouble(string);
+
+			return DataType.DOUBLE;
+		} catch(NumberFormatException nfe){
+			// Ignored
+		}
+
+		return DataType.STRING;
+	}
 }

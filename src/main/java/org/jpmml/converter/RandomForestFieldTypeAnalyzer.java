@@ -66,6 +66,10 @@ public class RandomForestFieldTypeAnalyzer extends FieldTypeAnalyzer {
 			addDataType(field, DataType.BOOLEAN);
 		} else
 
+		if((SimplePredicate.Operator.EQUAL).equals(operator)){
+			addDataType(field, PMMLUtil.getDataType(value));
+		} else
+
 		{
 			addDataType(field, DataType.DOUBLE);
 		}

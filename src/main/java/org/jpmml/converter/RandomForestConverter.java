@@ -25,7 +25,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
-import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -54,14 +53,14 @@ public class RandomForestConverter extends Converter {
 
 	private List<DataField> dataFields = Lists.newArrayList();
 
-	private LoadingCache<ElementKey, SimpleSetPredicate> predicateCache = CacheBuilder.newBuilder()
-		.build(new CacheLoader<ElementKey, SimpleSetPredicate>(){
+	private LoadingCache<ElementKey, Predicate> predicateCache = CacheBuilder.newBuilder()
+		.build(new CacheLoader<ElementKey, Predicate>(){
 
 			@Override
-			public SimpleSetPredicate load(ElementKey key){
+			public Predicate load(ElementKey key){
 				Object[] content = key.getContent();
 
-				return encodeSimpleSetPredicate((DataField)content[0], REXPUtil.asInteger((Number)content[1]), (Boolean)content[2]);
+				return encodeCategoricalSplit((DataField)content[0], REXPUtil.asInteger((Number)content[1]), (Boolean)content[2]);
 			}
 		});
 
@@ -420,8 +419,8 @@ public class RandomForestConverter extends Converter {
 					rightPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, split, Boolean.FALSE));
 					break;
 				case CONTINUOUS:
-					leftPredicate = encodeSimplePredicate(dataField, split, true);
-					rightPredicate = encodeSimplePredicate(dataField, split, false);
+					leftPredicate = encodeContinuousSplit(dataField, split, true);
+					rightPredicate = encodeContinuousSplit(dataField, split, false);
 					break;
 				default:
 					throw new IllegalArgumentException();
@@ -457,22 +456,29 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private SimpleSetPredicate encodeSimpleSetPredicate(DataField dataField, Integer split, boolean left){
+	private Predicate encodeCategoricalSplit(DataField dataField, Integer split, boolean left){
+		List<Value> values = selectValues(dataField.getValues(), split, left);
+
+		if(values.size() == 1){
+			Value value = values.get(0);
+
+			SimplePredicate simplePredicate = new SimplePredicate()
+				.withField(dataField.getName())
+				.withOperator(SimplePredicate.Operator.EQUAL)
+				.withValue(value.getValue());
+
+			return simplePredicate;
+		}
+
 		SimpleSetPredicate simpleSetPredicate = new SimpleSetPredicate()
 			.withField(dataField.getName())
 			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.withArray(encodeArray(dataField, split, left));
+			.withArray(PMMLUtil.createArray(dataField.getDataType(), values));
 
 		return simpleSetPredicate;
 	}
 
-	private Array encodeArray(DataField dataField, Integer split, boolean left){
-		List<Value> values = selectValues(dataField.getValues(), split, left);
-
-		return PMMLUtil.createArray(dataField.getDataType(), values);
-	}
-
-	private SimplePredicate encodeSimplePredicate(DataField dataField, Double split, boolean left){
+	private Predicate encodeContinuousSplit(DataField dataField, Double split, boolean left){
 		SimplePredicate simplePredicate;
 
 		DataType dataType = dataField.getDataType();
