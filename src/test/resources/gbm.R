@@ -33,11 +33,14 @@ set.seed(42)
 generateGBMFormulaAutoNA()
 generateGBMFitAutoNA()
 
+auto.caret = auto
+auto.caret$origin = as.integer(auto.caret$origin)
+
 generateCaretGBMFormulaAutoNA = function(){
-	auto.formula = train(mpg ~ ., data = auto, method = "gbm")
+	auto.formula = train(mpg ~ ., data = auto.caret, method = "gbm")
 	print(auto.formula)
 
-	mpg = predict(auto.formula, newdata = auto, na.action = na.pass)
+	mpg = predict(auto.formula, newdata = auto.caret, na.action = na.pass)
 
 	storeProtoBuf(auto.formula, "pb/CaretGBMFormulaAutoNA.pb")
 	storeCsv(data.frame("y" = mpg), "csv/CaretGBMFormulaAutoNA.csv")

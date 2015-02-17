@@ -9,7 +9,7 @@ Fast conversion of R models to PMML
 
 # Features #
 
-* Fast, like **really fast**
+* Fast and memory-efficient:
   * Can produce a 5 GB Random Forest PMML file in less than 1 minute on a desktop PC
 * Supported model types:
   * `stats` package:

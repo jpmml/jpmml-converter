@@ -38,6 +38,7 @@ import org.dmg.pmml.MiningModel;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.MultipleModelMethodType;
 import org.dmg.pmml.Node;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Segment;
@@ -351,6 +352,8 @@ public class RandomForestConverter extends Converter {
 
 				values.add(new Value(xvalue.getStrval()));
 			}
+
+			dataField = PMMLUtil.refineDataField(dataField);
 		}
 	}
 
@@ -366,6 +369,8 @@ public class RandomForestConverter extends Converter {
 
 			values.add(new Value(level.getStrval()));
 		}
+
+		dataField = PMMLUtil.refineDataField(dataField);
 	}
 
 	private <P extends Number> TreeModel encodeTreeModel(MiningFunctionType miningFunction, List<Integer> leftDaughter, List<Integer> rightDaughter, ScoreEncoder<P> scoreEncoder, List<P> nodepred, List<Integer> bestvar, List<Double> xbestsplit){
@@ -399,14 +404,23 @@ public class RandomForestConverter extends Converter {
 
 			Double split = xbestsplit.get(i);
 
+			OpType opType = dataField.getOpType();
+
 			DataType dataType = dataField.getDataType();
 			switch(dataType){
-				case STRING:
+				case BOOLEAN:
+					opType = OpType.CONTINUOUS;
+					break;
+				default:
+					break;
+			}
+
+			switch(opType){
+				case CATEGORICAL:
 					leftPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, split, Boolean.TRUE));
 					rightPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, split, Boolean.FALSE));
 					break;
-				case DOUBLE:
-				case BOOLEAN:
+				case CONTINUOUS:
 					leftPredicate = encodeSimplePredicate(dataField, split, true);
 					rightPredicate = encodeSimplePredicate(dataField, split, false);
 					break;
@@ -454,11 +468,9 @@ public class RandomForestConverter extends Converter {
 	}
 
 	private Array encodeArray(DataField dataField, Integer split, boolean left){
-		String value = formatArrayValue(dataField.getValues(), split, left);
+		List<Value> values = selectValues(dataField.getValues(), split, left);
 
-		Array array = new Array(Array.Type.STRING, value);
-
-		return array;
+		return PMMLUtil.createArray(dataField.getDataType(), values);
 	}
 
 	private SimplePredicate encodeSimplePredicate(DataField dataField, Double split, boolean left){
@@ -496,8 +508,8 @@ public class RandomForestConverter extends Converter {
 	}
 
 	static
-	private String formatArrayValue(List<Value> values, Integer split, boolean left){
-		List<String> elements = new ArrayList<String>();
+	private List<Value> selectValues(List<Value> values, Integer split, boolean left){
+		List<Value> result = new ArrayList<Value>();
 
 		String string = performBinaryExpansion(split);
 
@@ -517,13 +529,11 @@ public class RandomForestConverter extends Converter {
 			} // End if
 
 			if(append){
-				String element = value.getValue();
-
-				elements.add(element);
+				result.add(value);
 			}
 		}
 
-		return PMMLUtil.formatArrayValue(elements);
+		return result;
 	}
 
 	static

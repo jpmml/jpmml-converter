@@ -23,6 +23,7 @@ loadAuditCsv = function(file){
 
 loadAutoCsv = function(file){
 	auto = loadCsv(file)
+	auto$origin = as.factor(auto$origin)
 
 	return (auto)
 }

@@ -88,11 +88,14 @@ set.seed(42)
 generateRandomForestFormulaAuto()
 generateRandomForestAuto()
 
+auto.caret = auto
+auto.caret$origin = as.integer(auto.caret$origin)
+
 generateCaretRandomForestFormulaAuto = function(){
-	auto.formula = train(mpg ~ ., data = auto, method = "rf", ntree = 7)
+	auto.formula = train(mpg ~ ., data = auto.caret, method = "rf", ntree = 7)
 	print(auto.formula)
 
-	mpg = predict(auto.formula, newdata = auto)
+	mpg = predict(auto.formula, newdata = auto.caret)
 
 	storeProtoBuf(auto.formula, "pb/CaretRandomForestFormulaAuto.pb")
 	storeCsv(data.frame("_target" = mpg), "csv/CaretRandomForestFormulaAuto.csv")

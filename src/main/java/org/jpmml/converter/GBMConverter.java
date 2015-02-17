@@ -37,6 +37,7 @@ import org.dmg.pmml.MiningModel;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.MultipleModelMethodType;
 import org.dmg.pmml.Node;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Segment;
@@ -151,7 +152,7 @@ public class GBMConverter extends Converter {
 			DataField dataField = PMMLUtil.createDataField(var_name.getStrval(), categorical);
 
 			if(categorical){
-				List<Value> values = new ArrayList<Value>();
+				List<Value> values = dataField.getValues();
 
 				Rexp.REXP var_level = var_levels.getRexpValue(i);
 
@@ -161,7 +162,7 @@ public class GBMConverter extends Converter {
 					values.add(new Value(level.getStrval()));
 				}
 
-				dataField = dataField.withValues(values);
+				dataField = PMMLUtil.refineDataField(dataField);
 			}
 
 			this.dataFields.add(dataField);
@@ -210,9 +211,9 @@ public class GBMConverter extends Converter {
 
 			Double split = splitCodePred.getRealValue(i);
 
-			DataType dataType = dataField.getDataType();
-			switch(dataType){
-				case STRING:
+			OpType opType = dataField.getOpType();
+			switch(opType){
+				case CATEGORICAL:
 					Integer index = REXPUtil.asInteger(split);
 
 					Rexp.REXP c_split = c_splits.getRexpValue(index);
@@ -222,7 +223,7 @@ public class GBMConverter extends Converter {
 					leftPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, splitValues, Boolean.TRUE));
 					rightPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, splitValues, Boolean.FALSE));
 					break;
-				case DOUBLE:
+				case CONTINUOUS:
 					leftPredicate = encodeSimplePredicate(dataField, split, true);
 					rightPredicate = encodeSimplePredicate(dataField, split, false);
 					break;
@@ -289,11 +290,9 @@ public class GBMConverter extends Converter {
 	}
 
 	private Array encodeArray(DataField dataField, List<Integer> splitValues, boolean left){
-		String value = formatArrayValue(dataField.getValues(), splitValues, left);
+		List<Value> values = selectValues(dataField.getValues(), splitValues, left);
 
-		Array array = new Array(Array.Type.STRING, value);
-
-		return array;
+		return PMMLUtil.createArray(dataField.getDataType(), values);
 	}
 
 	private SimplePredicate encodeSimplePredicate(DataField dataField, Double split, boolean left){
@@ -306,13 +305,13 @@ public class GBMConverter extends Converter {
 	}
 
 	static
-	private String formatArrayValue(List<Value> values, List<Integer> splitValues, boolean left){
+	private List<Value> selectValues(List<Value> values, List<Integer> splitValues, boolean left){
 
 		if(values.size() != splitValues.size()){
 			throw new IllegalArgumentException();
 		}
 
-		List<String> elements = new ArrayList<String>();
+		List<Value> result = new ArrayList<Value>();
 
 		for(int i = 0; i < values.size(); i++){
 			Value value = values.get(i);
@@ -328,12 +327,10 @@ public class GBMConverter extends Converter {
 			} // End if
 
 			if(append){
-				String element = value.getValue();
-
-				elements.add(element);
+				result.add(value);
 			}
 		}
 
-		return PMMLUtil.formatArrayValue(elements);
+		return result;
 	}
 }

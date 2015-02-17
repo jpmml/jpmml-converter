@@ -18,8 +18,11 @@
  */
 package org.jpmml.converter;
 
-import java.util.Arrays;
+import java.util.List;
 
+import com.beust.jcommander.internal.Lists;
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.Value;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -34,9 +37,27 @@ public class PMMLUtilTest {
 
 	@Test
 	public void formatArrayValue(){
-		assertEquals("", PMMLUtil.formatArrayValue(Arrays.<String>asList()));
+		assertEquals("", PMMLUtil.formatArrayValue(createValues()));
 
-		assertEquals("one two three", PMMLUtil.formatArrayValue(Arrays.asList("one", "two", "three")));
-		assertEquals("one \" two \" three", PMMLUtil.formatArrayValue(Arrays.asList("one", " two ", "three")));
+		assertEquals("one two three", PMMLUtil.formatArrayValue(createValues("one", "two", "three")));
+		assertEquals("one \" two \" three", PMMLUtil.formatArrayValue(createValues("one", " two ", "three")));
+	}
+
+	@Test
+	public void getDataType(){
+		assertEquals(DataType.INTEGER, PMMLUtil.getDataType(createValues("1", "2", "3")));
+		assertEquals(DataType.DOUBLE, PMMLUtil.getDataType(createValues("1", "2.0", "3")));
+		assertEquals(DataType.STRING, PMMLUtil.getDataType(createValues("1", "two", "3")));
+	}
+
+	static
+	private List<Value> createValues(String... strings){
+		List<Value> result = Lists.newArrayList();
+
+		for(String string : strings){
+			result.add(new Value(string));
+		}
+
+		return result;
 	}
 }

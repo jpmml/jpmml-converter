@@ -26,12 +26,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
+import org.dmg.pmml.Array;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.Value;
 
 public class PMMLUtil {
 
@@ -71,11 +73,21 @@ public class PMMLUtil {
 		DataField dataField = new DataField()
 			.withName(FieldName.create(name));
 
+		dataField = refineDataField(dataField, dataType);
+
+		return dataField;
+	}
+
+	static
+	public DataField refineDataField(DataField dataField){
+		DataType dataType = getDataType(dataField.getValues());
+
 		return refineDataField(dataField, dataType);
 	}
 
 	static
 	public DataField refineDataField(DataField dataField, DataType dataType){
+		List<Value> values = dataField.getValues();
 
 		switch(dataType){
 			case STRING:
@@ -83,7 +95,10 @@ public class PMMLUtil {
 					.withOpType(OpType.CATEGORICAL);
 			case DOUBLE:
 				return dataField.withDataType(DataType.DOUBLE)
-					.withOpType(OpType.CONTINUOUS);
+					.withOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
+			case INTEGER:
+				return dataField.withDataType(DataType.INTEGER)
+					.withOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
 			case BOOLEAN:
 				return dataField.withDataType(DataType.BOOLEAN)
 					.withOpType(OpType.CATEGORICAL);
@@ -136,6 +151,23 @@ public class PMMLUtil {
 	}
 
 	static
+	public Array createArray(DataType dataType, List<Value> values){
+		String value = formatArrayValue(values);
+
+		switch(dataType){
+			case STRING:
+				return new Array(Array.Type.STRING, value);
+			case DOUBLE:
+			case FLOAT:
+				return new Array(Array.Type.REAL, value);
+			case INTEGER:
+				return new Array(Array.Type.INT, value);
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	static
 	public String formatValue(Number number){
 		double value = number.doubleValue();
 
@@ -147,12 +179,14 @@ public class PMMLUtil {
 	}
 
 	static
-	public String formatArrayValue(List<String> strings){
+	public String formatArrayValue(List<Value> values){
 		StringBuilder sb = new StringBuilder();
 
 		String sep = "";
 
-		for(String string : strings){
+		for(Value value : values){
+			String string = value.getValue();
+
 			sb.append(sep);
 
 			sep = " ";
@@ -167,5 +201,46 @@ public class PMMLUtil {
 		}
 
 		return sb.toString();
+	}
+
+	static
+	public DataType getDataType(List<Value> values){
+
+		if(values.isEmpty()){
+			throw new IllegalArgumentException();
+		}
+
+		DataType dataType = DataType.INTEGER;
+
+		for(Value value : values){
+			String string = value.getValue();
+
+			switch(dataType){
+				case INTEGER:
+					try {
+						Integer.parseInt(string);
+
+						continue;
+					} catch(NumberFormatException nfe){
+						dataType = DataType.DOUBLE;
+					}
+					// Falls through
+				case DOUBLE:
+					try {
+						Double.parseDouble(string);
+
+						continue;
+					} catch(NumberFormatException nfe){
+						dataType = DataType.STRING;
+					}
+					// Falls through
+				case STRING:
+					return dataType;
+				default:
+					throw new IllegalArgumentException();
+			}
+		}
+
+		return dataType;
 	}
 }
