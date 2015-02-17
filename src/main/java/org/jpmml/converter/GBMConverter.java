@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.internal.Lists;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -52,6 +55,17 @@ import rexp.Rexp.STRING;
 public class GBMConverter extends Converter {
 
 	private List<DataField> dataFields = new ArrayList<DataField>();
+
+	private LoadingCache<ElementKey, SimpleSetPredicate> predicateCache = CacheBuilder.newBuilder()
+		.build(new CacheLoader<ElementKey, SimpleSetPredicate>(){
+
+			@Override
+			public SimpleSetPredicate load(ElementKey key){
+				Object[] content = key.getContent();
+
+				return encodeSimpleSetPredicate((DataField)content[0], (List<Integer>)content[1], (Boolean)content[2]);
+			}
+		});
 
 
 	@Override
@@ -184,6 +198,7 @@ public class GBMConverter extends Converter {
 		Rexp.REXP prediction = tree.getRexpValue(7);
 
 		Predicate missingPredicate = null;
+
 		Predicate leftPredicate = null;
 		Predicate rightPredicate = null;
 
@@ -200,10 +215,12 @@ public class GBMConverter extends Converter {
 				case STRING:
 					Integer index = REXPUtil.asInteger(split);
 
-					Rexp.REXP splitValues = c_splits.getRexpValue(index);
+					Rexp.REXP c_split = c_splits.getRexpValue(index);
 
-					leftPredicate = encodeSimpleSetPredicate(dataField, splitValues, true);
-					rightPredicate = encodeSimpleSetPredicate(dataField, splitValues, false);
+					List<Integer> splitValues = c_split.getIntValueList();
+
+					leftPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, splitValues, Boolean.TRUE));
+					rightPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, splitValues, Boolean.FALSE));
 					break;
 				case DOUBLE:
 					leftPredicate = encodeSimplePredicate(dataField, split, true);
@@ -262,7 +279,7 @@ public class GBMConverter extends Converter {
 		return simplePredicate;
 	}
 
-	private SimpleSetPredicate encodeSimpleSetPredicate(DataField dataField, Rexp.REXP splitValues, boolean left){
+	private SimpleSetPredicate encodeSimpleSetPredicate(DataField dataField, List<Integer> splitValues, boolean left){
 		SimpleSetPredicate simpleSetPredicate = new SimpleSetPredicate()
 			.withField(dataField.getName())
 			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
@@ -271,8 +288,8 @@ public class GBMConverter extends Converter {
 		return simpleSetPredicate;
 	}
 
-	private Array encodeArray(DataField dataField, Rexp.REXP splitValues, boolean left){
-		String value = formatArrayValue(dataField.getValues(), splitValues.getIntValueList(), left);
+	private Array encodeArray(DataField dataField, List<Integer> splitValues, boolean left){
+		String value = formatArrayValue(dataField.getValues(), splitValues, left);
 
 		Array array = new Array(Array.Type.STRING, value);
 

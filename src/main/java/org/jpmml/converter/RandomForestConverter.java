@@ -54,39 +54,14 @@ public class RandomForestConverter extends Converter {
 
 	private List<DataField> dataFields = new ArrayList<DataField>();
 
-	private LoadingCache<PredicateKey, SimpleSetPredicate> leftSimpleSetPredicates = CacheBuilder.newBuilder()
-		.build(new CacheLoader<PredicateKey, SimpleSetPredicate>(){
+	private LoadingCache<ElementKey, SimpleSetPredicate> predicateCache = CacheBuilder.newBuilder()
+		.build(new CacheLoader<ElementKey, SimpleSetPredicate>(){
 
 			@Override
-			public SimpleSetPredicate load(PredicateKey key){
-				return encodeSimpleSetPredicate(key.getDataField(), REXPUtil.asInteger(key.getSplit()), true);
-			}
-		});
+			public SimpleSetPredicate load(ElementKey key){
+				Object[] content = key.getContent();
 
-	private LoadingCache<PredicateKey, SimpleSetPredicate> rightSimpleSetPredicates = CacheBuilder.newBuilder()
-		.build(new CacheLoader<PredicateKey, SimpleSetPredicate>(){
-
-			@Override
-			public SimpleSetPredicate load(PredicateKey key){
-				return encodeSimpleSetPredicate(key.getDataField(), REXPUtil.asInteger(key.getSplit()), false);
-			}
-		});
-
-	private LoadingCache<PredicateKey, SimplePredicate> leftSimplePredicates = CacheBuilder.newBuilder()
-		.build(new CacheLoader<PredicateKey, SimplePredicate>(){
-
-			@Override
-			public SimplePredicate load(PredicateKey key){
-				return encodeSimplePredicate(key.getDataField(), REXPUtil.asDouble(key.getSplit()), true);
-			}
-		});
-
-	private LoadingCache<PredicateKey, SimplePredicate> rightSimplePredicates = CacheBuilder.newBuilder()
-		.build(new CacheLoader<PredicateKey, SimplePredicate>(){
-
-			@Override
-			public SimplePredicate load(PredicateKey key){
-				return encodeSimplePredicate(key.getDataField(), REXPUtil.asDouble(key.getSplit()), false);
+				return encodeSimpleSetPredicate((DataField)content[0], REXPUtil.asInteger((Number)content[1]), (Boolean)content[2]);
 			}
 		});
 
@@ -424,18 +399,16 @@ public class RandomForestConverter extends Converter {
 
 			Double split = xbestsplit.get(i);
 
-			PredicateKey key = new PredicateKey(dataField, split);
-
 			DataType dataType = dataField.getDataType();
 			switch(dataType){
 				case STRING:
-					leftPredicate = this.leftSimpleSetPredicates.getUnchecked(key);
-					rightPredicate = this.rightSimpleSetPredicates.getUnchecked(key);
+					leftPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, split, Boolean.TRUE));
+					rightPredicate = this.predicateCache.getUnchecked(new ElementKey(dataField, split, Boolean.FALSE));
 					break;
 				case DOUBLE:
 				case BOOLEAN:
-					leftPredicate = this.leftSimplePredicates.getUnchecked(key);
-					rightPredicate = this.rightSimplePredicates.getUnchecked(key);
+					leftPredicate = encodeSimplePredicate(dataField, split, true);
+					rightPredicate = encodeSimplePredicate(dataField, split, false);
 					break;
 				default:
 					throw new IllegalArgumentException();
@@ -471,24 +444,24 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private SimpleSetPredicate encodeSimpleSetPredicate(DataField dataField, Integer split, boolean leftDaughter){
+	private SimpleSetPredicate encodeSimpleSetPredicate(DataField dataField, Integer split, boolean left){
 		SimpleSetPredicate simpleSetPredicate = new SimpleSetPredicate()
 			.withField(dataField.getName())
 			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.withArray(encodeArray(dataField, split, leftDaughter));
+			.withArray(encodeArray(dataField, split, left));
 
 		return simpleSetPredicate;
 	}
 
-	private Array encodeArray(DataField dataField, Integer split, boolean leftDaughter){
-		String value = formatArrayValue(dataField.getValues(), split, leftDaughter);
+	private Array encodeArray(DataField dataField, Integer split, boolean left){
+		String value = formatArrayValue(dataField.getValues(), split, left);
 
 		Array array = new Array(Array.Type.STRING, value);
 
 		return array;
 	}
 
-	private SimplePredicate encodeSimplePredicate(DataField dataField, Double split, boolean leftDaughter){
+	private SimplePredicate encodeSimplePredicate(DataField dataField, Double split, boolean left){
 		SimplePredicate simplePredicate;
 
 		DataType dataType = dataField.getDataType();
@@ -496,7 +469,7 @@ public class RandomForestConverter extends Converter {
 		if((DataType.DOUBLE).equals(dataType)){
 			simplePredicate = new SimplePredicate()
 				.withField(dataField.getName())
-				.withOperator(leftDaughter ? SimplePredicate.Operator.LESS_OR_EQUAL : SimplePredicate.Operator.GREATER_THAN)
+				.withOperator(left ? SimplePredicate.Operator.LESS_OR_EQUAL : SimplePredicate.Operator.GREATER_THAN)
 				.withValue(PMMLUtil.formatValue(split));
 		} else
 
@@ -504,7 +477,7 @@ public class RandomForestConverter extends Converter {
 			simplePredicate = new SimplePredicate()
 				.withField(dataField.getName())
 				.withOperator(SimplePredicate.Operator.EQUAL)
-				.withValue(split.doubleValue() <= 0.5d ? Boolean.toString(!leftDaughter) : Boolean.toString(leftDaughter));
+				.withValue(split.doubleValue() <= 0.5d ? Boolean.toString(!left) : Boolean.toString(left));
 		} else
 
 		{
@@ -523,7 +496,7 @@ public class RandomForestConverter extends Converter {
 	}
 
 	static
-	private String formatArrayValue(List<Value> values, Integer split, boolean leftDaughter){
+	private String formatArrayValue(List<Value> values, Integer split, boolean left){
 		List<String> elements = new ArrayList<String>();
 
 		String string = performBinaryExpansion(split);
@@ -534,7 +507,7 @@ public class RandomForestConverter extends Converter {
 			boolean append;
 
 			// Send "true" categories to the left
-			if(leftDaughter){
+			if(left){
 				append = ((i < string.length()) && (string.charAt(i) == '1'));
 			} else
 
@@ -596,52 +569,5 @@ public class RandomForestConverter extends Converter {
 	private interface ScoreEncoder<K extends Number> {
 
 		String encode(K key);
-	}
-
-	static
-	private class PredicateKey {
-
-		private DataField dataField = null;
-
-		private Number split = null;
-
-
-		private PredicateKey(DataField dataField, Number split){
-			setDataField(dataField);
-			setSplit(split);
-		}
-
-		@Override
-		public int hashCode(){
-			return getDataField().hashCode() ^ getSplit().hashCode();
-		}
-
-		@Override
-		public boolean equals(Object object){
-
-			if(object instanceof PredicateKey){
-				PredicateKey that = (PredicateKey)object;
-
-				return (this.getDataField()).equals(that.getDataField()) && (this.getSplit()).equals(that.getSplit());
-			}
-
-			return false;
-		}
-
-		public DataField getDataField(){
-			return this.dataField;
-		}
-
-		private void setDataField(DataField dataField){
-			this.dataField = dataField;
-		}
-
-		public Number getSplit(){
-			return this.split;
-		}
-
-		private void setSplit(Number split){
-			this.split = split;
-		}
 	}
 }
