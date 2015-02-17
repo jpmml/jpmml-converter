@@ -3,8 +3,7 @@ library("randomForest")
 
 source("util.R")
 
-audit = loadCsv("csv/Audit.csv")
-audit$Adjusted = as.factor(audit$Adjusted)
+audit = loadAuditCsv("csv/Audit.csv")
 
 audit_x = audit[, -ncol(audit)]
 audit_y = audit[, ncol(audit)]
@@ -59,7 +58,7 @@ set.seed(42)
 generateCaretRandomForestFormulaAuditMatrix()
 generateCaretRandomForestAudit()
 
-auto = loadCsv("csv/Auto.csv")
+auto = loadAutoCsv("csv/Auto.csv")
 
 auto_x = auto[, -ncol(auto)]
 auto_y = auto[, ncol(auto)]
@@ -114,7 +113,7 @@ set.seed(42)
 generateCaretRandomForestFormulaAuto()
 generateCaretRandomForestAuto()
 
-wine_quality = loadCsv("csv/WineQuality.csv")
+wine_quality = loadWineQualityCsv("csv/WineQuality.csv")
 
 wine_quality_x = wine_quality[, -ncol(wine_quality)]
 wine_quality_y = wine_quality[, ncol(wine_quality)]
@@ -144,8 +143,7 @@ set.seed(42)
 generateRandomForestFormulaWineQuality()
 generateRandomForestWineQuality()
 
-wine_color = loadCsv("csv/WineColor.csv")
-wine_color$color = as.factor(wine_color$color)
+wine_color = loadWineColorCsv("csv/WineColor.csv")
 
 wine_color_x = wine_color[, -ncol(wine_color)]
 wine_color_y = wine_color[, ncol(wine_color)]

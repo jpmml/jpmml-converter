@@ -13,3 +13,29 @@ loadCsv = function(file){
 storeCsv = function(data, file){
 	write.table(data, file = file, sep = ",", quote = FALSE, row.names = FALSE, col.names = gsub("X_target", "_target", names(data)))
 }
+
+loadAuditCsv = function(file){
+	audit = loadCsv(file)
+	audit$Adjusted = as.factor(audit$Adjusted)
+
+	return (audit)
+}
+
+loadAutoCsv = function(file){
+	auto = loadCsv(file)
+
+	return (auto)
+}
+
+loadWineColorCsv = function(file){
+	wine_color = loadCsv(file)
+	wine_color$color = as.factor(wine_color$color)
+
+	return (wine_color)
+}
+
+loadWineQualityCsv = function(file){
+	wine_quality = loadCsv(file)
+
+	return (wine_quality)
+}

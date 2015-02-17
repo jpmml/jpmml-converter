@@ -3,7 +3,7 @@ library("gbm")
 
 source("util.R")
 
-auto = loadCsv("csv/AutoNA.csv")
+auto = loadAutoCsv("csv/AutoNA.csv")
 
 auto_x = auto[, -ncol(auto)]
 auto_y = auto[, ncol(auto)]
