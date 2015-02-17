@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -53,7 +52,7 @@ import rexp.Rexp.STRING;
 
 public class RandomForestConverter extends Converter {
 
-	private List<DataField> dataFields = new ArrayList<DataField>();
+	private List<DataField> dataFields = Lists.newArrayList();
 
 	private LoadingCache<ElementKey, SimpleSetPredicate> predicateCache = CacheBuilder.newBuilder()
 		.build(new CacheLoader<ElementKey, SimpleSetPredicate>(){
@@ -154,7 +153,7 @@ public class RandomForestConverter extends Converter {
 		int rows = nrnodes.getIntValue(0);
 		int columns = (int)ntree.getRealValue(0);
 
-		List<TreeModel> treeModels = new ArrayList<TreeModel>();
+		List<TreeModel> treeModels = Lists.newArrayList();
 
 		for(int i = 0; i < columns; i++){
 			TreeModel treeModel = encodeTreeModel(
@@ -203,7 +202,7 @@ public class RandomForestConverter extends Converter {
 		int rows = nrnodes.getIntValue(0);
 		int columns = (int)ntree.getRealValue(0);
 
-		List<TreeModel> treeModels = new ArrayList<TreeModel>();
+		List<TreeModel> treeModels = Lists.newArrayList();
 
 		for(int i = 0; i < columns; i++){
 			List<Integer> daughters = REXPUtil.getColumn(treemapIndices, i, 2 * rows, columns);
@@ -509,7 +508,7 @@ public class RandomForestConverter extends Converter {
 
 	static
 	private List<Value> selectValues(List<Value> values, Integer split, boolean left){
-		List<Value> result = new ArrayList<Value>();
+		List<Value> result = Lists.newArrayList();
 
 		String string = performBinaryExpansion(split);
 

@@ -18,9 +18,9 @@
  */
 package org.jpmml.converter;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import com.beust.jcommander.internal.Maps;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.jpmml.model.visitors.AbstractVisitor;
@@ -28,7 +28,7 @@ import org.jpmml.model.visitors.AbstractVisitor;
 abstract
 public class FieldTypeAnalyzer extends AbstractVisitor {
 
-	private Map<FieldName, DataType> fieldDataTypes = new HashMap<FieldName, DataType>();
+	private Map<FieldName, DataType> fieldDataTypes = Maps.newHashMap();
 
 
 	public void addDataType(FieldName field, DataType dataType){

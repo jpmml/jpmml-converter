@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.internal.Lists;
@@ -55,7 +54,7 @@ import rexp.Rexp.STRING;
 
 public class GBMConverter extends Converter {
 
-	private List<DataField> dataFields = new ArrayList<DataField>();
+	private List<DataField> dataFields = Lists.newArrayList();
 
 	private LoadingCache<ElementKey, SimpleSetPredicate> predicateCache = CacheBuilder.newBuilder()
 		.build(new CacheLoader<ElementKey, SimpleSetPredicate>(){
@@ -311,7 +310,7 @@ public class GBMConverter extends Converter {
 			throw new IllegalArgumentException();
 		}
 
-		List<Value> result = new ArrayList<Value>();
+		List<Value> result = Lists.newArrayList();
 
 		for(int i = 0; i < values.size(); i++){
 			Value value = values.get(i);

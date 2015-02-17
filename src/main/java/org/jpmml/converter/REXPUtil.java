@@ -18,9 +18,9 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.beust.jcommander.internal.Lists;
 import com.google.common.math.DoubleMath;
 import rexp.Rexp;
 import rexp.Rexp.STRING;
@@ -32,7 +32,7 @@ public class REXPUtil {
 
 	static
 	public <E> List<E> getRow(List<E> matrix, int k, int rows, int columns){
-		List<E> row = new ArrayList<E>();
+		List<E> row = Lists.newArrayList();
 
 		for(int i = 0; i < columns; i++){
 			row.add(matrix.get((i * rows) + k));
@@ -65,7 +65,7 @@ public class REXPUtil {
 	public Rexp.REXP field(Rexp.REXP rexp, String name){
 		Rexp.REXP names = attribute(rexp, "names");
 
-		List<String> fields = new ArrayList<String>();
+		List<String> fields = Lists.newArrayList();
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
 			STRING nameValue = names.getStringValue(i);
@@ -82,7 +82,7 @@ public class REXPUtil {
 
 	static
 	public Rexp.REXP attribute(Rexp.REXP rexp, String name){
-		List<String> attributes = new ArrayList<String>();
+		List<String> attributes = Lists.newArrayList();
 
 		for(int i = 0; i < rexp.getAttrNameCount(); i++){
 
