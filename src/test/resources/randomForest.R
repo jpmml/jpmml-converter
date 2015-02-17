@@ -14,21 +14,19 @@ generateRandomForestFormulaAudit = function(){
 	print(audit.formula)
 
 	adjusted = predict(audit.formula, newdata = audit)
-	result = data.frame("Adjusted" = adjusted)
 
 	storeProtoBuf(audit.formula, "pb/RandomForestFormulaAudit.pb")
-	storeCsv(result, "csv/RandomForestFormulaAudit.csv")
+	storeCsv(data.frame("Adjusted" = adjusted), "csv/RandomForestFormulaAudit.csv")
 }
 
 generateRandomForestAudit = function(){
 	audit.matrix = randomForest(x = audit_x, y = audit_y, ntree = 7)
 	print(audit.matrix)
 
-	adjusted = predict(audit.matrix, newdata = audit)
-	result = data.frame("_target" = adjusted)
+	adjusted = predict(audit.matrix, newdata = audit_x)
 
 	storeProtoBuf(audit.matrix, "pb/RandomForestAudit.pb")
-	storeCsv(result, "csv/RandomForestAudit.csv")
+	storeCsv(data.frame("_target" = adjusted), "csv/RandomForestAudit.csv")
 }
 
 set.seed(42)
@@ -41,21 +39,19 @@ generateCaretRandomForestFormulaAuditMatrix = function(){
 	print(audit.formula)
 
 	adjusted = predict(audit.formula, newdata = audit)
-	result = data.frame("_target" = adjusted)
 
 	storeProtoBuf(audit.formula, "pb/CaretRandomForestFormulaAuditMatrix.pb")
-	storeCsv(result, "csv/CaretRandomForestFormulaAuditMatrix.csv")
+	storeCsv(data.frame("_target" = adjusted), "csv/CaretRandomForestFormulaAuditMatrix.csv")
 }
 
 generateCaretRandomForestAudit = function(){
 	audit.matrix = train(x = audit_x, y = audit_y, method = "rf", ntree = 7)
 	print(audit.matrix)
 
-	adjusted = predict(audit.matrix, newdata = audit)
-	result = data.frame("_target" = adjusted)
+	adjusted = predict(audit.matrix, newdata = audit_x)
 
 	storeProtoBuf(audit.matrix, "pb/CaretRandomForestAudit.pb")
-	storeCsv(result, "csv/CaretRandomForestAudit.csv")
+	storeCsv(data.frame("_target" = adjusted), "csv/CaretRandomForestAudit.csv")
 }
 
 set.seed(42)
@@ -73,21 +69,19 @@ generateRandomForestFormulaAuto = function(){
 	print(auto.formula)
 
 	mpg = predict(auto.formula, newdata = auto)
-	result = data.frame("mpg" = mpg)
 
 	storeProtoBuf(auto.formula, "pb/RandomForestFormulaAuto.pb")
-	storeCsv(result, "csv/RandomForestFormulaAuto.csv")
+	storeCsv(data.frame("mpg" = mpg), "csv/RandomForestFormulaAuto.csv")
 }
 
 generateRandomForestAuto = function(){
 	auto.matrix = randomForest(x = auto_x, y = auto_y, ntree = 7)
 	print(auto.matrix)
 
-	mpg = predict(auto.matrix, newdata = auto)
-	result = data.frame("_target" = mpg)
+	mpg = predict(auto.matrix, newdata = auto_x)
 
 	storeProtoBuf(auto.matrix, "pb/RandomForestAuto.pb")
-	storeCsv(result, "csv/RandomForestAuto.csv")
+	storeCsv(data.frame("_target" = mpg), "csv/RandomForestAuto.csv")
 }
 
 set.seed(42)
@@ -100,21 +94,19 @@ generateCaretRandomForestFormulaAuto = function(){
 	print(auto.formula)
 
 	mpg = predict(auto.formula, newdata = auto)
-	result = data.frame("_target" = mpg)
 
 	storeProtoBuf(auto.formula, "pb/CaretRandomForestFormulaAuto.pb")
-	storeCsv(result, "csv/CaretRandomForestFormulaAuto.csv")
+	storeCsv(data.frame("_target" = mpg), "csv/CaretRandomForestFormulaAuto.csv")
 }
 
 generateCaretRandomForestAuto = function(){
 	auto.matrix = train(x = auto_x, y = auto_y, method = "rf", ntree = 7)
 	print(auto.matrix)
 
-	mpg = predict(auto.matrix, newdata = auto)
-	result = data.frame("_target" = mpg)
+	mpg = predict(auto.matrix, newdata = auto_x)
 
 	storeProtoBuf(auto.matrix, "pb/CaretRandomForestAuto.pb")
-	storeCsv(result, "csv/CaretRandomForestAuto.csv")
+	storeCsv(data.frame("_target" = mpg), "csv/CaretRandomForestAuto.csv")
 }
 
 set.seed(42)
@@ -132,21 +124,19 @@ generateRandomForestFormulaWineQuality = function(){
 	print(wine_quality.formula)
 
 	quality = predict(wine_quality.formula, newdata = wine_quality)
-	result = data.frame("quality" = quality)
 
 	storeProtoBuf(wine_quality.formula, "pb/RandomForestFormulaWineQuality.pb")
-	storeCsv(result, "csv/RandomForestFormulaWineQuality.csv")
+	storeCsv(data.frame("quality" = quality), "csv/RandomForestFormulaWineQuality.csv")
 }
 
 generateRandomForestWineQuality = function(){
 	wine_quality.matrix = randomForest(x = wine_quality_x, y = wine_quality_y, ntree = 7)
 	print(wine_quality.matrix)
 
-	quality = predict(wine_quality.matrix, newdata = wine_quality)
-	result = data.frame("_target" = quality)
+	quality = predict(wine_quality.matrix, newdata = wine_quality_x)
 
 	storeProtoBuf(wine_quality.matrix, "pb/RandomForestWineQuality.pb")
-	storeCsv(result, "csv/RandomForestWineQuality.csv")
+	storeCsv(data.frame("_target" = quality), "csv/RandomForestWineQuality.csv")
 }
 
 set.seed(42)
@@ -165,21 +155,19 @@ generateRandomForestFormulaWineColor = function(){
 	print(wine_color.formula)
 
 	color = predict(wine_color.formula, newdata = wine_color)
-	result = data.frame("color" = color)
 
 	storeProtoBuf(wine_color.formula, "pb/RandomForestFormulaWineColor.pb")
-	storeCsv(result, "csv/RandomForestFormulaWineColor.csv")
+	storeCsv(data.frame("color" = color), "csv/RandomForestFormulaWineColor.csv")
 }
 
 generateRandomForestWineColor = function(){
 	wine_color.matrix = randomForest(x = wine_color_x, y = wine_color_y, ntree = 7)
 	print(wine_color.matrix)
 
-	color = predict(wine_color.matrix, newdata = wine_color)
-	result = data.frame("_target" = color)
+	color = predict(wine_color.matrix, newdata = wine_color_x)
 
 	storeProtoBuf(wine_color.matrix, "pb/RandomForestWineColor.pb")
-	storeCsv(result, "csv/RandomForestWineColor.csv")
+	storeCsv(data.frame("_target" = color), "csv/RandomForestWineColor.csv")
 }
 
 set.seed(42)

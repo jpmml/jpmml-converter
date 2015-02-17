@@ -13,21 +13,19 @@ generateGBMFormulaAutoNA = function(){
 	print(auto.formula)
 
 	mpg = predict(auto.formula, newdata = auto, n.trees = 100)
-	result = data.frame("mpg" = mpg)
 
 	storeProtoBuf(auto.formula, "pb/GBMFormulaAutoNA.pb")
-	storeCsv(result, "csv/GBMFormulaAutoNA.csv")
+	storeCsv(data.frame("mpg" = mpg), "csv/GBMFormulaAutoNA.csv")
 }
 
 generateGBMFitAutoNA = function(){
 	auto.fit = gbm.fit(x = auto_x, y = auto_y, distribution = "gaussian", interaction.depth = 3, shrinkage = 0.1, n.trees = 100)
 	print(auto.fit)
 
-	mpg = predict(auto.fit, newdata = auto, n.trees = 100)
-	result = data.frame("y" = mpg)
+	mpg = predict(auto.fit, newdata = auto_x, n.trees = 100)
 
 	storeProtoBuf(auto.fit, "pb/GBMFitAutoNA.pb")
-	storeCsv(result, "csv/GBMFitAutoNA.csv")
+	storeCsv(data.frame("y" = mpg), "csv/GBMFitAutoNA.csv")
 }
 
 set.seed(42)
@@ -35,29 +33,24 @@ set.seed(42)
 generateGBMFormulaAutoNA()
 generateGBMFitAutoNA()
 
-?predict.gbm
-?predict.train
-
 generateCaretGBMFormulaAutoNA = function(){
 	auto.formula = train(mpg ~ ., data = auto, method = "gbm")
 	print(auto.formula)
 
 	mpg = predict(auto.formula, newdata = auto, na.action = na.pass)
-	result = data.frame("y" = mpg)
 
 	storeProtoBuf(auto.formula, "pb/CaretGBMFormulaAutoNA.pb")
-	storeCsv(result, "csv/CaretGBMFormulaAutoNA.csv")
+	storeCsv(data.frame("y" = mpg), "csv/CaretGBMFormulaAutoNA.csv")
 }
 
 generateCaretGBMFitAutoNA = function(){
 	auto.fit = train(x = auto_x, y = auto_y, method = "gbm")
 	print(auto.fit)
 
-	mpg = predict(auto.fit, newdata = auto)
-	result = data.frame("y" = mpg)
+	mpg = predict(auto.fit, newdata = auto_x)
 
 	storeProtoBuf(auto.fit, "pb/CaretGBMFitAutoNA.pb")
-	storeCsv(result, "csv/CaretGBMFitAutoNA.csv")
+	storeCsv(data.frame("y" = mpg), "csv/CaretGBMFitAutoNA.csv")
 }
 
 set.seed(42)
