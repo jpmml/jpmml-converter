@@ -29,7 +29,6 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldUsageType;
-import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningModel;
@@ -287,7 +286,7 @@ public class RandomForestConverter extends Converter {
 		DataDictionary dataDictionary = new DataDictionary()
 			.withDataFields(this.dataFields);
 
-		PMML pmml = new PMML("4.2", new Header(), dataDictionary)
+		PMML pmml = new PMML("4.2", PMMLUtil.createHeader(), dataDictionary)
 			.withModels(miningModel);
 
 		return pmml;

@@ -32,7 +32,6 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningSchema;
@@ -104,7 +103,7 @@ public class KMeansConverter extends Converter {
 		ClusteringModel clusteringModel = new ClusteringModel(MiningFunctionType.CLUSTERING, ClusteringModel.ModelClass.CENTER_BASED, rows, miningSchema, comparisonMeasure, clusteringFields, clusters)
 			.withOutput(output);
 
-		PMML pmml = new PMML("4.2", new Header(), dataDictionary)
+		PMML pmml = new PMML("4.2", PMMLUtil.createHeader(), dataDictionary)
 			.withModels(clusteringModel);
 
 		return pmml;

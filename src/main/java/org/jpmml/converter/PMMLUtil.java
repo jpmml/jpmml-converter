@@ -18,23 +18,30 @@
  */
 package org.jpmml.converter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
+import org.dmg.pmml.Application;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
+import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeatureType;
+import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
 
 public class PMMLUtil {
@@ -182,6 +189,28 @@ public class PMMLUtil {
 	}
 
 	static
+	public Header createHeader(){
+		Application application = new Application()
+			.withName("JPMML-Converter")
+			.withVersion("1.0-SNAPSHOT");
+
+		// XML Schema "dateTime" data format (corresponds roughly to ISO 8601)
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		dateFormat.setTimeZone(PMMLUtil.UTC);
+
+		Date now = new Date();
+
+		Timestamp timestamp = new Timestamp()
+			.withContent(dateFormat.format(now));
+
+		Header header = new Header()
+			.withApplication(application)
+			.withTimestamp(timestamp);
+
+		return header;
+	}
+
+	static
 	public Array createArray(DataType dataType, List<Value> values){
 		Function<Value, String> function = new Function<Value, String>(){
 
@@ -302,4 +331,6 @@ public class PMMLUtil {
 
 		return DataType.STRING;
 	}
+
+	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 }
