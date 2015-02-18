@@ -28,6 +28,12 @@ loadAutoCsv = function(file){
 	return (auto)
 }
 
+loadIrisCsv = function(file){
+	iris = loadCsv(file)
+
+	return (iris)
+}
+
 loadWineColorCsv = function(file){
 	wine_color = loadCsv(file)
 	wine_color$color = as.factor(wine_color$color)

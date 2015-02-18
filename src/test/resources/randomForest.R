@@ -118,6 +118,38 @@ set.seed(42)
 generateCaretRandomForestFormulaAuto()
 generateCaretRandomForestAuto()
 
+iris = loadIrisCsv("csv/Iris.csv")
+
+iris_x = iris[, -ncol(iris)]
+iris_y = iris[, ncol(iris)]
+
+generateRandomForestFormulaIris = function(){
+	iris.formula = randomForest(Species ~ ., data = iris, ntree = 7)
+	print(iris.formula)
+
+	species = predict(iris.formula, newdata = iris)
+	probabilities = predict(iris.formula, newdata = iris, type = "prob")
+
+	storeProtoBuf(iris.formula, "pb/RandomForestFormulaIris.pb")
+	storeCsv(data.frame("Species" = species, "probability_setosa" = probabilities[, 1], "probability_versicolor" = probabilities[, 2], "probability_virginica" = probabilities[, 3]), "csv/RandomForestFormulaIris.csv")
+}
+
+generateRandomForestIris = function(){
+	iris.matrix = randomForest(x = iris_x, y = iris_y, ntree = 7)
+	print(iris.matrix)
+
+	species = predict(iris.matrix, newdata = iris_x)
+	probabilities = predict(iris.matrix, newdata = iris_x, type = "prob")
+
+	storeProtoBuf(iris.matrix, "pb/RandomForestIris.pb")
+	storeCsv(data.frame("_target" = species, "probability_setosa" = probabilities[, 1], "probability_versicolor" = probabilities[, 2], "probability_virginica" = probabilities[, 3]), "csv/RandomForestIris.csv")
+}
+
+set.seed(42)
+
+generateRandomForestFormulaIris()
+generateRandomForestIris()
+
 wine_quality = loadWineQualityCsv("csv/WineQuality.csv")
 
 wine_quality_x = wine_quality[, -ncol(wine_quality)]
