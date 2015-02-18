@@ -22,6 +22,8 @@ Fast conversion of R models to PMML
   * [`caret` package] (http://cran.r-project.org/web/packages/caret/):
     * `train.formula` ("formula interface") - All supported model types
     * `train` ("matrix interface") - All supported model types
+* Production quality:
+  * Fully compliant with the [JPMML-Evaluator] (https://github.com/jpmml/jpmml-evaluator) library.
 
 # Prerequisites #
 

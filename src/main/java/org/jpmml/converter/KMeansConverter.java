@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.List;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.Cluster;
@@ -39,7 +40,6 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
-import org.dmg.pmml.ResultFeatureType;
 import org.dmg.pmml.SquaredEuclidean;
 import rexp.Rexp;
 import rexp.Rexp.STRING;
@@ -57,15 +57,15 @@ public class KMeansConverter extends Converter {
 		int rows = dim.getIntValue(0);
 		int columns = dim.getIntValue(1);
 
-		DataDictionary dataDictionary = new DataDictionary();
-
-		MiningSchema miningSchema = new MiningSchema();
-
 		ComparisonMeasure comparisonMeasure = new ComparisonMeasure(ComparisonMeasure.Kind.DISTANCE)
 			.withMeasure(new SquaredEuclidean())
 			.withCompareFunction(CompareFunctionType.ABS_DIFF);
 
 		List<ClusteringField> clusteringFields = Lists.newArrayList();
+
+		DataDictionary dataDictionary = new DataDictionary();
+
+		MiningSchema miningSchema = new MiningSchema();
 
 		Rexp.REXP columnNames = dimnames.getRexpValue(1);
 		for(int i = 0; i < columns; i++){
@@ -88,23 +88,21 @@ public class KMeansConverter extends Converter {
 		for(int i = 0; i < rows; i++){
 			STRING name = rowNames.getStringValue(i);
 
+			Array array = encodeArray(REXPUtil.getRow(centers.getRealValueList(), i, rows, columns));
+
 			Cluster cluster = new Cluster()
 				.withName(name.getStrval())
-				.withArray(encodeArray(REXPUtil.getRow(centers.getRealValueList(), i, rows, columns)))
-				.withSize(size.getIntValue(i));
+				.withId(String.valueOf(i + 1))
+				.withSize(size.getIntValue(i))
+				.withArray(array);
 
 			clusters.add(cluster);
 		}
 
-		ClusteringModel clusteringModel = new ClusteringModel(MiningFunctionType.CLUSTERING, ClusteringModel.ModelClass.CENTER_BASED, rows, miningSchema, comparisonMeasure, clusteringFields, clusters);
+		Output output = encodeOutput(clusters);
 
-		OutputField predictedValue = new OutputField(FieldName.create("predictedValue"))
-			.withFeature(ResultFeatureType.PREDICTED_VALUE);
-
-		Output output = new Output()
-			.withOutputFields(predictedValue);
-
-		clusteringModel = clusteringModel.withOutput(output);
+		ClusteringModel clusteringModel = new ClusteringModel(MiningFunctionType.CLUSTERING, ClusteringModel.ModelClass.CENTER_BASED, rows, miningSchema, comparisonMeasure, clusteringFields, clusters)
+			.withOutput(output);
 
 		PMML pmml = new PMML("4.2", new Header(), dataDictionary)
 			.withModels(clusteringModel);
@@ -112,28 +110,35 @@ public class KMeansConverter extends Converter {
 		return pmml;
 	}
 
+	private Output encodeOutput(List<Cluster> clusters){
+		List<OutputField> outputFields = Lists.newArrayList();
+
+		outputFields.add(PMMLUtil.createPredictedField("cluster"));
+
+		for(Cluster cluster : clusters){
+			outputFields.add(PMMLUtil.createAffinityField(cluster.getId()));
+		}
+
+		Output output = new Output()
+			.withOutputFields(outputFields);
+
+		return output;
+	}
+
+	static
 	private Array encodeArray(List<Double> values){
-		String value = formatArrayValue(values);
+		Function<Double, String> function = new Function<Double, String>(){
+
+			@Override
+			public String apply(Double value){
+				return PMMLUtil.formatValue(value);
+			}
+		};
+
+		String value = PMMLUtil.formatArrayValue(Lists.transform(values, function));
 
 		Array array = new Array(Array.Type.REAL, value);
 
 		return array;
-	}
-
-	static
-	private String formatArrayValue(List<Double> values){
-		StringBuilder sb = new StringBuilder();
-
-		String sep = "";
-
-		for(Double value : values){
-			sb.append(sep);
-
-			sb.append(PMMLUtil.formatValue(value));
-
-			sep = " ";
-		}
-
-		return sb.toString();
 	}
 }

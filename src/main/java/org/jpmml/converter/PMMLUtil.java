@@ -153,6 +153,25 @@ public class PMMLUtil {
 	}
 
 	static
+	public OutputField createAffinityField(String value){
+		OutputField outputField = new OutputField()
+			.withName(new FieldName("affinity_" + value))
+			.withFeature(ResultFeatureType.AFFINITY)
+			.withValue(value);
+
+		return outputField;
+	}
+
+	static
+	public OutputField createPredictedField(String name){
+		OutputField outputField = new OutputField()
+			.withName(new FieldName(name))
+			.withFeature(ResultFeatureType.PREDICTED_VALUE);
+
+		return outputField;
+	}
+
+	static
 	public OutputField createProbabilityField(String value){
 		OutputField outputField = new OutputField()
 			.withName(new FieldName("probability_" + value))
@@ -164,7 +183,15 @@ public class PMMLUtil {
 
 	static
 	public Array createArray(DataType dataType, List<Value> values){
-		String value = formatArrayValue(values);
+		Function<Value, String> function = new Function<Value, String>(){
+
+			@Override
+			public String apply(Value value){
+				return value.getValue();
+			}
+		};
+
+		String value = formatArrayValue(Lists.transform(values, function));
 
 		switch(dataType){
 			case STRING:
@@ -191,24 +218,22 @@ public class PMMLUtil {
 	}
 
 	static
-	public String formatArrayValue(List<Value> values){
+	public String formatArrayValue(List<String> values){
 		StringBuilder sb = new StringBuilder();
 
 		String sep = "";
 
-		for(Value value : values){
-			String string = value.getValue();
-
+		for(String value : values){
 			sb.append(sep);
 
 			sep = " ";
 
-			if(string.indexOf(' ') > -1){
-				sb.append('\"').append(string).append('\"');
+			if(value.indexOf(' ') > -1){
+				sb.append('\"').append(value).append('\"');
 			} else
 
 			{
-				sb.append(string);
+				sb.append(value);
 			}
 		}
 

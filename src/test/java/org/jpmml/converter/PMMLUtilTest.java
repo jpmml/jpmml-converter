@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.beust.jcommander.internal.Lists;
@@ -37,10 +39,10 @@ public class PMMLUtilTest {
 
 	@Test
 	public void formatArrayValue(){
-		assertEquals("", PMMLUtil.formatArrayValue(createValues()));
+		assertEquals("", PMMLUtil.formatArrayValue(Collections.<String>emptyList()));
 
-		assertEquals("one two three", PMMLUtil.formatArrayValue(createValues("one", "two", "three")));
-		assertEquals("one \" two \" three", PMMLUtil.formatArrayValue(createValues("one", " two ", "three")));
+		assertEquals("one two three", PMMLUtil.formatArrayValue(Arrays.asList("one", "two", "three")));
+		assertEquals("one \" two \" three", PMMLUtil.formatArrayValue(Arrays.asList("one", " two ", "three")));
 	}
 
 	@Test
