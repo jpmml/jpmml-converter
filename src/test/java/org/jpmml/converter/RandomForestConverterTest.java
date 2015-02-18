@@ -18,6 +18,10 @@
  */
 package org.jpmml.converter;
 
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+import org.dmg.pmml.FieldName;
 import org.jpmml.evaluator.Batch;
 import org.jpmml.evaluator.BatchUtil;
 import org.junit.Test;
@@ -44,14 +48,18 @@ public class RandomForestConverterTest extends ConverterTest {
 	public void convertCaretFormulaAuditMatrix() throws Exception {
 		Batch batch = createBatch("CaretRandomForestFormula", "AuditMatrix");
 
-		assertTrue(BatchUtil.evaluate(batch));
+		Set<FieldName> ignoredColumns = Sets.newHashSet(FieldName.create("probability_0"), FieldName.create("probability_1"));
+
+		assertTrue(BatchUtil.evaluate(batch, ignoredColumns));
 	}
 
 	@Test
 	public void convertCaretAudit() throws Exception {
 		Batch batch = createBatch("CaretRandomForest", "Audit");
 
-		assertTrue(BatchUtil.evaluate(batch));
+		Set<FieldName> ignoredColumns = Sets.newHashSet(FieldName.create("probability_0"), FieldName.create("probability_1"));
+
+		assertTrue(BatchUtil.evaluate(batch, ignoredColumns));
 	}
 
 	@Test

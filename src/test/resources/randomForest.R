@@ -13,9 +13,10 @@ generateRandomForestFormulaAudit = function(){
 	print(audit.formula)
 
 	adjusted = predict(audit.formula, newdata = audit)
+	probabilities = predict(audit.formula, newdata = audit, type = "prob")
 
 	storeProtoBuf(audit.formula, "pb/RandomForestFormulaAudit.pb")
-	storeCsv(data.frame("Adjusted" = adjusted), "csv/RandomForestFormulaAudit.csv")
+	storeCsv(data.frame("Adjusted" = adjusted, "probability_0" = probabilities[, 1], "probability_1" = probabilities[, 2]), "csv/RandomForestFormulaAudit.csv")
 }
 
 generateRandomForestAudit = function(){
@@ -23,9 +24,10 @@ generateRandomForestAudit = function(){
 	print(audit.matrix)
 
 	adjusted = predict(audit.matrix, newdata = audit_x)
+	probabilities = predict(audit.matrix, newdata = audit_x, type = "prob")
 
 	storeProtoBuf(audit.matrix, "pb/RandomForestAudit.pb")
-	storeCsv(data.frame("_target" = adjusted), "csv/RandomForestAudit.csv")
+	storeCsv(data.frame("_target" = adjusted, "probability_0" = probabilities[, 1], "probability_1" = probabilities[, 2]), "csv/RandomForestAudit.csv")
 }
 
 set.seed(42)
@@ -156,9 +158,10 @@ generateRandomForestFormulaWineColor = function(){
 	print(wine_color.formula)
 
 	color = predict(wine_color.formula, newdata = wine_color)
+	probabilities = predict(wine_color.formula, newdata = wine_color, type = "prob")
 
 	storeProtoBuf(wine_color.formula, "pb/RandomForestFormulaWineColor.pb")
-	storeCsv(data.frame("color" = color), "csv/RandomForestFormulaWineColor.csv")
+	storeCsv(data.frame("color" = color, "probability_red" = probabilities[, 1], "probability_white" = probabilities[, 2]), "csv/RandomForestFormulaWineColor.csv")
 }
 
 generateRandomForestWineColor = function(){
@@ -166,9 +169,10 @@ generateRandomForestWineColor = function(){
 	print(wine_color.matrix)
 
 	color = predict(wine_color.matrix, newdata = wine_color_x)
+	probabilities = predict(wine_color.matrix, newdata = wine_color_x, type = "prob")
 
 	storeProtoBuf(wine_color.matrix, "pb/RandomForestWineColor.pb")
-	storeCsv(data.frame("_target" = color), "csv/RandomForestWineColor.csv")
+	storeCsv(data.frame("_target" = color, "probability_red" = probabilities[, 1], "probability_white" = probabilities[, 2]), "csv/RandomForestWineColor.csv")
 }
 
 set.seed(42)

@@ -38,6 +38,8 @@ public class RandomForestFieldTypeAnalyzer extends FieldTypeAnalyzer {
 				addDataType(field, DataType.STRING);
 				break;
 			case INT:
+				addDataType(field, DataType.INTEGER);
+				break;
 			case REAL:
 				addDataType(field, DataType.DOUBLE);
 				break;

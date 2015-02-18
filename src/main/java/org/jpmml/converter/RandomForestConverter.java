@@ -37,6 +37,8 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.MultipleModelMethodType;
 import org.dmg.pmml.Node;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.Output;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Segment;
@@ -268,8 +270,19 @@ public class RandomForestConverter extends Converter {
 			miningSchema = miningSchema.withMiningFields(miningField);
 		}
 
+		Output output = null;
+
+		switch(miningFunction){
+			case CLASSIFICATION:
+				output = encodeClassificationOutput();
+				break;
+			default:
+				break;
+		}
+
 		MiningModel miningModel = new MiningModel(miningFunction, miningSchema)
-			.withSegmentation(segmentation);
+			.withSegmentation(segmentation)
+			.withOutput(output);
 
 		DataDictionary dataDictionary = new DataDictionary()
 			.withDataFields(this.dataFields);
@@ -502,6 +515,24 @@ public class RandomForestConverter extends Converter {
 		}
 
 		return simplePredicate;
+	}
+
+	private Output encodeClassificationOutput(){
+		List<OutputField> outputFields = Lists.newArrayList();
+
+		DataField dataField = this.dataFields.get(0);
+
+		List<Value> values = dataField.getValues();
+		for(Value value : values){
+			OutputField outputField = PMMLUtil.createProbabilityField(value.getValue());
+
+			outputFields.add(outputField);
+		}
+
+		Output output = new Output()
+			.withOutputFields(outputFields);
+
+		return output;
 	}
 
 	private Value getLevel(int i){

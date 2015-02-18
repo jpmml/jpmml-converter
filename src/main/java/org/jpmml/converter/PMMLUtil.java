@@ -33,6 +33,8 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.OutputField;
+import org.dmg.pmml.ResultFeatureType;
 import org.dmg.pmml.Value;
 
 public class PMMLUtil {
@@ -148,6 +150,16 @@ public class PMMLUtil {
 		Collections.sort(miningFields, new MiningFieldComparator());
 
 		return miningFields;
+	}
+
+	static
+	public OutputField createProbabilityField(String value){
+		OutputField outputField = new OutputField()
+			.withName(new FieldName("probability_" + value))
+			.withFeature(ResultFeatureType.PROBABILITY)
+			.withValue(value);
+
+		return outputField;
 	}
 
 	static
