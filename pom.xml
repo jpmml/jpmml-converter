@@ -3,8 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.jpmml</groupId>
-	<artifactId>jpmml-converter</artifactId>
+	<artifactId>pmml-converter</artifactId>
 	<version>1.0-SNAPSHOT</version>
+
+	<name>JPMML-Converter</name>
+	<description>Java library for converting R models to PMML</description>
+	<url>http://www.jpmml.org</url>
 
 	<licenses>
 		<license>
