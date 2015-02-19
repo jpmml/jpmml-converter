@@ -1,7 +1,7 @@
 JPMML-Converter
 ===============
 
-Fast conversion of R models to PMML
+Java library for converting R models to PMML
 
 # IMPORTANT #
 
