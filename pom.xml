@@ -22,14 +22,14 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@github.com:jpmml/r-to-pmml.git</connection>
-		<developerConnection>scm:git:git@github.com:jpmml/r-to-pmml.git</developerConnection>
-		<url>git://github.com/jpmml/r-to-pmml.git</url>
+		<connection>scm:git:git@github.com:jpmml/jpmml-converter.git</connection>
+		<developerConnection>scm:git:git@github.com:jpmml/jpmml-converter.git</developerConnection>
+		<url>git://github.com/jpmml/jpmml-converter.git</url>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/jpmml/r-to-pmml/issues</url>
+		<url>https://github.com/jpmml/jpmml-converter/issues</url>
 	</issueManagement>
 
 	<properties>
