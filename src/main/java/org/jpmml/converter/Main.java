@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.transform.stream.StreamResult;
 
@@ -75,7 +77,7 @@ public class Main {
 		InputStream is = new FileInputStream(this.input);
 
 		try {
-			System.out.println("Parsing..");
+			logger.log(Level.INFO, "Parsing ProtoBuf..");
 
 			CodedInputStream cis = CodedInputStream.newInstance(is);
 			cis.setSizeLimit(Integer.MAX_VALUE);
@@ -84,7 +86,11 @@ public class Main {
 			rexp = Rexp.REXP.parseFrom(cis);
 			long end = System.currentTimeMillis();
 
-			System.out.println("Parsed ProtoBuf in " + (end - start) + " ms.");
+			logger.log(Level.INFO, "Parsed ProtoBuf in " + (end - start) + " ms.");
+		} catch(Exception e){
+			logger.log(Level.SEVERE, "Failed to parse ProtoBuf", e);
+
+			throw e;
 		} finally {
 			is.close();
 		}
@@ -93,18 +99,36 @@ public class Main {
 
 		Converter converter = converterFactory.getConverter(rexp);
 
-		PMML pmml = converter.convert(rexp);
+		PMML pmml;
+
+		try {
+			logger.log(Level.INFO, "Converting model..");
+
+			long start = System.currentTimeMillis();
+			pmml = converter.convert(rexp);
+			long end = System.currentTimeMillis();
+
+			logger.log(Level.INFO, "Converted model in " + (end - start) + " ms.");
+		} catch(Exception e){
+			logger.log(Level.SEVERE, "Failed to convert model", e);
+
+			throw e;
+		}
 
 		OutputStream os = new FileOutputStream(this.output);
 
 		try {
-			System.out.println("Marshalling..");
+			logger.log(Level.INFO, "Marshalling PMML..");
 
 			long start = System.currentTimeMillis();
 			JAXBUtil.marshalPMML(pmml, new StreamResult(os));
 			long end = System.currentTimeMillis();
 
-			System.out.println("Marshalled PMML in " + (end - start) + " ms.");
+			logger.log(Level.INFO, "Marshalled PMML in " + (end - start) + " ms.");
+		} catch(Exception e){
+			logger.log(Level.SEVERE, "Failed to marshal PMML", e);
+
+			throw e;
 		} finally {
 			os.close();
 		}
@@ -135,4 +159,6 @@ public class Main {
 
 		this.output = output;
 	}
+
+	private static final Logger logger = Logger.getLogger(Main.class.getName());
 }
