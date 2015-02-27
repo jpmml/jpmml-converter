@@ -31,9 +31,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import org.dmg.pmml.Application;
+import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.Header;
@@ -208,6 +210,14 @@ public class PMMLUtil {
 			.withTimestamp(timestamp);
 
 		return header;
+	}
+
+	static
+	public Apply createApply(String function, Expression... expressions){
+		Apply apply = new Apply(function)
+			.withExpressions(expressions);
+
+		return apply;
 	}
 
 	static

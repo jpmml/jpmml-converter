@@ -24,9 +24,12 @@ import com.beust.jcommander.internal.Lists;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
@@ -35,8 +38,11 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.MultipleModelMethodType;
 import org.dmg.pmml.Node;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.Output;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
+import org.dmg.pmml.ResultFeatureType;
 import org.dmg.pmml.Segment;
 import org.dmg.pmml.Segmentation;
 import org.dmg.pmml.SimplePredicate;
@@ -71,6 +77,7 @@ public class GBMConverter extends Converter {
 		Rexp.REXP initF = REXPUtil.field(gbm, "initF");
 		Rexp.REXP trees = REXPUtil.field(gbm, "trees");
 		Rexp.REXP c_splits = REXPUtil.field(gbm, "c.splits");
+		Rexp.REXP distribution = REXPUtil.field(gbm, "distribution");
 		Rexp.REXP response_name = REXPUtil.field(gbm, "response.name");
 		Rexp.REXP var_levels = REXPUtil.field(gbm, "var.levels");
 		Rexp.REXP var_names = REXPUtil.field(gbm, "var.names");
@@ -109,6 +116,8 @@ public class GBMConverter extends Converter {
 
 		DataField dataField = this.dataFields.get(0);
 
+		Output output = encodeOutput(distribution);
+
 		Target target = new Target()
 			.withField(dataField.getName())
 			.withRescaleConstant(REXPUtil.asDouble(initF.getRealValue(0)));
@@ -118,6 +127,7 @@ public class GBMConverter extends Converter {
 
 		MiningModel miningModel = new MiningModel(MiningFunctionType.REGRESSION, miningSchema)
 			.withSegmentation(segmentation)
+			.withOutput(output)
 			.withTargets(targets);
 
 		DataDictionary dataDictionary = new DataDictionary()
@@ -306,6 +316,66 @@ public class GBMConverter extends Converter {
 			.withValue(PMMLUtil.formatValue(split));
 
 		return simplePredicate;
+	}
+
+	private Output encodeOutput(Rexp.REXP distribution){
+		Rexp.REXP name = REXPUtil.field(distribution, "name");
+
+		STRING distributionName = name.getStringValue(0);
+
+		if("adaboost".equals(distributionName.getStrval())){
+			return encodeAdaBoostOutput();
+		} else
+
+		if("bernoulli".equals(distributionName.getStrval())){
+			return encodeBernoulliOutput();
+		}
+
+		return null;
+	}
+
+	private Output encodeAdaBoostOutput(){
+		Constant minusTwo = new Constant("-2")
+			.withDataType(DataType.DOUBLE);
+
+		return encodeBinaryClassificationOutput("adaBoostValue", minusTwo);
+	}
+
+	private Output encodeBernoulliOutput(){
+		Constant minusOne = new Constant("-1")
+			.withDataType(DataType.DOUBLE);
+
+		return encodeBinaryClassificationOutput("bernoulliValue", minusOne);
+	}
+
+	private Output encodeBinaryClassificationOutput(String name, Constant multiplier){
+		Constant one = new Constant("1")
+			.withDataType(DataType.DOUBLE);
+
+		OutputField bernoulliValue = new OutputField()
+			.withName(new FieldName(name))
+			.withFeature(ResultFeatureType.PREDICTED_VALUE);
+
+		// "p(1) = 1 / (1 + exp(multiplier * y))"
+		OutputField probabilityOne = new OutputField()
+			.withName(new FieldName("probability_1"))
+			.withFeature(ResultFeatureType.TRANSFORMED_VALUE)
+			.withDataType(DataType.DOUBLE)
+			.withOpType(OpType.CONTINUOUS)
+			.withExpression(PMMLUtil.createApply("/", one, PMMLUtil.createApply("+", one, PMMLUtil.createApply("exp", PMMLUtil.createApply("*", multiplier, new FieldRef(bernoulliValue.getName()))))));
+
+		// "p(0) = 1 - p(1)"
+		OutputField probabilityZero = new OutputField()
+			.withName(new FieldName("probability_0"))
+			.withFeature(ResultFeatureType.TRANSFORMED_VALUE)
+			.withDataType(DataType.DOUBLE)
+			.withOpType(OpType.CONTINUOUS)
+			.withExpression(PMMLUtil.createApply("-", one, new FieldRef(probabilityOne.getName())));
+
+		Output output = new Output()
+			.withOutputFields(bernoulliValue, probabilityOne, probabilityZero);
+
+		return output;
 	}
 
 	static

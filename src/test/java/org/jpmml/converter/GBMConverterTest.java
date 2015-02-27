@@ -18,6 +18,10 @@
  */
 package org.jpmml.converter;
 
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+import org.dmg.pmml.FieldName;
 import org.jpmml.evaluator.Batch;
 import org.jpmml.evaluator.BatchUtil;
 import org.junit.Test;
@@ -25,6 +29,24 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 public class GBMConverterTest extends ConverterTest {
+
+	@Test
+	public void convertFitAdaBoostAuditNA() throws Exception {
+		Batch batch = createBatch("GBMFitAdaBoost", "AuditNA");
+
+		Set<FieldName> ignoredColumns = Sets.newHashSet(new FieldName("adaBoostValue"));
+
+		assertTrue(BatchUtil.evaluate(batch, ignoredColumns));
+	}
+
+	@Test
+	public void convertFitBernoulliAuditNA() throws Exception {
+		Batch batch = createBatch("GBMFitBernoulli", "AuditNA");
+
+		Set<FieldName> ignoredColumns = Sets.newHashSet(new FieldName("bernoulliValue"));
+
+		assertTrue(BatchUtil.evaluate(batch, ignoredColumns));
+	}
 
 	@Test
 	public void convertFormulaAutoNA() throws Exception {

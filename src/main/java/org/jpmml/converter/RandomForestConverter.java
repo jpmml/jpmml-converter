@@ -269,15 +269,7 @@ public class RandomForestConverter extends Converter {
 			miningSchema = miningSchema.withMiningFields(miningField);
 		}
 
-		Output output = null;
-
-		switch(miningFunction){
-			case CLASSIFICATION:
-				output = encodeClassificationOutput();
-				break;
-			default:
-				break;
-		}
+		Output output = encodeOutput(miningFunction);
 
 		MiningModel miningModel = new MiningModel(miningFunction, miningSchema)
 			.withSegmentation(segmentation)
@@ -514,6 +506,16 @@ public class RandomForestConverter extends Converter {
 		}
 
 		return simplePredicate;
+	}
+
+	private Output encodeOutput(MiningFunctionType miningFunction){
+
+		switch(miningFunction){
+			case CLASSIFICATION:
+				return encodeClassificationOutput();
+			default:
+				return null;
+		}
 	}
 
 	private Output encodeClassificationOutput(){

@@ -15,7 +15,7 @@ Java library for converting R models to PMML
   * `stats` package:
     * `kmeans` - K-Means clustering
   * [`gbm` package] (http://cran.r-project.org/web/packages/gbm/):
-    * `gbm` - Gradient Boosting Machine (GBM) regression
+    * `gbm` - Gradient Boosting Machine (GBM) regression and classification
   * [`randomForest` package] (http://cran.r-project.org/web/packages/randomForest/):
     * `randomForest.formula` ("formula interface") - Random Forest (RF) regression and classification
     * `randomForest` ("matrix interface") - Random Forest regression and classification
