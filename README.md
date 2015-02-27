@@ -3,10 +3,6 @@ JPMML-Converter
 
 Java library for converting R models to PMML
 
-# IMPORTANT #
-
-![](https://github.com/jpmml/jpmml-converter/blob/master/bulb.png) Are you happy with our solution to your model deployment problem? Please show your support to this exciting technology **by voting** for our Hadoop Summit 2015 talk ["Rapid deployment of predictive models across Big Data platforms"] (https://hadoopsummit.uservoice.com/forums/283261-data-science-and-hadoop/suggestions/7074084). Thank you!
-
 # Features #
 
 * Fast and memory-efficient:
