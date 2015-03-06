@@ -1,9 +1,9 @@
-library("RProtoBuf")
+library("r2pmml")
 
-storeProtoBuf = function(model, file){
-	con = file(file, open = "wb")
-	serialize_pb(model, con)
-	close(con)
+storeProtoBuf = function(x, file){
+	x.rexp = r2pmml:::.clean(x)
+
+	saveProtoBuf(x.rexp, file)
 }
 
 loadCsv = function(file){
