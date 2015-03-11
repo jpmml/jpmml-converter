@@ -18,42 +18,25 @@
  */
 package org.jpmml.converter;
 
-import rexp.Rexp.REXP;
+import org.jpmml.evaluator.Batch;
+import org.jpmml.evaluator.BatchUtil;
+import org.junit.Test;
 
-public class ConverterFactory {
+import static org.junit.Assert.assertTrue;
 
-	protected ConverterFactory(){
+public class BinaryTreeConverterTest extends ConverterTest {
+
+	@Test
+	public void convertAudit() throws Exception {
+		Batch batch = createBatch("BinaryTree", "Audit");
+
+		assertTrue(BatchUtil.evaluate(batch));
 	}
 
-	public Converter getConverter(REXP rexp){
+	@Test
+	public void convertIris() throws Exception {
+		Batch batch = createBatch("BinaryTree", "Iris");
 
-		if(REXPUtil.inherits(rexp, "BinaryTree")){
-			return new BinaryTreeConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
-		}
-
-		{
-			throw new IllegalArgumentException();
-		}
-	}
-
-	static
-	public ConverterFactory getInstance(){
-		return new ConverterFactory();
+		assertTrue(BatchUtil.evaluate(batch));
 	}
 }

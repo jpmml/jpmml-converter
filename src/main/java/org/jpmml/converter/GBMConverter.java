@@ -159,15 +159,11 @@ public class GBMConverter extends Converter {
 			DataField dataField = PMMLUtil.createDataField(var_name.getStrval(), categorical);
 
 			if(categorical){
-				List<Value> values = dataField.getValues();
-
 				Rexp.REXP var_level = var_levels.getRexpValue(i);
 
-				for(int j = 0; j < var_level.getStringValueCount(); j++){
-					STRING level = var_level.getStringValue(j);
+				List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(var_level));
 
-					values.add(new Value(level.getStrval()));
-				}
+				dataField = dataField.withValues(values);
 
 				dataField = PMMLUtil.refineDataField(dataField);
 			}

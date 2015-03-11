@@ -20,7 +20,8 @@ package org.jpmml.converter;
 
 import java.util.List;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import rexp.Rexp;
 import rexp.Rexp.STRING;
@@ -94,6 +95,19 @@ public class REXPUtil {
 		}
 
 		throw new IllegalArgumentException("Attribute " + name + " not in " + attributes);
+	}
+
+	static
+	public List<String> getStringList(Rexp.REXP rexp){
+		Function<STRING, String> function = new Function<STRING, String>(){
+
+			@Override
+			public String apply(STRING string){
+				return string.getStrval();
+			}
+		};
+
+		return Lists.transform(rexp.getStringValueList(), function);
 	}
 
 	static

@@ -90,6 +90,28 @@ public class PMMLUtil {
 	}
 
 	static
+	public List<DataField> createDataFields(FieldCollector fieldCollector){
+		Set<FieldName> names = fieldCollector.getFields();
+
+		Function<FieldName, DataField> function = new Function<FieldName, DataField>(){
+
+			@Override
+			public DataField apply(FieldName name){
+				DataField dataField = new DataField()
+					.withName(name);
+
+				return dataField;
+			}
+		};
+
+		List<DataField> dataFields = Lists.newArrayList(Iterables.transform(names, function));
+
+		Collections.sort(dataFields, new DataFieldComparator());
+
+		return dataFields;
+	}
+
+	static
 	public DataField refineDataField(DataField dataField){
 		DataType dataType = getDataType(dataField.getValues());
 
@@ -135,8 +157,29 @@ public class PMMLUtil {
 	}
 
 	static
+	public List<Value> createValues(List<String> values){
+		return createValues(values, null);
+	}
+
+	static
+	public List<Value> createValues(List<String> values, final Value.Property property){
+		Function<String, Value> function = new Function<String, Value>(){
+
+			@Override
+			public Value apply(String string){
+				Value value = new Value(string)
+					.withProperty(property);
+
+				return value;
+			}
+		};
+
+		return Lists.transform(values, function);
+	}
+
+	static
 	public List<MiningField> createMiningFields(FieldCollector fieldCollector){
-		return createMiningFields(fieldCollector, FieldUsageType.ACTIVE);
+		return createMiningFields(fieldCollector, null);
 	}
 
 	static
@@ -163,10 +206,24 @@ public class PMMLUtil {
 
 	static
 	public OutputField createAffinityField(String value){
+		return createAffinityField("affinity_" + value, value);
+	}
+
+	static
+	public OutputField createAffinityField(String name, String value){
 		OutputField outputField = new OutputField()
-			.withName(new FieldName("affinity_" + value))
+			.withName(new FieldName(name))
 			.withFeature(ResultFeatureType.AFFINITY)
 			.withValue(value);
+
+		return outputField;
+	}
+
+	static
+	public OutputField createEntityIdField(String name){
+		OutputField outputField = new OutputField()
+			.withName(new FieldName(name))
+			.withFeature(ResultFeatureType.ENTITY_ID);
 
 		return outputField;
 	}
@@ -182,8 +239,13 @@ public class PMMLUtil {
 
 	static
 	public OutputField createProbabilityField(String value){
+		return createProbabilityField("probability_" + value, value);
+	}
+
+	static
+	public OutputField createProbabilityField(String name, String value){
 		OutputField outputField = new OutputField()
-			.withName(new FieldName("probability_" + value))
+			.withName(new FieldName(name))
 			.withFeature(ResultFeatureType.PROBABILITY)
 			.withValue(value);
 

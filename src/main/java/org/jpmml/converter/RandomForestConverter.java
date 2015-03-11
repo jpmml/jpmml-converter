@@ -345,15 +345,11 @@ public class RandomForestConverter extends Converter {
 				continue;
 			}
 
-			List<Value> values = dataField.getValues();
-
 			Rexp.REXP xvalues = xlevels.getRexpValue(i);
 
-			for(int j = 0; j < xvalues.getStringValueCount(); j++){
-				STRING xvalue = xvalues.getStringValue(j);
+			List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(xvalues));
 
-				values.add(new Value(xvalue.getStrval()));
-			}
+			dataField = dataField.withValues(values);
 
 			dataField = PMMLUtil.refineDataField(dataField);
 		}
@@ -362,15 +358,11 @@ public class RandomForestConverter extends Converter {
 	private void initPredictedFields(Rexp.REXP y){
 		DataField dataField = this.dataFields.get(0);
 
-		List<Value> values = dataField.getValues();
-
 		Rexp.REXP levels = REXPUtil.attribute(y, "levels");
 
-		for(int i = 0; i < levels.getStringValueCount(); i++){
-			STRING level = levels.getStringValue(i);
+		List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(levels));
 
-			values.add(new Value(level.getStrval()));
-		}
+		dataField = dataField.withValues(values);
 
 		dataField = PMMLUtil.refineDataField(dataField);
 	}
@@ -519,15 +511,15 @@ public class RandomForestConverter extends Converter {
 	}
 
 	private Output encodeClassificationOutput(){
-		List<OutputField> outputFields = Lists.newArrayList();
-
 		DataField dataField = this.dataFields.get(0);
+
+		List<OutputField> outputFields = Lists.newArrayList();
 
 		List<Value> values = dataField.getValues();
 		for(Value value : values){
-			OutputField outputField = PMMLUtil.createProbabilityField(value.getValue());
+			OutputField probabilityField = PMMLUtil.createProbabilityField(value.getValue());
 
-			outputFields.add(outputField);
+			outputFields.add(probabilityField);
 		}
 
 		Output output = new Output()
