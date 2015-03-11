@@ -110,7 +110,7 @@ public class KMeansConverter extends Converter {
 
 	private Output encodeOutput(List<Cluster> clusters){
 		Output output = new Output()
-			.withOutputFields(PMMLUtil.createPredictedField("cluster"))
+			.withOutputFields(PMMLUtil.createPredictedField(FieldName.create("cluster")))
 			.withOutputFields(PMMLUtil.createAffinityFields(clusters));
 
 		return output;

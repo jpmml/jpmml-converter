@@ -89,7 +89,7 @@ public class BinaryTreeConverter extends Converter {
 
 		STRING targetClassName = targetClass.getStringValue(0);
 
-		DataField dataField = PMMLUtil.createDataField(name.getStrval(), targetClassName.getStrval());
+		DataField dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), targetClassName.getStrval());
 
 		Rexp.REXP targetLevels = REXPUtil.field(levels, name.getStrval());
 
@@ -133,7 +133,7 @@ public class BinaryTreeConverter extends Converter {
 		fieldCollector.applyTo(root);
 
 		MiningSchema miningSchema = new MiningSchema()
-			.withMiningFields(PMMLUtil.createMiningField(dataField, FieldUsageType.TARGET))
+			.withMiningFields(PMMLUtil.createMiningField(dataField.getName(), FieldUsageType.TARGET))
 			.withMiningFields(PMMLUtil.createMiningFields(fieldCollector));
 
 		TreeModel treeModel = new TreeModel(MiningFunctionType.CLASSIFICATION, miningSchema, root)
@@ -184,7 +184,7 @@ public class BinaryTreeConverter extends Converter {
 
 		STRING name = variableName.getStringValue(0);
 
-		FieldName field = new FieldName(name.getStrval());
+		FieldName field = FieldName.create(name.getStrval());
 
 		if(splitpoint.getRealValueCount() == 1){
 			DataField dataField = getDataField(field, DataType.DOUBLE, null);
@@ -290,7 +290,7 @@ public class BinaryTreeConverter extends Converter {
 
 		Output output = new Output()
 			.withOutputFields(PMMLUtil.createProbabilityFields(dataField))
-			.withOutputFields(PMMLUtil.createEntityIdField("nodeId"));
+			.withOutputFields(PMMLUtil.createEntityIdField(FieldName.create("nodeId")));
 
 		return output;
 	}

@@ -145,7 +145,7 @@ public class GBMConverter extends Converter {
 		{
 			STRING name = response_name.getStringValue(0);
 
-			DataField dataField = PMMLUtil.createDataField(name.getStrval(), DataType.DOUBLE);
+			DataField dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), DataType.DOUBLE);
 
 			this.dataFields.add(dataField);
 		}
@@ -156,7 +156,7 @@ public class GBMConverter extends Converter {
 
 			boolean categorical = (var_type.getRealValue(i) > 0d);
 
-			DataField dataField = PMMLUtil.createDataField(var_name.getStrval(), categorical);
+			DataField dataField = PMMLUtil.createDataField(FieldName.create(var_name.getStrval()), categorical);
 
 			if(categorical){
 				Rexp.REXP var_level = var_levels.getRexpValue(i);
@@ -332,42 +332,39 @@ public class GBMConverter extends Converter {
 		Constant minusTwo = new Constant("-2")
 			.withDataType(DataType.DOUBLE);
 
-		return encodeBinaryClassificationOutput("adaBoostValue", minusTwo);
+		return encodeBinaryClassificationOutput(FieldName.create("adaBoostValue"), minusTwo);
 	}
 
 	private Output encodeBernoulliOutput(){
 		Constant minusOne = new Constant("-1")
 			.withDataType(DataType.DOUBLE);
 
-		return encodeBinaryClassificationOutput("bernoulliValue", minusOne);
+		return encodeBinaryClassificationOutput(FieldName.create("bernoulliValue"), minusOne);
 	}
 
-	private Output encodeBinaryClassificationOutput(String name, Constant multiplier){
+	private Output encodeBinaryClassificationOutput(FieldName name, Constant multiplier){
 		Constant one = new Constant("1")
 			.withDataType(DataType.DOUBLE);
 
-		OutputField bernoulliValue = new OutputField()
-			.withName(new FieldName(name))
+		OutputField gbmValue = new OutputField(name)
 			.withFeature(ResultFeatureType.PREDICTED_VALUE);
 
 		// "p(1) = 1 / (1 + exp(multiplier * y))"
-		OutputField probabilityOne = new OutputField()
-			.withName(new FieldName("probability_1"))
+		OutputField probabilityOne = new OutputField(FieldName.create("probability_1"))
 			.withFeature(ResultFeatureType.TRANSFORMED_VALUE)
 			.withDataType(DataType.DOUBLE)
 			.withOpType(OpType.CONTINUOUS)
-			.withExpression(PMMLUtil.createApply("/", one, PMMLUtil.createApply("+", one, PMMLUtil.createApply("exp", PMMLUtil.createApply("*", multiplier, new FieldRef(bernoulliValue.getName()))))));
+			.withExpression(PMMLUtil.createApply("/", one, PMMLUtil.createApply("+", one, PMMLUtil.createApply("exp", PMMLUtil.createApply("*", multiplier, new FieldRef(gbmValue.getName()))))));
 
 		// "p(0) = 1 - p(1)"
-		OutputField probabilityZero = new OutputField()
-			.withName(new FieldName("probability_0"))
+		OutputField probabilityZero = new OutputField(FieldName.create("probability_0"))
 			.withFeature(ResultFeatureType.TRANSFORMED_VALUE)
 			.withDataType(DataType.DOUBLE)
 			.withOpType(OpType.CONTINUOUS)
 			.withExpression(PMMLUtil.createApply("-", one, new FieldRef(probabilityOne.getName())));
 
 		Output output = new Output()
-			.withOutputFields(bernoulliValue, probabilityOne, probabilityZero);
+			.withOutputFields(gbmValue, probabilityOne, probabilityZero);
 
 		return output;
 	}

@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
@@ -293,7 +294,7 @@ public class RandomForestConverter extends Converter {
 
 			STRING dataClass = dataClasses.getStringValue(i);
 
-			DataField dataField = PMMLUtil.createDataField(name.getStrval(), dataClass.getStrval());
+			DataField dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), dataClass.getStrval());
 
 			this.dataFields.add(dataField);
 		}
@@ -305,7 +306,7 @@ public class RandomForestConverter extends Converter {
 		{
 			boolean categorical = (y != null);
 
-			DataField dataField = PMMLUtil.createDataField("_target", categorical);
+			DataField dataField = PMMLUtil.createDataField(FieldName.create("_target"), categorical);
 
 			this.dataFields.add(dataField);
 		}
@@ -328,7 +329,7 @@ public class RandomForestConverter extends Converter {
 				throw new IllegalArgumentException();
 			}
 
-			DataField dataField = PMMLUtil.createDataField(xName.getStrval(), categorical);
+			DataField dataField = PMMLUtil.createDataField(FieldName.create(xName.getStrval()), categorical);
 
 			this.dataFields.add(dataField);
 		}

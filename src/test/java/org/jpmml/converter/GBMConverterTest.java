@@ -34,7 +34,7 @@ public class GBMConverterTest extends ConverterTest {
 	public void convertFitAdaBoostAuditNA() throws Exception {
 		Batch batch = createBatch("GBMFitAdaBoost", "AuditNA");
 
-		Set<FieldName> ignoredColumns = Sets.newHashSet(new FieldName("adaBoostValue"));
+		Set<FieldName> ignoredColumns = Sets.newHashSet(FieldName.create("adaBoostValue"));
 
 		assertTrue(BatchUtil.evaluate(batch, ignoredColumns));
 	}
@@ -43,7 +43,7 @@ public class GBMConverterTest extends ConverterTest {
 	public void convertFitBernoulliAuditNA() throws Exception {
 		Batch batch = createBatch("GBMFitBernoulli", "AuditNA");
 
-		Set<FieldName> ignoredColumns = Sets.newHashSet(new FieldName("bernoulliValue"));
+		Set<FieldName> ignoredColumns = Sets.newHashSet(FieldName.create("bernoulliValue"));
 
 		assertTrue(BatchUtil.evaluate(batch, ignoredColumns));
 	}
