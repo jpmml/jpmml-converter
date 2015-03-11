@@ -182,10 +182,8 @@ public class GBMConverter extends Converter {
 		FieldCollector fieldCollector = new TreeModelFieldCollector();
 		fieldCollector.applyTo(root);
 
-		List<MiningField> activeFields = PMMLUtil.createMiningFields(fieldCollector);
-
 		MiningSchema miningSchema = new MiningSchema()
-			.withMiningFields(activeFields);
+			.withMiningFields(PMMLUtil.createMiningFields(fieldCollector));
 
 		TreeModel treeModel = new TreeModel(miningFunction, miningSchema, root)
 			.withSplitCharacteristic(SplitCharacteristic.MULTI_SPLIT);

@@ -179,6 +179,20 @@ public class PMMLUtil {
 	}
 
 	static
+	public MiningField createMiningField(DataField dataField){
+		return createMiningField(dataField, null);
+	}
+
+	static
+	public MiningField createMiningField(DataField dataField, FieldUsageType usageType){
+		MiningField miningField = new MiningField()
+			.withName(dataField.getName())
+			.withUsageType(usageType);
+
+		return miningField;
+	}
+
+	static
 	public List<MiningField> createMiningFields(FieldCollector fieldCollector){
 		return createMiningFields(fieldCollector, null);
 	}

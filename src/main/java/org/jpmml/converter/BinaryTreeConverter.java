@@ -28,7 +28,6 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
-import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Node;
@@ -130,17 +129,12 @@ public class BinaryTreeConverter extends Converter {
 
 		DataField dataField = this.dataFields.get(0);
 
-		MiningField targetField = new MiningField(dataField.getName())
-		.withUsageType(FieldUsageType.TARGET);
-
 		FieldCollector fieldCollector = new TreeModelFieldCollector();
 		fieldCollector.applyTo(root);
 
-		List<MiningField> activeFields = PMMLUtil.createMiningFields(fieldCollector);
-
 		MiningSchema miningSchema = new MiningSchema()
-			.withMiningFields(targetField)
-			.withMiningFields(activeFields);
+			.withMiningFields(PMMLUtil.createMiningField(dataField, FieldUsageType.TARGET))
+			.withMiningFields(PMMLUtil.createMiningFields(fieldCollector));
 
 		TreeModel treeModel = new TreeModel(MiningFunctionType.CLASSIFICATION, miningSchema, root)
 			.withSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
