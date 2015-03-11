@@ -35,6 +35,7 @@ import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Entity;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
@@ -220,6 +221,19 @@ public class PMMLUtil {
 	}
 
 	static
+	public List<OutputField> createAffinityFields(List<? extends Entity> entities){
+		Function<Entity, OutputField> function = new Function<Entity, OutputField>(){
+
+			@Override
+			public OutputField apply(Entity entity){
+				return createAffinityField(entity.getId());
+			}
+		};
+
+		return Lists.newArrayList(Iterables.transform(entities, function));
+	}
+
+	static
 	public OutputField createEntityIdField(String name){
 		OutputField outputField = new OutputField()
 			.withName(new FieldName(name))
@@ -250,6 +264,19 @@ public class PMMLUtil {
 			.withValue(value);
 
 		return outputField;
+	}
+
+	static
+	public List<OutputField> createProbabilityFields(DataField dataField){
+		Function<Value, OutputField> function = new Function<Value, OutputField>(){
+
+			@Override
+			public OutputField apply(Value value){
+				return createProbabilityField(value.getValue());
+			}
+		};
+
+		return Lists.newArrayList(Iterables.transform(dataField.getValues(), function));
 	}
 
 	static

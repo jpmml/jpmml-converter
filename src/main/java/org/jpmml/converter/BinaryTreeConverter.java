@@ -33,7 +33,6 @@ import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Node;
 import org.dmg.pmml.Output;
-import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.ScoreDistribution;
@@ -295,21 +294,9 @@ public class BinaryTreeConverter extends Converter {
 	private Output encodeOutput(){
 		DataField dataField = this.dataFields.get(0);
 
-		List<OutputField> outputFields = Lists.newArrayList();
-
-		List<Value> values = dataField.getValues();
-		for(Value value : values){
-			OutputField probabilityField = PMMLUtil.createProbabilityField(value.getValue());
-
-			outputFields.add(probabilityField);
-		}
-
-		OutputField entityIdField = PMMLUtil.createEntityIdField("nodeId");
-
-		outputFields.add(entityIdField);
-
 		Output output = new Output()
-			.withOutputFields(outputFields);
+			.withOutputFields(PMMLUtil.createProbabilityFields(dataField))
+			.withOutputFields(PMMLUtil.createEntityIdField("nodeId"));
 
 		return output;
 	}

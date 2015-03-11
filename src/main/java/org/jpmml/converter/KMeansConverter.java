@@ -37,7 +37,6 @@ import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
-import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.SquaredEuclidean;
 import rexp.Rexp;
@@ -110,16 +109,9 @@ public class KMeansConverter extends Converter {
 	}
 
 	private Output encodeOutput(List<Cluster> clusters){
-		List<OutputField> outputFields = Lists.newArrayList();
-
-		outputFields.add(PMMLUtil.createPredictedField("cluster"));
-
-		for(Cluster cluster : clusters){
-			outputFields.add(PMMLUtil.createAffinityField(cluster.getId()));
-		}
-
 		Output output = new Output()
-			.withOutputFields(outputFields);
+			.withOutputFields(PMMLUtil.createPredictedField("cluster"))
+			.withOutputFields(PMMLUtil.createAffinityFields(clusters));
 
 		return output;
 	}

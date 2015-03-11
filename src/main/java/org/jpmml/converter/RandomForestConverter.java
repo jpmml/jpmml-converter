@@ -37,7 +37,6 @@ import org.dmg.pmml.MultipleModelMethodType;
 import org.dmg.pmml.Node;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
-import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Segment;
@@ -513,17 +512,8 @@ public class RandomForestConverter extends Converter {
 	private Output encodeClassificationOutput(){
 		DataField dataField = this.dataFields.get(0);
 
-		List<OutputField> outputFields = Lists.newArrayList();
-
-		List<Value> values = dataField.getValues();
-		for(Value value : values){
-			OutputField probabilityField = PMMLUtil.createProbabilityField(value.getValue());
-
-			outputFields.add(probabilityField);
-		}
-
 		Output output = new Output()
-			.withOutputFields(outputFields);
+			.withOutputFields(PMMLUtil.createProbabilityFields(dataField));
 
 		return output;
 	}
