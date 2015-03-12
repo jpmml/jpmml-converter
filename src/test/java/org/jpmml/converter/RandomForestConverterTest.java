@@ -46,7 +46,7 @@ public class RandomForestConverterTest extends ConverterTest {
 
 	@Test
 	public void convertCaretFormulaAuditMatrix() throws Exception {
-		Batch batch = createBatch("CaretRandomForestFormula", "AuditMatrix");
+		Batch batch = createBatch("TrainRandomForestFormula", "AuditMatrix");
 
 		Set<FieldName> ignoredColumns = Sets.newHashSet(FieldName.create("probability_0"), FieldName.create("probability_1"));
 
@@ -55,7 +55,7 @@ public class RandomForestConverterTest extends ConverterTest {
 
 	@Test
 	public void convertCaretAudit() throws Exception {
-		Batch batch = createBatch("CaretRandomForest", "Audit");
+		Batch batch = createBatch("TrainRandomForest", "Audit");
 
 		Set<FieldName> ignoredColumns = Sets.newHashSet(FieldName.create("probability_0"), FieldName.create("probability_1"));
 
@@ -78,14 +78,14 @@ public class RandomForestConverterTest extends ConverterTest {
 
 	@Test
 	public void convertCaretFormulaAuto() throws Exception {
-		Batch batch = createBatch("CaretRandomForestFormula", "Auto");
+		Batch batch = createBatch("TrainRandomForestFormula", "Auto");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}
 
 	@Test
 	public void convertCaretAuto() throws Exception {
-		Batch batch = createBatch("CaretRandomForest", "Auto");
+		Batch batch = createBatch("TrainRandomForest", "Auto");
 
 		assertTrue(BatchUtil.evaluate(batch));
 	}
