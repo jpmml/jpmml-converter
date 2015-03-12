@@ -2,7 +2,7 @@ library("party")
 
 source("util.R")
 
-predictCsv = function(ctree, data, targetName){
+predictClassification = function(ctree, data, targetName){
 	target = data[, targetName]
 
 	classes = ctree@predict_response(newdata = data, type = "response")
@@ -27,13 +27,30 @@ generateBinaryTreeAudit = function(){
 
 	storeProtoBuf(audit.ctree, "pb/BinaryTreeAudit.pb")
 
-	result = predictCsv(audit.ctree, audit, "Adjusted")
+	result = predictClassification(audit.ctree, audit, "Adjusted")
 	storeCsv(result, "csv/BinaryTreeAudit.csv")
 }
 
 set.seed(42)
 
 generateBinaryTreeAudit()
+
+auto = loadAutoCsv("csv/Auto.csv")
+
+generateBinaryTreeAuto = function(){
+	auto.ctree = ctree(mpg ~ ., data = auto)
+	print(auto.ctree)
+
+	storeProtoBuf(auto.ctree, "pb/BinaryTreeAuto.pb")
+
+	mpg = auto.ctree@predict_response(newdata = auto, type = "response")
+
+	storeCsv(data.frame("mpg" = mpg), "csv/BinaryTreeAuto.csv")
+}
+
+set.seed(42)
+
+generateBinaryTreeAuto()
 
 iris = loadIrisCsv("csv/Iris.csv")
 
@@ -43,7 +60,7 @@ generateBinaryTreeIris = function(){
 
 	storeProtoBuf(iris.ctree, "pb/BinaryTreeIris.pb")
 
-	result = predictCsv(iris.ctree, iris, "Species")
+	result = predictClassification(iris.ctree, iris, "Species")
 	storeCsv(result, "csv/BinaryTreeIris.csv")
 }
 

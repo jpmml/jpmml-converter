@@ -34,6 +34,13 @@ public class BinaryTreeConverterTest extends ConverterTest {
 	}
 
 	@Test
+	public void convertAuto() throws Exception {
+		Batch batch = createBatch("BinaryTree", "Auto");
+
+		assertTrue(BatchUtil.evaluate(batch));
+	}
+
+	@Test
 	public void convertIris() throws Exception {
 		Batch batch = createBatch("BinaryTree", "Iris");
 

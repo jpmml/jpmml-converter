@@ -46,6 +46,8 @@ import rexp.Rexp.STRING;
 
 public class BinaryTreeConverter extends Converter {
 
+	private MiningFunctionType miningFunction = null;
+
 	private List<DataField> dataFields = Lists.newArrayList();
 
 
@@ -74,6 +76,7 @@ public class BinaryTreeConverter extends Converter {
 
 	private void initTargetField(Rexp.REXP responses){
 		Rexp.REXP variables = REXPUtil.field(responses, "variables");
+		Rexp.REXP is_nominal = REXPUtil.field(responses, "is_nominal");
 		Rexp.REXP levels = REXPUtil.field(responses, "levels");
 
 		Rexp.REXP names = REXPUtil.attribute(variables, "names");
@@ -83,19 +86,37 @@ public class BinaryTreeConverter extends Converter {
 
 		STRING name = names.getStringValue(0);
 
-		Rexp.REXP target = REXPUtil.field(variables, name.getStrval());
+		DataField dataField;
 
-		Rexp.REXP targetClass = REXPUtil.attribute(target, "class");
+		RBOOLEAN categorical = REXPUtil.booleanField(is_nominal, name.getStrval());
 
-		STRING targetClassName = targetClass.getStringValue(0);
+		if((RBOOLEAN.T).equals(categorical)){
+			this.miningFunction = MiningFunctionType.CLASSIFICATION;
 
-		DataField dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), targetClassName.getStrval());
+			Rexp.REXP target = REXPUtil.field(variables, name.getStrval());
 
-		Rexp.REXP targetLevels = REXPUtil.field(levels, name.getStrval());
+			Rexp.REXP targetClass = REXPUtil.attribute(target, "class");
 
-		List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(targetLevels));
+			STRING targetClassName = targetClass.getStringValue(0);
 
-		dataField = dataField.withValues(values);
+			dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), targetClassName.getStrval());
+
+			Rexp.REXP targetLevels = REXPUtil.field(levels, name.getStrval());
+
+			List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(targetLevels));
+
+			dataField = dataField.withValues(values);
+		} else
+
+		if((RBOOLEAN.F).equals(categorical)){
+			this.miningFunction = MiningFunctionType.REGRESSION;
+
+			dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), false);
+		} else
+
+		{
+			throw new IllegalArgumentException();
+		}
 
 		this.dataFields.add(dataField);
 	}
@@ -136,7 +157,7 @@ public class BinaryTreeConverter extends Converter {
 			.withMiningFields(PMMLUtil.createMiningField(dataField.getName(), FieldUsageType.TARGET))
 			.withMiningFields(PMMLUtil.createMiningFields(fieldCollector));
 
-		TreeModel treeModel = new TreeModel(MiningFunctionType.CLASSIFICATION, miningSchema, root)
+		TreeModel treeModel = new TreeModel(this.miningFunction, miningSchema, root)
 			.withSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
 
 		return treeModel;
@@ -154,7 +175,7 @@ public class BinaryTreeConverter extends Converter {
 		node = node.withId(String.valueOf(nodeId.getIntValue(0)));
 
 		if((RBOOLEAN.T).equals(terminal.getBooleanValue(0))){
-			encodeScore(node, prediction);
+			node = encodeScore(node, prediction);
 
 			return;
 		}
@@ -255,12 +276,24 @@ public class BinaryTreeConverter extends Converter {
 		return Arrays.asList(leftPredicate, rightPredicate);
 	}
 
-	private void encodeScore(Node node, Rexp.REXP probabilities){
+	private Node encodeScore(Node node, Rexp.REXP probabilities){
+
+		switch(this.miningFunction){
+			case CLASSIFICATION:
+				return encodeClassificationScore(node, probabilities);
+			case REGRESSION:
+				return encodeRegressionScore(node, probabilities);
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	private Node encodeClassificationScore(Node node, Rexp.REXP probabilities){
 		DataField dataField = this.dataFields.get(0);
 
 		List<Value> values = dataField.getValues();
 
-		if(values.size() != probabilities.getRealValueCount()){
+		if(probabilities.getRealValueCount() != values.size()){
 			throw new IllegalArgumentException();
 		}
 
@@ -283,9 +316,34 @@ public class BinaryTreeConverter extends Converter {
 
 			scoreDistributions.add(scoreDistribution);
 		}
+
+		return node;
+	}
+
+	private Node encodeRegressionScore(Node node, Rexp.REXP probabilities){
+
+		if(probabilities.getRealValueCount() != 1){
+			throw new IllegalArgumentException();
+		}
+
+		Double probability = probabilities.getRealValue(0);
+
+		node = node.withScore(PMMLUtil.formatValue(probability));
+
+		return node;
 	}
 
 	private Output encodeOutput(){
+
+		switch(this.miningFunction){
+			case CLASSIFICATION:
+				return encodeClassificationOutput();
+			default:
+				return null;
+		}
+	}
+
+	private Output encodeClassificationOutput(){
 		DataField dataField = this.dataFields.get(0);
 
 		Output output = new Output()

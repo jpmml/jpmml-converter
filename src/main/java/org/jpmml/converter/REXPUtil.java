@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import rexp.Rexp;
+import rexp.Rexp.REXP.RBOOLEAN;
 import rexp.Rexp.STRING;
 
 public class REXPUtil {
@@ -66,35 +67,43 @@ public class REXPUtil {
 	public Rexp.REXP field(Rexp.REXP rexp, String name){
 		Rexp.REXP names = attribute(rexp, "names");
 
-		List<String> fields = Lists.newArrayList();
-
 		for(int i = 0; i < names.getStringValueCount(); i++){
 			STRING nameValue = names.getStringValue(i);
 
 			if((name).equals(nameValue.getStrval())){
 				return rexp.getRexpValue(i);
 			}
-
-			fields.add(nameValue.getStrval());
 		}
 
-		throw new IllegalArgumentException("Field " + name + " not in " + fields);
+		throw new IllegalArgumentException("Field " + name + " not in " + getStringList(names));
+	}
+
+	static
+	public RBOOLEAN booleanField(Rexp.REXP rexp, String name){
+		Rexp.REXP names = attribute(rexp, "names");
+
+		for(int i = 0; i < names.getStringValueCount(); i++){
+			STRING nameValue = names.getStringValue(i);
+
+			if((name).equals(nameValue.getStrval())){
+				return rexp.getBooleanValue(i);
+			}
+		}
+
+		throw new IllegalArgumentException("Field " + name + " not in " + getStringList(names));
 	}
 
 	static
 	public Rexp.REXP attribute(Rexp.REXP rexp, String name){
-		List<String> attributes = Lists.newArrayList();
 
 		for(int i = 0; i < rexp.getAttrNameCount(); i++){
 
 			if((rexp.getAttrName(i)).equals(name)){
 				return rexp.getAttrValue(i);
 			}
-
-			attributes.add(rexp.getAttrName(i));
 		}
 
-		throw new IllegalArgumentException("Attribute " + name + " not in " + attributes);
+		throw new IllegalArgumentException("Attribute " + name + " not in " + rexp.getAttrNameList());
 	}
 
 	static
