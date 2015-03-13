@@ -52,6 +52,12 @@ public class Main {
 	)
 	private File output = null;
 
+	@Parameter (
+		names = "--converter",
+		description = "Converter class"
+	)
+	private String name = null;
+
 
 	static
 	public void main(String... args) throws Exception {
@@ -95,9 +101,19 @@ public class Main {
 			is.close();
 		}
 
-		ConverterFactory converterFactory = ConverterFactory.getInstance();
+		Converter converter;
 
-		Converter converter = converterFactory.getConverter(rexp);
+		if(this.name != null){
+			Class<?> clazz = Class.forName(this.name);
+
+			converter = (Converter)clazz.newInstance();
+		} else
+
+		{
+			ConverterFactory converterFactory = ConverterFactory.getInstance();
+
+			converter = converterFactory.getConverter(rexp);
+		}
 
 		PMML pmml;
 
@@ -158,6 +174,14 @@ public class Main {
 		}
 
 		this.output = output;
+	}
+
+	public String getConverter(){
+		return this.name;
+	}
+
+	public void setConverter(String name){
+		this.name = name;
 	}
 
 	private static final Logger logger = Logger.getLogger(Main.class.getName());
