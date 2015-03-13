@@ -18,7 +18,12 @@
  */
 package org.jpmml.converter;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+import rexp.Rexp;
 import rexp.Rexp.REXP;
+import rexp.Rexp.STRING;
 
 public class ConverterFactory {
 
@@ -26,34 +31,37 @@ public class ConverterFactory {
 	}
 
 	public Converter getConverter(REXP rexp){
+		Rexp.REXP names = REXPUtil.attribute(rexp, "class");
 
-		if(REXPUtil.inherits(rexp, "BinaryTree")){
-			return new BinaryTreeConverter();
-		} else
+		for(int i = 0; i < names.getStringValueCount(); i++){
+			STRING name = names.getStringValue(i);
 
-		if(REXPUtil.inherits(rexp, "gbm")){
-			return new GBMConverter();
-		} else
+			Class<? extends Converter> clazz = ConverterFactory.converters.get(name.getStrval());
+			if(clazz != null){
 
-		if(REXPUtil.inherits(rexp, "kmeans")){
-			return new KMeansConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "randomForest")){
-			return new RandomForestConverter();
-		} else
-
-		if(REXPUtil.inherits(rexp, "train")){
-			return new TrainConverter();
+				try {
+					return clazz.newInstance();
+				} catch(Exception e){
+					throw new IllegalArgumentException(e);
+				}
+			}
 		}
 
-		{
-			throw new IllegalArgumentException();
-		}
+		throw new IllegalArgumentException();
 	}
 
 	static
 	public ConverterFactory getInstance(){
 		return new ConverterFactory();
+	}
+
+	private static Map<String, Class<? extends Converter>> converters = Maps.newLinkedHashMap();
+
+	static {
+		converters.put("BinaryTree", BinaryTreeConverter.class);
+		converters.put("gbm", GBMConverter.class);
+		converters.put("kmeans", KMeansConverter.class);
+		converters.put("randomForest", RandomForestConverter.class);
+		converters.put("train", TrainConverter.class);
 	}
 }
