@@ -304,7 +304,7 @@ public class RandomForestConverter extends Converter {
 
 		// Dependent variable
 		{
-			boolean categorical = (y != null);
+			boolean categorical = (y != null && y.getStringValueCount() > 0);
 
 			DataField dataField = PMMLUtil.createDataField(FieldName.create("_target"), categorical);
 
