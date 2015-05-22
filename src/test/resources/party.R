@@ -40,9 +40,10 @@ generateBinaryTreeAuto = function(){
 	print(auto.ctree)
 
 	mpg = auto.ctree@predict_response(newdata = auto, type = "response")
+	nodes = auto.ctree@predict_response(newdata = auto, type = "node")
 
 	storeProtoBuf(auto.ctree, "pb/BinaryTreeAuto.pb")
-	storeCsv(data.frame("mpg" = mpg), "csv/BinaryTreeAuto.csv")
+	storeCsv(data.frame("mpg" = mpg, "nodeId" = nodes), "csv/BinaryTreeAuto.csv")
 }
 
 set.seed(42)

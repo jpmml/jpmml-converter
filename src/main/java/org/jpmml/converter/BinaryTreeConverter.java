@@ -336,11 +336,20 @@ public class BinaryTreeConverter extends Converter {
 	private Output encodeOutput(){
 
 		switch(this.miningFunction){
+			case REGRESSION:
+				return encodeRegressionOutput();
 			case CLASSIFICATION:
 				return encodeClassificationOutput();
 			default:
 				return null;
 		}
+	}
+
+	private Output encodeRegressionOutput(){
+		Output output = new Output()
+			.withOutputFields(PMMLUtil.createEntityIdField(FieldName.create("nodeId")));
+
+		return output;
 	}
 
 	private Output encodeClassificationOutput(){
