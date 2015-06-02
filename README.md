@@ -25,7 +25,7 @@ Java library for converting R models to PMML
 
 # Prerequisites #
 
-* Java 1.6 or newer.
+* Java 1.7 or newer.
 * [Protocol Buffers (ProtoBuf) compiler] (https://developers.google.com/protocol-buffers/docs/downloads) 2.5.0 or newer.
 
 # Installation #

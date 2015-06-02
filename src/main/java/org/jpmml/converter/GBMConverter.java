@@ -30,8 +30,6 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
-import org.dmg.pmml.FieldUsageType;
-import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningModel;
 import org.dmg.pmml.MiningSchema;
@@ -93,48 +91,37 @@ public class GBMConverter extends Converter {
 			TreeModel treeModel = encodeTreeModel(MiningFunctionType.REGRESSION, tree, c_splits);
 
 			Segment segment = new Segment()
-				.withId(String.valueOf(i + 1))
-				.withPredicate(new True())
-				.withModel(treeModel);
+				.setId(String.valueOf(i + 1))
+				.setPredicate(new True())
+				.setModel(treeModel);
 
 			segments.add(segment);
 		}
 
 		Segmentation segmentation = new Segmentation(MultipleModelMethodType.SUM, segments);
 
-		MiningSchema miningSchema = new MiningSchema();
-
-		for(int i = 0; i < this.dataFields.size(); i++){
-			DataField dataField = this.dataFields.get(i);
-
-			MiningField miningField = new MiningField()
-				.withName(dataField.getName())
-				.withUsageType(i > 0 ? FieldUsageType.ACTIVE : FieldUsageType.TARGET);
-
-			miningSchema = miningSchema.withMiningFields(miningField);
-		}
-
-		DataField dataField = this.dataFields.get(0);
+		MiningSchema miningSchema = PMMLUtil.createMiningSchema(this.dataFields);
 
 		Output output = encodeOutput(distribution);
 
+		DataField dataField = this.dataFields.get(0);
+
 		Target target = new Target()
-			.withField(dataField.getName())
-			.withRescaleConstant(REXPUtil.asDouble(initF.getRealValue(0)));
+			.setField(dataField.getName())
+			.setRescaleConstant(REXPUtil.asDouble(initF.getRealValue(0)));
 
 		Targets targets = new Targets()
-			.withTargets(target);
+			.addTargets(target);
 
 		MiningModel miningModel = new MiningModel(MiningFunctionType.REGRESSION, miningSchema)
-			.withSegmentation(segmentation)
-			.withOutput(output)
-			.withTargets(targets);
+			.setSegmentation(segmentation)
+			.setOutput(output)
+			.setTargets(targets);
 
-		DataDictionary dataDictionary = new DataDictionary()
-			.withDataFields(this.dataFields);
+		DataDictionary dataDictionary = new DataDictionary(this.dataFields);
 
 		PMML pmml = new PMML("4.2", PMMLUtil.createHeader(), dataDictionary)
-			.withModels(miningModel);
+			.addModels(miningModel);
 
 		return pmml;
 	}
@@ -161,9 +148,8 @@ public class GBMConverter extends Converter {
 			if(categorical){
 				Rexp.REXP var_level = var_levels.getRexpValue(i);
 
-				List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(var_level));
-
-				dataField = dataField.withValues(values);
+				List<Value> values = dataField.getValues();
+				values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(var_level)));
 
 				dataField = PMMLUtil.refineDataField(dataField);
 			}
@@ -174,19 +160,18 @@ public class GBMConverter extends Converter {
 
 	private TreeModel encodeTreeModel(MiningFunctionType miningFunction, Rexp.REXP tree, Rexp.REXP c_splits){
 		Node root = new Node()
-			.withId("1")
-			.withPredicate(new True());
+			.setId("1")
+			.setPredicate(new True());
 
 		encodeNode(root, 0, tree, c_splits);
 
 		FieldCollector fieldCollector = new TreeModelFieldCollector();
 		fieldCollector.applyTo(root);
 
-		MiningSchema miningSchema = new MiningSchema()
-			.withMiningFields(PMMLUtil.createMiningFields(fieldCollector));
+		MiningSchema miningSchema = PMMLUtil.createMiningSchema(fieldCollector);
 
 		TreeModel treeModel = new TreeModel(miningFunction, miningSchema, root)
-			.withSplitCharacteristic(SplitCharacteristic.MULTI_SPLIT);
+			.setSplitCharacteristic(SplitCharacteristic.MULTI_SPLIT);
 
 		return treeModel;
 	}
@@ -236,47 +221,47 @@ public class GBMConverter extends Converter {
 		{
 			Double value = prediction.getRealValue(i);
 
-			node = node.withScore(PMMLUtil.formatValue(value));
+			node.setScore(PMMLUtil.formatValue(value));
 		}
 
 		Integer missing = missingNode.getIntValue(i);
 		if(missing != -1){
 			Node missingChild = new Node()
-				.withId(String.valueOf(missing + 1))
-				.withPredicate(missingPredicate);
+				.setId(String.valueOf(missing + 1))
+				.setPredicate(missingPredicate);
 
 			encodeNode(missingChild, missing, tree, c_splits);
 
-			node = node.withNodes(missingChild);
+			node.addNodes(missingChild);
 		}
 
 		Integer left = leftNode.getIntValue(i);
 		if(left != -1){
 			Node leftChild = new Node()
-				.withId(String.valueOf(left + 1))
-				.withPredicate(leftPredicate);
+				.setId(String.valueOf(left + 1))
+				.setPredicate(leftPredicate);
 
 			encodeNode(leftChild, left, tree, c_splits);
 
-			node = node.withNodes(leftChild);
+			node.addNodes(leftChild);
 		}
 
 		Integer right = rightNode.getIntValue(i);
 		if(right != -1){
 			Node rightChild = new Node()
-				.withId(String.valueOf(right + 1))
-				.withPredicate(rightPredicate);
+				.setId(String.valueOf(right + 1))
+				.setPredicate(rightPredicate);
 
 			encodeNode(rightChild, right, tree, c_splits);
 
-			node = node.withNodes(rightChild);
+			node.addNodes(rightChild);
 		}
 	}
 
 	private Predicate encodeIsMissingSplit(DataField dataField){
 		SimplePredicate simplePredicate = new SimplePredicate()
-			.withField(dataField.getName())
-			.withOperator(SimplePredicate.Operator.IS_MISSING);
+			.setField(dataField.getName())
+			.setOperator(SimplePredicate.Operator.IS_MISSING);
 
 		return simplePredicate;
 	}
@@ -288,26 +273,26 @@ public class GBMConverter extends Converter {
 			Value value = values.get(0);
 
 			SimplePredicate simplePredicate = new SimplePredicate()
-				.withField(dataField.getName())
-				.withOperator(SimplePredicate.Operator.EQUAL)
-				.withValue(value.getValue());
+				.setField(dataField.getName())
+				.setOperator(SimplePredicate.Operator.EQUAL)
+				.setValue(value.getValue());
 
 			return simplePredicate;
 		}
 
 		SimpleSetPredicate simpleSetPredicate = new SimpleSetPredicate()
-			.withField(dataField.getName())
-			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.withArray(PMMLUtil.createArray(dataField.getDataType(), values));
+			.setField(dataField.getName())
+			.setBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
+			.setArray(PMMLUtil.createArray(dataField.getDataType(), values));
 
 		return simpleSetPredicate;
 	}
 
 	private Predicate encodeContinuousSplit(DataField dataField, Double split, boolean left){
 		SimplePredicate simplePredicate = new SimplePredicate()
-			.withField(dataField.getName())
-			.withOperator(left ? SimplePredicate.Operator.LESS_THAN : SimplePredicate.Operator.GREATER_OR_EQUAL)
-			.withValue(PMMLUtil.formatValue(split));
+			.setField(dataField.getName())
+			.setOperator(left ? SimplePredicate.Operator.LESS_THAN : SimplePredicate.Operator.GREATER_OR_EQUAL)
+			.setValue(PMMLUtil.formatValue(split));
 
 		return simplePredicate;
 	}
@@ -330,41 +315,41 @@ public class GBMConverter extends Converter {
 
 	private Output encodeAdaBoostOutput(){
 		Constant minusTwo = new Constant("-2")
-			.withDataType(DataType.DOUBLE);
+			.setDataType(DataType.DOUBLE);
 
 		return encodeBinaryClassificationOutput(FieldName.create("adaBoostValue"), minusTwo);
 	}
 
 	private Output encodeBernoulliOutput(){
 		Constant minusOne = new Constant("-1")
-			.withDataType(DataType.DOUBLE);
+			.setDataType(DataType.DOUBLE);
 
 		return encodeBinaryClassificationOutput(FieldName.create("bernoulliValue"), minusOne);
 	}
 
 	private Output encodeBinaryClassificationOutput(FieldName name, Constant multiplier){
 		Constant one = new Constant("1")
-			.withDataType(DataType.DOUBLE);
+			.setDataType(DataType.DOUBLE);
 
 		OutputField gbmValue = new OutputField(name)
-			.withFeature(ResultFeatureType.PREDICTED_VALUE);
+			.setFeature(ResultFeatureType.PREDICTED_VALUE);
 
 		// "p(1) = 1 / (1 + exp(multiplier * y))"
 		OutputField probabilityOne = new OutputField(FieldName.create("probability_1"))
-			.withFeature(ResultFeatureType.TRANSFORMED_VALUE)
-			.withDataType(DataType.DOUBLE)
-			.withOpType(OpType.CONTINUOUS)
-			.withExpression(PMMLUtil.createApply("/", one, PMMLUtil.createApply("+", one, PMMLUtil.createApply("exp", PMMLUtil.createApply("*", multiplier, new FieldRef(gbmValue.getName()))))));
+			.setFeature(ResultFeatureType.TRANSFORMED_VALUE)
+			.setDataType(DataType.DOUBLE)
+			.setOpType(OpType.CONTINUOUS)
+			.setExpression(PMMLUtil.createApply("/", one, PMMLUtil.createApply("+", one, PMMLUtil.createApply("exp", PMMLUtil.createApply("*", multiplier, new FieldRef(gbmValue.getName()))))));
 
 		// "p(0) = 1 - p(1)"
 		OutputField probabilityZero = new OutputField(FieldName.create("probability_0"))
-			.withFeature(ResultFeatureType.TRANSFORMED_VALUE)
-			.withDataType(DataType.DOUBLE)
-			.withOpType(OpType.CONTINUOUS)
-			.withExpression(PMMLUtil.createApply("-", one, new FieldRef(probabilityOne.getName())));
+			.setFeature(ResultFeatureType.TRANSFORMED_VALUE)
+			.setDataType(DataType.DOUBLE)
+			.setOpType(OpType.CONTINUOUS)
+			.setExpression(PMMLUtil.createApply("-", one, new FieldRef(probabilityOne.getName())));
 
 		Output output = new Output()
-			.withOutputFields(gbmValue, probabilityOne, probabilityZero);
+			.addOutputFields(gbmValue, probabilityOne, probabilityZero);
 
 		return output;
 	}

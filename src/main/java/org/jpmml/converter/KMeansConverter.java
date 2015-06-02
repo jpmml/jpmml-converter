@@ -32,11 +32,11 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.SquaredEuclidean;
 import rexp.Rexp;
@@ -56,26 +56,25 @@ public class KMeansConverter extends Converter {
 		int columns = dim.getIntValue(1);
 
 		ComparisonMeasure comparisonMeasure = new ComparisonMeasure(ComparisonMeasure.Kind.DISTANCE)
-			.withMeasure(new SquaredEuclidean())
-			.withCompareFunction(CompareFunctionType.ABS_DIFF);
+			.setMeasure(new SquaredEuclidean())
+			.setCompareFunction(CompareFunctionType.ABS_DIFF);
+
+		List<DataField> dataFields = Lists.newArrayList();
 
 		List<ClusteringField> clusteringFields = Lists.newArrayList();
-
-		DataDictionary dataDictionary = new DataDictionary();
-
-		MiningSchema miningSchema = new MiningSchema();
 
 		Rexp.REXP columnNames = dimnames.getRexpValue(1);
 		for(int i = 0; i < columns; i++){
 			STRING name = columnNames.getStringValue(i);
 
-			DataField dataField = new DataField(FieldName.create(name.getStrval()), OpType.CONTINUOUS, DataType.DOUBLE);
-			dataDictionary = dataDictionary.withDataFields(dataField);
+			DataField dataField = new DataField()
+				.setName(FieldName.create(name.getStrval()))
+				.setOpType(OpType.CONTINUOUS)
+				.setDataType(DataType.DOUBLE);
 
-			MiningField miningField = new MiningField(dataField.getName());
-			miningSchema = miningSchema.withMiningFields(miningField);
+			dataFields.add(dataField);
 
-			ClusteringField clusteringField = new ClusteringField(miningField.getName());
+			ClusteringField clusteringField = new ClusteringField(dataField.getName());
 
 			clusteringFields.add(clusteringField);
 		}
@@ -89,29 +88,35 @@ public class KMeansConverter extends Converter {
 			Array array = encodeArray(REXPUtil.getRow(centers.getRealValueList(), i, rows, columns));
 
 			Cluster cluster = new Cluster()
-				.withName(name.getStrval())
-				.withId(String.valueOf(i + 1))
-				.withSize(size.getIntValue(i))
-				.withArray(array);
+				.setName(name.getStrval())
+				.setId(String.valueOf(i + 1))
+				.setSize(size.getIntValue(i))
+				.setArray(array);
 
 			clusters.add(cluster);
 		}
 
+		MiningSchema miningSchema = PMMLUtil.createMiningSchema(null, dataFields);
+
 		Output output = encodeOutput(clusters);
 
 		ClusteringModel clusteringModel = new ClusteringModel(MiningFunctionType.CLUSTERING, ClusteringModel.ModelClass.CENTER_BASED, rows, miningSchema, comparisonMeasure, clusteringFields, clusters)
-			.withOutput(output);
+			.setOutput(output);
+
+		DataDictionary dataDictionary = new DataDictionary(dataFields);
 
 		PMML pmml = new PMML("4.2", PMMLUtil.createHeader(), dataDictionary)
-			.withModels(clusteringModel);
+			.addModels(clusteringModel);
 
 		return pmml;
 	}
 
 	private Output encodeOutput(List<Cluster> clusters){
 		Output output = new Output()
-			.withOutputFields(PMMLUtil.createPredictedField(FieldName.create("cluster")))
-			.withOutputFields(PMMLUtil.createAffinityFields(clusters));
+			.addOutputFields(PMMLUtil.createPredictedField(FieldName.create("cluster")));
+
+		List<OutputField> outputFields = output.getOutputFields();
+		outputFields.addAll(PMMLUtil.createAffinityFields(clusters));
 
 		return output;
 	}

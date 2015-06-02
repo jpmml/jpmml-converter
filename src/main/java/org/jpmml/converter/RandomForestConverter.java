@@ -29,8 +29,6 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.FieldUsageType;
-import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningModel;
 import org.dmg.pmml.MiningSchema;
@@ -243,9 +241,9 @@ public class RandomForestConverter extends Converter {
 			TreeModel treeModel = treeModels.get(i);
 
 			Segment segment = new Segment()
-				.withId(String.valueOf(i + 1))
-				.withPredicate(new True())
-				.withModel(treeModel);
+				.setId(String.valueOf(i + 1))
+				.setPredicate(new True())
+				.setModel(treeModel);
 
 			segments.add(segment);
 		}
@@ -257,29 +255,18 @@ public class RandomForestConverter extends Converter {
 
 		PMMLUtil.refineDataFields(this.dataFields, fieldTypeAnalyzer);
 
-		MiningSchema miningSchema = new MiningSchema();
-
-		for(int i = 0; i < this.dataFields.size(); i++){
-			DataField dataField = this.dataFields.get(i);
-
-			MiningField miningField = new MiningField()
-				.withName(dataField.getName())
-				.withUsageType(i > 0 ? FieldUsageType.ACTIVE : FieldUsageType.TARGET);
-
-			miningSchema = miningSchema.withMiningFields(miningField);
-		}
+		MiningSchema miningSchema = PMMLUtil.createMiningSchema(this.dataFields);
 
 		Output output = encodeOutput(miningFunction);
 
 		MiningModel miningModel = new MiningModel(miningFunction, miningSchema)
-			.withSegmentation(segmentation)
-			.withOutput(output);
+			.setSegmentation(segmentation)
+			.setOutput(output);
 
-		DataDictionary dataDictionary = new DataDictionary()
-			.withDataFields(this.dataFields);
+		DataDictionary dataDictionary = new DataDictionary(this.dataFields);
 
 		PMML pmml = new PMML("4.2", PMMLUtil.createHeader(), dataDictionary)
-			.withModels(miningModel);
+			.addModels(miningModel);
 
 		return pmml;
 	}
@@ -347,9 +334,8 @@ public class RandomForestConverter extends Converter {
 
 			Rexp.REXP xvalues = xlevels.getRexpValue(i);
 
-			List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(xvalues));
-
-			dataField = dataField.withValues(values);
+			List<Value> values = dataField.getValues();
+			values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(xvalues)));
 
 			dataField = PMMLUtil.refineDataField(dataField);
 		}
@@ -360,28 +346,26 @@ public class RandomForestConverter extends Converter {
 
 		Rexp.REXP levels = REXPUtil.attribute(y, "levels");
 
-		List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(levels));
-
-		dataField = dataField.withValues(values);
+		List<Value> values = dataField.getValues();
+		values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(levels)));
 
 		dataField = PMMLUtil.refineDataField(dataField);
 	}
 
 	private <P extends Number> TreeModel encodeTreeModel(MiningFunctionType miningFunction, List<Integer> leftDaughter, List<Integer> rightDaughter, ScoreEncoder<P> scoreEncoder, List<P> nodepred, List<Integer> bestvar, List<Double> xbestsplit){
 		Node root = new Node()
-			.withId("1")
-			.withPredicate(new True());
+			.setId("1")
+			.setPredicate(new True());
 
 		encodeNode(root, 0, leftDaughter, rightDaughter, bestvar, xbestsplit, scoreEncoder, nodepred);
 
 		FieldCollector fieldCollector = new TreeModelFieldCollector();
 		fieldCollector.applyTo(root);
 
-		MiningSchema miningSchema = new MiningSchema()
-			.withMiningFields(PMMLUtil.createMiningFields(fieldCollector));
+		MiningSchema miningSchema = PMMLUtil.createMiningSchema(fieldCollector);
 
 		TreeModel treeModel = new TreeModel(miningFunction, miningSchema, root)
-			.withSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
+			.setSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
 
 		return treeModel;
 	}
@@ -424,29 +408,29 @@ public class RandomForestConverter extends Converter {
 		{
 			P prediction = nodepred.get(i);
 
-			node = node.withScore(scoreEncoder.encode(prediction));
+			node.setScore(scoreEncoder.encode(prediction));
 		}
 
 		Integer left = leftDaughter.get(i);
 		if(left != 0){
 			Node leftChild = new Node()
-				.withId(String.valueOf(left))
-				.withPredicate(leftPredicate);
+				.setId(String.valueOf(left))
+				.setPredicate(leftPredicate);
 
 			encodeNode(leftChild, left - 1, leftDaughter, rightDaughter, bestvar, xbestsplit, scoreEncoder, nodepred);
 
-			node = node.withNodes(leftChild);
+			node.addNodes(leftChild);
 		}
 
 		Integer right = rightDaughter.get(i);
 		if(right != 0){
 			Node rightChild = new Node()
-				.withId(String.valueOf(right))
-				.withPredicate(rightPredicate);
+				.setId(String.valueOf(right))
+				.setPredicate(rightPredicate);
 
 			encodeNode(rightChild, right - 1, leftDaughter, rightDaughter, bestvar, xbestsplit, scoreEncoder, nodepred);
 
-			node = node.withNodes(rightChild);
+			node.addNodes(rightChild);
 		}
 	}
 
@@ -457,17 +441,17 @@ public class RandomForestConverter extends Converter {
 			Value value = values.get(0);
 
 			SimplePredicate simplePredicate = new SimplePredicate()
-				.withField(dataField.getName())
-				.withOperator(SimplePredicate.Operator.EQUAL)
-				.withValue(value.getValue());
+				.setField(dataField.getName())
+				.setOperator(SimplePredicate.Operator.EQUAL)
+				.setValue(value.getValue());
 
 			return simplePredicate;
 		}
 
 		SimpleSetPredicate simpleSetPredicate = new SimpleSetPredicate()
-			.withField(dataField.getName())
-			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.withArray(PMMLUtil.createArray(dataField.getDataType(), values));
+			.setField(dataField.getName())
+			.setBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
+			.setArray(PMMLUtil.createArray(dataField.getDataType(), values));
 
 		return simpleSetPredicate;
 	}
@@ -479,16 +463,16 @@ public class RandomForestConverter extends Converter {
 
 		if((DataType.DOUBLE).equals(dataType)){
 			simplePredicate = new SimplePredicate()
-				.withField(dataField.getName())
-				.withOperator(left ? SimplePredicate.Operator.LESS_OR_EQUAL : SimplePredicate.Operator.GREATER_THAN)
-				.withValue(PMMLUtil.formatValue(split));
+				.setField(dataField.getName())
+				.setOperator(left ? SimplePredicate.Operator.LESS_OR_EQUAL : SimplePredicate.Operator.GREATER_THAN)
+				.setValue(PMMLUtil.formatValue(split));
 		} else
 
 		if((DataType.BOOLEAN).equals(dataType)){
 			simplePredicate = new SimplePredicate()
-				.withField(dataField.getName())
-				.withOperator(SimplePredicate.Operator.EQUAL)
-				.withValue(split.doubleValue() <= 0.5d ? Boolean.toString(!left) : Boolean.toString(left));
+				.setField(dataField.getName())
+				.setOperator(SimplePredicate.Operator.EQUAL)
+				.setValue(split.doubleValue() <= 0.5d ? Boolean.toString(!left) : Boolean.toString(left));
 		} else
 
 		{
@@ -511,8 +495,7 @@ public class RandomForestConverter extends Converter {
 	private Output encodeClassificationOutput(){
 		DataField dataField = this.dataFields.get(0);
 
-		Output output = new Output()
-			.withOutputFields(PMMLUtil.createProbabilityFields(dataField));
+		Output output = new Output(PMMLUtil.createProbabilityFields(dataField));
 
 		return output;
 	}

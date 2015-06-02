@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField;
+import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeatureType;
@@ -83,7 +85,7 @@ public class PMMLUtil {
 	static
 	public DataField createDataField(FieldName name, DataType dataType){
 		DataField dataField = new DataField()
-			.withName(name);
+			.setName(name);
 
 		dataField = refineDataField(dataField, dataType);
 
@@ -99,7 +101,7 @@ public class PMMLUtil {
 			@Override
 			public DataField apply(FieldName name){
 				DataField dataField = new DataField()
-					.withName(name);
+					.setName(name);
 
 				return dataField;
 			}
@@ -125,17 +127,17 @@ public class PMMLUtil {
 
 		switch(dataType){
 			case STRING:
-				return dataField.withDataType(DataType.STRING)
-					.withOpType(OpType.CATEGORICAL);
+				return dataField.setDataType(DataType.STRING)
+					.setOpType(OpType.CATEGORICAL);
 			case DOUBLE:
-				return dataField.withDataType(DataType.DOUBLE)
-					.withOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
+				return dataField.setDataType(DataType.DOUBLE)
+					.setOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
 			case INTEGER:
-				return dataField.withDataType(DataType.INTEGER)
-					.withOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
+				return dataField.setDataType(DataType.INTEGER)
+					.setOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
 			case BOOLEAN:
-				return dataField.withDataType(DataType.BOOLEAN)
-					.withOpType(OpType.CATEGORICAL);
+				return dataField.setDataType(DataType.BOOLEAN)
+					.setOpType(OpType.CATEGORICAL);
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -169,7 +171,7 @@ public class PMMLUtil {
 			@Override
 			public Value apply(String string){
 				Value value = new Value(string)
-					.withProperty(property);
+					.setProperty(property);
 
 				return value;
 			}
@@ -186,33 +188,9 @@ public class PMMLUtil {
 	static
 	public MiningField createMiningField(FieldName name, FieldUsageType usageType){
 		MiningField miningField = new MiningField(name)
-			.withUsageType(usageType);
+			.setUsageType(usageType);
 
 		return miningField;
-	}
-
-	static
-	public List<MiningField> createMiningFields(FieldCollector fieldCollector){
-		return createMiningFields(fieldCollector, null);
-	}
-
-	static
-	public List<MiningField> createMiningFields(FieldCollector fieldCollector, final FieldUsageType usageType){
-		Set<FieldName> names = fieldCollector.getFields();
-
-		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
-
-			@Override
-			public MiningField apply(FieldName name){
-				return createMiningField(name, usageType);
-			}
-		};
-
-		List<MiningField> miningFields = Lists.newArrayList(Iterables.transform(names, function));
-
-		Collections.sort(miningFields, new MiningFieldComparator());
-
-		return miningFields;
 	}
 
 	static
@@ -223,8 +201,8 @@ public class PMMLUtil {
 	static
 	public OutputField createAffinityField(FieldName name, String value){
 		OutputField outputField = new OutputField(name)
-			.withFeature(ResultFeatureType.AFFINITY)
-			.withValue(value);
+			.setFeature(ResultFeatureType.AFFINITY)
+			.setValue(value);
 
 		return outputField;
 	}
@@ -245,7 +223,7 @@ public class PMMLUtil {
 	static
 	public OutputField createEntityIdField(FieldName name){
 		OutputField outputField = new OutputField(name)
-			.withFeature(ResultFeatureType.ENTITY_ID);
+			.setFeature(ResultFeatureType.ENTITY_ID);
 
 		return outputField;
 	}
@@ -253,7 +231,7 @@ public class PMMLUtil {
 	static
 	public OutputField createPredictedField(FieldName name){
 		OutputField outputField = new OutputField(name)
-			.withFeature(ResultFeatureType.PREDICTED_VALUE);
+			.setFeature(ResultFeatureType.PREDICTED_VALUE);
 
 		return outputField;
 	}
@@ -266,8 +244,8 @@ public class PMMLUtil {
 	static
 	public OutputField createProbabilityField(FieldName name, String value){
 		OutputField outputField = new OutputField(name)
-			.withFeature(ResultFeatureType.PROBABILITY)
-			.withValue(value);
+			.setFeature(ResultFeatureType.PROBABILITY)
+			.setValue(value);
 
 		return outputField;
 	}
@@ -288,8 +266,8 @@ public class PMMLUtil {
 	static
 	public Header createHeader(){
 		Application application = new Application()
-			.withName("JPMML-Converter")
-			.withVersion("1.0-SNAPSHOT");
+			.setName("JPMML-Converter")
+			.setVersion("1.0-SNAPSHOT");
 
 		// XML Schema "dateTime" data format (corresponds roughly to ISO 8601)
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -298,19 +276,68 @@ public class PMMLUtil {
 		Date now = new Date();
 
 		Timestamp timestamp = new Timestamp()
-			.withContent(dateFormat.format(now));
+			.addContent(dateFormat.format(now));
 
 		Header header = new Header()
-			.withApplication(application)
-			.withTimestamp(timestamp);
+			.setApplication(application)
+			.setTimestamp(timestamp);
 
 		return header;
 	}
 
 	static
+	public MiningSchema createMiningSchema(List<DataField> dataFields){
+		return createMiningSchema(dataFields.get(0), dataFields.subList(1, dataFields.size()));
+	}
+
+	static
+	public MiningSchema createMiningSchema(DataField targetDataField, List<DataField> activeDataFields){
+		List<MiningField> miningFields = Lists.newArrayList();
+
+		if(targetDataField != null){
+			miningFields.add(createMiningField(targetDataField.getName(), FieldUsageType.TARGET));
+		}
+
+		Function<DataField, MiningField> function = new Function<DataField, MiningField>(){
+
+			@Override
+			public MiningField apply(DataField dataField){
+				return createMiningField(dataField.getName());
+			}
+		};
+
+		miningFields.addAll(Lists.transform(activeDataFields, function));
+
+		MiningSchema miningSchema = new MiningSchema(miningFields);
+
+		return miningSchema;
+	}
+
+	static
+	public MiningSchema createMiningSchema(FieldCollector fieldCollector){
+		Collection<FieldName> names = fieldCollector.getFields();
+
+		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
+
+			@Override
+			public MiningField apply(FieldName name){
+				return createMiningField(name);
+			}
+		};
+
+		List<MiningField> miningFields = Lists.newArrayList(Iterables.transform(names, function));
+
+		Collections.sort(miningFields, new MiningFieldComparator());
+
+		MiningSchema miningSchema = new MiningSchema(miningFields);
+
+		return miningSchema;
+	}
+
+	static
 	public Apply createApply(String function, Expression... expressions){
 		Apply apply = new Apply(function)
-			.withExpressions(expressions);
+			.addExpressions(expressions);
 
 		return apply;
 	}

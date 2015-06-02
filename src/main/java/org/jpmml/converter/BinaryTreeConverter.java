@@ -28,6 +28,7 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
+import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Node;
@@ -61,15 +62,14 @@ public class BinaryTreeConverter extends Converter {
 		Output output = encodeOutput();
 
 		TreeModel treeModel = encodeTreeModel(tree)
-			.withOutput(output);
+			.setOutput(output);
 
 		Collections.sort(this.dataFields.subList(1, this.dataFields.size()), new DataFieldComparator());
 
-		DataDictionary dataDictionary = new DataDictionary()
-			.withDataFields(this.dataFields);
+		DataDictionary dataDictionary = new DataDictionary(this.dataFields);
 
 		PMML pmml = new PMML("4.2", PMMLUtil.createHeader(), dataDictionary)
-			.withModels(treeModel);
+			.addModels(treeModel);
 
 		return pmml;
 	}
@@ -103,9 +103,8 @@ public class BinaryTreeConverter extends Converter {
 
 			Rexp.REXP targetLevels = REXPUtil.field(levels, name.getStrval());
 
-			List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(targetLevels));
-
-			dataField = dataField.withValues(values);
+			List<Value> values = dataField.getValues();
+			values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(targetLevels)));
 		} else
 
 		if((RBOOLEAN.F).equals(categorical)){
@@ -121,7 +120,7 @@ public class BinaryTreeConverter extends Converter {
 		this.dataFields.add(dataField);
 	}
 
-	private DataField getDataField(FieldName name, DataType dataType, List<Value> values){
+	private DataField getDataField(FieldName name){
 
 		for(int i = 1; i < this.dataFields.size(); i++){
 			DataField dataField = this.dataFields.get(i);
@@ -131,9 +130,13 @@ public class BinaryTreeConverter extends Converter {
 			}
 		}
 
+		return null;
+	}
+
+	private DataField createDataField(FieldName name, DataType dataType){
 		DataField dataField = new DataField()
-			.withName(name)
-			.withValues(values);
+			.setName(name)
+			.setDataType(dataType);
 
 		dataField = PMMLUtil.refineDataField(dataField, dataType);
 
@@ -144,7 +147,7 @@ public class BinaryTreeConverter extends Converter {
 
 	private TreeModel encodeTreeModel(Rexp.REXP tree){
 		Node root = new Node()
-			.withPredicate(new True());
+			.setPredicate(new True());
 
 		encodeNode(root, tree);
 
@@ -153,12 +156,13 @@ public class BinaryTreeConverter extends Converter {
 		FieldCollector fieldCollector = new TreeModelFieldCollector();
 		fieldCollector.applyTo(root);
 
-		MiningSchema miningSchema = new MiningSchema()
-			.withMiningFields(PMMLUtil.createMiningField(dataField.getName(), FieldUsageType.TARGET))
-			.withMiningFields(PMMLUtil.createMiningFields(fieldCollector));
+		MiningSchema miningSchema = PMMLUtil.createMiningSchema(fieldCollector);
+
+		List<MiningField> miningFields = miningSchema.getMiningFields();
+		miningFields.add(0, PMMLUtil.createMiningField(dataField.getName(), FieldUsageType.TARGET));
 
 		TreeModel treeModel = new TreeModel(this.miningFunction, miningSchema, root)
-			.withSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
+			.setSplitCharacteristic(TreeModel.SplitCharacteristic.BINARY_SPLIT);
 
 		return treeModel;
 	}
@@ -172,7 +176,7 @@ public class BinaryTreeConverter extends Converter {
 		Rexp.REXP left = REXPUtil.field(tree, "left");
 		Rexp.REXP right = REXPUtil.field(tree, "right");
 
-		node = node.withId(String.valueOf(nodeId.getIntValue(0)));
+		node.setId(String.valueOf(nodeId.getIntValue(0)));
 
 		if((RBOOLEAN.T).equals(terminal.getBooleanValue(0))){
 			node = encodeScore(node, prediction);
@@ -183,16 +187,16 @@ public class BinaryTreeConverter extends Converter {
 		List<Predicate> predicates = encodeSplit(psplit, ssplits);
 
 		Node leftChild = new Node()
-			.withPredicate(predicates.get(0));
+			.setPredicate(predicates.get(0));
 
 		encodeNode(leftChild, left);
 
 		Node rightChild = new Node()
-			.withPredicate(predicates.get(1));
+			.setPredicate(predicates.get(1));
 
 		encodeNode(rightChild, right);
 
-		node = node.withNodes(leftChild, rightChild);
+		node.addNodes(leftChild, rightChild);
 	}
 
 	private List<Predicate> encodeSplit(Rexp.REXP split, Rexp.REXP ssplits){
@@ -208,7 +212,10 @@ public class BinaryTreeConverter extends Converter {
 		FieldName field = FieldName.create(name.getStrval());
 
 		if(splitpoint.getRealValueCount() == 1){
-			DataField dataField = getDataField(field, DataType.DOUBLE, null);
+			DataField dataField = getDataField(field);
+			if(dataField == null){
+				dataField = createDataField(field, DataType.DOUBLE);
+			}
 
 			return encodeContinuousSplit(dataField, splitpoint.getRealValue(0));
 		} // End if
@@ -216,11 +223,17 @@ public class BinaryTreeConverter extends Converter {
 		if(splitpoint.getIntValueCount() > 0){
 			Rexp.REXP levels = REXPUtil.attribute(splitpoint, "levels");
 
-			List<Value> values = PMMLUtil.createValues(REXPUtil.getStringList(levels));
+			List<Value> levelValues = PMMLUtil.createValues(REXPUtil.getStringList(levels));
 
-			DataField dataField = getDataField(field, DataType.STRING, values);
+			DataField dataField = getDataField(field);
+			if(dataField == null){
+				dataField = createDataField(field, DataType.STRING);
 
-			return encodeCategoricalSplit(dataField, splitpoint.getIntValueList(), values);
+				List<Value> values = dataField.getValues();
+				values.addAll(levelValues);
+			}
+
+			return encodeCategoricalSplit(dataField, splitpoint.getIntValueList(), levelValues);
 		}
 
 		throw new IllegalArgumentException();
@@ -230,14 +243,14 @@ public class BinaryTreeConverter extends Converter {
 		String value = PMMLUtil.formatValue(split);
 
 		Predicate leftPredicate = new SimplePredicate()
-			.withField(dataField.getName())
-			.withOperator(SimplePredicate.Operator.LESS_OR_EQUAL)
-			.withValue(value);
+			.setField(dataField.getName())
+			.setOperator(SimplePredicate.Operator.LESS_OR_EQUAL)
+			.setValue(value);
 
 		Predicate rightPredicate = new SimplePredicate()
-			.withField(dataField.getName())
-			.withOperator(SimplePredicate.Operator.GREATER_THAN)
-			.withValue(value);
+			.setField(dataField.getName())
+			.setOperator(SimplePredicate.Operator.GREATER_THAN)
+			.setValue(value);
 
 		return Arrays.asList(leftPredicate, rightPredicate);
 	}
@@ -264,14 +277,14 @@ public class BinaryTreeConverter extends Converter {
 		}
 
 		Predicate leftPredicate = new SimpleSetPredicate()
-			.withField(dataField.getName())
-			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.withArray(PMMLUtil.createArray(dataField.getDataType(), leftValues));
+			.setField(dataField.getName())
+			.setBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
+			.setArray(PMMLUtil.createArray(dataField.getDataType(), leftValues));
 
 		Predicate rightPredicate = new SimpleSetPredicate()
-			.withField(dataField.getName())
-			.withBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.withArray(PMMLUtil.createArray(dataField.getDataType(), rightValues));
+			.setField(dataField.getName())
+			.setBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
+			.setArray(PMMLUtil.createArray(dataField.getDataType(), rightValues));
 
 		return Arrays.asList(leftPredicate, rightPredicate);
 	}
@@ -307,7 +320,7 @@ public class BinaryTreeConverter extends Converter {
 			Double probability = probabilities.getRealValue(i);
 
 			if(maxProbability == null || maxProbability.compareTo(probability) < 0){
-				node = node.withScore(value.getValue());
+				node.setScore(value.getValue());
 
 				maxProbability = probability;
 			}
@@ -328,7 +341,7 @@ public class BinaryTreeConverter extends Converter {
 
 		Double probability = probabilities.getRealValue(0);
 
-		node = node.withScore(PMMLUtil.formatValue(probability));
+		node.setScore(PMMLUtil.formatValue(probability));
 
 		return node;
 	}
@@ -347,7 +360,7 @@ public class BinaryTreeConverter extends Converter {
 
 	private Output encodeRegressionOutput(){
 		Output output = new Output()
-			.withOutputFields(PMMLUtil.createEntityIdField(FieldName.create("nodeId")));
+			.addOutputFields(PMMLUtil.createEntityIdField(FieldName.create("nodeId")));
 
 		return output;
 	}
@@ -355,9 +368,8 @@ public class BinaryTreeConverter extends Converter {
 	private Output encodeClassificationOutput(){
 		DataField dataField = this.dataFields.get(0);
 
-		Output output = new Output()
-			.withOutputFields(PMMLUtil.createProbabilityFields(dataField))
-			.withOutputFields(PMMLUtil.createEntityIdField(FieldName.create("nodeId")));
+		Output output = new Output(PMMLUtil.createProbabilityFields(dataField))
+			.addOutputFields(PMMLUtil.createEntityIdField(FieldName.create("nodeId")));
 
 		return output;
 	}
