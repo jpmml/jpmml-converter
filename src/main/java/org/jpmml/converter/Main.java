@@ -110,9 +110,9 @@ public class Main {
 		} else
 
 		{
-			ConverterFactory converterFactory = ConverterFactory.getInstance();
+			ConverterFactory converterFactory = ConverterFactory.newInstance();
 
-			converter = converterFactory.getConverter(rexp);
+			converter = converterFactory.newConverter(rexp);
 		}
 
 		PMML pmml;

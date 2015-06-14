@@ -30,7 +30,7 @@ public class ConverterFactory {
 	protected ConverterFactory(){
 	}
 
-	public Converter getConverter(REXP rexp){
+	public Converter newConverter(REXP rexp){
 		Rexp.REXP names = REXPUtil.attribute(rexp, "class");
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
@@ -51,7 +51,7 @@ public class ConverterFactory {
 	}
 
 	static
-	public ConverterFactory getInstance(){
+	public ConverterFactory newInstance(){
 		return new ConverterFactory();
 	}
 

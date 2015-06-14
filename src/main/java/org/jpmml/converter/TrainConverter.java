@@ -27,9 +27,9 @@ public class TrainConverter extends Converter {
 	public PMML convert(REXP rexp){
 		REXP finalModel = REXPUtil.field(rexp, "finalModel");
 
-		ConverterFactory converterFactory = ConverterFactory.getInstance();
+		ConverterFactory converterFactory = ConverterFactory.newInstance();
 
-		Converter converter = converterFactory.getConverter(finalModel);
+		Converter converter = converterFactory.newConverter(finalModel);
 
 		return converter.convert(finalModel);
 	}

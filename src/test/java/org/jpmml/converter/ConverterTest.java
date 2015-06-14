@@ -64,9 +64,9 @@ public class ConverterTest {
 
 		REXP rexp = Rexp.REXP.parseFrom(cis);
 
-		ConverterFactory converterFactory = ConverterFactory.getInstance();
+		ConverterFactory converterFactory = ConverterFactory.newInstance();
 
-		Converter converter = converterFactory.getConverter(rexp);
+		Converter converter = converterFactory.newConverter(rexp);
 
 		PMML pmml = converter.convert(rexp);
 
