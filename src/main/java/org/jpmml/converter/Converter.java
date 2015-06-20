@@ -19,11 +19,11 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.PMML;
-import org.jpmml.rexp.REXPProtos;
+import org.jpmml.rexp.REXP;
 
 abstract
 public class Converter {
 
 	abstract
-	public PMML convert(REXPProtos.REXP rexp);
+	public PMML convert(REXP rexp);
 }

@@ -23,9 +23,9 @@ import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
-import org.jpmml.rexp.REXPProtos;
-import org.jpmml.rexp.REXPProtos.REXP.RBOOLEAN;
-import org.jpmml.rexp.REXPProtos.STRING;
+import org.jpmml.rexp.BOOLEAN;
+import org.jpmml.rexp.REXP;
+import org.jpmml.rexp.STRING;
 
 public class REXPUtil {
 
@@ -49,8 +49,8 @@ public class REXPUtil {
 	}
 
 	static
-	public boolean inherits(REXPProtos.REXP rexp, String name){
-		REXPProtos.REXP clazz = REXPUtil.attribute(rexp, "class");
+	public boolean inherits(REXP rexp, String name){
+		REXP clazz = REXPUtil.attribute(rexp, "class");
 
 		for(int i = 0; i < clazz.getStringValueCount(); i++){
 			STRING clazzValue = clazz.getStringValue(i);
@@ -64,8 +64,8 @@ public class REXPUtil {
 	}
 
 	static
-	public REXPProtos.REXP field(REXPProtos.REXP rexp, String name){
-		REXPProtos.REXP names = attribute(rexp, "names");
+	public REXP field(REXP rexp, String name){
+		REXP names = attribute(rexp, "names");
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
 			STRING nameValue = names.getStringValue(i);
@@ -79,8 +79,8 @@ public class REXPUtil {
 	}
 
 	static
-	public RBOOLEAN booleanField(REXPProtos.REXP rexp, String name){
-		REXPProtos.REXP names = attribute(rexp, "names");
+	public BOOLEAN booleanField(REXP rexp, String name){
+		REXP names = attribute(rexp, "names");
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
 			STRING nameValue = names.getStringValue(i);
@@ -94,7 +94,7 @@ public class REXPUtil {
 	}
 
 	static
-	public REXPProtos.REXP attribute(REXPProtos.REXP rexp, String name){
+	public REXP attribute(REXP rexp, String name){
 
 		for(int i = 0; i < rexp.getAttrNameCount(); i++){
 
@@ -107,7 +107,7 @@ public class REXPUtil {
 	}
 
 	static
-	public List<String> getStringList(REXPProtos.REXP rexp){
+	public List<String> getStringList(REXP rexp){
 		Function<STRING, String> function = new Function<STRING, String>(){
 
 			@Override

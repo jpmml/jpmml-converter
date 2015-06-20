@@ -51,8 +51,8 @@ import org.dmg.pmml.TreeModel;
 import org.dmg.pmml.TreeModel.SplitCharacteristic;
 import org.dmg.pmml.True;
 import org.dmg.pmml.Value;
-import org.jpmml.rexp.REXPProtos;
-import org.jpmml.rexp.REXPProtos.STRING;
+import org.jpmml.rexp.REXP;
+import org.jpmml.rexp.STRING;
 
 public class GBMConverter extends Converter {
 
@@ -71,22 +71,22 @@ public class GBMConverter extends Converter {
 
 
 	@Override
-	public PMML convert(REXPProtos.REXP gbm){
-		REXPProtos.REXP initF = REXPUtil.field(gbm, "initF");
-		REXPProtos.REXP trees = REXPUtil.field(gbm, "trees");
-		REXPProtos.REXP c_splits = REXPUtil.field(gbm, "c.splits");
-		REXPProtos.REXP distribution = REXPUtil.field(gbm, "distribution");
-		REXPProtos.REXP response_name = REXPUtil.field(gbm, "response.name");
-		REXPProtos.REXP var_levels = REXPUtil.field(gbm, "var.levels");
-		REXPProtos.REXP var_names = REXPUtil.field(gbm, "var.names");
-		REXPProtos.REXP var_type = REXPUtil.field(gbm, "var.type");
+	public PMML convert(REXP gbm){
+		REXP initF = REXPUtil.field(gbm, "initF");
+		REXP trees = REXPUtil.field(gbm, "trees");
+		REXP c_splits = REXPUtil.field(gbm, "c.splits");
+		REXP distribution = REXPUtil.field(gbm, "distribution");
+		REXP response_name = REXPUtil.field(gbm, "response.name");
+		REXP var_levels = REXPUtil.field(gbm, "var.levels");
+		REXP var_names = REXPUtil.field(gbm, "var.names");
+		REXP var_type = REXPUtil.field(gbm, "var.type");
 
 		initFields(response_name, var_names, var_type, var_levels);
 
 		List<Segment> segments = Lists.newArrayList();
 
 		for(int i = 0; i < trees.getRexpValueCount(); i++){
-			REXPProtos.REXP tree = trees.getRexpValue(i);
+			REXP tree = trees.getRexpValue(i);
 
 			TreeModel treeModel = encodeTreeModel(MiningFunctionType.REGRESSION, tree, c_splits);
 
@@ -126,7 +126,7 @@ public class GBMConverter extends Converter {
 		return pmml;
 	}
 
-	private void initFields(REXPProtos.REXP response_name, REXPProtos.REXP var_names, REXPProtos.REXP var_type, REXPProtos.REXP var_levels){
+	private void initFields(REXP response_name, REXP var_names, REXP var_type, REXP var_levels){
 
 		// Dependent variable
 		{
@@ -146,7 +146,7 @@ public class GBMConverter extends Converter {
 			DataField dataField = PMMLUtil.createDataField(FieldName.create(var_name.getStrval()), categorical);
 
 			if(categorical){
-				REXPProtos.REXP var_level = var_levels.getRexpValue(i);
+				REXP var_level = var_levels.getRexpValue(i);
 
 				List<Value> values = dataField.getValues();
 				values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(var_level)));
@@ -158,7 +158,7 @@ public class GBMConverter extends Converter {
 		}
 	}
 
-	private TreeModel encodeTreeModel(MiningFunctionType miningFunction, REXPProtos.REXP tree, REXPProtos.REXP c_splits){
+	private TreeModel encodeTreeModel(MiningFunctionType miningFunction, REXP tree, REXP c_splits){
 		Node root = new Node()
 			.setId("1")
 			.setPredicate(new True());
@@ -176,13 +176,13 @@ public class GBMConverter extends Converter {
 		return treeModel;
 	}
 
-	private void encodeNode(Node node, int i, REXPProtos.REXP tree, REXPProtos.REXP c_splits){
-		REXPProtos.REXP splitVar = tree.getRexpValue(0);
-		REXPProtos.REXP splitCodePred = tree.getRexpValue(1);
-		REXPProtos.REXP leftNode = tree.getRexpValue(2);
-		REXPProtos.REXP rightNode = tree.getRexpValue(3);
-		REXPProtos.REXP missingNode = tree.getRexpValue(4);
-		REXPProtos.REXP prediction = tree.getRexpValue(7);
+	private void encodeNode(Node node, int i, REXP tree, REXP c_splits){
+		REXP splitVar = tree.getRexpValue(0);
+		REXP splitCodePred = tree.getRexpValue(1);
+		REXP leftNode = tree.getRexpValue(2);
+		REXP rightNode = tree.getRexpValue(3);
+		REXP missingNode = tree.getRexpValue(4);
+		REXP prediction = tree.getRexpValue(7);
 
 		Predicate missingPredicate = null;
 
@@ -202,7 +202,7 @@ public class GBMConverter extends Converter {
 				case CATEGORICAL:
 					Integer index = REXPUtil.asInteger(split);
 
-					REXPProtos.REXP c_split = c_splits.getRexpValue(index);
+					REXP c_split = c_splits.getRexpValue(index);
 
 					List<Integer> splitValues = c_split.getIntValueList();
 
@@ -297,8 +297,8 @@ public class GBMConverter extends Converter {
 		return simplePredicate;
 	}
 
-	private Output encodeOutput(REXPProtos.REXP distribution){
-		REXPProtos.REXP name = REXPUtil.field(distribution, "name");
+	private Output encodeOutput(REXP distribution){
+		REXP name = REXPUtil.field(distribution, "name");
 
 		STRING distributionName = name.getStringValue(0);
 

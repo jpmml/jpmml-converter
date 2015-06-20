@@ -21,16 +21,16 @@ package org.jpmml.converter;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import org.jpmml.rexp.REXPProtos;
-import org.jpmml.rexp.REXPProtos.STRING;
+import org.jpmml.rexp.REXP;
+import org.jpmml.rexp.STRING;
 
 public class ConverterFactory {
 
 	protected ConverterFactory(){
 	}
 
-	public Converter newConverter(REXPProtos.REXP rexp){
-		REXPProtos.REXP names = REXPUtil.attribute(rexp, "class");
+	public Converter newConverter(REXP rexp){
+		REXP names = REXPUtil.attribute(rexp, "class");
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
 			STRING name = names.getStringValue(i);
