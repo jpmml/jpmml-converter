@@ -45,8 +45,8 @@ import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.TreeModel;
 import org.dmg.pmml.True;
 import org.dmg.pmml.Value;
-import rexp.Rexp;
-import rexp.Rexp.STRING;
+import org.jpmml.rexp.REXPProtos;
+import org.jpmml.rexp.REXPProtos.STRING;
 
 public class RandomForestConverter extends Converter {
 
@@ -68,19 +68,19 @@ public class RandomForestConverter extends Converter {
 	}
 
 	@Override
-	public PMML convert(Rexp.REXP randomForest){
-		Rexp.REXP type = REXPUtil.field(randomForest, "type");
-		Rexp.REXP forest = REXPUtil.field(randomForest, "forest");
+	public PMML convert(REXPProtos.REXP randomForest){
+		REXPProtos.REXP type = REXPUtil.field(randomForest, "type");
+		REXPProtos.REXP forest = REXPUtil.field(randomForest, "forest");
 
 		try {
-			Rexp.REXP terms = REXPUtil.field(randomForest, "terms");
+			REXPProtos.REXP terms = REXPUtil.field(randomForest, "terms");
 
 			// The RF model was trained using the formula interface
 			initFormulaFields(terms);
 		} catch(IllegalArgumentException iae){
-			Rexp.REXP xlevels = REXPUtil.field(forest, "xlevels");
+			REXPProtos.REXP xlevels = REXPUtil.field(forest, "xlevels");
 
-			Rexp.REXP xNames;
+			REXPProtos.REXP xNames;
 
 			try {
 				xNames = REXPUtil.field(randomForest, "xNames");
@@ -88,9 +88,9 @@ public class RandomForestConverter extends Converter {
 				xNames = REXPUtil.attribute(xlevels, "names");
 			}
 
-			Rexp.REXP ncat = REXPUtil.field(forest, "ncat");
+			REXPProtos.REXP ncat = REXPUtil.field(forest, "ncat");
 
-			Rexp.REXP y;
+			REXPProtos.REXP y;
 
 			try {
 				y = REXPUtil.field(randomForest, "y");
@@ -111,7 +111,7 @@ public class RandomForestConverter extends Converter {
 		} else
 
 		if("classification".equals(typeValue.getStrval())){
-			Rexp.REXP y = REXPUtil.field(randomForest, "y");
+			REXPProtos.REXP y = REXPUtil.field(randomForest, "y");
 
 			pmml = convertClassification(forest, y);
 		} else
@@ -123,16 +123,16 @@ public class RandomForestConverter extends Converter {
 		return pmml;
 	}
 
-	private PMML convertRegression(Rexp.REXP forest){
-		Rexp.REXP leftDaughter = REXPUtil.field(forest, "leftDaughter");
-		Rexp.REXP rightDaughter = REXPUtil.field(forest, "rightDaughter");
-		Rexp.REXP nodepred = REXPUtil.field(forest, "nodepred");
-		Rexp.REXP bestvar = REXPUtil.field(forest, "bestvar");
-		Rexp.REXP xbestsplit = REXPUtil.field(forest, "xbestsplit");
-		Rexp.REXP ncat = REXPUtil.field(forest, "ncat");
-		Rexp.REXP nrnodes = REXPUtil.field(forest, "nrnodes");
-		Rexp.REXP ntree = REXPUtil.field(forest, "ntree");
-		Rexp.REXP xlevels = REXPUtil.field(forest, "xlevels");
+	private PMML convertRegression(REXPProtos.REXP forest){
+		REXPProtos.REXP leftDaughter = REXPUtil.field(forest, "leftDaughter");
+		REXPProtos.REXP rightDaughter = REXPUtil.field(forest, "rightDaughter");
+		REXPProtos.REXP nodepred = REXPUtil.field(forest, "nodepred");
+		REXPProtos.REXP bestvar = REXPUtil.field(forest, "bestvar");
+		REXPProtos.REXP xbestsplit = REXPUtil.field(forest, "xbestsplit");
+		REXPProtos.REXP ncat = REXPUtil.field(forest, "ncat");
+		REXPProtos.REXP nrnodes = REXPUtil.field(forest, "nrnodes");
+		REXPProtos.REXP ntree = REXPUtil.field(forest, "ntree");
+		REXPProtos.REXP xlevels = REXPUtil.field(forest, "xlevels");
 
 		initActiveFields(xlevels, ncat);
 
@@ -170,15 +170,15 @@ public class RandomForestConverter extends Converter {
 		return encodePMML(MiningFunctionType.REGRESSION, treeModels);
 	}
 
-	private PMML convertClassification(Rexp.REXP forest, Rexp.REXP y){
-		Rexp.REXP bestvar = REXPUtil.field(forest, "bestvar");
-		Rexp.REXP treemap = REXPUtil.field(forest, "treemap");
-		Rexp.REXP nodepred = REXPUtil.field(forest, "nodepred");
-		Rexp.REXP xbestsplit = REXPUtil.field(forest, "xbestsplit");
-		Rexp.REXP ncat = REXPUtil.field(forest, "ncat");
-		Rexp.REXP nrnodes = REXPUtil.field(forest, "nrnodes");
-		Rexp.REXP ntree = REXPUtil.field(forest, "ntree");
-		Rexp.REXP xlevels = REXPUtil.field(forest, "xlevels");
+	private PMML convertClassification(REXPProtos.REXP forest, REXPProtos.REXP y){
+		REXPProtos.REXP bestvar = REXPUtil.field(forest, "bestvar");
+		REXPProtos.REXP treemap = REXPUtil.field(forest, "treemap");
+		REXPProtos.REXP nodepred = REXPUtil.field(forest, "nodepred");
+		REXPProtos.REXP xbestsplit = REXPUtil.field(forest, "xbestsplit");
+		REXPProtos.REXP ncat = REXPUtil.field(forest, "ncat");
+		REXPProtos.REXP nrnodes = REXPUtil.field(forest, "nrnodes");
+		REXPProtos.REXP ntree = REXPUtil.field(forest, "ntree");
+		REXPProtos.REXP xlevels = REXPUtil.field(forest, "xlevels");
 
 		initPredictedFields(y);
 		initActiveFields(xlevels, ncat);
@@ -271,10 +271,10 @@ public class RandomForestConverter extends Converter {
 		return pmml;
 	}
 
-	private void initFormulaFields(Rexp.REXP terms){
-		Rexp.REXP dataClasses = REXPUtil.attribute(terms, "dataClasses");
+	private void initFormulaFields(REXPProtos.REXP terms){
+		REXPProtos.REXP dataClasses = REXPUtil.attribute(terms, "dataClasses");
 
-		Rexp.REXP names = REXPUtil.attribute(dataClasses, "names");
+		REXPProtos.REXP names = REXPUtil.attribute(dataClasses, "names");
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
 			STRING name = names.getStringValue(i);
@@ -287,7 +287,7 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private void initNonFormulaFields(Rexp.REXP xNames, Rexp.REXP ncat, Rexp.REXP y){
+	private void initNonFormulaFields(REXPProtos.REXP xNames, REXPProtos.REXP ncat, REXPProtos.REXP y){
 
 		// Dependent variable
 		{
@@ -322,7 +322,7 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private void initActiveFields(Rexp.REXP xlevels, Rexp.REXP ncat){
+	private void initActiveFields(REXPProtos.REXP xlevels, REXPProtos.REXP ncat){
 
 		for(int i = 0; i < ncat.getIntValueCount(); i++){
 			DataField dataField = this.dataFields.get(i + 1);
@@ -332,7 +332,7 @@ public class RandomForestConverter extends Converter {
 				continue;
 			}
 
-			Rexp.REXP xvalues = xlevels.getRexpValue(i);
+			REXPProtos.REXP xvalues = xlevels.getRexpValue(i);
 
 			List<Value> values = dataField.getValues();
 			values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(xvalues)));
@@ -341,10 +341,10 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private void initPredictedFields(Rexp.REXP y){
+	private void initPredictedFields(REXPProtos.REXP y){
 		DataField dataField = this.dataFields.get(0);
 
-		Rexp.REXP levels = REXPUtil.attribute(y, "levels");
+		REXPProtos.REXP levels = REXPUtil.attribute(y, "levels");
 
 		List<Value> values = dataField.getValues();
 		values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(levels)));
@@ -554,7 +554,7 @@ public class RandomForestConverter extends Converter {
 	}
 
 	static
-	private List<Integer> getIndices(Rexp.REXP rexp){
+	private List<Integer> getIndices(REXPProtos.REXP rexp){
 		List<Integer> intValues = rexp.getIntValueList();
 		if(intValues.size() > 0){
 			return intValues;

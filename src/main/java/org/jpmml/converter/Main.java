@@ -34,7 +34,7 @@ import com.beust.jcommander.ParameterException;
 import com.google.protobuf.CodedInputStream;
 import org.dmg.pmml.PMML;
 import org.jpmml.model.JAXBUtil;
-import rexp.Rexp;
+import org.jpmml.rexp.REXPProtos;
 
 public class Main {
 
@@ -78,7 +78,7 @@ public class Main {
 	}
 
 	public void run() throws Exception {
-		Rexp.REXP rexp;
+		REXPProtos.REXP rexp;
 
 		InputStream is = new FileInputStream(this.input);
 
@@ -89,7 +89,7 @@ public class Main {
 			cis.setSizeLimit(Integer.MAX_VALUE);
 
 			long start = System.currentTimeMillis();
-			rexp = Rexp.REXP.parseFrom(cis);
+			rexp = REXPProtos.REXP.parseFrom(cis);
 			long end = System.currentTimeMillis();
 
 			logger.log(Level.INFO, "Parsed ProtoBuf in " + (end - start) + " ms.");

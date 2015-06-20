@@ -39,18 +39,18 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.SquaredEuclidean;
-import rexp.Rexp;
-import rexp.Rexp.STRING;
+import org.jpmml.rexp.REXPProtos;
+import org.jpmml.rexp.REXPProtos.STRING;
 
 public class KMeansConverter extends Converter {
 
 	@Override
-	public PMML convert(Rexp.REXP kmeans){
-		Rexp.REXP centers = REXPUtil.field(kmeans, "centers");
-		Rexp.REXP size = REXPUtil.field(kmeans, "size");
+	public PMML convert(REXPProtos.REXP kmeans){
+		REXPProtos.REXP centers = REXPUtil.field(kmeans, "centers");
+		REXPProtos.REXP size = REXPUtil.field(kmeans, "size");
 
-		Rexp.REXP dim = REXPUtil.attribute(centers, "dim");
-		Rexp.REXP dimnames = REXPUtil.attribute(centers, "dimnames");
+		REXPProtos.REXP dim = REXPUtil.attribute(centers, "dim");
+		REXPProtos.REXP dimnames = REXPUtil.attribute(centers, "dimnames");
 
 		int rows = dim.getIntValue(0);
 		int columns = dim.getIntValue(1);
@@ -63,7 +63,7 @@ public class KMeansConverter extends Converter {
 
 		List<ClusteringField> clusteringFields = Lists.newArrayList();
 
-		Rexp.REXP columnNames = dimnames.getRexpValue(1);
+		REXPProtos.REXP columnNames = dimnames.getRexpValue(1);
 		for(int i = 0; i < columns; i++){
 			STRING name = columnNames.getStringValue(i);
 
@@ -81,7 +81,7 @@ public class KMeansConverter extends Converter {
 
 		List<Cluster> clusters = Lists.newArrayList();
 
-		Rexp.REXP rowNames = dimnames.getRexpValue(0);
+		REXPProtos.REXP rowNames = dimnames.getRexpValue(0);
 		for(int i = 0; i < rows; i++){
 			STRING name = rowNames.getStringValue(i);
 

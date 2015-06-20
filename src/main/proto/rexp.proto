@@ -5,8 +5,8 @@
 
 package rexp;
 
-// option java_package = "org.godhuli.rhipe";
-// option java_outer_classname = "REXPProtos";
+option java_package = "org.jpmml.rexp";
+option java_outer_classname = "REXPProtos";
 
 // TODO(mstokely): Refine this using the new protobuf 2.6 oneof field
 // for unions.
