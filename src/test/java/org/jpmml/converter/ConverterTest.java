@@ -29,7 +29,7 @@ import org.dmg.pmml.PMML;
 import org.jpmml.evaluator.ArchiveBatch;
 import org.jpmml.evaluator.Batch;
 import org.jpmml.model.JAXBUtil;
-import org.jpmml.rexp.REXP;
+import org.jpmml.rexp.RExp;
 
 abstract
 public class ConverterTest {
@@ -61,7 +61,7 @@ public class ConverterTest {
 	private InputStream convert(InputStream is) throws Exception {
 		CodedInputStream cis = CodedInputStream.newInstance(is);
 
-		REXP rexp = REXP.parseFrom(cis);
+		RExp rexp = RExp.parseFrom(cis);
 
 		ConverterFactory converterFactory = ConverterFactory.newInstance();
 

@@ -19,13 +19,13 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.PMML;
-import org.jpmml.rexp.REXP;
+import org.jpmml.rexp.RExp;
 
 public class TrainConverter extends Converter {
 
 	@Override
-	public PMML convert(REXP rexp){
-		REXP finalModel = REXPUtil.field(rexp, "finalModel");
+	public PMML convert(RExp rexp){
+		RExp finalModel = RExpUtil.field(rexp, "finalModel");
 
 		ConverterFactory converterFactory = ConverterFactory.newInstance();
 

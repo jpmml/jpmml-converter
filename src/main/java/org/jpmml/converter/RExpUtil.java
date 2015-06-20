@@ -23,13 +23,13 @@ import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
-import org.jpmml.rexp.BOOLEAN;
-import org.jpmml.rexp.REXP;
-import org.jpmml.rexp.STRING;
+import org.jpmml.rexp.RBoolean;
+import org.jpmml.rexp.RExp;
+import org.jpmml.rexp.RString;
 
-public class REXPUtil {
+public class RExpUtil {
 
-	private REXPUtil(){
+	private RExpUtil(){
 	}
 
 	static
@@ -49,11 +49,11 @@ public class REXPUtil {
 	}
 
 	static
-	public boolean inherits(REXP rexp, String name){
-		REXP clazz = REXPUtil.attribute(rexp, "class");
+	public boolean inherits(RExp rexp, String name){
+		RExp clazz = RExpUtil.attribute(rexp, "class");
 
 		for(int i = 0; i < clazz.getStringValueCount(); i++){
-			STRING clazzValue = clazz.getStringValue(i);
+			RString clazzValue = clazz.getStringValue(i);
 
 			if((name).equals(clazzValue.getStrval())){
 				return true;
@@ -64,11 +64,11 @@ public class REXPUtil {
 	}
 
 	static
-	public REXP field(REXP rexp, String name){
-		REXP names = attribute(rexp, "names");
+	public RExp field(RExp rexp, String name){
+		RExp names = attribute(rexp, "names");
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
-			STRING nameValue = names.getStringValue(i);
+			RString nameValue = names.getStringValue(i);
 
 			if((name).equals(nameValue.getStrval())){
 				return rexp.getRexpValue(i);
@@ -79,11 +79,11 @@ public class REXPUtil {
 	}
 
 	static
-	public BOOLEAN booleanField(REXP rexp, String name){
-		REXP names = attribute(rexp, "names");
+	public RBoolean booleanField(RExp rexp, String name){
+		RExp names = attribute(rexp, "names");
 
 		for(int i = 0; i < names.getStringValueCount(); i++){
-			STRING nameValue = names.getStringValue(i);
+			RString nameValue = names.getStringValue(i);
 
 			if((name).equals(nameValue.getStrval())){
 				return rexp.getBooleanValue(i);
@@ -94,7 +94,7 @@ public class REXPUtil {
 	}
 
 	static
-	public REXP attribute(REXP rexp, String name){
+	public RExp attribute(RExp rexp, String name){
 
 		for(int i = 0; i < rexp.getAttrNameCount(); i++){
 
@@ -107,11 +107,11 @@ public class REXPUtil {
 	}
 
 	static
-	public List<String> getStringList(REXP rexp){
-		Function<STRING, String> function = new Function<STRING, String>(){
+	public List<String> getStringList(RExp rexp){
+		Function<RString, String> function = new Function<RString, String>(){
 
 			@Override
-			public String apply(STRING string){
+			public String apply(RString string){
 				return string.getStrval();
 			}
 		};

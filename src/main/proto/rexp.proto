@@ -6,12 +6,12 @@
 package rexp;
 
 option java_package = "org.jpmml.rexp";
-option java_outer_classname = "REXPProtos";
+option java_outer_classname = "RExpProtos";
 option java_multiple_files = true;
 
 // TODO(mstokely): Refine this using the new protobuf 2.6 oneof field
 // for unions.
-message REXP {
+message RExp {
   enum RClass {
     STRING = 0;
     RAW = 1;
@@ -27,28 +27,28 @@ message REXP {
   required RClass rclass = 1;
   repeated double realValue = 2 [packed=true];
   repeated sint32 intValue = 3 [packed=true];
-  repeated BOOLEAN booleanValue = 4;
-  repeated STRING stringValue = 5;
+  repeated RBoolean booleanValue = 4;
+  repeated RString stringValue = 5;
 
   optional bytes rawValue = 6;
-  repeated CMPLX complexValue = 7;
-  repeated REXP rexpValue = 8;
+  repeated RComplex complexValue = 7;
+  repeated RExp rexpValue = 8;
 
   repeated string attrName = 11;
-  repeated REXP attrValue = 12;
+  repeated RExp attrValue = 12;
   optional bytes nativeValue = 13;
 }
-message STRING {
+message RString {
   optional string strval = 1;
   optional bool isNA = 2 [default=false];
 }
-message CMPLX {
+message RComplex {
   optional double real = 1 [default=0];
   required double imag = 2;
 }
 
-enum BOOLEAN {
-  F=0;
-  T=1;
-  NA=2;
+enum RBoolean {
+  F = 0;
+  T = 1;
+  NA = 2;
 }

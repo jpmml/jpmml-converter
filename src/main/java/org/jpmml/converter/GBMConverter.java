@@ -51,8 +51,8 @@ import org.dmg.pmml.TreeModel;
 import org.dmg.pmml.TreeModel.SplitCharacteristic;
 import org.dmg.pmml.True;
 import org.dmg.pmml.Value;
-import org.jpmml.rexp.REXP;
-import org.jpmml.rexp.STRING;
+import org.jpmml.rexp.RExp;
+import org.jpmml.rexp.RString;
 
 public class GBMConverter extends Converter {
 
@@ -71,22 +71,22 @@ public class GBMConverter extends Converter {
 
 
 	@Override
-	public PMML convert(REXP gbm){
-		REXP initF = REXPUtil.field(gbm, "initF");
-		REXP trees = REXPUtil.field(gbm, "trees");
-		REXP c_splits = REXPUtil.field(gbm, "c.splits");
-		REXP distribution = REXPUtil.field(gbm, "distribution");
-		REXP response_name = REXPUtil.field(gbm, "response.name");
-		REXP var_levels = REXPUtil.field(gbm, "var.levels");
-		REXP var_names = REXPUtil.field(gbm, "var.names");
-		REXP var_type = REXPUtil.field(gbm, "var.type");
+	public PMML convert(RExp gbm){
+		RExp initF = RExpUtil.field(gbm, "initF");
+		RExp trees = RExpUtil.field(gbm, "trees");
+		RExp c_splits = RExpUtil.field(gbm, "c.splits");
+		RExp distribution = RExpUtil.field(gbm, "distribution");
+		RExp response_name = RExpUtil.field(gbm, "response.name");
+		RExp var_levels = RExpUtil.field(gbm, "var.levels");
+		RExp var_names = RExpUtil.field(gbm, "var.names");
+		RExp var_type = RExpUtil.field(gbm, "var.type");
 
 		initFields(response_name, var_names, var_type, var_levels);
 
 		List<Segment> segments = Lists.newArrayList();
 
 		for(int i = 0; i < trees.getRexpValueCount(); i++){
-			REXP tree = trees.getRexpValue(i);
+			RExp tree = trees.getRexpValue(i);
 
 			TreeModel treeModel = encodeTreeModel(MiningFunctionType.REGRESSION, tree, c_splits);
 
@@ -108,7 +108,7 @@ public class GBMConverter extends Converter {
 
 		Target target = new Target()
 			.setField(dataField.getName())
-			.setRescaleConstant(REXPUtil.asDouble(initF.getRealValue(0)));
+			.setRescaleConstant(RExpUtil.asDouble(initF.getRealValue(0)));
 
 		Targets targets = new Targets()
 			.addTargets(target);
@@ -126,11 +126,11 @@ public class GBMConverter extends Converter {
 		return pmml;
 	}
 
-	private void initFields(REXP response_name, REXP var_names, REXP var_type, REXP var_levels){
+	private void initFields(RExp response_name, RExp var_names, RExp var_type, RExp var_levels){
 
 		// Dependent variable
 		{
-			STRING name = response_name.getStringValue(0);
+			RString name = response_name.getStringValue(0);
 
 			DataField dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), DataType.DOUBLE);
 
@@ -139,17 +139,17 @@ public class GBMConverter extends Converter {
 
 		// Independent variables
 		for(int i = 0; i < var_names.getStringValueCount(); i++){
-			STRING var_name = var_names.getStringValue(i);
+			RString var_name = var_names.getStringValue(i);
 
 			boolean categorical = (var_type.getRealValue(i) > 0d);
 
 			DataField dataField = PMMLUtil.createDataField(FieldName.create(var_name.getStrval()), categorical);
 
 			if(categorical){
-				REXP var_level = var_levels.getRexpValue(i);
+				RExp var_level = var_levels.getRexpValue(i);
 
 				List<Value> values = dataField.getValues();
-				values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(var_level)));
+				values.addAll(PMMLUtil.createValues(RExpUtil.getStringList(var_level)));
 
 				dataField = PMMLUtil.refineDataField(dataField);
 			}
@@ -158,7 +158,7 @@ public class GBMConverter extends Converter {
 		}
 	}
 
-	private TreeModel encodeTreeModel(MiningFunctionType miningFunction, REXP tree, REXP c_splits){
+	private TreeModel encodeTreeModel(MiningFunctionType miningFunction, RExp tree, RExp c_splits){
 		Node root = new Node()
 			.setId("1")
 			.setPredicate(new True());
@@ -176,13 +176,13 @@ public class GBMConverter extends Converter {
 		return treeModel;
 	}
 
-	private void encodeNode(Node node, int i, REXP tree, REXP c_splits){
-		REXP splitVar = tree.getRexpValue(0);
-		REXP splitCodePred = tree.getRexpValue(1);
-		REXP leftNode = tree.getRexpValue(2);
-		REXP rightNode = tree.getRexpValue(3);
-		REXP missingNode = tree.getRexpValue(4);
-		REXP prediction = tree.getRexpValue(7);
+	private void encodeNode(Node node, int i, RExp tree, RExp c_splits){
+		RExp splitVar = tree.getRexpValue(0);
+		RExp splitCodePred = tree.getRexpValue(1);
+		RExp leftNode = tree.getRexpValue(2);
+		RExp rightNode = tree.getRexpValue(3);
+		RExp missingNode = tree.getRexpValue(4);
+		RExp prediction = tree.getRexpValue(7);
 
 		Predicate missingPredicate = null;
 
@@ -200,9 +200,9 @@ public class GBMConverter extends Converter {
 			OpType opType = dataField.getOpType();
 			switch(opType){
 				case CATEGORICAL:
-					Integer index = REXPUtil.asInteger(split);
+					Integer index = RExpUtil.asInteger(split);
 
-					REXP c_split = c_splits.getRexpValue(index);
+					RExp c_split = c_splits.getRexpValue(index);
 
 					List<Integer> splitValues = c_split.getIntValueList();
 
@@ -297,10 +297,10 @@ public class GBMConverter extends Converter {
 		return simplePredicate;
 	}
 
-	private Output encodeOutput(REXP distribution){
-		REXP name = REXPUtil.field(distribution, "name");
+	private Output encodeOutput(RExp distribution){
+		RExp name = RExpUtil.field(distribution, "name");
 
-		STRING distributionName = name.getStringValue(0);
+		RString distributionName = name.getStringValue(0);
 
 		if("adaboost".equals(distributionName.getStrval())){
 			return encodeAdaBoostOutput();

@@ -41,9 +41,9 @@ import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.TreeModel;
 import org.dmg.pmml.True;
 import org.dmg.pmml.Value;
-import org.jpmml.rexp.BOOLEAN;
-import org.jpmml.rexp.REXP;
-import org.jpmml.rexp.STRING;
+import org.jpmml.rexp.RBoolean;
+import org.jpmml.rexp.RExp;
+import org.jpmml.rexp.RString;
 
 public class BinaryTreeConverter extends Converter {
 
@@ -53,9 +53,9 @@ public class BinaryTreeConverter extends Converter {
 
 
 	@Override
-	public PMML convert(REXP binaryTree){
-		REXP responses = REXPUtil.field(binaryTree, "responses");
-		REXP tree = REXPUtil.field(binaryTree, "tree");
+	public PMML convert(RExp binaryTree){
+		RExp responses = RExpUtil.field(binaryTree, "responses");
+		RExp tree = RExpUtil.field(binaryTree, "tree");
 
 		initTargetField(responses);
 
@@ -74,40 +74,40 @@ public class BinaryTreeConverter extends Converter {
 		return pmml;
 	}
 
-	private void initTargetField(REXP responses){
-		REXP variables = REXPUtil.field(responses, "variables");
-		REXP is_nominal = REXPUtil.field(responses, "is_nominal");
-		REXP levels = REXPUtil.field(responses, "levels");
+	private void initTargetField(RExp responses){
+		RExp variables = RExpUtil.field(responses, "variables");
+		RExp is_nominal = RExpUtil.field(responses, "is_nominal");
+		RExp levels = RExpUtil.field(responses, "levels");
 
-		REXP names = REXPUtil.attribute(variables, "names");
+		RExp names = RExpUtil.attribute(variables, "names");
 		if(names.getStringValueCount() > 1){
 			throw new IllegalArgumentException();
 		}
 
-		STRING name = names.getStringValue(0);
+		RString name = names.getStringValue(0);
 
 		DataField dataField;
 
-		BOOLEAN categorical = REXPUtil.booleanField(is_nominal, name.getStrval());
+		RBoolean categorical = RExpUtil.booleanField(is_nominal, name.getStrval());
 
-		if((BOOLEAN.T).equals(categorical)){
+		if((RBoolean.T).equals(categorical)){
 			this.miningFunction = MiningFunctionType.CLASSIFICATION;
 
-			REXP target = REXPUtil.field(variables, name.getStrval());
+			RExp target = RExpUtil.field(variables, name.getStrval());
 
-			REXP targetClass = REXPUtil.attribute(target, "class");
+			RExp targetClass = RExpUtil.attribute(target, "class");
 
-			STRING targetClassName = targetClass.getStringValue(0);
+			RString targetClassName = targetClass.getStringValue(0);
 
 			dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), targetClassName.getStrval());
 
-			REXP targetLevels = REXPUtil.field(levels, name.getStrval());
+			RExp targetLevels = RExpUtil.field(levels, name.getStrval());
 
 			List<Value> values = dataField.getValues();
-			values.addAll(PMMLUtil.createValues(REXPUtil.getStringList(targetLevels)));
+			values.addAll(PMMLUtil.createValues(RExpUtil.getStringList(targetLevels)));
 		} else
 
-		if((BOOLEAN.F).equals(categorical)){
+		if((RBoolean.F).equals(categorical)){
 			this.miningFunction = MiningFunctionType.REGRESSION;
 
 			dataField = PMMLUtil.createDataField(FieldName.create(name.getStrval()), false);
@@ -145,7 +145,7 @@ public class BinaryTreeConverter extends Converter {
 		return dataField;
 	}
 
-	private TreeModel encodeTreeModel(REXP tree){
+	private TreeModel encodeTreeModel(RExp tree){
 		Node root = new Node()
 			.setPredicate(new True());
 
@@ -167,18 +167,18 @@ public class BinaryTreeConverter extends Converter {
 		return treeModel;
 	}
 
-	private void encodeNode(Node node, REXP tree){
-		REXP nodeId = REXPUtil.field(tree, "nodeID");
-		REXP terminal = REXPUtil.field(tree, "terminal");
-		REXP psplit = REXPUtil.field(tree, "psplit");
-		REXP ssplits = REXPUtil.field(tree, "ssplits");
-		REXP prediction = REXPUtil.field(tree, "prediction");
-		REXP left = REXPUtil.field(tree, "left");
-		REXP right = REXPUtil.field(tree, "right");
+	private void encodeNode(Node node, RExp tree){
+		RExp nodeId = RExpUtil.field(tree, "nodeID");
+		RExp terminal = RExpUtil.field(tree, "terminal");
+		RExp psplit = RExpUtil.field(tree, "psplit");
+		RExp ssplits = RExpUtil.field(tree, "ssplits");
+		RExp prediction = RExpUtil.field(tree, "prediction");
+		RExp left = RExpUtil.field(tree, "left");
+		RExp right = RExpUtil.field(tree, "right");
 
 		node.setId(String.valueOf(nodeId.getIntValue(0)));
 
-		if((BOOLEAN.T).equals(terminal.getBooleanValue(0))){
+		if((RBoolean.T).equals(terminal.getBooleanValue(0))){
 			node = encodeScore(node, prediction);
 
 			return;
@@ -199,15 +199,15 @@ public class BinaryTreeConverter extends Converter {
 		node.addNodes(leftChild, rightChild);
 	}
 
-	private List<Predicate> encodeSplit(REXP split, REXP ssplits){
-		REXP splitpoint = REXPUtil.field(split, "splitpoint");
-		REXP variableName = REXPUtil.field(split, "variableName");
+	private List<Predicate> encodeSplit(RExp split, RExp ssplits){
+		RExp splitpoint = RExpUtil.field(split, "splitpoint");
+		RExp variableName = RExpUtil.field(split, "variableName");
 
 		if(ssplits.getRexpValueCount() > 0){
 			throw new IllegalArgumentException();
 		}
 
-		STRING name = variableName.getStringValue(0);
+		RString name = variableName.getStringValue(0);
 
 		FieldName field = FieldName.create(name.getStrval());
 
@@ -221,9 +221,9 @@ public class BinaryTreeConverter extends Converter {
 		} // End if
 
 		if(splitpoint.getIntValueCount() > 0){
-			REXP levels = REXPUtil.attribute(splitpoint, "levels");
+			RExp levels = RExpUtil.attribute(splitpoint, "levels");
 
-			List<Value> levelValues = PMMLUtil.createValues(REXPUtil.getStringList(levels));
+			List<Value> levelValues = PMMLUtil.createValues(RExpUtil.getStringList(levels));
 
 			DataField dataField = getDataField(field);
 			if(dataField == null){
@@ -289,7 +289,7 @@ public class BinaryTreeConverter extends Converter {
 		return Arrays.asList(leftPredicate, rightPredicate);
 	}
 
-	private Node encodeScore(Node node, REXP probabilities){
+	private Node encodeScore(Node node, RExp probabilities){
 
 		switch(this.miningFunction){
 			case CLASSIFICATION:
@@ -301,7 +301,7 @@ public class BinaryTreeConverter extends Converter {
 		}
 	}
 
-	private Node encodeClassificationScore(Node node, REXP probabilities){
+	private Node encodeClassificationScore(Node node, RExp probabilities){
 		DataField dataField = this.dataFields.get(0);
 
 		List<Value> values = dataField.getValues();
@@ -333,7 +333,7 @@ public class BinaryTreeConverter extends Converter {
 		return node;
 	}
 
-	private Node encodeRegressionScore(Node node, REXP probabilities){
+	private Node encodeRegressionScore(Node node, RExp probabilities){
 
 		if(probabilities.getRealValueCount() != 1){
 			throw new IllegalArgumentException();
