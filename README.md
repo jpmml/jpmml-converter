@@ -26,18 +26,12 @@ Java library for converting R models to PMML
 # Prerequisites #
 
 * Java 1.7 or newer.
-* [Protocol Buffers (ProtoBuf) compiler] (https://developers.google.com/protocol-buffers/docs/downloads) 2.5.0 or newer.
 
 # Installation #
 
 Enter the project root directory and build using [Apache Maven] (http://maven.apache.org/):
 ```
 mvn clean install
-```
-
-The build assumes that the ProtoBuf compiler executable is located at `/usr/bin/protoc`. An alternative location can be specified by declaring the `protoc.exe` Java system property:
-```
-mvn -Dprotoc.exe=/path/to/protoc clean install
 ```
 
 The build produces an executable uber-JAR file `target/converter-executable-1.0-SNAPSHOT.jar`.

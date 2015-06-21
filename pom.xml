@@ -36,10 +36,6 @@
 		<url>https://github.com/jpmml/jpmml-converter/issues</url>
 	</issueManagement>
 
-	<properties>
-		<protoc.exe>/usr/bin/protoc</protoc.exe>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.jpmml</groupId>
@@ -61,6 +57,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.jpmml</groupId>
+			<artifactId>proto-rexp</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.beust</groupId>
 			<artifactId>jcommander</artifactId>
 			<version>1.35</version>
@@ -73,25 +75,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-			<version>2.6.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>sergei-ivanov.github.io</id>
-			<url>http://sergei-ivanov.github.com/maven-protoc-plugin/repo/releases/</url>
-		</pluginRepository>
-	</pluginRepositories>
 	
 	<build>
 		<plugins>
@@ -164,21 +153,6 @@
 				<configuration>
 					<argLine>${jacoco.agent}</argLine>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.google.protobuf.tools</groupId>
-				<artifactId>maven-protoc-plugin</artifactId>
-				<version>0.3.2</version>
-				<configuration>
-					<protocExecutable>${protoc.exe}</protocExecutable>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
