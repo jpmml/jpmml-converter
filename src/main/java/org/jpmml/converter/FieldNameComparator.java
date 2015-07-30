@@ -18,12 +18,36 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
+import java.util.Comparator;
 
-public class DataFieldComparator extends FieldComparator<DataField> {
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.Indexable;
+
+public class FieldNameComparator<E extends Indexable<FieldName>> implements Comparator<E> {
+
+	private boolean caseSensitive = false;
+
 
 	@Override
-	public int compare(DataField left, DataField right){
-		return super.compare(left, right);
+	public int compare(E left, E right){
+		FieldName leftKey = left.getKey();
+		FieldName rightKey = right.getKey();
+
+		boolean caseSensitive = isCaseSensitive();
+		if(caseSensitive){
+			return (leftKey.getValue()).compareTo(rightKey.getValue());
+		} else
+
+		{
+			return (leftKey.getValue()).compareToIgnoreCase(rightKey.getValue());
+		}
+	}
+
+	public boolean isCaseSensitive(){
+		return this.caseSensitive;
+	}
+
+	public void setCaseSensitive(boolean caseSensitive){
+		this.caseSensitive = caseSensitive;
 	}
 }

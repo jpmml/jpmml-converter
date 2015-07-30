@@ -18,37 +18,7 @@
  */
 package org.jpmml.converter;
 
-import java.util.Comparator;
-
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 
-abstract
-public class FieldComparator<F extends Field> implements Comparator<F> {
-
-	private boolean caseSensitive = false;
-
-
-	@Override
-	public int compare(F left, F right){
-		FieldName leftName = left.getName();
-		FieldName rightName = right.getName();
-
-		boolean caseSensitive = isCaseSensitive();
-		if(caseSensitive){
-			return (leftName.getValue()).compareTo(rightName.getValue());
-		} else
-
-		{
-			return (leftName.getValue()).compareToIgnoreCase(rightName.getValue());
-		}
-	}
-
-	public boolean isCaseSensitive(){
-		return this.caseSensitive;
-	}
-
-	public void setCaseSensitive(boolean caseSensitive){
-		this.caseSensitive = caseSensitive;
-	}
+public class FieldComparator<F extends Field> extends FieldNameComparator<F> {
 }

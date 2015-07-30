@@ -64,7 +64,7 @@ public class BinaryTreeConverter extends Converter {
 		TreeModel treeModel = encodeTreeModel(tree)
 			.setOutput(output);
 
-		Collections.sort(this.dataFields.subList(1, this.dataFields.size()), new DataFieldComparator());
+		Collections.sort(this.dataFields.subList(1, this.dataFields.size()), new FieldComparator<>());
 
 		DataDictionary dataDictionary = new DataDictionary(this.dataFields);
 

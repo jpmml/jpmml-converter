@@ -21,7 +21,7 @@ package org.jpmml.converter;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 
-public class MiningFieldComparator extends FieldComparator<MiningField> {
+public class MiningFieldComparator extends FieldNameComparator<MiningField> {
 
 	@Override
 	public int compare(MiningField left, MiningField right){

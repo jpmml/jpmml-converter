@@ -109,7 +109,7 @@ public class PMMLUtil {
 
 		List<DataField> dataFields = Lists.newArrayList(Iterables.transform(names, function));
 
-		Collections.sort(dataFields, new DataFieldComparator());
+		Collections.sort(dataFields, new FieldComparator<>());
 
 		return dataFields;
 	}

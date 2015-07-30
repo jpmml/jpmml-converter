@@ -40,20 +40,20 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>pmml-evaluator</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>pmml-evaluator</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.2</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>pmml-model</artifactId>
-			<version>1.2.2</version>
+			<version>1.2.3</version>
 		</dependency>
 
 		<dependency>
