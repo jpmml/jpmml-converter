@@ -28,6 +28,7 @@ import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.FeatureType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MiningFunctionType;
@@ -40,7 +41,6 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
-import org.dmg.pmml.ResultFeatureType;
 import org.dmg.pmml.Segment;
 import org.dmg.pmml.Segmentation;
 import org.dmg.pmml.SimplePredicate;
@@ -332,18 +332,18 @@ public class GBMConverter extends Converter {
 			.setDataType(DataType.DOUBLE);
 
 		OutputField gbmValue = new OutputField(name)
-			.setFeature(ResultFeatureType.PREDICTED_VALUE);
+			.setFeature(FeatureType.PREDICTED_VALUE);
 
 		// "p(1) = 1 / (1 + exp(multiplier * y))"
 		OutputField probabilityOne = new OutputField(FieldName.create("probability_1"))
-			.setFeature(ResultFeatureType.TRANSFORMED_VALUE)
+			.setFeature(FeatureType.TRANSFORMED_VALUE)
 			.setDataType(DataType.DOUBLE)
 			.setOpType(OpType.CONTINUOUS)
 			.setExpression(PMMLUtil.createApply("/", one, PMMLUtil.createApply("+", one, PMMLUtil.createApply("exp", PMMLUtil.createApply("*", multiplier, new FieldRef(gbmValue.getName()))))));
 
 		// "p(0) = 1 - p(1)"
 		OutputField probabilityZero = new OutputField(FieldName.create("probability_0"))
-			.setFeature(ResultFeatureType.TRANSFORMED_VALUE)
+			.setFeature(FeatureType.TRANSFORMED_VALUE)
 			.setDataType(DataType.DOUBLE)
 			.setOpType(OpType.CONTINUOUS)
 			.setExpression(PMMLUtil.createApply("-", one, new FieldRef(probabilityOne.getName())));

@@ -38,6 +38,7 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.FeatureType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.Header;
@@ -45,7 +46,6 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
-import org.dmg.pmml.ResultFeatureType;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
 
@@ -201,7 +201,7 @@ public class PMMLUtil {
 	static
 	public OutputField createAffinityField(FieldName name, String value){
 		OutputField outputField = new OutputField(name)
-			.setFeature(ResultFeatureType.AFFINITY)
+			.setFeature(FeatureType.AFFINITY)
 			.setValue(value);
 
 		return outputField;
@@ -223,7 +223,7 @@ public class PMMLUtil {
 	static
 	public OutputField createEntityIdField(FieldName name){
 		OutputField outputField = new OutputField(name)
-			.setFeature(ResultFeatureType.ENTITY_ID);
+			.setFeature(FeatureType.ENTITY_ID);
 
 		return outputField;
 	}
@@ -231,7 +231,7 @@ public class PMMLUtil {
 	static
 	public OutputField createPredictedField(FieldName name){
 		OutputField outputField = new OutputField(name)
-			.setFeature(ResultFeatureType.PREDICTED_VALUE);
+			.setFeature(FeatureType.PREDICTED_VALUE);
 
 		return outputField;
 	}
@@ -244,7 +244,7 @@ public class PMMLUtil {
 	static
 	public OutputField createProbabilityField(FieldName name, String value){
 		OutputField outputField = new OutputField(name)
-			.setFeature(ResultFeatureType.PROBABILITY)
+			.setFeature(FeatureType.PROBABILITY)
 			.setValue(value);
 
 		return outputField;
