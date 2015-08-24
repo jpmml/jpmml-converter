@@ -25,6 +25,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
+import com.google.common.math.DoubleMath;
+import com.google.common.primitives.UnsignedLong;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -59,7 +61,7 @@ public class RandomForestConverter extends Converter {
 			public Predicate load(ElementKey key){
 				Object[] content = key.getContent();
 
-				return encodeCategoricalSplit((DataField)content[0], RExpUtil.asInteger((Number)content[1]), (Boolean)content[2]);
+				return encodeCategoricalSplit((DataField)content[0], (Double)content[1], (Boolean)content[2]);
 			}
 		});
 
@@ -434,7 +436,7 @@ public class RandomForestConverter extends Converter {
 		}
 	}
 
-	private Predicate encodeCategoricalSplit(DataField dataField, Integer split, boolean left){
+	private Predicate encodeCategoricalSplit(DataField dataField, Double split, boolean left){
 		List<Value> values = selectValues(dataField.getValues(), split, left);
 
 		if(values.size() == 1){
@@ -509,10 +511,10 @@ public class RandomForestConverter extends Converter {
 	}
 
 	static
-	private List<Value> selectValues(List<Value> values, Integer split, boolean left){
+	List<Value> selectValues(List<Value> values, Double split, boolean left){
 		List<Value> result = Lists.newArrayList();
 
-		String string = performBinaryExpansion(split);
+		UnsignedLong bits = toUnsignedLong(split.doubleValue());
 
 		for(int i = 0; i < values.size(); i++){
 			Value value = values.get(i);
@@ -521,36 +523,34 @@ public class RandomForestConverter extends Converter {
 
 			// Send "true" categories to the left
 			if(left){
-				append = ((i < string.length()) && (string.charAt(i) == '1'));
+				// Test if the least significant bit (LSB) is 1
+				append = (bits.mod(RandomForestConverter.TWO)).equals(UnsignedLong.ONE);
 			} else
 
 			// Send all other categories to the right
 			{
-				append = ((i >= string.length()) || (string.charAt(i) == '0'));
+				// Test if the LSB is 0
+				append = (bits.mod(RandomForestConverter.TWO)).equals(UnsignedLong.ZERO);
 			} // End if
 
 			if(append){
 				result.add(value);
 			}
+
+			bits = bits.dividedBy(RandomForestConverter.TWO);
 		}
 
 		return result;
 	}
 
 	static
-	private String performBinaryExpansion(int value){
+	UnsignedLong toUnsignedLong(double value){
 
-		if(value <= 0){
+		if(!DoubleMath.isMathematicalInteger(value)){
 			throw new IllegalArgumentException();
 		}
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(Integer.toBinaryString(value));
-
-		// Start counting from the rightmost bit
-		sb = sb.reverse();
-
-		return sb.toString();
+		return UnsignedLong.fromLongBits((long)value);
 	}
 
 	static
@@ -581,4 +581,6 @@ public class RandomForestConverter extends Converter {
 
 		String encode(K key);
 	}
+
+	private static final UnsignedLong TWO = UnsignedLong.valueOf(2L);
 }

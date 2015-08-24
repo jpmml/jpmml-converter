@@ -18,17 +18,37 @@
  */
 package org.jpmml.converter;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.google.common.primitives.UnsignedLong;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.Value;
 import org.jpmml.evaluator.Batch;
 import org.jpmml.evaluator.BatchUtil;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class RandomForestConverterTest extends ConverterTest {
+
+	@Test
+	public void selectValues(){
+		List<Value> values = Arrays.asList(new Value("1"), new Value("2"), new Value("3"), new Value("4"));
+
+		assertEquals(Arrays.asList(values.get(0), values.get(2), values.get(3)), RandomForestConverter.selectValues(values, 13d, true));
+		assertEquals(Arrays.asList(values.get(1)), RandomForestConverter.selectValues(values, 13d, false));
+	}
+
+	@Test
+	public void toUnsignedLong(){
+		assertEquals(UnsignedLong.valueOf("13"), RandomForestConverter.toUnsignedLong(13d));
+
+		assertEquals(UnsignedLong.valueOf("18446744071562067968"), RandomForestConverter.toUnsignedLong(-2147483648d));
+	}
 
 	@Test
 	public void convertFormulaAudit() throws Exception {
