@@ -34,6 +34,7 @@ import com.google.common.math.DoubleMath;
 import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
+import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
@@ -343,6 +344,17 @@ public class PMMLUtil {
 	}
 
 	static
+	public Constant createConstant(Object object){
+		Constant constant = new Constant(formatValue(object));
+
+		if(object instanceof Double){
+			constant.setDataType(DataType.DOUBLE);
+		}
+
+		return constant;
+	}
+
+	static
 	public Array createArray(DataType dataType, List<Value> values){
 		Function<Value, String> function = new Function<Value, String>(){
 
@@ -365,6 +377,18 @@ public class PMMLUtil {
 			default:
 				throw new IllegalArgumentException();
 		}
+	}
+
+	static
+	public String formatValue(Object object){
+
+		if(object instanceof Number){
+			Number number = (Number)object;
+
+			return formatValue(number);
+		}
+
+		return (object != null ? object.toString() : null);
 	}
 
 	static

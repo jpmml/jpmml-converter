@@ -314,22 +314,15 @@ public class GBMConverter extends Converter {
 	}
 
 	private Output encodeAdaBoostOutput(){
-		Constant minusTwo = new Constant("-2")
-			.setDataType(DataType.DOUBLE);
-
-		return encodeBinaryClassificationOutput(FieldName.create("adaBoostValue"), minusTwo);
+		return encodeBinaryClassificationOutput(FieldName.create("adaBoostValue"), PMMLUtil.createConstant(-2d));
 	}
 
 	private Output encodeBernoulliOutput(){
-		Constant minusOne = new Constant("-1")
-			.setDataType(DataType.DOUBLE);
-
-		return encodeBinaryClassificationOutput(FieldName.create("bernoulliValue"), minusOne);
+		return encodeBinaryClassificationOutput(FieldName.create("bernoulliValue"), PMMLUtil.createConstant(-1d));
 	}
 
 	private Output encodeBinaryClassificationOutput(FieldName name, Constant multiplier){
-		Constant one = new Constant("1")
-			.setDataType(DataType.DOUBLE);
+		Constant one = PMMLUtil.createConstant(1d);
 
 		OutputField gbmValue = new OutputField(name)
 			.setFeature(FeatureType.PREDICTED_VALUE);
