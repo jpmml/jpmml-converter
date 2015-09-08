@@ -21,7 +21,6 @@ package org.jpmml.converter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -294,30 +293,39 @@ public class PMMLUtil {
 
 	static
 	public MiningSchema createMiningSchema(DataField targetDataField, List<DataField> activeDataFields){
-		List<MiningField> miningFields = new ArrayList<>();
-
-		if(targetDataField != null){
-			miningFields.add(createMiningField(targetDataField.getName(), FieldUsageType.TARGET));
-		}
-
-		Function<DataField, MiningField> function = new Function<DataField, MiningField>(){
+		Function<DataField, FieldName> function = new Function<DataField, FieldName>(){
 
 			@Override
-			public MiningField apply(DataField dataField){
-				return createMiningField(dataField.getName());
+			public FieldName apply(DataField dataField){
+
+				if(dataField == null){
+					return null;
+				}
+
+				return dataField.getName();
 			}
 		};
 
-		miningFields.addAll(Lists.transform(activeDataFields, function));
-
-		MiningSchema miningSchema = new MiningSchema(miningFields);
-
-		return miningSchema;
+		return createMiningSchema(function.apply(targetDataField), Lists.transform(activeDataFields, function));
 	}
 
 	static
 	public MiningSchema createMiningSchema(FieldCollector fieldCollector){
-		Collection<FieldName> names = fieldCollector.getFields();
+		return createMiningSchema(null, fieldCollector);
+	}
+
+	static
+	public MiningSchema createMiningSchema(DataField targetDataField, FieldCollector fieldCollector){
+		return createMiningSchema((targetDataField != null ? targetDataField.getName() : null), Lists.newArrayList(fieldCollector.getFields()));
+	}
+
+	static
+	public MiningSchema createMiningSchema(FieldName targetName, List<FieldName> activeNames){
+		List<MiningField> miningFields = new ArrayList<>();
+
+		if(targetName != null){
+			miningFields.add(createMiningField(targetName, FieldUsageType.TARGET));
+		}
 
 		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
 
@@ -327,9 +335,7 @@ public class PMMLUtil {
 			}
 		};
 
-		List<MiningField> miningFields = Lists.newArrayList(Iterables.transform(names, function));
-
-		Collections.sort(miningFields, new MiningFieldComparator());
+		miningFields.addAll(Lists.transform(activeNames, function));
 
 		MiningSchema miningSchema = new MiningSchema(miningFields);
 
