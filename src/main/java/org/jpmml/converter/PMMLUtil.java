@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -218,7 +219,7 @@ public class PMMLUtil {
 			}
 		};
 
-		return Lists.newArrayList(Iterables.transform(entities, function));
+		return Lists.newArrayList(Lists.transform(entities, function));
 	}
 
 	static
@@ -261,7 +262,7 @@ public class PMMLUtil {
 			}
 		};
 
-		return Lists.newArrayList(Iterables.transform(dataField.getValues(), function));
+		return Lists.newArrayList(Lists.transform(dataField.getValues(), function));
 	}
 
 	static
@@ -293,7 +294,7 @@ public class PMMLUtil {
 
 	static
 	public MiningSchema createMiningSchema(DataField targetDataField, List<DataField> activeDataFields){
-		List<MiningField> miningFields = Lists.newArrayList();
+		List<MiningField> miningFields = new ArrayList<>();
 
 		if(targetDataField != null){
 			miningFields.add(createMiningField(targetDataField.getName(), FieldUsageType.TARGET));

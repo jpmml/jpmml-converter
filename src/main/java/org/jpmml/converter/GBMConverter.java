@@ -18,12 +18,12 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Lists;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -56,7 +56,7 @@ import org.jpmml.rexp.RString;
 
 public class GBMConverter extends Converter {
 
-	private List<DataField> dataFields = Lists.newArrayList();
+	private List<DataField> dataFields = new ArrayList<>();
 
 	private LoadingCache<ElementKey, Predicate> predicateCache = CacheBuilder.newBuilder()
 		.build(new CacheLoader<ElementKey, Predicate>(){
@@ -83,7 +83,7 @@ public class GBMConverter extends Converter {
 
 		initFields(response_name, var_names, var_type, var_levels);
 
-		List<Segment> segments = Lists.newArrayList();
+		List<Segment> segments = new ArrayList<>();
 
 		for(int i = 0; i < trees.getRexpValueCount(); i++){
 			RExp tree = trees.getRexpValue(i);
@@ -354,7 +354,7 @@ public class GBMConverter extends Converter {
 			throw new IllegalArgumentException();
 		}
 
-		List<Value> result = Lists.newArrayList();
+		List<Value> result = new ArrayList<>();
 
 		for(int i = 0; i < values.size(); i++){
 			Value value = values.get(i);

@@ -18,11 +18,11 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -49,7 +49,7 @@ public class BinaryTreeConverter extends Converter {
 
 	private MiningFunctionType miningFunction = null;
 
-	private List<DataField> dataFields = Lists.newArrayList();
+	private List<DataField> dataFields = new ArrayList<>();
 
 
 	@Override
@@ -256,8 +256,8 @@ public class BinaryTreeConverter extends Converter {
 	}
 
 	private List<Predicate> encodeCategoricalSplit(DataField dataField, List<Integer> splits, List<Value> values){
-		List<Value> leftValues = Lists.newArrayList();
-		List<Value> rightValues = Lists.newArrayList();
+		List<Value> leftValues = new ArrayList<>();
+		List<Value> rightValues = new ArrayList<>();
 
 		if(splits.size() != values.size()){
 			throw new IllegalArgumentException();

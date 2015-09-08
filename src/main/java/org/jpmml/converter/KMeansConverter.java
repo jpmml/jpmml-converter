@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -59,9 +60,9 @@ public class KMeansConverter extends Converter {
 			.setMeasure(new SquaredEuclidean())
 			.setCompareFunction(CompareFunctionType.ABS_DIFF);
 
-		List<DataField> dataFields = Lists.newArrayList();
+		List<DataField> dataFields = new ArrayList<>();
 
-		List<ClusteringField> clusteringFields = Lists.newArrayList();
+		List<ClusteringField> clusteringFields = new ArrayList<>();
 
 		RExp columnNames = dimnames.getRexpValue(1);
 		for(int i = 0; i < columns; i++){
@@ -79,7 +80,7 @@ public class KMeansConverter extends Converter {
 			clusteringFields.add(clusteringField);
 		}
 
-		List<Cluster> clusters = Lists.newArrayList();
+		List<Cluster> clusters = new ArrayList<>();
 
 		RExp rowNames = dimnames.getRexpValue(0);
 		for(int i = 0; i < rows; i++){

@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -34,7 +35,7 @@ public class RExpUtil {
 
 	static
 	public <E> List<E> getRow(List<E> matrix, int k, int rows, int columns){
-		List<E> row = Lists.newArrayList();
+		List<E> row = new ArrayList<>();
 
 		for(int i = 0; i < columns; i++){
 			row.add(matrix.get((i * rows) + k));

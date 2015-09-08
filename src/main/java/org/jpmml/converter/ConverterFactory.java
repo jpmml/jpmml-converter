@@ -18,9 +18,9 @@
  */
 package org.jpmml.converter;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
 import org.jpmml.rexp.RExp;
 import org.jpmml.rexp.RString;
 
@@ -54,7 +54,7 @@ public class ConverterFactory {
 		return new ConverterFactory();
 	}
 
-	private static Map<String, Class<? extends Converter>> converters = Maps.newLinkedHashMap();
+	private static Map<String, Class<? extends Converter>> converters = new LinkedHashMap<>();
 
 	static {
 		converters.put("BinaryTree", BinaryTreeConverter.class);

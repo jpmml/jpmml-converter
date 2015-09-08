@@ -18,9 +18,9 @@
  */
 package org.jpmml.converter;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Visitable;
 import org.jpmml.model.visitors.AbstractVisitor;
@@ -28,7 +28,7 @@ import org.jpmml.model.visitors.AbstractVisitor;
 abstract
 public class FieldCollector extends AbstractVisitor {
 
-	private Set<FieldName> fields = Sets.newHashSet();
+	private Set<FieldName> fields = new HashSet<>();
 
 
 	@Override

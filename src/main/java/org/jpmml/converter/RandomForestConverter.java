@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -52,7 +53,7 @@ import org.jpmml.rexp.RString;
 
 public class RandomForestConverter extends Converter {
 
-	private List<DataField> dataFields = Lists.newArrayList();
+	private List<DataField> dataFields = new ArrayList<>();
 
 	private LoadingCache<ElementKey, Predicate> predicateCache = CacheBuilder.newBuilder()
 		.build(new CacheLoader<ElementKey, Predicate>(){
@@ -153,7 +154,7 @@ public class RandomForestConverter extends Converter {
 		int rows = nrnodes.getIntValue(0);
 		int columns = (int)ntree.getRealValue(0);
 
-		List<TreeModel> treeModels = Lists.newArrayList();
+		List<TreeModel> treeModels = new ArrayList<>();
 
 		for(int i = 0; i < columns; i++){
 			TreeModel treeModel = encodeTreeModel(
@@ -202,7 +203,7 @@ public class RandomForestConverter extends Converter {
 		int rows = nrnodes.getIntValue(0);
 		int columns = (int)ntree.getRealValue(0);
 
-		List<TreeModel> treeModels = Lists.newArrayList();
+		List<TreeModel> treeModels = new ArrayList<>();
 
 		for(int i = 0; i < columns; i++){
 			List<Integer> daughters = RExpUtil.getColumn(treemapIndices, i, 2 * rows, columns);
@@ -237,7 +238,7 @@ public class RandomForestConverter extends Converter {
 				throw new IllegalArgumentException();
 		}
 
-		List<Segment> segments = Lists.newArrayList();
+		List<Segment> segments = new ArrayList<>();
 
 		for(int i = 0; i < treeModels.size(); i++){
 			TreeModel treeModel = treeModels.get(i);
@@ -512,7 +513,7 @@ public class RandomForestConverter extends Converter {
 
 	static
 	List<Value> selectValues(List<Value> values, Double split, boolean left){
-		List<Value> result = Lists.newArrayList();
+		List<Value> result = new ArrayList<>();
 
 		UnsignedLong bits = toUnsignedLong(split.doubleValue());
 

@@ -18,11 +18,11 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Value;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class PMMLUtilTest {
 
 	static
 	private List<Value> createValues(String... strings){
-		List<Value> result = Lists.newArrayList();
+		List<Value> result = new ArrayList<>();
 
 		for(String string : strings){
 			result.add(new Value(string));
