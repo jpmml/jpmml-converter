@@ -20,7 +20,7 @@ package org.jpmml.converter;
 
 import java.util.Map;
 
-import com.beust.jcommander.internal.Maps;
+import com.google.common.collect.Maps;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.jpmml.model.visitors.AbstractVisitor;

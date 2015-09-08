@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Value;
 import org.junit.Test;

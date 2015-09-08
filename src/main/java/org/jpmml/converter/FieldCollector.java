@@ -20,7 +20,7 @@ package org.jpmml.converter;
 
 import java.util.Set;
 
-import com.beust.jcommander.internal.Sets;
+import com.google.common.collect.Sets;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Visitable;
 import org.jpmml.model.visitors.AbstractVisitor;

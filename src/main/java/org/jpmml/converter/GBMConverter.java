@@ -20,10 +20,10 @@ package org.jpmml.converter;
 
 import java.util.List;
 
-import com.beust.jcommander.internal.Lists;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
