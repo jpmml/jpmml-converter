@@ -131,7 +131,8 @@ public class PMMLUtil {
 				return dataField.setDataType(DataType.STRING)
 					.setOpType(OpType.CATEGORICAL);
 			case DOUBLE:
-				return dataField.setDataType(DataType.DOUBLE)
+			case FLOAT:
+				return dataField.setDataType(dataType)
 					.setOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
 			case INTEGER:
 				return dataField.setDataType(DataType.INTEGER)

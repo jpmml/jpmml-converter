@@ -48,6 +48,20 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 						this.fieldDataTypes.put(field, dataType);
 						return;
 					case DOUBLE:
+					case FLOAT:
+					case INTEGER:
+					case BOOLEAN:
+						return;
+					default:
+						throw new IllegalArgumentException();
+				}
+			case FLOAT:
+				switch(dataType){
+					case STRING:
+					case DOUBLE:
+						this.fieldDataTypes.put(field, dataType);
+						return;
+					case FLOAT:
 					case INTEGER:
 					case BOOLEAN:
 						return;
@@ -58,6 +72,7 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 				switch(dataType){
 					case STRING:
 					case DOUBLE:
+					case FLOAT:
 						this.fieldDataTypes.put(field, dataType);
 						return;
 					case INTEGER:
@@ -70,6 +85,7 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 				switch(dataType){
 					case STRING:
 					case DOUBLE:
+					case FLOAT:
 					case INTEGER:
 						this.fieldDataTypes.put(field, dataType);
 						return;
