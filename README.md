@@ -1,7 +1,7 @@
 JPMML-Converter
 ===============
 
-Java library for working with PMML class model objects.
+Java library for authoring PMML.
 
 This project provides base functionality for the following projects:
 
