@@ -20,7 +20,7 @@ package org.jpmml.converter;
 
 import java.util.Arrays;
 
-class ElementKey {
+public class ElementKey {
 
 	private Object[] content = null;
 

@@ -61,29 +61,6 @@ public class PMMLUtil {
 	}
 
 	static
-	public DataField createDataField(FieldName name, String type){
-		DataType dataType;
-
-		if("factor".equals(type)){
-			dataType = DataType.STRING;
-		} else
-
-		if("numeric".equals(type)){
-			dataType = DataType.DOUBLE;
-		} else
-
-		if("logical".equals(type)){
-			dataType = DataType.BOOLEAN;
-		} else
-
-		{
-			throw new IllegalArgumentException(type);
-		}
-
-		return createDataField(name, dataType);
-	}
-
-	static
 	public DataField createDataField(FieldName name, DataType dataType){
 		DataField dataField = new DataField()
 			.setName(name);
@@ -266,9 +243,9 @@ public class PMMLUtil {
 	}
 
 	static
-	public Header createHeader(){
+	public Header createHeader(String name){
 		Application application = new Application()
-			.setName("JPMML-Converter")
+			.setName(name)
 			.setVersion("1.0-SNAPSHOT");
 
 		// XML Schema "dateTime" data format (corresponds roughly to ISO 8601)
