@@ -5,8 +5,8 @@ Java library for authoring PMML.
 
 This project provides base functionality for the following projects:
 
-* [JPMML-R] (https://github.com/jpmml/jpmml-r).
-* [JPMML-SkLearn] (https://github.com/jpmml/jpmml-sklearn).
+* [JPMML-R] (https://github.com/jpmml/jpmml-r)
+* [JPMML-SkLearn] (https://github.com/jpmml/jpmml-sklearn)
 
 # License #
 
