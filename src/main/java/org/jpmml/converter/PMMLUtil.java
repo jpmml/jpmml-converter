@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.TimeZone;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.math.DoubleMath;
 import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
@@ -47,6 +45,7 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
 
@@ -94,7 +93,15 @@ public class PMMLUtil {
 
 	static
 	public DataField refineDataField(DataField dataField){
-		DataType dataType = getDataType(dataField.getValues());
+		Function<Value, String> function = new Function<Value, String>(){
+
+			@Override
+			public String apply(Value value){
+				return value.getValue();
+			}
+		};
+
+		DataType dataType = ValueUtil.getDataType(Lists.transform(dataField.getValues(), function));
 
 		return refineDataField(dataField, dataType);
 	}
@@ -156,7 +163,7 @@ public class PMMLUtil {
 			}
 		};
 
-		return Lists.transform(values, function);
+		return Lists.newArrayList(Lists.transform(values, function));
 	}
 
 	static
@@ -299,7 +306,7 @@ public class PMMLUtil {
 
 	static
 	public MiningSchema createMiningSchema(FieldName targetName, List<FieldName> activeNames){
-		List<MiningField> miningFields = new ArrayList<>();
+		List<MiningField> miningFields = Lists.newArrayList();
 
 		if(targetName != null){
 			miningFields.add(createMiningField(targetName, FieldUsageType.TARGET));
@@ -329,10 +336,10 @@ public class PMMLUtil {
 	}
 
 	static
-	public Constant createConstant(Object object){
-		Constant constant = new Constant(formatValue(object));
+	public Constant createConstant(Object value){
+		Constant constant = new Constant(ValueUtil.formatValue(value));
 
-		if(object instanceof Double){
+		if(value instanceof Double){
 			constant.setDataType(DataType.DOUBLE);
 		}
 
@@ -345,11 +352,11 @@ public class PMMLUtil {
 
 			@Override
 			public String apply(Value value){
-				return value.getValue();
+				return ValueUtil.formatValue(value.getValue());
 			}
 		};
 
-		String value = formatArrayValue(Lists.transform(values, function));
+		String value = ValueUtil.formatArrayValue(Lists.transform(values, function));
 
 		switch(dataType){
 			case STRING:
@@ -365,112 +372,41 @@ public class PMMLUtil {
 	}
 
 	static
-	public String formatValue(Object object){
+	public Array createRealArray(List<? extends Number> values){
+		Function<Number, String> function = new Function<Number, String>(){
 
-		if(object instanceof Number){
-			Number number = (Number)object;
-
-			return formatValue(number);
-		}
-
-		return (object != null ? object.toString() : null);
-	}
-
-	static
-	public String formatValue(Number number){
-		double value = number.doubleValue();
-
-		if(DoubleMath.isMathematicalInteger(value)){
-			return Long.toString(number.longValue());
-		}
-
-		return Double.toString(value);
-	}
-
-	static
-	public String formatArrayValue(List<String> values){
-		StringBuilder sb = new StringBuilder();
-
-		String sep = "";
-
-		for(String value : values){
-			sb.append(sep);
-
-			sep = " ";
-
-			if(value.indexOf(' ') > -1){
-				sb.append('\"').append(value).append('\"');
-			} else
-
-			{
-				sb.append(value);
+			@Override
+			public String apply(Number number){
+				return ValueUtil.formatValue(number);
 			}
-		}
+		};
 
-		return sb.toString();
+		String value = ValueUtil.formatArrayValue(Lists.transform(values, function));
+
+		Array array = new Array(Array.Type.REAL, value);
+
+		return array;
 	}
 
 	static
-	public DataType getDataType(List<Value> values){
+	public RealSparseArray createRealSparseArray(List<? extends Number> values, Double defaultValue){
+		RealSparseArray sparseArray = new RealSparseArray()
+			.setN(values.size())
+			.setDefaultValue(defaultValue);
 
-		if(values.isEmpty()){
-			throw new IllegalArgumentException();
-		}
+		int index = 1;
 
-		DataType dataType = DataType.INTEGER;
+		for(Number value : values){
 
-		for(Value value : values){
-			String string = value.getValue();
-
-			switch(dataType){
-				case INTEGER:
-					try {
-						Integer.parseInt(string);
-
-						continue;
-					} catch(NumberFormatException nfe){
-						dataType = DataType.DOUBLE;
-					}
-					// Falls through
-				case DOUBLE:
-					try {
-						Double.parseDouble(string);
-
-						continue;
-					} catch(NumberFormatException nfe){
-						dataType = DataType.STRING;
-					}
-					// Falls through
-				case STRING:
-					return dataType;
-				default:
-					throw new IllegalArgumentException();
+			if(!ValueUtil.fuzzyEquals(value, defaultValue)){
+				sparseArray.addIndices(index);
+				sparseArray.addEntries(ValueUtil.asDouble(value));
 			}
+
+			index++;
 		}
 
-		return dataType;
-	}
-
-	static
-	public DataType getDataType(String string){
-
-		try {
-			Integer.parseInt(string);
-
-			return DataType.INTEGER;
-		} catch(NumberFormatException nfe){
-			// Ignored
-		}
-
-		try {
-			Double.parseDouble(string);
-
-			return DataType.DOUBLE;
-		} catch(NumberFormatException nfe){
-			// Ignored
-		}
-
-		return DataType.STRING;
+		return sparseArray;
 	}
 
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
