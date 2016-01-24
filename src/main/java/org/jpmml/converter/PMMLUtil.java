@@ -48,6 +48,7 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
+import org.jpmml.model.visitors.FieldReferenceFinder;
 
 public class PMMLUtil {
 
@@ -70,8 +71,8 @@ public class PMMLUtil {
 	}
 
 	static
-	public List<DataField> createDataFields(FieldCollector fieldCollector){
-		Set<FieldName> names = fieldCollector.getFields();
+	public List<DataField> createDataFields(FieldReferenceFinder fieldReferenceFinder){
+		Set<FieldName> names = fieldReferenceFinder.getFieldNames();
 
 		Function<FieldName, DataField> function = new Function<FieldName, DataField>(){
 
@@ -295,13 +296,13 @@ public class PMMLUtil {
 	}
 
 	static
-	public MiningSchema createMiningSchema(FieldCollector fieldCollector){
-		return createMiningSchema(null, fieldCollector);
+	public MiningSchema createMiningSchema(FieldReferenceFinder fieldReferenceFinder){
+		return createMiningSchema(null, fieldReferenceFinder);
 	}
 
 	static
-	public MiningSchema createMiningSchema(DataField targetDataField, FieldCollector fieldCollector){
-		return createMiningSchema((targetDataField != null ? targetDataField.getName() : null), Lists.newArrayList(fieldCollector.getFields()));
+	public MiningSchema createMiningSchema(DataField targetDataField, FieldReferenceFinder fieldReferenceFinder){
+		return createMiningSchema((targetDataField != null ? targetDataField.getName() : null), Lists.newArrayList(fieldReferenceFinder.getFieldNames()));
 	}
 
 	static
