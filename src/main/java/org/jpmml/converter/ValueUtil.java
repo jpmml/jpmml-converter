@@ -152,7 +152,7 @@ public class ValueUtil {
 	}
 
 	static
-	public Integer asInteger(Number number){
+	public int asInt(Number number){
 
 		if(number instanceof Integer){
 			return (Integer)number;
@@ -165,6 +165,11 @@ public class ValueUtil {
 		}
 
 		throw new IllegalArgumentException();
+	}
+
+	static
+	public Integer asInteger(Number number){
+		return asInt(number);
 	}
 
 	static
@@ -192,7 +197,7 @@ public class ValueUtil {
 			return (Double)number;
 		}
 
-		return Double.valueOf(number.doubleValue());
+		return number.doubleValue();
 	}
 
 	static
