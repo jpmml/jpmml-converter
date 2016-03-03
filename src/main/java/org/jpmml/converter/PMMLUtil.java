@@ -251,10 +251,10 @@ public class PMMLUtil {
 	}
 
 	static
-	public Header createHeader(String name){
+	public Header createHeader(String name, String version){
 		Application application = new Application()
 			.setName(name)
-			.setVersion("1.0-SNAPSHOT");
+			.setVersion(version);
 
 		// XML Schema "dateTime" data format (corresponds roughly to ISO 8601)
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
