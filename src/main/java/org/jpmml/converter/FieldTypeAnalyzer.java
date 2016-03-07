@@ -31,10 +31,10 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 	private Map<FieldName, DataType> fieldDataTypes = new HashMap<>();
 
 
-	public void addDataType(FieldName field, DataType dataType){
-		DataType fieldDataType = this.fieldDataTypes.get(field);
+	public void addDataType(FieldName name, DataType dataType){
+		DataType fieldDataType = this.fieldDataTypes.get(name);
 		if(fieldDataType == null){
-			this.fieldDataTypes.put(field, dataType);
+			this.fieldDataTypes.put(name, dataType);
 
 			return;
 		}
@@ -45,7 +45,7 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 			case DOUBLE:
 				switch(dataType){
 					case STRING:
-						this.fieldDataTypes.put(field, dataType);
+						this.fieldDataTypes.put(name, dataType);
 						return;
 					case DOUBLE:
 					case FLOAT:
@@ -59,7 +59,7 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 				switch(dataType){
 					case STRING:
 					case DOUBLE:
-						this.fieldDataTypes.put(field, dataType);
+						this.fieldDataTypes.put(name, dataType);
 						return;
 					case FLOAT:
 					case INTEGER:
@@ -73,7 +73,7 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 					case STRING:
 					case DOUBLE:
 					case FLOAT:
-						this.fieldDataTypes.put(field, dataType);
+						this.fieldDataTypes.put(name, dataType);
 						return;
 					case INTEGER:
 					case BOOLEAN:
@@ -87,7 +87,7 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 					case DOUBLE:
 					case FLOAT:
 					case INTEGER:
-						this.fieldDataTypes.put(field, dataType);
+						this.fieldDataTypes.put(name, dataType);
 						return;
 					case BOOLEAN:
 						return;
@@ -99,7 +99,7 @@ public class FieldTypeAnalyzer extends AbstractVisitor {
 		}
 	}
 
-	public DataType getDataType(FieldName field){
-		return this.fieldDataTypes.get(field);
+	public DataType getDataType(FieldName name){
+		return this.fieldDataTypes.get(name);
 	}
 }
