@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -30,6 +31,8 @@ import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.PMMLObject;
+import org.dmg.pmml.Target;
 import org.dmg.pmml.Value;
 import org.jpmml.model.visitors.FieldReferenceFinder;
 
@@ -40,11 +43,21 @@ public class ModelUtil {
 
 	static
 	public MiningSchema createMiningSchema(List<DataField> dataFields){
-		return createMiningSchema(dataFields.get(0), dataFields.subList(1, dataFields.size()));
+		return createMiningSchema(dataFields, null);
+	}
+
+	static
+	public MiningSchema createMiningSchema(List<DataField> dataFields, PMMLObject object){
+		return createMiningSchema(dataFields.get(0), dataFields.subList(1, dataFields.size()), object);
 	}
 
 	static
 	public MiningSchema createMiningSchema(DataField targetDataField, List<DataField> activeDataFields){
+		return createMiningSchema(targetDataField, activeDataFields, null);
+	}
+
+	static
+	public MiningSchema createMiningSchema(DataField targetDataField, List<DataField> activeDataFields, PMMLObject object){
 		Function<DataField, FieldName> function = new Function<DataField, FieldName>(){
 
 			@Override
@@ -58,25 +71,29 @@ public class ModelUtil {
 			}
 		};
 
-		return createMiningSchema(function.apply(targetDataField), Lists.transform(activeDataFields, function));
+		return createMiningSchema(function.apply(targetDataField), Lists.transform(activeDataFields, function), object);
 	}
 
 	static
-	public MiningSchema createMiningSchema(FieldReferenceFinder fieldReferenceFinder){
-		return createMiningSchema(null, fieldReferenceFinder);
+	public MiningSchema createMiningSchema(FieldName targetField, List<FieldName> activeFields){
+		return createMiningSchema(targetField, activeFields, null);
 	}
 
 	static
-	public MiningSchema createMiningSchema(DataField targetDataField, FieldReferenceFinder fieldReferenceFinder){
-		return createMiningSchema((targetDataField != null ? targetDataField.getName() : null), Lists.newArrayList(fieldReferenceFinder.getFieldNames()));
-	}
+	public MiningSchema createMiningSchema(FieldName targetField, List<FieldName> activeFields, PMMLObject object){
 
-	static
-	public MiningSchema createMiningSchema(FieldName targetName, List<FieldName> activeNames){
-		List<MiningField> miningFields = Lists.newArrayList();
+		if(object != null){
+			FieldReferenceFinder fieldReferenceFinder = new FieldReferenceFinder();
+			fieldReferenceFinder.applyTo(object);
 
-		if(targetName != null){
-			miningFields.add(createMiningField(targetName, FieldUsageType.TARGET));
+			activeFields = new ArrayList<>(activeFields);
+			activeFields.retainAll(fieldReferenceFinder.getFieldNames());
+		}
+
+		List<MiningField> miningFields = new ArrayList<>();
+
+		if(targetField != null){
+			miningFields.add(createMiningField(targetField, FieldUsageType.TARGET));
 		}
 
 		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
@@ -87,7 +104,7 @@ public class ModelUtil {
 			}
 		};
 
-		miningFields.addAll(Lists.transform(activeNames, function));
+		miningFields.addAll(Lists.transform(activeFields, function));
 
 		MiningSchema miningSchema = new MiningSchema(miningFields);
 
@@ -105,6 +122,26 @@ public class ModelUtil {
 			.setUsageType(usageType);
 
 		return miningField;
+	}
+
+	static
+	public Target createRescaleTarget(DataField dataField, Double slope, Double intercept){
+		return createRescaleTarget(dataField.getName(), slope, intercept);
+	}
+
+	static
+	public Target createRescaleTarget(FieldName name, Double slope, Double intercept){
+		Target target = new Target(name);
+
+		if(slope != null && !ValueUtil.isOne(slope)){
+			target.setRescaleFactor(slope);
+		} // End if
+
+		if(intercept != null && !ValueUtil.isZero(intercept)){
+			target.setRescaleConstant(intercept);
+		}
+
+		return target;
 	}
 
 	static
@@ -166,6 +203,8 @@ public class ModelUtil {
 
 	static
 	public List<OutputField> createProbabilityFields(DataField dataField){
+		List<Value> values = dataField.getValues();
+
 		Function<Value, OutputField> function = new Function<Value, OutputField>(){
 
 			@Override
@@ -174,7 +213,19 @@ public class ModelUtil {
 			}
 		};
 
-		return Lists.newArrayList(Lists.transform(dataField.getValues(), function));
+		return Lists.newArrayList(Lists.transform(values, function));
 	}
 
+	static
+	public List<OutputField> createProbabilityFields(List<String> values){
+		Function<String, OutputField> function = new Function<String, OutputField>(){
+
+			@Override
+			public OutputField apply(String value){
+				return createProbabilityField(value);
+			}
+		};
+
+		return Lists.newArrayList(Lists.transform(values, function));
+	}
 }

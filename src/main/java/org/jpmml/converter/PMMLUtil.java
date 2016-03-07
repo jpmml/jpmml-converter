@@ -36,6 +36,7 @@ import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.OpType;
@@ -263,6 +264,38 @@ public class PMMLUtil {
 		}
 
 		return sparseArray;
+	}
+
+	static
+	public List<FieldName> getNames(List<? extends Field> fields){
+		Function<Field, FieldName> function = new Function<Field, FieldName>(){
+
+			@Override
+			public FieldName apply(Field field){
+				return field.getName();
+			}
+		};
+
+		return Lists.newArrayList(Lists.transform(fields, function));
+	}
+
+	static
+	public <F extends Field> F getField(FieldName name, List<F> fields){
+		return getField(name, fields, 0);
+	}
+
+	static
+	public <F extends Field> F getField(FieldName name, List<F> fields, int offset){
+
+		for(int i = offset; i < fields.size(); i++){
+			F field = fields.get(i);
+
+			if((name).equals(field.getName())){
+				return field;
+			}
+		}
+
+		throw new IllegalArgumentException();
 	}
 
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
