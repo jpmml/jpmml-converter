@@ -30,6 +30,7 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.Target;
@@ -72,6 +73,16 @@ public class ModelUtil {
 		};
 
 		return createMiningSchema(function.apply(targetDataField), Lists.transform(activeDataFields, function), object);
+	}
+
+	static
+	public MiningSchema createMiningSchema(Schema schema){
+		return createMiningSchema(schema, null);
+	}
+
+	static
+	public MiningSchema createMiningSchema(Schema schema, PMMLObject object){
+		return createMiningSchema(schema.getTargetField(), schema.getActiveFields(), object);
 	}
 
 	static
@@ -142,6 +153,31 @@ public class ModelUtil {
 		}
 
 		return target;
+	}
+
+	static
+	public Output createProbabilityOutput(DataField dataField){
+
+		if(!dataField.hasValues()){
+			return null;
+		}
+
+		Output output = new Output(createProbabilityFields(dataField));
+
+		return output;
+	}
+
+	static
+	public Output createProbabilityOutput(Schema schema){
+		List<String> targetCategories = schema.getTargetCategories();
+
+		if(targetCategories == null || targetCategories.isEmpty()){
+			return null;
+		}
+
+		Output output = new Output(createProbabilityFields(targetCategories));
+
+		return output;
 	}
 
 	static

@@ -23,6 +23,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningFunctionType;
 import org.dmg.pmml.MiningModel;
@@ -31,6 +34,7 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.MultipleModelMethodType;
 import org.dmg.pmml.NumericPredictor;
 import org.dmg.pmml.Output;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.RegressionModel;
 import org.dmg.pmml.RegressionNormalizationMethodType;
 import org.dmg.pmml.RegressionTable;
@@ -44,18 +48,25 @@ public class MiningModelUtil {
 	}
 
 	static
-	public MiningModel createBinaryLogisticClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, Model model, FieldName inputField, double coefficient, boolean hasProbabilityDistribution){
+	public MiningModel createBinaryLogisticClassification(Schema schema, Model model, double coefficient, boolean hasProbabilityDistribution){
+		return createBinaryLogisticClassification(schema.getTargetField(), schema.getTargetCategories(), schema.getActiveFields(), model, coefficient, hasProbabilityDistribution);
+	}
+
+	static
+	public MiningModel createBinaryLogisticClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, Model model, double coefficient, boolean hasProbabilityDistribution){
 
 		if(targetCategories.size() != 2){
 			throw new IllegalArgumentException();
 		}
 
-		RegressionTable yesTable = new RegressionTable(0d)
-			.setTargetCategory(targetCategories.get(1))
+		FieldName inputField = MiningModelUtil.MODEL_PREDICTION.apply(model);
+
+		RegressionTable activeRegressionTable = new RegressionTable(0d)
+			.setTargetCategory(targetCategories.get(0))
 			.addNumericPredictors(new NumericPredictor(inputField, coefficient));
 
-		RegressionTable noTable = new RegressionTable(0d)
-			.setTargetCategory(targetCategories.get(0));
+		RegressionTable passiveRegressionTable = new RegressionTable(0d)
+			.setTargetCategory(targetCategories.get(1));
 
 		Output output = (hasProbabilityDistribution ? new Output(ModelUtil.createProbabilityFields(targetCategories)) : null);
 
@@ -63,7 +74,7 @@ public class MiningModelUtil {
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunctionType.CLASSIFICATION, miningSchema, null)
 			.setNormalizationMethod(RegressionNormalizationMethodType.SOFTMAX)
-			.addRegressionTables(yesTable, noTable)
+			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
 			.setOutput(output);
 
 		List<Model> segmentationModels = Arrays.asList(model, regressionModel);
@@ -72,11 +83,18 @@ public class MiningModelUtil {
 	}
 
 	static
-	public MiningModel createClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, List<? extends Model> models, List<FieldName> inputFields, boolean hasProbabilityDistribution){
+	public MiningModel createClassification(Schema schema, List<? extends Model> models, RegressionNormalizationMethodType regressionNormalizationMethod, boolean hasProbabilityDistribution){
+		return createClassification(schema.getTargetField(), schema.getTargetCategories(), schema.getActiveFields(), models, regressionNormalizationMethod, hasProbabilityDistribution);
+	}
 
-		if((targetCategories.size() != models.size()) || (targetCategories.size() != inputFields.size())){
+	static
+	public MiningModel createClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, List<? extends Model> models, RegressionNormalizationMethodType regressionNormalizationMethod, boolean hasProbabilityDistribution){
+
+		if(targetCategories.size() != models.size()){
 			throw new IllegalArgumentException();
 		}
+
+		List<FieldName> inputFields = Lists.transform(models, MiningModelUtil.MODEL_PREDICTION);
 
 		List<RegressionTable> regressionTables = new ArrayList<>();
 
@@ -93,7 +111,7 @@ public class MiningModelUtil {
 		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, inputFields);
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunctionType.CLASSIFICATION, miningSchema, regressionTables)
-			.setNormalizationMethod(RegressionNormalizationMethodType.SIMPLEMAX)
+			.setNormalizationMethod(regressionNormalizationMethod)
 			.setOutput(output);
 
 		List<Model> segmentationModels = new ArrayList<>(models);
@@ -120,7 +138,7 @@ public class MiningModelUtil {
 	}
 
 	static
-	public Segmentation createSegmentation(MultipleModelMethodType multipleModelMethod, List<? extends Model> models, List<Number> weights){
+	public Segmentation createSegmentation(MultipleModelMethodType multipleModelMethod, List<? extends Model> models, List<? extends Number> weights){
 
 		if((weights != null) && (models.size() != weights.size())){
 			throw new IllegalArgumentException();
@@ -148,4 +166,20 @@ public class MiningModelUtil {
 
 		return segmentation;
 	}
+
+	private static final Function<Model, FieldName> MODEL_PREDICTION = new Function<Model, FieldName>(){
+
+		@Override
+		public FieldName apply(Model model){
+			Output output = model.getOutput();
+
+			if(output == null || !output.hasOutputFields()){
+				throw new IllegalArgumentException();
+			}
+
+			OutputField outputField = Iterables.getLast(output.getOutputFields());
+
+			return outputField.getName();
+		}
+	};
 }
