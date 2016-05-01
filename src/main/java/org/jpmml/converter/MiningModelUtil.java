@@ -146,9 +146,11 @@ public class MiningModelUtil {
 	private MiningModel createModelChain(FieldName targetField, List<FieldName> activeFields, List<? extends Model> models){
 		Segmentation segmentation = createSegmentation(MultipleModelMethodType.MODEL_CHAIN, models);
 
+		Model lastModel = Iterables.getLast(models);
+
 		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, activeFields);
 
-		MiningModel miningModel = new MiningModel(MiningFunctionType.CLASSIFICATION, miningSchema)
+		MiningModel miningModel = new MiningModel(lastModel.getFunctionName(), miningSchema)
 			.setSegmentation(segmentation);
 
 		return miningModel;
