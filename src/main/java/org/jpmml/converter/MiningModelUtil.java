@@ -48,6 +48,28 @@ public class MiningModelUtil {
 	}
 
 	static
+	public MiningModel createRegression(Schema schema, Model model){
+		return createRegression(schema.getTargetField(), schema.getActiveFields(), model);
+	}
+
+	static
+	public MiningModel createRegression(FieldName targetField, List<FieldName> activeFields, Model model){
+		FieldName inputField = MiningModelUtil.MODEL_PREDICTION.apply(model);
+
+		RegressionTable regressionTable = new RegressionTable(0d)
+			.addNumericPredictors(new NumericPredictor(inputField, 1d));
+
+		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, Collections.singletonList(inputField));
+
+		RegressionModel regressionModel = new RegressionModel(MiningFunctionType.REGRESSION, miningSchema, null)
+			.addRegressionTables(regressionTable);
+
+		List<Model> segmentationModels = Arrays.asList(model, regressionModel);
+
+		return createModelChain(targetField, activeFields, segmentationModels);
+	}
+
+	static
 	public MiningModel createBinaryLogisticClassification(Schema schema, Model model, double coefficient, boolean hasProbabilityDistribution){
 		return createBinaryLogisticClassification(schema.getTargetField(), schema.getTargetCategories(), schema.getActiveFields(), model, coefficient, hasProbabilityDistribution);
 	}
