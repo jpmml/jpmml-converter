@@ -104,7 +104,7 @@ public class ValueUtil {
 			return ValueUtil.formatValue(number);
 		}
 
-		return (object != null ? object.toString() : null);
+		return object.toString();
 	}
 
 	static
@@ -115,7 +115,7 @@ public class ValueUtil {
 			return Long.toString((long)value);
 		}
 
-		return Double.toString(value);
+		return number.toString();
 	}
 
 	static
