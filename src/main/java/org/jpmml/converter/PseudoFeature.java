@@ -18,11 +18,17 @@
  */
 package org.jpmml.converter;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.TypeDefinitionField;
 
 public class PseudoFeature extends Feature {
 
-	public PseudoFeature(FieldName name){
-		super(name);
+	public PseudoFeature(TypeDefinitionField field){
+		this(field.getName(), field.getDataType());
+	}
+
+	public PseudoFeature(FieldName name, DataType dataType){
+		super(name, dataType);
 	}
 }

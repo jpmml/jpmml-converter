@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 
 abstract
@@ -25,9 +26,12 @@ public class Feature {
 
 	private FieldName name = null;
 
+	private DataType dataType = null;
 
-	public Feature(FieldName name){
+
+	public Feature(FieldName name, DataType dataType){
 		setName(name);
+		setDataType(dataType);
 	}
 
 	public FieldName getName(){
@@ -36,5 +40,13 @@ public class Feature {
 
 	private void setName(FieldName name){
 		this.name = name;
+	}
+
+	public DataType getDataType(){
+		return this.dataType;
+	}
+
+	private void setDataType(DataType dataType){
+		this.dataType = dataType;
 	}
 }

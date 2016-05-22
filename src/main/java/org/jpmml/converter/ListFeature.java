@@ -20,15 +20,21 @@ package org.jpmml.converter;
 
 import java.util.List;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.TypeDefinitionField;
 
 public class ListFeature extends ContinuousFeature {
 
 	private List<String> values = null;
 
 
-	public ListFeature(FieldName name, List<String> values){
-		super(name);
+	public ListFeature(TypeDefinitionField field, List<String> values){
+		this(field.getName(), field.getDataType(), values);
+	}
+
+	public ListFeature(FieldName name, DataType dataType, List<String> values){
+		super(name, dataType);
 
 		setValues(values);
 	}

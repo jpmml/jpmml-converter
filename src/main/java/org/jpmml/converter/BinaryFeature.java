@@ -18,15 +18,21 @@
  */
 package org.jpmml.converter;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.TypeDefinitionField;
 
 public class BinaryFeature extends Feature {
 
 	private String value = null;
 
 
-	public BinaryFeature(FieldName name, String value){
-		super(name);
+	public BinaryFeature(TypeDefinitionField field, String value){
+		this(field.getName(), field.getDataType(), value);
+	}
+
+	public BinaryFeature(FieldName name, DataType dataType, String value){
+		super(name, dataType);
 
 		setValue(value);
 	}

@@ -18,11 +18,17 @@
  */
 package org.jpmml.converter;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.TypeDefinitionField;
 
 public class ContinuousFeature extends Feature {
 
-	public ContinuousFeature(FieldName name){
-		super(name);
+	public ContinuousFeature(TypeDefinitionField field){
+		this(field.getName(), field.getDataType());
+	}
+
+	public ContinuousFeature(FieldName name, DataType dataType){
+		super(name, dataType);
 	}
 }
