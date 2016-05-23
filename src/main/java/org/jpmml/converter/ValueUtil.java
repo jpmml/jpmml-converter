@@ -143,12 +143,12 @@ public class ValueUtil {
 
 	static
 	public boolean isZero(Number number){
-		return fuzzyEquals(number, ZERO);
+		return equals(number, ZERO);
 	}
 
 	static
 	public boolean isOne(Number number){
-		return fuzzyEquals(number, ONE);
+		return equals(number, ONE);
 	}
 
 	static
@@ -225,7 +225,7 @@ public class ValueUtil {
 		for(int i = 0; i < values.size(); i++){
 			Number value = values.get(i);
 
-			if(fuzzyEquals(value, targetValue)){
+			if(equals(value, targetValue)){
 				result.set(i, true);
 			}
 		}
@@ -244,7 +244,7 @@ public class ValueUtil {
 
 		for(Number value : values){
 
-			if(fuzzyEquals(value, defaultValue)){
+			if(equals(value, defaultValue)){
 				count++;
 			}
 		}
@@ -268,8 +268,13 @@ public class ValueUtil {
 	}
 
 	static
-	public boolean fuzzyEquals(Number value, Number targetValue){
-		return DoubleMath.fuzzyEquals(value.doubleValue(), targetValue.doubleValue(), 1e-15);
+	public boolean equals(Number value, Number targetValue){
+
+		if((value).equals(targetValue)){
+			return true;
+		}
+
+		return (value.doubleValue() == targetValue.doubleValue());
 	}
 
 	private static final Double ZERO = Double.valueOf(0d);

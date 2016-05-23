@@ -255,7 +255,7 @@ public class PMMLUtil {
 
 		for(Number value : values){
 
-			if(!ValueUtil.fuzzyEquals(value, defaultValue)){
+			if(!ValueUtil.equals(value, defaultValue)){
 				sparseArray.addIndices(index);
 				sparseArray.addEntries(ValueUtil.asDouble(value));
 			}

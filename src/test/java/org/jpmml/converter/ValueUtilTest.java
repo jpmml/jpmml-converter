@@ -25,6 +25,8 @@ import org.dmg.pmml.DataType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ValueUtilTest {
@@ -34,6 +36,43 @@ public class ValueUtilTest {
 		assertEquals(DataType.INTEGER, ValueUtil.getDataType(Arrays.asList("1", "2", "3")));
 		assertEquals(DataType.DOUBLE, ValueUtil.getDataType(Arrays.asList("1", "2.0", "3")));
 		assertEquals(DataType.STRING, ValueUtil.getDataType(Arrays.asList("1", "two", "3")));
+	}
+
+	@Test
+	public void isZero(){
+		assertTrue(ValueUtil.isZero(0));
+		assertTrue(ValueUtil.isZero(-0f));
+		assertTrue(ValueUtil.isZero(0f));
+		assertTrue(ValueUtil.isZero(0d));
+		assertTrue(ValueUtil.isZero(-0d));
+
+		float floatUlp = Math.ulp(0f);
+
+		assertFalse(ValueUtil.isZero(0f - floatUlp));
+		assertFalse(ValueUtil.isZero(0f + floatUlp));
+
+		double doubleUlp = Math.ulp(0d);
+
+		assertFalse(ValueUtil.isZero(0d - doubleUlp));
+		assertFalse(ValueUtil.isZero(0d + doubleUlp));
+	}
+
+	@Test
+	public void isOne(){
+		assertTrue(ValueUtil.isOne(1));
+		assertTrue(ValueUtil.isOne(1f));
+		assertTrue(ValueUtil.isOne(1d));
+	}
+
+	@Test
+	public void equals(){
+		assertTrue(ValueUtil.equals(-0f, 0));
+		assertTrue(ValueUtil.equals(0f, 0));
+		assertTrue(ValueUtil.equals(-0d, 0));
+		assertTrue(ValueUtil.equals(0d, 0));
+
+		assertTrue(ValueUtil.equals(-0d, 0f));
+		assertTrue(ValueUtil.equals(0d, 0f));
 	}
 
 	@Test
