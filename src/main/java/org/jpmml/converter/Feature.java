@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.FieldRef;
 
 abstract
 public class Feature {
@@ -32,6 +33,12 @@ public class Feature {
 	public Feature(FieldName name, DataType dataType){
 		setName(name);
 		setDataType(dataType);
+	}
+
+	public FieldRef ref(){
+		FieldRef fieldRef = new FieldRef(getName());
+
+		return fieldRef;
 	}
 
 	public FieldName getName(){
