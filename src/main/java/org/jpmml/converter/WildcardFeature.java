@@ -22,13 +22,13 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.TypeDefinitionField;
 
-public class PseudoFeature extends Feature {
+public class WildcardFeature extends Feature {
 
-	public PseudoFeature(TypeDefinitionField field){
+	public WildcardFeature(TypeDefinitionField field){
 		this(field.getName(), field.getDataType());
 	}
 
-	public PseudoFeature(FieldName name, DataType dataType){
+	public WildcardFeature(FieldName name, DataType dataType){
 		super(name, dataType);
 	}
 }
