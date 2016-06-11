@@ -20,30 +20,24 @@ package org.jpmml.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.Constant;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Header;
-import org.dmg.pmml.OpType;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
-import org.jpmml.model.visitors.FieldReferenceFinder;
 
 public class PMMLUtil {
 
@@ -70,97 +64,6 @@ public class PMMLUtil {
 			.setTimestamp(timestamp);
 
 		return header;
-	}
-
-	static
-	public DataField createDataField(FieldName name, boolean categorical){
-		return createDataField(name, categorical ? DataType.STRING : DataType.DOUBLE);
-	}
-
-	static
-	public DataField createDataField(FieldName name, DataType dataType){
-		DataField dataField = new DataField()
-			.setName(name);
-
-		dataField = refineDataField(dataField, dataType);
-
-		return dataField;
-	}
-
-	static
-	public List<DataField> createDataFields(FieldReferenceFinder fieldReferenceFinder){
-		Set<FieldName> names = fieldReferenceFinder.getFieldNames();
-
-		Function<FieldName, DataField> function = new Function<FieldName, DataField>(){
-
-			@Override
-			public DataField apply(FieldName name){
-				DataField dataField = new DataField()
-					.setName(name);
-
-				return dataField;
-			}
-		};
-
-		List<DataField> dataFields = Lists.newArrayList(Iterables.transform(names, function));
-
-		Collections.sort(dataFields, new FieldComparator<>());
-
-		return dataFields;
-	}
-
-	static
-	public DataField refineDataField(DataField dataField){
-		Function<Value, String> function = new Function<Value, String>(){
-
-			@Override
-			public String apply(Value value){
-				return value.getValue();
-			}
-		};
-
-		DataType dataType = ValueUtil.getDataType(Lists.transform(dataField.getValues(), function));
-
-		return refineDataField(dataField, dataType);
-	}
-
-	static
-	public DataField refineDataField(DataField dataField, DataType dataType){
-		List<Value> values = dataField.getValues();
-
-		switch(dataType){
-			case STRING:
-				return dataField.setDataType(DataType.STRING)
-					.setOpType(OpType.CATEGORICAL);
-			case DOUBLE:
-			case FLOAT:
-				return dataField.setDataType(dataType)
-					.setOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
-			case INTEGER:
-				return dataField.setDataType(DataType.INTEGER)
-					.setOpType(values.size() > 0 ? OpType.CATEGORICAL : OpType.CONTINUOUS);
-			case BOOLEAN:
-				return dataField.setDataType(DataType.BOOLEAN)
-					.setOpType(OpType.CATEGORICAL);
-			default:
-				throw new IllegalArgumentException();
-		}
-	}
-
-	static
-	public List<DataField> refineDataFields(List<DataField> dataFields, FieldTypeAnalyzer fieldTypeAnalyzer){
-
-		for(DataField dataField : dataFields){
-			DataType dataType = fieldTypeAnalyzer.getDataType(dataField.getName());
-
-			if(dataType == null){
-				continue;
-			}
-
-			dataField = refineDataField(dataField, dataType);
-		}
-
-		return dataFields;
 	}
 
 	static
@@ -201,31 +104,6 @@ public class PMMLUtil {
 		}
 
 		return constant;
-	}
-
-	static
-	public Array createArray(DataType dataType, List<Value> values){
-		Function<Value, String> function = new Function<Value, String>(){
-
-			@Override
-			public String apply(Value value){
-				return ValueUtil.formatValue(value.getValue());
-			}
-		};
-
-		String value = ValueUtil.formatArrayValue(Lists.transform(values, function));
-
-		switch(dataType){
-			case STRING:
-				return new Array(Array.Type.STRING, value);
-			case DOUBLE:
-			case FLOAT:
-				return new Array(Array.Type.REAL, value);
-			case INTEGER:
-				return new Array(Array.Type.INT, value);
-			default:
-				throw new IllegalArgumentException();
-		}
 	}
 
 	static
