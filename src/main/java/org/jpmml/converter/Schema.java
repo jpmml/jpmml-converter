@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Villu Ruusmann
+ * Copyright (c) 2016 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -30,19 +30,14 @@ public class Schema {
 
 	private List<FieldName> activeFields = null;
 
+	private List<Feature> features = null;
 
-	public Schema(List<FieldName> activeFields){
-		this(null, null, activeFields);
-	}
 
-	public Schema(FieldName targetField, List<FieldName> activeFields){
-		this(targetField, null, activeFields);
-	}
-
-	public Schema(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields){
+	public Schema(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, List<Feature> features){
 		setTargetField(targetField);
 		setTargetCategories(targetCategories);
 		setActiveFields(activeFields);
+		setFeatures(features);
 	}
 
 	public FieldName getTargetField(){
@@ -61,17 +56,25 @@ public class Schema {
 		this.targetCategories = targetCategories;
 	}
 
-	public FieldName getActiveField(int index){
-		List<FieldName> activeFields = getActiveFields();
-
-		return activeFields.get(index);
-	}
-
 	public List<FieldName> getActiveFields(){
 		return this.activeFields;
 	}
 
 	private void setActiveFields(List<FieldName> activeFields){
 		this.activeFields = activeFields;
+	}
+
+	public Feature getFeature(int index){
+		List<Feature> features = getFeatures();
+
+		return features.get(index);
+	}
+
+	public List<Feature> getFeatures(){
+		return this.features;
+	}
+
+	private void setFeatures(List<Feature> features){
+		this.features = features;
 	}
 }
