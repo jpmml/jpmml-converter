@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dmg.pmml.FieldName;
@@ -38,6 +39,26 @@ public class Schema {
 		setTargetCategories(targetCategories);
 		setActiveFields(activeFields);
 		setFeatures(features);
+	}
+
+	public Schema toAnonymousSchema(){
+		Schema schema = new Schema(null, getTargetCategories(), getActiveFields(), getFeatures());
+
+		return schema;
+	}
+
+	public Schema toSubSchema(int[] indexes){
+		List<Feature> features = new ArrayList<>(indexes.length);
+
+		for(int index : indexes){
+			Feature feature = getFeature(index);
+
+			features.add(feature);
+		}
+
+		Schema schema = new Schema(getTargetField(), getTargetCategories(), getActiveFields(), features);
+
+		return schema;
 	}
 
 	public FieldName getTargetField(){
