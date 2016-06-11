@@ -33,24 +33,24 @@ public class ClusteringModelUtil {
 	}
 
 	static
-	public List<ClusteringField> createClusteringFields(List<FieldName> names){
-		return createClusteringFields(names, null);
+	public List<ClusteringField> createClusteringFields(List<Feature> features){
+		return createClusteringFields(features, null);
 	}
 
 	static
-	public List<ClusteringField> createClusteringFields(List<FieldName> names, List<Number> weights){
+	public List<ClusteringField> createClusteringFields(List<Feature> features, List<Number> weights){
 
-		if((weights != null) && (names.size() != weights.size())){
+		if((weights != null) && (features.size() != weights.size())){
 			throw new IllegalArgumentException();
 		}
 
 		List<ClusteringField> clusteringFields = new ArrayList<>();
 
-		for(int i = 0; i < names.size(); i++){
-			FieldName name = names.get(i);
+		for(int i = 0; i < features.size(); i++){
+			Feature feature = features.get(i);
 			Number weight = (weights != null ? weights.get(i) : null);
 
-			ClusteringField clusteringField = new ClusteringField(name);
+			ClusteringField clusteringField = new ClusteringField(feature.getName());
 
 			if(weight != null && !ValueUtil.isOne(weight)){
 				clusteringField.setFieldWeight(ValueUtil.asDouble(weight));
