@@ -40,8 +40,9 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.TypeDefinitionField;
 import org.dmg.pmml.Visitor;
-import org.jpmml.model.visitors.DictionaryCleaner;
+import org.jpmml.model.visitors.DataDictionaryCleaner;
 import org.jpmml.model.visitors.MiningSchemaCleaner;
+import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 
 abstract
 public class PMMLMapper {
@@ -91,7 +92,7 @@ public class PMMLMapper {
 
 		pmml.addModels(model);
 
-		List<? extends Visitor> visitors = Arrays.asList(new MiningSchemaCleaner(), new DictionaryCleaner());
+		List<? extends Visitor> visitors = Arrays.asList(new MiningSchemaCleaner(), new TransformationDictionaryCleaner(), new DataDictionaryCleaner());
 		for(Visitor visitor : visitors){
 			visitor.applyTo(pmml);
 		}
