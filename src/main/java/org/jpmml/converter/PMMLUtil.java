@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -30,6 +31,7 @@ import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.Constant;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Field;
@@ -155,6 +157,26 @@ public class PMMLUtil {
 		};
 
 		return Lists.newArrayList(Lists.transform(fields, function));
+	}
+
+	static
+	public List<String> getValues(DataField dataField){
+		return getValues(dataField, Value.Property.VALID);
+	}
+
+	static
+	public List<String> getValues(DataField dataField, Value.Property property){
+		List<String> result = new ArrayList<>();
+
+		List<Value> values = dataField.getValues();
+		for(Value value : values){
+
+			if((value.getProperty()).equals(property)){
+				result.add(value.getValue());
+			}
+		}
+
+		return result;
 	}
 
 	static

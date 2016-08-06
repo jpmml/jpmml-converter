@@ -26,73 +26,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.primitives.Ints;
-import org.dmg.pmml.DataType;
 
 public class ValueUtil {
 
 	private ValueUtil(){
-	}
-
-	static
-	public DataType getDataType(String value){
-
-		try {
-			Integer.parseInt(value);
-
-			return DataType.INTEGER;
-		} catch(NumberFormatException nfe){
-			// Ignored
-		}
-
-		try {
-			Double.parseDouble(value);
-
-			return DataType.DOUBLE;
-		} catch(NumberFormatException nfe){
-			// Ignored
-		}
-
-		return DataType.STRING;
-	}
-
-	static
-	public DataType getDataType(List<String> values){
-
-		if(values.isEmpty()){
-			throw new IllegalArgumentException();
-		}
-
-		DataType dataType = DataType.INTEGER;
-
-		for(String value : values){
-
-			switch(dataType){
-				case INTEGER:
-					try {
-						Integer.parseInt(value);
-
-						continue;
-					} catch(NumberFormatException nfe){
-						dataType = DataType.DOUBLE;
-					}
-					// Falls through
-				case DOUBLE:
-					try {
-						Double.parseDouble(value);
-
-						continue;
-					} catch(NumberFormatException nfe){
-						dataType = DataType.STRING;
-					}
-					// Falls through
-				case STRING:
-					return dataType;
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		return dataType;
 	}
 
 	static

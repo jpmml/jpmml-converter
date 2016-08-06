@@ -21,7 +21,6 @@ package org.jpmml.converter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.dmg.pmml.DataType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -30,13 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ValueUtilTest {
-
-	@Test
-	public void getDataType(){
-		assertEquals(DataType.INTEGER, ValueUtil.getDataType(Arrays.asList("1", "2", "3")));
-		assertEquals(DataType.DOUBLE, ValueUtil.getDataType(Arrays.asList("1", "2.0", "3")));
-		assertEquals(DataType.STRING, ValueUtil.getDataType(Arrays.asList("1", "two", "3")));
-	}
 
 	@Test
 	public void isZero(){
