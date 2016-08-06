@@ -47,16 +47,28 @@ public class PMMLUtil {
 	}
 
 	static
+	public Header createHeader(Class<?> clazz){
+		Package _package = clazz.getPackage();
+
+		return createHeader(_package.getImplementationTitle(), _package.getImplementationVersion());
+	}
+
+	static
 	public Header createHeader(String name, String version){
 		Application application = new Application()
 			.setName(name)
 			.setVersion(version);
 
+		return createHeader(application);
+	}
+
+	static
+	public Header createHeader(Application application){
+		Date now = new Date();
+
 		// XML Schema "dateTime" data format (corresponds roughly to ISO 8601)
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		dateFormat.setTimeZone(PMMLUtil.UTC);
-
-		Date now = new Date();
 
 		Timestamp timestamp = new Timestamp()
 			.addContent(dateFormat.format(now));

@@ -32,6 +32,7 @@ import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -87,7 +88,9 @@ public class PMMLMapper {
 			}
 		}
 
-		PMML pmml = new PMML("4.2", PMMLUtil.createHeader("JPMML-Converter", "1.0-SNAPSHOT"), dataDictionary)
+		Header header = encodeHeader();
+
+		PMML pmml = new PMML("4.2", header, dataDictionary)
 			.setTransformationDictionary(transformationDictionary);
 
 		pmml.addModels(model);
@@ -119,6 +122,10 @@ public class PMMLMapper {
 		}
 
 		return pmml;
+	}
+
+	public Header encodeHeader(){
+		return PMMLUtil.createHeader(getClass());
 	}
 
 	public TypeDefinitionField getField(FieldName name){
