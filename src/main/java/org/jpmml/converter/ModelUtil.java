@@ -31,9 +31,7 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
-import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.Target;
-import org.jpmml.model.visitors.FieldReferenceFinder;
 
 public class ModelUtil {
 
@@ -42,30 +40,11 @@ public class ModelUtil {
 
 	static
 	public MiningSchema createMiningSchema(Schema schema){
-		return createMiningSchema(schema, null);
-	}
-
-	static
-	public MiningSchema createMiningSchema(Schema schema, PMMLObject object){
-		return createMiningSchema(schema.getTargetField(), schema.getActiveFields(), object);
+		return createMiningSchema(schema.getTargetField(), schema.getActiveFields());
 	}
 
 	static
 	public MiningSchema createMiningSchema(FieldName targetField, List<FieldName> activeFields){
-		return createMiningSchema(targetField, activeFields, null);
-	}
-
-	static
-	public MiningSchema createMiningSchema(FieldName targetField, List<FieldName> activeFields, PMMLObject object){
-
-		if(object != null){
-			FieldReferenceFinder fieldReferenceFinder = new FieldReferenceFinder();
-			fieldReferenceFinder.applyTo(object);
-
-			activeFields = new ArrayList<>(activeFields);
-			activeFields.retainAll(fieldReferenceFinder.getFieldNames());
-		}
-
 		List<MiningField> miningFields = new ArrayList<>();
 
 		if(targetField != null){
