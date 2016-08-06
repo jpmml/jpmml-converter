@@ -62,6 +62,11 @@ public class ValueUtil {
 		String sep = "";
 
 		for(String value : values){
+
+			if(value == null || ("").equals(value)){
+				throw new IllegalArgumentException();
+			}
+
 			sb.append(sep);
 
 			sep = " ";
