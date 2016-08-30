@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter;
+package org.jpmml.converter.mining;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,20 +27,21 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.MiningFunctionType;
-import org.dmg.pmml.MiningModel;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
-import org.dmg.pmml.MultipleModelMethodType;
-import org.dmg.pmml.NumericPredictor;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
-import org.dmg.pmml.RegressionModel;
-import org.dmg.pmml.RegressionNormalizationMethodType;
-import org.dmg.pmml.RegressionTable;
-import org.dmg.pmml.Segment;
-import org.dmg.pmml.Segmentation;
 import org.dmg.pmml.True;
+import org.dmg.pmml.mining.MiningModel;
+import org.dmg.pmml.mining.Segment;
+import org.dmg.pmml.mining.Segmentation;
+import org.dmg.pmml.regression.NumericPredictor;
+import org.dmg.pmml.regression.RegressionModel;
+import org.dmg.pmml.regression.RegressionTable;
+import org.jpmml.converter.ModelUtil;
+import org.jpmml.converter.Schema;
+import org.jpmml.converter.ValueUtil;
 
 public class MiningModelUtil {
 
@@ -61,7 +62,7 @@ public class MiningModelUtil {
 
 		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, Collections.singletonList(inputField));
 
-		RegressionModel regressionModel = new RegressionModel(MiningFunctionType.REGRESSION, miningSchema, null)
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, miningSchema, null)
 			.addRegressionTables(regressionTable);
 
 		List<Model> segmentationModels = Arrays.asList(model, regressionModel);
@@ -94,8 +95,8 @@ public class MiningModelUtil {
 
 		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, Collections.singletonList(inputField));
 
-		RegressionModel regressionModel = new RegressionModel(MiningFunctionType.CLASSIFICATION, miningSchema, null)
-			.setNormalizationMethod(RegressionNormalizationMethodType.SOFTMAX)
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, miningSchema, null)
+			.setNormalizationMethod(RegressionModel.NormalizationMethod.SOFTMAX)
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
 			.setOutput(output);
 
@@ -105,12 +106,12 @@ public class MiningModelUtil {
 	}
 
 	static
-	public MiningModel createClassification(Schema schema, List<? extends Model> models, RegressionNormalizationMethodType regressionNormalizationMethod, boolean hasProbabilityDistribution){
-		return createClassification(schema.getTargetField(), schema.getTargetCategories(), schema.getActiveFields(), models, regressionNormalizationMethod, hasProbabilityDistribution);
+	public MiningModel createClassification(Schema schema, List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution){
+		return createClassification(schema.getTargetField(), schema.getTargetCategories(), schema.getActiveFields(), models, normalizationMethod, hasProbabilityDistribution);
 	}
 
 	static
-	public MiningModel createClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, List<? extends Model> models, RegressionNormalizationMethodType regressionNormalizationMethod, boolean hasProbabilityDistribution){
+	public MiningModel createClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution){
 
 		if(targetCategories.size() != models.size()){
 			throw new IllegalArgumentException();
@@ -132,8 +133,8 @@ public class MiningModelUtil {
 
 		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, inputFields);
 
-		RegressionModel regressionModel = new RegressionModel(MiningFunctionType.CLASSIFICATION, miningSchema, regressionTables)
-			.setNormalizationMethod(regressionNormalizationMethod)
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, miningSchema, regressionTables)
+			.setNormalizationMethod(normalizationMethod)
 			.setOutput(output);
 
 		List<Model> segmentationModels = new ArrayList<>(models);
@@ -144,25 +145,25 @@ public class MiningModelUtil {
 
 	static
 	private MiningModel createModelChain(FieldName targetField, List<FieldName> activeFields, List<? extends Model> models){
-		Segmentation segmentation = createSegmentation(MultipleModelMethodType.MODEL_CHAIN, models);
+		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models);
 
 		Model lastModel = Iterables.getLast(models);
 
 		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, activeFields);
 
-		MiningModel miningModel = new MiningModel(lastModel.getFunctionName(), miningSchema)
+		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), miningSchema)
 			.setSegmentation(segmentation);
 
 		return miningModel;
 	}
 
 	static
-	public Segmentation createSegmentation(MultipleModelMethodType multipleModelMethod, List<? extends Model> models){
+	public Segmentation createSegmentation(Segmentation.MultipleModelMethod multipleModelMethod, List<? extends Model> models){
 		return createSegmentation(multipleModelMethod, models, null);
 	}
 
 	static
-	public Segmentation createSegmentation(MultipleModelMethodType multipleModelMethod, List<? extends Model> models, List<? extends Number> weights){
+	public Segmentation createSegmentation(Segmentation.MultipleModelMethod multipleModelMethod, List<? extends Model> models, List<? extends Number> weights){
 
 		if((weights != null) && (models.size() != weights.size())){
 			throw new IllegalArgumentException();

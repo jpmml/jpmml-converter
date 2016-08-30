@@ -18,17 +18,16 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 
 public class MiningFieldComparator extends FieldNameComparator<MiningField> {
 
 	@Override
 	public int compare(MiningField left, MiningField right){
-		FieldUsageType leftUsageType = left.getUsageType();
-		FieldUsageType rightUsageType = right.getUsageType();
+		MiningField.FieldUsage leftFieldUsage = left.getFieldUsage();
+		MiningField.FieldUsage rightFieldUsage = right.getFieldUsage();
 
-		int usageTypeDiff = (leftUsageType).compareTo(rightUsageType);
+		int usageTypeDiff = (leftFieldUsage).compareTo(rightFieldUsage);
 		if(usageTypeDiff != 0){
 			return usageTypeDiff;
 		}

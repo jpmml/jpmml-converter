@@ -23,14 +23,14 @@ import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
-import org.dmg.pmml.FeatureType;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.FieldUsageType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.ResultFeature;
 import org.dmg.pmml.Target;
 
 public class ModelUtil {
@@ -48,7 +48,7 @@ public class ModelUtil {
 		List<MiningField> miningFields = new ArrayList<>();
 
 		if(targetField != null){
-			miningFields.add(createMiningField(targetField, FieldUsageType.TARGET));
+			miningFields.add(createMiningField(targetField, MiningField.FieldUsage.TARGET));
 		}
 
 		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
@@ -72,16 +72,17 @@ public class ModelUtil {
 	}
 
 	static
-	public MiningField createMiningField(FieldName name, FieldUsageType usageType){
+	public MiningField createMiningField(FieldName name, MiningField.FieldUsage fieldUsage){
 		MiningField miningField = new MiningField(name)
-			.setUsageType(usageType);
+			.setFieldUsage(fieldUsage);
 
 		return miningField;
 	}
 
 	static
 	public Target createRescaleTarget(FieldName name, Double slope, Double intercept){
-		Target target = new Target(name);
+		Target target = new Target()
+			.setField(name);
 
 		if(slope != null && !ValueUtil.isOne(slope)){
 			target.setRescaleFactor(slope);
@@ -114,8 +115,8 @@ public class ModelUtil {
 
 	static
 	public OutputField createAffinityField(FieldName name, String value){
-		OutputField outputField = new OutputField(name)
-			.setFeature(FeatureType.AFFINITY)
+		OutputField outputField = new OutputField(name, DataType.DOUBLE)
+			.setResultFeature(ResultFeature.AFFINITY)
 			.setValue(value);
 
 		return outputField;
@@ -136,16 +137,16 @@ public class ModelUtil {
 
 	static
 	public OutputField createEntityIdField(FieldName name){
-		OutputField outputField = new OutputField(name)
-			.setFeature(FeatureType.ENTITY_ID);
+		OutputField outputField = new OutputField(name, DataType.STRING)
+			.setResultFeature(ResultFeature.ENTITY_ID);
 
 		return outputField;
 	}
 
 	static
-	public OutputField createPredictedField(FieldName name){
-		OutputField outputField = new OutputField(name)
-			.setFeature(FeatureType.PREDICTED_VALUE);
+	public OutputField createPredictedField(FieldName name, DataType dataType){
+		OutputField outputField = new OutputField(name, dataType)
+			.setResultFeature(ResultFeature.PREDICTED_VALUE);
 
 		return outputField;
 	}
@@ -157,8 +158,8 @@ public class ModelUtil {
 
 	static
 	public OutputField createProbabilityField(FieldName name, String value){
-		OutputField outputField = new OutputField(name)
-			.setFeature(FeatureType.PROBABILITY)
+		OutputField outputField = new OutputField(name, DataType.DOUBLE)
+			.setResultFeature(ResultFeature.PROBABILITY)
 			.setValue(value);
 
 		return outputField;

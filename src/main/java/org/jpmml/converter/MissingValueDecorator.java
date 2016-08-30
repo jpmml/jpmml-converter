@@ -24,14 +24,14 @@ import java.util.List;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
-import org.dmg.pmml.MissingValueTreatmentMethodType;
+import org.dmg.pmml.MissingValueTreatmentMethod;
 import org.dmg.pmml.Value;
 
 public class MissingValueDecorator implements FieldDecorator {
 
 	private String missingValueReplacement = null;
 
-	private MissingValueTreatmentMethodType missingValueTreatment = null;
+	private MissingValueTreatmentMethod missingValueTreatment = null;
 
 	private List<String> missingValues = new ArrayList<>();
 
@@ -60,11 +60,11 @@ public class MissingValueDecorator implements FieldDecorator {
 		return this;
 	}
 
-	public MissingValueTreatmentMethodType getMissingValueTreatment(){
+	public MissingValueTreatmentMethod getMissingValueTreatment(){
 		return this.missingValueTreatment;
 	}
 
-	public MissingValueDecorator setMissingValueTreatment(MissingValueTreatmentMethodType missingValueTreatment){
+	public MissingValueDecorator setMissingValueTreatment(MissingValueTreatmentMethod missingValueTreatment){
 		this.missingValueTreatment = missingValueTreatment;
 
 		return this;

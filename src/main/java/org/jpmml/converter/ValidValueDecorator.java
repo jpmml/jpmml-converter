@@ -19,29 +19,29 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.InvalidValueTreatmentMethodType;
+import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.dmg.pmml.MiningField;
 
 abstract
 public class ValidValueDecorator implements FieldDecorator {
 
-	private InvalidValueTreatmentMethodType invalidValueTreatment = null;
+	private InvalidValueTreatmentMethod invalidValueTreatment = null;
 
 
 	@Override
 	public void decorate(DataField dataField, MiningField miningField){
-		InvalidValueTreatmentMethodType invalidValueTreatment = getInvalidValueTreatment();
+		InvalidValueTreatmentMethod invalidValueTreatment = getInvalidValueTreatment();
 
-		if(invalidValueTreatment != null && !(InvalidValueTreatmentMethodType.RETURN_INVALID).equals(invalidValueTreatment)){
+		if(invalidValueTreatment != null && !(InvalidValueTreatmentMethod.RETURN_INVALID).equals(invalidValueTreatment)){
 			miningField.setInvalidValueTreatment(invalidValueTreatment);
 		}
 	}
 
-	public InvalidValueTreatmentMethodType getInvalidValueTreatment(){
+	public InvalidValueTreatmentMethod getInvalidValueTreatment(){
 		return this.invalidValueTreatment;
 	}
 
-	public ValidValueDecorator setInvalidValueTreatment(InvalidValueTreatmentMethodType invalidValueTreatment){
+	public ValidValueDecorator setInvalidValueTreatment(InvalidValueTreatmentMethod invalidValueTreatment){
 		this.invalidValueTreatment = invalidValueTreatment;
 
 		return this;

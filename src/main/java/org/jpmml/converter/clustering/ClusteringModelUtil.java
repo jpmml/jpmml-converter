@@ -16,16 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter;
+package org.jpmml.converter.clustering;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dmg.pmml.Cluster;
-import org.dmg.pmml.ClusteringField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.clustering.Cluster;
+import org.dmg.pmml.clustering.ClusteringField;
+import org.jpmml.converter.Feature;
+import org.jpmml.converter.ModelUtil;
+import org.jpmml.converter.ValueUtil;
 
 public class ClusteringModelUtil {
 
@@ -65,7 +69,7 @@ public class ClusteringModelUtil {
 	static
 	public Output createOutput(FieldName name, List<Cluster> clusters){
 		List<OutputField> outputFields = new ArrayList<>();
-		outputFields.add(ModelUtil.createPredictedField(name));
+		outputFields.add(ModelUtil.createPredictedField(name, DataType.STRING));
 		outputFields.addAll(ModelUtil.createAffinityFields(clusters));
 
 		Output output = new Output(outputFields);
