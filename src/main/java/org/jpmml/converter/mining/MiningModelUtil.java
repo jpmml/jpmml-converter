@@ -144,7 +144,12 @@ public class MiningModelUtil {
 	}
 
 	static
-	private MiningModel createModelChain(FieldName targetField, List<FieldName> activeFields, List<? extends Model> models){
+	public MiningModel createModelChain(Schema schema, List<? extends Model> models){
+		return createModelChain(schema.getTargetField(), schema.getActiveFields(), models);
+	}
+
+	static
+	public MiningModel createModelChain(FieldName targetField, List<FieldName> activeFields, List<? extends Model> models){
 		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models);
 
 		Model lastModel = Iterables.getLast(models);
