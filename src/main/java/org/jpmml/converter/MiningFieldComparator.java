@@ -24,10 +24,10 @@ public class MiningFieldComparator extends FieldNameComparator<MiningField> {
 
 	@Override
 	public int compare(MiningField left, MiningField right){
-		MiningField.FieldUsage leftFieldUsage = left.getFieldUsage();
-		MiningField.FieldUsage rightFieldUsage = right.getFieldUsage();
+		MiningField.UsageType leftUsageType = left.getUsageType();
+		MiningField.UsageType rightUsageType = right.getUsageType();
 
-		int usageTypeDiff = (leftFieldUsage).compareTo(rightFieldUsage);
+		int usageTypeDiff = (leftUsageType).compareTo(rightUsageType);
 		if(usageTypeDiff != 0){
 			return usageTypeDiff;
 		}

@@ -90,7 +90,7 @@ public class PMMLMapper {
 
 		Header header = encodeHeader();
 
-		PMML pmml = new PMML("4.2", header, dataDictionary)
+		PMML pmml = new PMML("4.3", header, dataDictionary)
 			.setTransformationDictionary(transformationDictionary);
 
 		pmml.addModels(model);

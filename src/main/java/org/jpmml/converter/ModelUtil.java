@@ -48,7 +48,7 @@ public class ModelUtil {
 		List<MiningField> miningFields = new ArrayList<>();
 
 		if(targetField != null){
-			miningFields.add(createMiningField(targetField, MiningField.FieldUsage.TARGET));
+			miningFields.add(createMiningField(targetField, MiningField.UsageType.TARGET));
 		}
 
 		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
@@ -72,9 +72,9 @@ public class ModelUtil {
 	}
 
 	static
-	public MiningField createMiningField(FieldName name, MiningField.FieldUsage fieldUsage){
+	public MiningField createMiningField(FieldName name, MiningField.UsageType usageType){
 		MiningField miningField = new MiningField(name)
-			.setFieldUsage(fieldUsage);
+			.setUsageType(usageType);
 
 		return miningField;
 	}
