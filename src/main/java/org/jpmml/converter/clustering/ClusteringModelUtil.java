@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.clustering.Cluster;
@@ -69,7 +70,7 @@ public class ClusteringModelUtil {
 	static
 	public Output createOutput(FieldName name, List<Cluster> clusters){
 		List<OutputField> outputFields = new ArrayList<>();
-		outputFields.add(ModelUtil.createPredictedField(name, DataType.STRING));
+		outputFields.add(ModelUtil.createPredictedField(name, DataType.STRING, OpType.CATEGORICAL));
 		outputFields.addAll(ModelUtil.createAffinityFields(clusters));
 
 		Output output = new Output(outputFields);

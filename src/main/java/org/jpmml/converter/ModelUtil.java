@@ -28,6 +28,7 @@ import org.dmg.pmml.Entity;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
@@ -116,6 +117,7 @@ public class ModelUtil {
 	static
 	public OutputField createAffinityField(FieldName name, String value){
 		OutputField outputField = new OutputField(name, DataType.DOUBLE)
+			.setOpType(OpType.CONTINUOUS)
 			.setResultFeature(ResultFeature.AFFINITY)
 			.setValue(value);
 
@@ -138,14 +140,16 @@ public class ModelUtil {
 	static
 	public OutputField createEntityIdField(FieldName name){
 		OutputField outputField = new OutputField(name, DataType.STRING)
+			.setOpType(OpType.CATEGORICAL)
 			.setResultFeature(ResultFeature.ENTITY_ID);
 
 		return outputField;
 	}
 
 	static
-	public OutputField createPredictedField(FieldName name, DataType dataType){
+	public OutputField createPredictedField(FieldName name, DataType dataType, OpType opType){
 		OutputField outputField = new OutputField(name, dataType)
+			.setOpType(opType)
 			.setResultFeature(ResultFeature.PREDICTED_VALUE);
 
 		return outputField;
@@ -159,6 +163,7 @@ public class ModelUtil {
 	static
 	public OutputField createProbabilityField(FieldName name, String value){
 		OutputField outputField = new OutputField(name, DataType.DOUBLE)
+			.setOpType(OpType.CONTINUOUS)
 			.setResultFeature(ResultFeature.PROBABILITY)
 			.setValue(value);
 
