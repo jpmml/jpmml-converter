@@ -37,6 +37,10 @@ public class Feature {
 		setDataType(dataType);
 	}
 
+	public ContinuousFeature toContinuousFeature(){
+		throw new UnsupportedOperationException();
+	}
+
 	public FieldRef ref(){
 		FieldRef fieldRef = new FieldRef(getName());
 

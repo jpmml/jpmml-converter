@@ -31,4 +31,9 @@ public class ContinuousFeature extends Feature {
 	public ContinuousFeature(FieldName name, DataType dataType){
 		super(name, dataType);
 	}
+
+	@Override
+	public ContinuousFeature toContinuousFeature(){
+		return this;
+	}
 }
