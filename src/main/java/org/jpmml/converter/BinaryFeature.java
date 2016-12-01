@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.TypeDefinitionField;
@@ -35,6 +36,14 @@ public class BinaryFeature extends Feature {
 		super(name, dataType);
 
 		setValue(value);
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper(){
+		ToStringHelper helper = super.toStringHelper()
+			.add("value", getValue());
+
+		return helper;
 	}
 
 	public String getValue(){

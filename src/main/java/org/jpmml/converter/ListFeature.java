@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.List;
 
+import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.TypeDefinitionField;
@@ -37,6 +38,14 @@ public class ListFeature extends ContinuousFeature {
 		super(name, dataType);
 
 		setValues(values);
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper(){
+		ToStringHelper helper = super.toStringHelper()
+			.add("values", getValues());
+
+		return helper;
 	}
 
 	public String getValue(int index){

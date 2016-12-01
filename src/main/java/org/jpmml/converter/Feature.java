@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
@@ -39,6 +41,21 @@ public class Feature {
 		FieldRef fieldRef = new FieldRef(getName());
 
 		return fieldRef;
+	}
+
+	@Override
+	public String toString(){
+		ToStringHelper helper = toStringHelper();
+
+		return helper.toString();
+	}
+
+	protected ToStringHelper toStringHelper(){
+		ToStringHelper helper = Objects.toStringHelper(this)
+			.add("name", getName())
+			.add("dataType", getDataType());
+
+		return helper;
 	}
 
 	public FieldName getName(){
