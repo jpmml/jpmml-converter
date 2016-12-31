@@ -45,8 +45,7 @@ import org.jpmml.model.visitors.DataDictionaryCleaner;
 import org.jpmml.model.visitors.MiningSchemaCleaner;
 import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 
-abstract
-public class PMMLMapper {
+public class PMMLEncoder {
 
 	private Map<FieldName, DataField> dataFields = new LinkedHashMap<>();
 

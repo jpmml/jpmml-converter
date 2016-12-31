@@ -28,32 +28,32 @@ import org.dmg.pmml.TypeDefinitionField;
 
 public class ConvertibleBinaryFeature extends BinaryFeature {
 
-	private PMMLMapper mapper = null;
+	private PMMLEncoder encoder = null;
 
 
-	public ConvertibleBinaryFeature(PMMLMapper mapper, TypeDefinitionField field, String value){
+	public ConvertibleBinaryFeature(PMMLEncoder encoder, TypeDefinitionField field, String value){
 		super(field, value);
 
-		setMapper(mapper);
+		setEncoder(encoder);
 	}
 
-	public ConvertibleBinaryFeature(PMMLMapper mapper, FieldName name, DataType dataType, String value){
+	public ConvertibleBinaryFeature(PMMLEncoder encoder, FieldName name, DataType dataType, String value){
 		super(name, dataType, value);
 
-		setMapper(mapper);
+		setEncoder(encoder);
 	}
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		PMMLMapper mapper = getMapper();
+		PMMLEncoder encoder = getEncoder();
 
 		FieldName name = FieldName.create(getName() + "=" + getValue());
 
-		DerivedField derivedField = mapper.getDerivedField(name);
+		DerivedField derivedField = encoder.getDerivedField(name);
 		if(derivedField == null){
 			Expression expression = createExpression();
 
-			derivedField = mapper.createDerivedField(name, OpType.CONTINUOUS, DataType.DOUBLE, expression);
+			derivedField = encoder.createDerivedField(name, OpType.CONTINUOUS, DataType.DOUBLE, expression);
 		}
 
 		ContinuousFeature feature = new ContinuousFeature(derivedField);
@@ -67,11 +67,11 @@ public class ConvertibleBinaryFeature extends BinaryFeature {
 		return normDiscrete;
 	}
 
-	public PMMLMapper getMapper(){
-		return this.mapper;
+	public PMMLEncoder getEncoder(){
+		return this.encoder;
 	}
 
-	private void setMapper(PMMLMapper mapper){
-		this.mapper = mapper;
+	private void setEncoder(PMMLEncoder encoder){
+		this.encoder = encoder;
 	}
 }
