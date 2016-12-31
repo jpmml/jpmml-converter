@@ -48,6 +48,11 @@ public class FeatureTest {
 		assertEquals(DataType.DOUBLE, continuousOne.getDataType());
 
 		assertNotNull(encoder.getDerivedField(continuousOne.getName()));
+
+		ContinuousFeature continuousFloatOne = binaryOne.toContinuousFeature(DataType.FLOAT);
+
+		assertEquals(FieldName.create("float(" + (continuousOne.getName()).getValue() + ")"), continuousFloatOne.getName());
+		assertEquals(DataType.FLOAT, continuousFloatOne.getDataType());
 	}
 
 	@Test
@@ -75,6 +80,11 @@ public class FeatureTest {
 		assertNotNull(encoder.getDerivedField(FieldName.create("x=1")));
 		assertNull(encoder.getDerivedField(FieldName.create("x=2")));
 		assertNotNull(encoder.getDerivedField(FieldName.create("x=3")));
+
+		ContinuousFeature continuousFloatOneThree = interactionOneThree.toContinuousFeature(DataType.FLOAT);
+
+		assertEquals(FieldName.create("float(" + (continuousOneThree.getName()).getValue() + ")"), continuousFloatOneThree.getName());
+		assertEquals(DataType.FLOAT, continuousFloatOneThree.getDataType());
 
 		InteractionFeature interactionTwoOneThree = new InteractionFeature(encoder, FieldName.create("x=2:x=1:x=3"), DataType.DOUBLE, Arrays.asList(binaryTwo, interactionOneThree));
 

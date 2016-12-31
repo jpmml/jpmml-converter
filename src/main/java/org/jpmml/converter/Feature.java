@@ -21,8 +21,10 @@ package org.jpmml.converter;
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.OpType;
 
 abstract
 public class Feature {
@@ -42,6 +44,27 @@ public class Feature {
 
 	abstract
 	public ContinuousFeature toContinuousFeature();
+
+	public ContinuousFeature toContinuousFeature(DataType dataType){
+		ContinuousFeature continuousFeature = toContinuousFeature();
+
+		if((dataType).equals(continuousFeature.getDataType())){
+			return continuousFeature;
+		}
+
+		PMMLEncoder encoder = ensureEncoder();
+
+		FieldName name = FieldName.create((dataType.name()).toLowerCase() + "(" + (continuousFeature.getName()).getValue() + ")");
+
+		DerivedField derivedField = encoder.getDerivedField(name);
+		if(derivedField == null){
+			derivedField = encoder.createDerivedField(name, OpType.CONTINUOUS, dataType, continuousFeature.ref());
+		}
+
+		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
+
+		return feature;
+	}
 
 	public FieldRef ref(){
 		FieldRef fieldRef = new FieldRef(getName());
