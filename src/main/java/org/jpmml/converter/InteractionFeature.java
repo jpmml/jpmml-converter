@@ -22,23 +22,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Objects.ToStringHelper;
+import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.TypeDefinitionField;
 
-public class InteractionFeature extends ContinuousFeature {
+public class InteractionFeature extends Feature {
 
-	private List<Feature> features = null;
+	private List<? extends Feature> features = null;
 
 
-	public InteractionFeature(TypeDefinitionField field, List<Feature> features){
-		this(field.getName(), field.getDataType(), features);
+	public InteractionFeature(PMMLEncoder encoder, TypeDefinitionField field, List<? extends Feature> features){
+		this(encoder, field.getName(), field.getDataType(), features);
 	}
 
-	public InteractionFeature(FieldName name, DataType dataType, List<Feature> features){
-		super(name, dataType);
+	public InteractionFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<? extends Feature> features){
+		super(encoder, name, dataType);
 
 		setFeatures(features);
+	}
+
+	@Override
+	public ContinuousFeature toContinuousFeature(){
+		PMMLEncoder encoder = ensureEncoder();
+
+		List<? extends Feature> features = getFeatures();
+
+		DerivedField derivedField = encoder.getDerivedField(getName());
+		if(derivedField == null){
+			Apply apply = PMMLUtil.createApply("*", ((features.get(0)).toContinuousFeature()).ref(), ((features.get(1)).toContinuousFeature()).ref());
+
+			for(int i = 2; i < features.size(); i++){
+				apply = PMMLUtil.createApply("*", apply, ((features.get(i)).toContinuousFeature()).ref());
+			}
+
+			derivedField = encoder.createDerivedField(getName(), OpType.CONTINUOUS, DataType.DOUBLE, apply);
+		}
+
+		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
+
+		return feature;
 	}
 
 	@Override
@@ -49,10 +74,10 @@ public class InteractionFeature extends ContinuousFeature {
 		return helper;
 	}
 
-	public List<Feature> getInputFeatures(){
+	public List<? extends Feature> getInputFeatures(){
 		List<Feature> result = new ArrayList<>();
 
-		List<Feature> features = getFeatures();
+		List<? extends Feature> features = getFeatures();
 		for(Feature feature : features){
 
 			if(feature instanceof InteractionFeature){
@@ -69,11 +94,16 @@ public class InteractionFeature extends ContinuousFeature {
 		return result;
 	}
 
-	public List<Feature> getFeatures(){
+	public List<? extends Feature> getFeatures(){
 		return this.features;
 	}
 
-	private void setFeatures(List<Feature> features){
+	private void setFeatures(List<? extends Feature> features){
+
+		if(features == null || features.size() < 2){
+			throw new IllegalArgumentException();
+		}
+
 		this.features = features;
 	}
 }

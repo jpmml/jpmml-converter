@@ -46,7 +46,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	public GeneralRegressionModel encodeRegressionTable(GeneralRegressionModel generalRegressionModel, List<Feature> features, Double intercept, List<Double> coefficients, String targetCategory){
+	public GeneralRegressionModel encodeRegressionTable(GeneralRegressionModel generalRegressionModel, List<? extends Feature> features, Double intercept, List<Double> coefficients, String targetCategory){
 
 		if(features.size() != coefficients.size()){
 			throw new IllegalArgumentException();
@@ -158,24 +158,20 @@ public class GeneralRegressionModelUtil {
 		if(feature instanceof InteractionFeature){
 			InteractionFeature interactionFeature = (InteractionFeature)feature;
 
-			List<Feature> inputFeatures = interactionFeature.getInputFeatures();
+			List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
 			for(Feature inputFeature : inputFeatures){
 				createPPCells(inputFeature, parameter, ppMatrix, covariates, factors);
 			}
 		} else
 
-		if(feature instanceof ContinuousFeature){
-			ContinuousFeature continuousFeature = (ContinuousFeature)feature;
+		{
+			ContinuousFeature continuousFeature = feature.toContinuousFeature();
 
 			PPCell ppCell = new PPCell("1", continuousFeature.getName(), parameter.getName());
 
 			ppMatrix.addPPCells(ppCell);
 
 			covariates.add(ppCell.getPredictorName());
-		} else
-
-		{
-			throw new IllegalArgumentException();
 		}
 	}
 

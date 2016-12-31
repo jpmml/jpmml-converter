@@ -27,19 +27,21 @@ import org.dmg.pmml.FieldRef;
 abstract
 public class Feature {
 
+	private PMMLEncoder encoder = null;
+
 	private FieldName name = null;
 
 	private DataType dataType = null;
 
 
-	public Feature(FieldName name, DataType dataType){
+	public Feature(PMMLEncoder encoder, FieldName name, DataType dataType){
+		setEncoder(encoder);
 		setName(name);
 		setDataType(dataType);
 	}
 
-	public ContinuousFeature toContinuousFeature(){
-		throw new UnsupportedOperationException();
-	}
+	abstract
+	public ContinuousFeature toContinuousFeature();
 
 	public FieldRef ref(){
 		FieldRef fieldRef = new FieldRef(getName());
@@ -62,11 +64,34 @@ public class Feature {
 		return helper;
 	}
 
+	protected PMMLEncoder ensureEncoder(){
+		PMMLEncoder encoder = getEncoder();
+
+		if(encoder == null){
+			throw new IllegalStateException();
+		}
+
+		return encoder;
+	}
+
+	public PMMLEncoder getEncoder(){
+		return this.encoder;
+	}
+
+	private void setEncoder(PMMLEncoder encoder){
+		this.encoder = encoder;
+	}
+
 	public FieldName getName(){
 		return this.name;
 	}
 
 	private void setName(FieldName name){
+
+		if(name == null){
+			throw new IllegalArgumentException();
+		}
+
 		this.name = name;
 	}
 
@@ -75,6 +100,11 @@ public class Feature {
 	}
 
 	private void setDataType(DataType dataType){
+
+		if(dataType == null){
+			throw new IllegalArgumentException();
+		}
+
 		this.dataType = dataType;
 	}
 }

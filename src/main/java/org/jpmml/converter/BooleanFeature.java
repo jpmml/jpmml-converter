@@ -24,7 +24,16 @@ import org.dmg.pmml.TypeDefinitionField;
 
 public class BooleanFeature extends ListFeature {
 
-	public BooleanFeature(TypeDefinitionField field){
-		super(field, Arrays.asList("false", "true"));
+	public BooleanFeature(PMMLEncoder encoder, TypeDefinitionField field){
+		super(encoder, field, Arrays.asList("false", "true"));
+	}
+
+	@Override
+	public ContinuousFeature toContinuousFeature(){
+		PMMLEncoder encoder = ensureEncoder();
+
+		ContinuousFeature feature = new ContinuousFeature(encoder, getName(), getDataType());
+
+		return feature;
 	}
 }

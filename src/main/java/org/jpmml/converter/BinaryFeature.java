@@ -20,7 +20,10 @@ package org.jpmml.converter;
 
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.NormDiscrete;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.TypeDefinitionField;
 
 public class BinaryFeature extends Feature {
@@ -28,14 +31,32 @@ public class BinaryFeature extends Feature {
 	private String value = null;
 
 
-	public BinaryFeature(TypeDefinitionField field, String value){
-		this(field.getName(), field.getDataType(), value);
+	public BinaryFeature(PMMLEncoder encoder, TypeDefinitionField field, String value){
+		this(encoder, field.getName(), field.getDataType(), value);
 	}
 
-	public BinaryFeature(FieldName name, DataType dataType, String value){
-		super(name, dataType);
+	public BinaryFeature(PMMLEncoder encoder, FieldName name, DataType dataType, String value){
+		super(encoder, name, dataType);
 
 		setValue(value);
+	}
+
+	@Override
+	public ContinuousFeature toContinuousFeature(){
+		PMMLEncoder encoder = ensureEncoder();
+
+		FieldName name = FieldName.create((getName()).getValue() + "=" + getValue());
+
+		DerivedField derivedField = encoder.getDerivedField(name);
+		if(derivedField == null){
+			NormDiscrete normDiscrete = new NormDiscrete(getName(), getValue());
+
+			derivedField = encoder.createDerivedField(name, OpType.CONTINUOUS, DataType.DOUBLE, normDiscrete);
+		}
+
+		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
+
+		return feature;
 	}
 
 	@Override
@@ -51,6 +72,11 @@ public class BinaryFeature extends Feature {
 	}
 
 	private void setValue(String value){
+
+		if(value == null){
+			throw new IllegalArgumentException();
+		}
+
 		this.value = value;
 	}
 }

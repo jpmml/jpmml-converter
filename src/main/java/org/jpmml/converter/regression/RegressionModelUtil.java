@@ -35,7 +35,7 @@ public class RegressionModelUtil {
 	}
 
 	static
-	public RegressionTable createRegressionTable(List<Feature> features, Double intercept, List<Double> coefficients){
+	public RegressionTable createRegressionTable(List<? extends Feature> features, Double intercept, List<Double> coefficients){
 
 		if(features.size() != coefficients.size()){
 			throw new IllegalArgumentException();
@@ -69,7 +69,7 @@ public class RegressionModelUtil {
 					.setName(interactionFeature.getName())
 					.setCoefficient(coefficient);
 
-				List<Feature> inputFeatures = interactionFeature.getInputFeatures();
+				List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
 				for(Feature inputFeature : inputFeatures){
 					inputFeature = inputFeature.toContinuousFeature();
 
@@ -79,18 +79,14 @@ public class RegressionModelUtil {
 				regressionTable.addPredictorTerms(predictorTerm);
 			} else
 
-			if(feature instanceof ContinuousFeature){
-				ContinuousFeature continuousFeature = (ContinuousFeature)feature;
+			{
+				ContinuousFeature continuousFeature = feature.toContinuousFeature();
 
 				NumericPredictor numericPredictor = new NumericPredictor()
 					.setName(continuousFeature.getName())
 					.setCoefficient(coefficient);
 
 				regressionTable.addNumericPredictors(numericPredictor);
-			} else
-
-			{
-				throw new IllegalArgumentException();
 			}
 		}
 

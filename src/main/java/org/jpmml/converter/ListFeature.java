@@ -21,23 +21,47 @@ package org.jpmml.converter;
 import java.util.List;
 
 import com.google.common.base.Objects.ToStringHelper;
+import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.TypeDefinitionField;
 
-public class ListFeature extends ContinuousFeature {
+public class ListFeature extends Feature {
 
 	private List<String> values = null;
 
 
-	public ListFeature(TypeDefinitionField field, List<String> values){
-		this(field.getName(), field.getDataType(), values);
+	public ListFeature(PMMLEncoder encoder, DataField dataField){
+		this(encoder, dataField, PMMLUtil.getValues(dataField));
 	}
 
-	public ListFeature(FieldName name, DataType dataType, List<String> values){
-		super(name, dataType);
+	public ListFeature(PMMLEncoder encoder, TypeDefinitionField field, List<String> values){
+		this(encoder, field.getName(), field.getDataType(), values);
+	}
+
+	public ListFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<String> values){
+		super(encoder, name, dataType);
 
 		setValues(values);
+	}
+
+	@Override
+	public ContinuousFeature toContinuousFeature(){
+		PMMLEncoder encoder = ensureEncoder();
+
+		DataType dataType = getDataType();
+		switch(dataType){
+			case INTEGER:
+			case FLOAT:
+			case DOUBLE:
+				break;
+			default:
+				throw new UnsupportedOperationException();
+		}
+
+		ContinuousFeature feature = new ContinuousFeature(encoder, getName(), getDataType());
+
+		return feature;
 	}
 
 	@Override
@@ -59,6 +83,11 @@ public class ListFeature extends ContinuousFeature {
 	}
 
 	private void setValues(List<String> values){
+
+		if(values == null || values.size() < 1){
+			throw new IllegalArgumentException();
+		}
+
 		this.values = values;
 	}
 }

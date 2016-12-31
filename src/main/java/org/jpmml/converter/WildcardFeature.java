@@ -24,11 +24,16 @@ import org.dmg.pmml.TypeDefinitionField;
 
 public class WildcardFeature extends Feature {
 
-	public WildcardFeature(TypeDefinitionField field){
-		this(field.getName(), field.getDataType());
+	public WildcardFeature(PMMLEncoder encoder, TypeDefinitionField field){
+		this(encoder, field.getName(), field.getDataType());
 	}
 
-	public WildcardFeature(FieldName name, DataType dataType){
-		super(name, dataType);
+	public WildcardFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
+		super(encoder, name, dataType);
+	}
+
+	@Override
+	public ContinuousFeature toContinuousFeature(){
+		throw new UnsupportedOperationException();
 	}
 }

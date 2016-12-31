@@ -28,6 +28,7 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
+import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.ValueUtil;
@@ -38,12 +39,12 @@ public class ClusteringModelUtil {
 	}
 
 	static
-	public List<ClusteringField> createClusteringFields(List<Feature> features){
+	public List<ClusteringField> createClusteringFields(List<? extends Feature> features){
 		return createClusteringFields(features, null);
 	}
 
 	static
-	public List<ClusteringField> createClusteringFields(List<Feature> features, List<Number> weights){
+	public List<ClusteringField> createClusteringFields(List<? extends Feature> features, List<Number> weights){
 
 		if((weights != null) && (features.size() != weights.size())){
 			throw new IllegalArgumentException();
@@ -55,7 +56,9 @@ public class ClusteringModelUtil {
 			Feature feature = features.get(i);
 			Number weight = (weights != null ? weights.get(i) : null);
 
-			ClusteringField clusteringField = new ClusteringField(feature.getName());
+			ContinuousFeature continuousFeature = feature.toContinuousFeature();
+
+			ClusteringField clusteringField = new ClusteringField(continuousFeature.getName());
 
 			if(weight != null && !ValueUtil.isOne(weight)){
 				clusteringField.setFieldWeight(ValueUtil.asDouble(weight));

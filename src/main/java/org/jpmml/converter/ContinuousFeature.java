@@ -24,12 +24,12 @@ import org.dmg.pmml.TypeDefinitionField;
 
 public class ContinuousFeature extends Feature {
 
-	public ContinuousFeature(TypeDefinitionField field){
-		this(field.getName(), field.getDataType());
+	public ContinuousFeature(PMMLEncoder encoder, TypeDefinitionField field){
+		this(encoder, field.getName(), field.getDataType());
 	}
 
-	public ContinuousFeature(FieldName name, DataType dataType){
-		super(name, dataType);
+	public ContinuousFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
+		super(encoder, name, dataType);
 	}
 
 	@Override
