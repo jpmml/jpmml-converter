@@ -25,10 +25,7 @@ import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningFunction;
-import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
@@ -36,12 +33,16 @@ import org.dmg.pmml.True;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
-import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
+import org.jpmml.converter.CategoricalLabel;
+import org.jpmml.converter.ContinuousFeature;
+import org.jpmml.converter.ContinuousLabel;
+import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.Schema;
 import org.jpmml.converter.ValueUtil;
+import org.jpmml.converter.regression.RegressionModelUtil;
 
 public class MiningModelUtil {
 
@@ -50,113 +51,78 @@ public class MiningModelUtil {
 
 	static
 	public MiningModel createRegression(Schema schema, Model model){
-		return createRegression(schema.getTargetField(), schema.getActiveFields(), model);
-	}
+		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
 
-	static
-	public MiningModel createRegression(FieldName targetField, List<FieldName> activeFields, Model model){
-		FieldName inputField = MiningModelUtil.MODEL_PREDICTION.apply(model);
+		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionTable regressionTable = new RegressionTable(0d)
-			.addNumericPredictors(new NumericPredictor(inputField, 1d));
+		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(1d));
 
-		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, Collections.singletonList(inputField));
-
-		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, miningSchema, null)
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
 			.addRegressionTables(regressionTable);
 
-		List<Model> segmentationModels = Arrays.asList(model, regressionModel);
-
-		return createModelChain(targetField, activeFields, segmentationModels);
+		return createModelChain(schema, Arrays.asList(model, regressionModel));
 	}
 
 	static
 	public MiningModel createBinaryLogisticClassification(Schema schema, Model model, double coefficient, boolean hasProbabilityDistribution){
-		return createBinaryLogisticClassification(schema.getTargetField(), schema.getTargetCategories(), schema.getActiveFields(), model, coefficient, hasProbabilityDistribution);
-	}
+		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
-	static
-	public MiningModel createBinaryLogisticClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, Model model, double coefficient, boolean hasProbabilityDistribution){
-
-		if(targetCategories.size() != 2){
+		if(categoricalLabel.size() != 2){
 			throw new IllegalArgumentException();
 		}
 
-		FieldName inputField = MiningModelUtil.MODEL_PREDICTION.apply(model);
+		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionTable activeRegressionTable = new RegressionTable(0d)
-			.setTargetCategory(targetCategories.get(0))
-			.addNumericPredictors(new NumericPredictor(inputField, coefficient));
+		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(coefficient))
+			.setTargetCategory(categoricalLabel.getValue(0));
 
-		RegressionTable passiveRegressionTable = new RegressionTable(0d)
-			.setTargetCategory(targetCategories.get(1));
+		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), null, Collections.<Double>emptyList())
+			.setTargetCategory(categoricalLabel.getValue(1));
 
-		Output output = (hasProbabilityDistribution ? new Output(ModelUtil.createProbabilityFields(targetCategories)) : null);
-
-		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, Collections.singletonList(inputField));
-
-		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, miningSchema, null)
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
 			.setNormalizationMethod(RegressionModel.NormalizationMethod.SOFTMAX)
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
-			.setOutput(output);
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
 
-		List<Model> segmentationModels = Arrays.asList(model, regressionModel);
-
-		return createModelChain(targetField, activeFields, segmentationModels);
+		return createModelChain(schema, Arrays.asList(model, regressionModel));
 	}
 
 	static
 	public MiningModel createClassification(Schema schema, List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution){
-		return createClassification(schema.getTargetField(), schema.getTargetCategories(), schema.getActiveFields(), models, normalizationMethod, hasProbabilityDistribution);
-	}
+		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
-	static
-	public MiningModel createClassification(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution){
-
-		if(targetCategories.size() != models.size()){
+		if(categoricalLabel.size() < 3 || categoricalLabel.size() != models.size()){
 			throw new IllegalArgumentException();
 		}
 
-		List<FieldName> inputFields = Lists.transform(models, MiningModelUtil.MODEL_PREDICTION);
-
 		List<RegressionTable> regressionTables = new ArrayList<>();
 
-		for(int i = 0; i < targetCategories.size(); i++){
-			RegressionTable regressionTable = new RegressionTable(0d)
-				.setTargetCategory(targetCategories.get(i))
-				.addNumericPredictors(new NumericPredictor(inputFields.get(i), 1d));
+		for(int i = 0; i < categoricalLabel.size(); i++){
+			Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(models.get(i));
+
+			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(1d))
+				.setTargetCategory(categoricalLabel.getValue(i));
 
 			regressionTables.add(regressionTable);
 		}
 
-		Output output = (hasProbabilityDistribution ? new Output(ModelUtil.createProbabilityFields(targetCategories)) : null);
-
-		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, inputFields);
-
-		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, miningSchema, regressionTables)
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), regressionTables)
 			.setNormalizationMethod(normalizationMethod)
-			.setOutput(output);
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
 
 		List<Model> segmentationModels = new ArrayList<>(models);
 		segmentationModels.add(regressionModel);
 
-		return createModelChain(targetField, activeFields, segmentationModels);
+		return createModelChain(schema, segmentationModels);
 	}
 
 	static
 	public MiningModel createModelChain(Schema schema, List<? extends Model> models){
-		return createModelChain(schema.getTargetField(), schema.getActiveFields(), models);
-	}
-
-	static
-	public MiningModel createModelChain(FieldName targetField, List<FieldName> activeFields, List<? extends Model> models){
 		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models);
 
 		Model lastModel = Iterables.getLast(models);
 
-		MiningSchema miningSchema = ModelUtil.createMiningSchema(targetField, activeFields);
-
-		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), miningSchema)
+		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), ModelUtil.createMiningSchema(schema))
 			.setSegmentation(segmentation);
 
 		return miningModel;
@@ -197,10 +163,10 @@ public class MiningModelUtil {
 		return segmentation;
 	}
 
-	private static final Function<Model, FieldName> MODEL_PREDICTION = new Function<Model, FieldName>(){
+	private static final Function<Model, Feature> MODEL_PREDICTION = new Function<Model, Feature>(){
 
 		@Override
-		public FieldName apply(Model model){
+		public Feature apply(Model model){
 			Output output = model.getOutput();
 
 			if(output == null || !output.hasOutputFields()){
@@ -209,7 +175,9 @@ public class MiningModelUtil {
 
 			OutputField outputField = Iterables.getLast(output.getOutputFields());
 
-			return outputField.getName();
+			Feature feature = new ContinuousFeature(outputField.getName(), outputField.getDataType());
+
+			return feature;
 		}
 	};
 }

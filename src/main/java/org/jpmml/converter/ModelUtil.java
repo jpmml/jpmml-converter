@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -41,28 +40,22 @@ public class ModelUtil {
 
 	static
 	public MiningSchema createMiningSchema(Schema schema){
-		return createMiningSchema(schema.getTargetField(), schema.getActiveFields());
+		return createMiningSchema(schema.getLabel());
 	}
 
 	static
-	public MiningSchema createMiningSchema(FieldName targetField, List<FieldName> activeFields){
-		List<MiningField> miningFields = new ArrayList<>();
+	public MiningSchema createMiningSchema(Label label){
+		MiningSchema miningSchema = new MiningSchema();
 
-		if(targetField != null){
-			miningFields.add(createMiningField(targetField, MiningField.UsageType.TARGET));
-		}
+		if(label != null){
+			FieldName name = label.getName();
 
-		Function<FieldName, MiningField> function = new Function<FieldName, MiningField>(){
+			if(name != null){
+				MiningField miningField = createMiningField(name, MiningField.UsageType.TARGET);
 
-			@Override
-			public MiningField apply(FieldName name){
-				return createMiningField(name);
+				miningSchema.addMiningFields(miningField);
 			}
-		};
-
-		miningFields.addAll(Lists.transform(activeFields, function));
-
-		MiningSchema miningSchema = new MiningSchema(miningFields);
+		}
 
 		return miningSchema;
 	}
@@ -81,7 +74,14 @@ public class ModelUtil {
 	}
 
 	static
-	public Target createRescaleTarget(FieldName name, Double slope, Double intercept){
+	public Target createRescaleTarget(Schema schema, Double slope, Double intercept){
+		return createRescaleTarget(schema.getLabel(), slope, intercept);
+	}
+
+	static
+	public Target createRescaleTarget(Label label, Double slope, Double intercept){
+		FieldName name = label.getName();
+
 		Target target = new Target()
 			.setField(name);
 
@@ -98,13 +98,14 @@ public class ModelUtil {
 
 	static
 	public Output createProbabilityOutput(Schema schema){
-		List<String> targetCategories = schema.getTargetCategories();
+		return createProbabilityOutput((CategoricalLabel)schema.getLabel());
+	}
 
-		if(targetCategories == null || targetCategories.isEmpty()){
-			return null;
-		}
+	static
+	public Output createProbabilityOutput(CategoricalLabel label){
+		List<String> values = label.getValues();
 
-		Output output = new Output(createProbabilityFields(targetCategories));
+		Output output = new Output(createProbabilityFields(values));
 
 		return output;
 	}

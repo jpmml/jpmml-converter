@@ -21,28 +21,23 @@ package org.jpmml.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dmg.pmml.FieldName;
-
 public class Schema {
 
-	private FieldName targetField = null;
-
-	private List<String> targetCategories = null;
-
-	private List<FieldName> activeFields = null;
+	private Label label = null;
 
 	private List<Feature> features = null;
 
 
-	public Schema(FieldName targetField, List<String> targetCategories, List<FieldName> activeFields, List<Feature> features){
-		setTargetField(targetField);
-		setTargetCategories(targetCategories);
-		setActiveFields(activeFields);
+	public Schema(Label label, List<Feature> features){
+		setLabel(label);
 		setFeatures(features);
 	}
 
 	public Schema toAnonymousSchema(){
-		Schema schema = new Schema(null, getTargetCategories(), getActiveFields(), getFeatures());
+		Label label = getLabel();
+		List<Feature> features = getFeatures();
+
+		Schema schema = new Schema(label != null ? label.toAnonymousLabel() : null, features);
 
 		return schema;
 	}
@@ -56,33 +51,17 @@ public class Schema {
 			features.add(feature);
 		}
 
-		Schema schema = new Schema(getTargetField(), getTargetCategories(), getActiveFields(), features);
+		Schema schema = new Schema(getLabel(), features);
 
 		return schema;
 	}
 
-	public FieldName getTargetField(){
-		return this.targetField;
+	public Label getLabel(){
+		return this.label;
 	}
 
-	private void setTargetField(FieldName targetField){
-		this.targetField = targetField;
-	}
-
-	public List<String> getTargetCategories(){
-		return this.targetCategories;
-	}
-
-	private void setTargetCategories(List<String> targetCategories){
-		this.targetCategories = targetCategories;
-	}
-
-	public List<FieldName> getActiveFields(){
-		return this.activeFields;
-	}
-
-	private void setActiveFields(List<FieldName> activeFields){
-		this.activeFields = activeFields;
+	private void setLabel(Label label){
+		this.label = label;
 	}
 
 	public Feature getFeature(int index){
