@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 import org.dmg.pmml.TypeDefinitionField;
 
-public class BooleanFeature extends ListFeature {
+public class BooleanFeature extends CategoricalFeature {
 
 	public BooleanFeature(PMMLEncoder encoder, TypeDefinitionField field){
 		super(encoder, field, Arrays.asList("false", "true"));

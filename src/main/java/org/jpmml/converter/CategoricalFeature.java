@@ -26,20 +26,20 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.TypeDefinitionField;
 
-public class ListFeature extends Feature {
+public class CategoricalFeature extends Feature {
 
 	private List<String> values = null;
 
 
-	public ListFeature(PMMLEncoder encoder, DataField dataField){
+	public CategoricalFeature(PMMLEncoder encoder, DataField dataField){
 		this(encoder, dataField, PMMLUtil.getValues(dataField));
 	}
 
-	public ListFeature(PMMLEncoder encoder, TypeDefinitionField field, List<String> values){
+	public CategoricalFeature(PMMLEncoder encoder, TypeDefinitionField field, List<String> values){
 		this(encoder, field.getName(), field.getDataType(), values);
 	}
 
-	public ListFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<String> values){
+	public CategoricalFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<String> values){
 		super(encoder, name, dataType);
 
 		setValues(values);

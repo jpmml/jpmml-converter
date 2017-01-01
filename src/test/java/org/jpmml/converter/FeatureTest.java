@@ -56,6 +56,18 @@ public class FeatureTest {
 	}
 
 	@Test
+	public void categoricalFeature(){
+		PMMLEncoder encoder = new PMMLEncoder();
+
+		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.INTEGER)
+			.addValues(new Value("1"), new Value("2"), new Value("3"));
+
+		CategoricalFeature list = new CategoricalFeature(encoder, dataField);
+
+		assertEquals(Arrays.asList("1", "2", "3"), list.getValues());
+	}
+
+	@Test
 	public void interactionFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
@@ -98,17 +110,5 @@ public class FeatureTest {
 		assertEquals(DataType.DOUBLE, continuousTwoOneThree.getDataType());
 
 		assertNotNull(encoder.getDerivedField(FieldName.create("x=2")));
-	}
-
-	@Test
-	public void listFeature(){
-		PMMLEncoder encoder = new PMMLEncoder();
-
-		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.INTEGER)
-			.addValues(new Value("1"), new Value("2"), new Value("3"));
-
-		ListFeature list = new ListFeature(encoder, dataField);
-
-		assertEquals(Arrays.asList("1", "2", "3"), list.getValues());
 	}
 }
