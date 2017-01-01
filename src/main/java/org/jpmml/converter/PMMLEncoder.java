@@ -19,7 +19,6 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,17 +32,10 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Header;
-import org.dmg.pmml.MiningField;
-import org.dmg.pmml.MiningSchema;
-import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.TypeDefinitionField;
-import org.dmg.pmml.Visitor;
-import org.jpmml.model.visitors.DataDictionaryCleaner;
-import org.jpmml.model.visitors.MiningSchemaCleaner;
-import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 
 public class PMMLEncoder {
 
@@ -53,10 +45,8 @@ public class PMMLEncoder {
 
 	private Map<String, DefineFunction> defineFunctions = new LinkedHashMap<>();
 
-	private Map<FieldName, List<FieldDecorator>> decorators = new LinkedHashMap<>();
 
-
-	public PMML encodePMML(Model model){
+	public PMML encodePMML(){
 
 		if(!Collections.disjoint(this.dataFields.keySet(), this.derivedFields.keySet())){
 			throw new IllegalArgumentException();
@@ -91,34 +81,6 @@ public class PMMLEncoder {
 
 		PMML pmml = new PMML("4.3", header, dataDictionary)
 			.setTransformationDictionary(transformationDictionary);
-
-		pmml.addModels(model);
-
-		List<? extends Visitor> visitors = Arrays.asList(new MiningSchemaCleaner(), new TransformationDictionaryCleaner(), new DataDictionaryCleaner());
-		for(Visitor visitor : visitors){
-			visitor.applyTo(pmml);
-		}
-
-		MiningSchema miningSchema = model.getMiningSchema();
-
-		List<MiningField> miningFields = miningSchema.getMiningFields();
-		for(MiningField miningField : miningFields){
-			FieldName name = miningField.getName();
-
-			List<FieldDecorator> decorators = getDecorators(name);
-			if(decorators == null){
-				continue;
-			}
-
-			DataField dataField = getDataField(name);
-			if(dataField == null){
-				throw new IllegalArgumentException();
-			}
-
-			for(FieldDecorator decorator : decorators){
-				decorator.decorate(dataField, miningField);
-			}
-		}
 
 		return pmml;
 	}
@@ -200,22 +162,6 @@ public class PMMLEncoder {
 		}
 
 		this.defineFunctions.put(name, defineFunction);
-	}
-
-	public List<FieldDecorator> getDecorators(FieldName name){
-		return this.decorators.get(name);
-	}
-
-	public void addDecorator(FieldName name, FieldDecorator decorator){
-		List<FieldDecorator> decorators = this.decorators.get(name);
-
-		if(decorators == null){
-			decorators = new ArrayList<>();
-
-			this.decorators.put(name, decorators);
-		}
-
-		decorators.add(decorator);
 	}
 
 	protected Map<FieldName, DataField> getDataFields(){
