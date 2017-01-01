@@ -84,10 +84,10 @@ public class FeatureTest {
 
 		ContinuousFeature continuousOneThree = interactionOneThree.toContinuousFeature();
 
-		assertNotNull(encoder.getDerivedField(interactionOneThree.getName()));
-
 		assertEquals(interactionOneThree.getName(), continuousOneThree.getName());
 		assertEquals(DataType.DOUBLE, continuousOneThree.getDataType());
+
+		assertNotNull(encoder.getDerivedField(continuousOneThree.getName()));
 
 		assertNotNull(encoder.getDerivedField(FieldName.create("x=1")));
 		assertNull(encoder.getDerivedField(FieldName.create("x=2")));
@@ -104,11 +104,27 @@ public class FeatureTest {
 
 		ContinuousFeature continuousTwoOneThree = interactionTwoOneThree.toContinuousFeature();
 
-		assertNotNull(encoder.getDerivedField(interactionTwoOneThree.getName()));
-
 		assertEquals(interactionTwoOneThree.getName(), continuousTwoOneThree.getName());
 		assertEquals(DataType.DOUBLE, continuousTwoOneThree.getDataType());
 
+		assertNotNull(encoder.getDerivedField(continuousFloatOneThree.getName()));
+
 		assertNotNull(encoder.getDerivedField(FieldName.create("x=2")));
+	}
+
+	@Test
+	public void powerFeature(){
+		PMMLEncoder encoder = new PMMLEncoder();
+
+		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CONTINUOUS, DataType.DOUBLE);
+
+		PowerFeature square = new PowerFeature(encoder, dataField, 2);
+
+		ContinuousFeature continuousSquare = square.toContinuousFeature();
+
+		assertEquals(FieldName.create("x^2"), continuousSquare.getName());
+		assertEquals(DataType.DOUBLE, continuousSquare.getDataType());
+
+		assertNotNull(encoder.getDerivedField(continuousSquare.getName()));
 	}
 }

@@ -28,6 +28,7 @@ import org.jpmml.converter.BinaryFeature;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
+import org.jpmml.converter.PowerFeature;
 
 public class RegressionModelUtil {
 
@@ -77,6 +78,17 @@ public class RegressionModelUtil {
 				}
 
 				regressionTable.addPredictorTerms(predictorTerm);
+			} else
+
+			if(feature instanceof PowerFeature){
+				PowerFeature powerFeature = (PowerFeature)feature;
+
+				NumericPredictor numericPredictor = new NumericPredictor()
+					.setName(powerFeature.getName())
+					.setExponent(powerFeature.getPower())
+					.setCoefficient(coefficient);
+
+				regressionTable.addNumericPredictors(numericPredictor);
 			} else
 
 			{

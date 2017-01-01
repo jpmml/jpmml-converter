@@ -38,6 +38,7 @@ import org.jpmml.converter.BinaryFeature;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
+import org.jpmml.converter.PowerFeature;
 import org.jpmml.converter.ValueUtil;
 
 public class GeneralRegressionModelUtil {
@@ -162,6 +163,16 @@ public class GeneralRegressionModelUtil {
 			for(Feature inputFeature : inputFeatures){
 				createPPCells(inputFeature, parameter, ppMatrix, covariates, factors);
 			}
+		} else
+
+		if(feature instanceof PowerFeature){
+			PowerFeature powerFeature = (PowerFeature)feature;
+
+			PPCell ppCell = new PPCell(String.valueOf(powerFeature.getPower()), powerFeature.getName(), parameter.getName());
+
+			ppMatrix.addPPCells(ppCell);
+
+			covariates.add(ppCell.getPredictorName());
 		} else
 
 		{
