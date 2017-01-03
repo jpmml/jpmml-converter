@@ -127,4 +127,22 @@ public class FeatureTest {
 
 		assertNotNull(encoder.getDerivedField(continuousSquare.getName()));
 	}
+
+	@Test
+	public void wildcardFeature(){
+		PMMLEncoder encoder = new PMMLEncoder();
+
+		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CONTINUOUS, DataType.DOUBLE);
+
+		WildcardFeature wildcard = new WildcardFeature(encoder, dataField);
+
+		CategoricalFeature list = wildcard.toCategoricalFeature(Arrays.asList("1", "2", "3"));
+
+		assertEquals(DataType.DOUBLE, list.getDataType());
+		assertEquals(Arrays.asList("1", "2", "3"), list.getValues());
+
+		assertEquals(OpType.CATEGORICAL, dataField.getOpType());
+		assertEquals(DataType.DOUBLE, dataField.getDataType());
+		assertEquals(Arrays.asList("1", "2", "3"), PMMLUtil.getValues(dataField));
+	}
 }

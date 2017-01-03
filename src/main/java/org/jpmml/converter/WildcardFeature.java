@@ -18,22 +18,50 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
-import org.dmg.pmml.TypeDefinitionField;
+import java.util.List;
+
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.OpType;
+import org.dmg.pmml.Value;
 
 public class WildcardFeature extends Feature {
 
-	public WildcardFeature(PMMLEncoder encoder, TypeDefinitionField field){
-		this(encoder, field.getName(), field.getDataType());
+	public WildcardFeature(PMMLEncoder encoder, DataField dataField){
+		super(encoder, dataField.getName(), dataField.getDataType());
 	}
 
-	public WildcardFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
-		super(encoder, name, dataType);
+	public CategoricalFeature toCategoricalFeature(List<String> values){
+		PMMLEncoder encoder = ensureEncoder();
+
+		DataField dataField = encoder.getDataField(getName());
+		if(dataField == null){
+			throw new IllegalArgumentException();
+		}
+
+		dataField.setOpType(OpType.CATEGORICAL);
+
+		for(String value : values){
+			dataField.addValues(new Value(value));
+		}
+
+		CategoricalFeature feature = new CategoricalFeature(encoder, dataField);
+
+		return feature;
 	}
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		throw new UnsupportedOperationException();
+		PMMLEncoder encoder = ensureEncoder();
+
+		DataField dataField = encoder.getDataField(getName());
+		if(dataField == null){
+			throw new IllegalArgumentException();
+		}
+
+		dataField.setOpType(OpType.CONTINUOUS);
+
+		ContinuousFeature feature = new ContinuousFeature(encoder, dataField);
+
+		return feature;
 	}
 }
