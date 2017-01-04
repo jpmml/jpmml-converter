@@ -26,7 +26,7 @@ import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.TypeDefinitionField;
 
-public class PowerFeature extends Feature {
+public class PowerFeature extends Feature implements HasDerivedName {
 
 	private int power = 1;
 
@@ -42,16 +42,23 @@ public class PowerFeature extends Feature {
 	}
 
 	@Override
+	public FieldName getDerivedName(){
+		FieldName name = FieldName.create((getName()).getValue() + "^" + getPower());
+
+		return name;
+	}
+
+	@Override
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		FieldName name = FieldName.create((getName()).getValue() + "^" + getPower());
+		FieldName derivedName = getDerivedName();
 
-		DerivedField derivedField = encoder.getDerivedField(name);
+		DerivedField derivedField = encoder.getDerivedField(derivedName);
 		if(derivedField == null){
 			Apply apply = PMMLUtil.createApply("pow", new FieldRef(getName()), PMMLUtil.createConstant(getPower()));
 
-			derivedField = encoder.createDerivedField(name, OpType.CONTINUOUS, DataType.DOUBLE, apply);
+			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, DataType.DOUBLE, apply);
 		}
 
 		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);

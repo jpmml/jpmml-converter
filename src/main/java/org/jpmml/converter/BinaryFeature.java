@@ -26,7 +26,7 @@ import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.TypeDefinitionField;
 
-public class BinaryFeature extends Feature {
+public class BinaryFeature extends Feature implements HasDerivedName {
 
 	private String value = null;
 
@@ -42,16 +42,23 @@ public class BinaryFeature extends Feature {
 	}
 
 	@Override
+	public FieldName getDerivedName(){
+		FieldName name = FieldName.create((getName()).getValue() + "=" + getValue());
+
+		return name;
+	}
+
+	@Override
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		FieldName name = FieldName.create((getName()).getValue() + "=" + getValue());
+		FieldName derivedName = getDerivedName();
 
-		DerivedField derivedField = encoder.getDerivedField(name);
+		DerivedField derivedField = encoder.getDerivedField(derivedName);
 		if(derivedField == null){
 			NormDiscrete normDiscrete = new NormDiscrete(getName(), getValue());
 
-			derivedField = encoder.createDerivedField(name, OpType.CONTINUOUS, DataType.DOUBLE, normDiscrete);
+			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, DataType.DOUBLE, normDiscrete);
 		}
 
 		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
