@@ -81,24 +81,48 @@ public class PMMLUtil {
 	}
 
 	static
-	public List<Value> createValues(List<String> values){
-		return createValues(values, null);
+	public List<String> getValues(DataField dataField){
+		return getValues(dataField, null);
 	}
 
 	static
-	public List<Value> createValues(List<String> values, final Value.Property property){
-		Function<String, Value> function = new Function<String, Value>(){
+	public List<String> getValues(DataField dataField, Value.Property property){
+		List<String> result = new ArrayList<>();
 
-			@Override
-			public Value apply(String string){
-				Value value = new Value(string)
-					.setProperty(property);
+		if(property == null){
+			property = Value.Property.VALID;
+		}
 
-				return value;
+		List<Value> pmmlValues = dataField.getValues();
+		for(Value pmmlValue : pmmlValues){
+
+			if((property).equals(pmmlValue.getProperty())){
+				result.add(pmmlValue.getValue());
 			}
-		};
+		}
 
-		return Lists.newArrayList(Lists.transform(values, function));
+		return result;
+	}
+
+	static
+	public void addValues(DataField dataField, List<String> values){
+		addValues(dataField, values, null);
+	}
+
+	static
+	public void addValues(DataField dataField, List<String> values, Value.Property property){
+
+		if((Value.Property.VALID).equals(property)){
+			property = null;
+		}
+
+		List<Value> pmmlValues = dataField.getValues();
+		for(String value : values){
+			Value pmmlValue = new Value(value)
+				.setProperty(property);
+
+			pmmlValues.add(pmmlValue);
+		}
 	}
 
 	static
@@ -169,26 +193,6 @@ public class PMMLUtil {
 		};
 
 		return Lists.newArrayList(Lists.transform(fields, function));
-	}
-
-	static
-	public List<String> getValues(DataField dataField){
-		return getValues(dataField, Value.Property.VALID);
-	}
-
-	static
-	public List<String> getValues(DataField dataField, Value.Property property){
-		List<String> result = new ArrayList<>();
-
-		List<Value> values = dataField.getValues();
-		for(Value value : values){
-
-			if((value.getProperty()).equals(property)){
-				result.add(value.getValue());
-			}
-		}
-
-		return result;
 	}
 
 	static

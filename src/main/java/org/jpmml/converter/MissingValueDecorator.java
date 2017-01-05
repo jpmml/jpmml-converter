@@ -38,11 +38,10 @@ public class MissingValueDecorator implements FieldDecorator {
 
 	@Override
 	public void decorate(DataField dataField, MiningField miningField){
-		List<Value> values = dataField.getValues();
-
 		List<String> missingValues = getMissingValues();
+
 		if(missingValues.size() > 0){
-			values.addAll(PMMLUtil.createValues(missingValues, Value.Property.MISSING));
+			PMMLUtil.addValues(dataField, missingValues, Value.Property.MISSING);
 		}
 
 		miningField

@@ -117,7 +117,15 @@ public class PMMLEncoder {
 	}
 
 	public DataField createDataField(FieldName name, OpType opType, DataType dataType){
+		return createDataField(name, opType, dataType, null);
+	}
+
+	public DataField createDataField(FieldName name, OpType opType, DataType dataType, List<String> values){
 		DataField dataField = new DataField(name, opType, dataType);
+
+		if(values != null && values.size() > 0){
+			PMMLUtil.addValues(dataField, values);
+		}
 
 		addDataField(dataField);
 
