@@ -21,6 +21,9 @@ package org.jpmml.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 public class Schema {
 
 	private Label label = null;
@@ -37,23 +40,31 @@ public class Schema {
 		Label label = getLabel();
 		List<Feature> features = getFeatures();
 
-		Schema schema = new Schema(label != null ? label.toAnonymousLabel() : null, features);
-
-		return schema;
+		return new Schema(label != null ? label.toAnonymousLabel() : null, features);
 	}
 
 	public Schema toSubSchema(int[] indexes){
-		List<Feature> features = new ArrayList<>(indexes.length);
+		Label label = getLabel();
+		List<Feature> features = getFeatures();
+
+		List<Feature> selectedFeatures = new ArrayList<>(indexes.length);
 
 		for(int index : indexes){
-			Feature feature = getFeature(index);
+			Feature feature = features.get(index);
 
-			features.add(feature);
+			selectedFeatures.add(feature);
 		}
 
-		Schema schema = new Schema(getLabel(), features);
+		return new Schema(label, selectedFeatures);
+	}
 
-		return schema;
+	public Schema toTransformedSchema(Function<Feature, Feature> function){
+		Label label = getLabel();
+		List<Feature> features = getFeatures();
+
+		List<Feature> transformedFeatures = new ArrayList<>(Lists.transform(features, function));
+
+		return new Schema(label, transformedFeatures);
 	}
 
 	public Label getLabel(){
