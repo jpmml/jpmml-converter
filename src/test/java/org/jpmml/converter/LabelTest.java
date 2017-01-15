@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.Arrays;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.junit.Test;
 
@@ -30,7 +31,7 @@ public class LabelTest {
 
 	@Test
 	public void categoricalLabel(){
-		Label label = new CategoricalLabel(FieldName.create("y"), Arrays.asList("1", "2", "3"));
+		Label label = new CategoricalLabel(FieldName.create("y"), DataType.INTEGER, Arrays.asList("1", "2", "3"));
 
 		assertNotNull(label.getName());
 
@@ -41,7 +42,7 @@ public class LabelTest {
 
 	@Test
 	public void continuousLabel(){
-		Label label = new ContinuousLabel(FieldName.create("y"));
+		Label label = new ContinuousLabel(FieldName.create("y"), DataType.DOUBLE);
 
 		assertNotNull(label.getName());
 

@@ -19,21 +19,22 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 
 public class ContinuousLabel extends Label {
 
 	public ContinuousLabel(DataField dataField){
-		this(dataField.getName());
+		this(dataField.getName(), dataField.getDataType());
 	}
 
-	public ContinuousLabel(FieldName name){
-		super(name);
+	public ContinuousLabel(FieldName name, DataType dataType){
+		super(name, dataType);
 	}
 
 	@Override
 	public ContinuousLabel toAnonymousLabel(){
-		ContinuousLabel label = new ContinuousLabel((FieldName)null);
+		ContinuousLabel label = new ContinuousLabel(null, getDataType());
 
 		return label;
 	}

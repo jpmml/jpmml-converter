@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 
 abstract
@@ -27,9 +28,12 @@ public class Label {
 
 	private FieldName name = null;
 
+	private DataType dataType = null;
 
-	public Label(FieldName name){
+
+	public Label(FieldName name, DataType dataType){
 		setName(name);
+		setDataType(dataType);
 	}
 
 	abstract
@@ -44,7 +48,8 @@ public class Label {
 
 	protected ToStringHelper toStringHelper(){
 		ToStringHelper helper = Objects.toStringHelper(this)
-			.add("name", getName());
+			.add("name", getName())
+			.add("dataType", getDataType());
 
 		return helper;
 	}
@@ -55,5 +60,18 @@ public class Label {
 
 	private void setName(FieldName name){
 		this.name = name;
+	}
+
+	public DataType getDataType(){
+		return this.dataType;
+	}
+
+	private void setDataType(DataType dataType){
+
+		if(dataType == null){
+			throw new IllegalArgumentException();
+		}
+
+		this.dataType = dataType;
 	}
 }

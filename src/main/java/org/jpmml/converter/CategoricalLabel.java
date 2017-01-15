@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 
 public class CategoricalLabel extends Label {
@@ -30,18 +31,18 @@ public class CategoricalLabel extends Label {
 
 
 	public CategoricalLabel(DataField dataField){
-		this(dataField.getName(), PMMLUtil.getValues(dataField));
+		this(dataField.getName(), dataField.getDataType(), PMMLUtil.getValues(dataField));
 	}
 
-	public CategoricalLabel(FieldName name, List<String> values){
-		super(name);
+	public CategoricalLabel(FieldName name, DataType dataType, List<String> values){
+		super(name, dataType);
 
 		setValues(values);
 	}
 
 	@Override
 	public CategoricalLabel toAnonymousLabel(){
-		CategoricalLabel label = new CategoricalLabel(null, getValues());
+		CategoricalLabel label = new CategoricalLabel(null, getDataType(), getValues());
 
 		return label;
 	}
