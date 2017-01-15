@@ -56,15 +56,44 @@ public class FeatureTest {
 	}
 
 	@Test
+	public void booleanFeature(){
+		PMMLEncoder encoder = new PMMLEncoder();
+
+		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.BOOLEAN);
+
+		BooleanFeature booleanFlag = new BooleanFeature(encoder, dataField);
+
+		ContinuousFeature continuousTrue = booleanFlag.toContinuousFeature();
+
+		assertEquals(FieldName.create("x=true"), continuousTrue.getName());
+		assertEquals(DataType.DOUBLE, continuousTrue.getDataType());
+
+		assertNotNull(encoder.getDerivedField(continuousTrue.getName()));
+
+		ContinuousFeature continuousFloatTrue = booleanFlag.toContinuousFeature(DataType.FLOAT);
+
+		assertEquals(FieldName.create("float(" + (continuousTrue.getName()).getValue() + ")"), continuousFloatTrue.getName());
+		assertEquals(DataType.FLOAT, continuousFloatTrue.getDataType());
+	}
+
+	@Test
 	public void categoricalFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
 		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.INTEGER)
 			.addValues(new Value("1"), new Value("2"), new Value("3"));
 
-		CategoricalFeature list = new CategoricalFeature(encoder, dataField);
+		CategoricalFeature categoricalInteger = new CategoricalFeature(encoder, dataField);
 
-		assertEquals(Arrays.asList("1", "2", "3"), list.getValues());
+		assertEquals(Arrays.asList("1", "2", "3"), categoricalInteger.getValues());
+
+		ContinuousFeature continuousInteger = categoricalInteger.toContinuousFeature();
+
+		assertEquals(DataType.INTEGER, continuousInteger.getDataType());
+
+		assertEquals(OpType.CONTINUOUS, dataField.getOpType());
+		assertEquals(DataType.INTEGER, dataField.getDataType());
+		assertEquals(Arrays.asList("1", "2", "3"), PMMLUtil.getValues(dataField));
 	}
 
 	@Test
@@ -136,10 +165,10 @@ public class FeatureTest {
 
 		WildcardFeature wildcard = new WildcardFeature(encoder, dataField);
 
-		CategoricalFeature list = wildcard.toCategoricalFeature(Arrays.asList("1", "2", "3"));
+		CategoricalFeature categoricalDouble = wildcard.toCategoricalFeature(Arrays.asList("1", "2", "3"));
 
-		assertEquals(DataType.DOUBLE, list.getDataType());
-		assertEquals(Arrays.asList("1", "2", "3"), list.getValues());
+		assertEquals(DataType.DOUBLE, categoricalDouble.getDataType());
+		assertEquals(Arrays.asList("1", "2", "3"), categoricalDouble.getValues());
 
 		assertEquals(OpType.CATEGORICAL, dataField.getOpType());
 		assertEquals(DataType.DOUBLE, dataField.getDataType());

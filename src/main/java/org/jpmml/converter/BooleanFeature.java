@@ -20,18 +20,37 @@ package org.jpmml.converter;
 
 import java.util.Arrays;
 
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.NormDiscrete;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.TypeDefinitionField;
 
-public class BooleanFeature extends CategoricalFeature {
+public class BooleanFeature extends CategoricalFeature implements HasDerivedName {
 
 	public BooleanFeature(PMMLEncoder encoder, TypeDefinitionField field){
 		super(encoder, field, Arrays.asList("false", "true"));
 	}
 
 	@Override
+	public FieldName getDerivedName(){
+		return FieldName.create((getName()).getValue() + "=true");
+	}
+
+	@Override
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		return new ContinuousFeature(encoder, getName(), getDataType());
+		FieldName derivedName = getDerivedName();
+
+		DerivedField derivedField = encoder.getDerivedField(derivedName);
+		if(derivedField == null){
+			NormDiscrete normDiscrete = new NormDiscrete(getName(), "true");
+
+			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, DataType.DOUBLE, normDiscrete);
+		}
+
+		return new ContinuousFeature(encoder, derivedField);
 	}
 }

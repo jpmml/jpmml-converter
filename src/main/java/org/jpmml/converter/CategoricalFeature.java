@@ -24,6 +24,7 @@ import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.TypeDefinitionField;
 
 public class CategoricalFeature extends Feature {
@@ -49,7 +50,9 @@ public class CategoricalFeature extends Feature {
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		DataType dataType = getDataType();
+		TypeDefinitionField field = encoder.getField(getName());
+
+		DataType dataType = field.getDataType();
 		switch(dataType){
 			case INTEGER:
 			case FLOAT:
@@ -59,7 +62,9 @@ public class CategoricalFeature extends Feature {
 				throw new UnsupportedOperationException();
 		}
 
-		return new ContinuousFeature(encoder, getName(), getDataType());
+		field.setOpType(OpType.CONTINUOUS);
+
+		return new ContinuousFeature(encoder, field);
 	}
 
 	@Override
