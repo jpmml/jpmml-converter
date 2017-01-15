@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -25,6 +26,7 @@ import com.google.common.collect.Lists;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
@@ -94,6 +96,32 @@ public class ModelUtil {
 		}
 
 		return target;
+	}
+
+	static
+	public Output createPredictedOutput(FieldName name, OpType opType, DataType dataType, Transformation... transformations){
+		List<OutputField> outputFields = new ArrayList<>();
+
+		OutputField outputField = new OutputField(name, dataType)
+			.setOpType(opType)
+			.setResultFeature(ResultFeature.PREDICTED_VALUE)
+			.setFinalResult(false);
+
+		outputFields.add(outputField);
+
+		for(Transformation transformation : transformations){
+			outputField = new OutputField(transformation.getName(outputField.getName()), transformation.getDataType(outputField.getDataType()))
+				.setOpType(transformation.getOpType(outputField.getOpType()))
+				.setResultFeature(ResultFeature.TRANSFORMED_VALUE)
+				.setFinalResult(transformation.isFinalResult())
+				.setExpression(transformation.createExpression(new FieldRef(outputField.getName())));
+
+			outputFields.add(outputField);
+		}
+
+		Output output = new Output(outputFields);
+
+		return output;
 	}
 
 	static
