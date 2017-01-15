@@ -175,9 +175,7 @@ public class MiningModelUtil {
 
 			OutputField outputField = Iterables.getLast(output.getOutputFields());
 
-			Feature feature = new ContinuousFeature(null, outputField.getName(), outputField.getDataType());
-
-			return feature;
+			return new ContinuousFeature(null, outputField.getName(), outputField.getDataType());
 		}
 	};
 }

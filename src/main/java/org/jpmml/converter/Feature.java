@@ -61,15 +61,11 @@ public class Feature {
 			derivedField = encoder.createDerivedField(name, OpType.CONTINUOUS, dataType, continuousFeature.ref());
 		}
 
-		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
-
-		return feature;
+		return new ContinuousFeature(encoder, derivedField);
 	}
 
 	public FieldRef ref(){
-		FieldRef fieldRef = new FieldRef(getName());
-
-		return fieldRef;
+		return new FieldRef(getName());
 	}
 
 	@Override
@@ -80,11 +76,9 @@ public class Feature {
 	}
 
 	protected ToStringHelper toStringHelper(){
-		ToStringHelper helper = Objects.toStringHelper(this)
+		return Objects.toStringHelper(this)
 			.add("name", getName())
 			.add("dataType", getDataType());
-
-		return helper;
 	}
 
 	protected PMMLEncoder ensureEncoder(){

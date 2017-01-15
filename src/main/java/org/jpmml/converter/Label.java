@@ -47,11 +47,9 @@ public class Label {
 	}
 
 	protected ToStringHelper toStringHelper(){
-		ToStringHelper helper = Objects.toStringHelper(this)
+		return Objects.toStringHelper(this)
 			.add("name", getName())
 			.add("dataType", getDataType());
-
-		return helper;
 	}
 
 	public FieldName getName(){

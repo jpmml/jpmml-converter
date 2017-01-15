@@ -42,17 +42,13 @@ public class CategoricalLabel extends Label {
 
 	@Override
 	public CategoricalLabel toAnonymousLabel(){
-		CategoricalLabel label = new CategoricalLabel(null, getDataType(), getValues());
-
-		return label;
+		return new CategoricalLabel(null, getDataType(), getValues());
 	}
 
 	@Override
 	protected ToStringHelper toStringHelper(){
-		ToStringHelper helper = super.toStringHelper()
+		return super.toStringHelper()
 			.add("values", getValues());
-
-		return helper;
 	}
 
 	public int size(){

@@ -43,9 +43,7 @@ public class PowerFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public FieldName getDerivedName(){
-		FieldName name = FieldName.create((getName()).getValue() + "^" + getPower());
-
-		return name;
+		return FieldName.create((getName()).getValue() + "^" + getPower());
 	}
 
 	@Override
@@ -61,9 +59,7 @@ public class PowerFeature extends Feature implements HasDerivedName {
 			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, DataType.DOUBLE, apply);
 		}
 
-		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
-
-		return feature;
+		return new ContinuousFeature(encoder, derivedField);
 	}
 
 	public int getPower(){

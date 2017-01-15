@@ -32,8 +32,6 @@ public class BooleanFeature extends CategoricalFeature {
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		ContinuousFeature feature = new ContinuousFeature(encoder, getName(), getDataType());
-
-		return feature;
+		return new ContinuousFeature(encoder, getName(), getDataType());
 	}
 }

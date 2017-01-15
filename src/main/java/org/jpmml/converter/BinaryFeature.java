@@ -43,9 +43,7 @@ public class BinaryFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public FieldName getDerivedName(){
-		FieldName name = FieldName.create((getName()).getValue() + "=" + getValue());
-
-		return name;
+		return FieldName.create((getName()).getValue() + "=" + getValue());
 	}
 
 	@Override
@@ -61,17 +59,13 @@ public class BinaryFeature extends Feature implements HasDerivedName {
 			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, DataType.DOUBLE, normDiscrete);
 		}
 
-		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
-
-		return feature;
+		return new ContinuousFeature(encoder, derivedField);
 	}
 
 	@Override
 	protected ToStringHelper toStringHelper(){
-		ToStringHelper helper = super.toStringHelper()
+		return super.toStringHelper()
 			.add("value", getValue());
-
-		return helper;
 	}
 
 	public String getValue(){

@@ -44,9 +44,7 @@ public class WildcardFeature extends Feature {
 			dataField.addValues(new Value(value));
 		}
 
-		CategoricalFeature feature = new CategoricalFeature(encoder, dataField);
-
-		return feature;
+		return new CategoricalFeature(encoder, dataField);
 	}
 
 	@Override
@@ -60,8 +58,6 @@ public class WildcardFeature extends Feature {
 
 		dataField.setOpType(OpType.CONTINUOUS);
 
-		ContinuousFeature feature = new ContinuousFeature(encoder, dataField);
-
-		return feature;
+		return new ContinuousFeature(encoder, dataField);
 	}
 }

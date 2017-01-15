@@ -34,8 +34,6 @@ public class ContinuousLabel extends Label {
 
 	@Override
 	public ContinuousLabel toAnonymousLabel(){
-		ContinuousLabel label = new ContinuousLabel(null, getDataType());
-
-		return label;
+		return new ContinuousLabel(null, getDataType());
 	}
 }

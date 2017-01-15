@@ -61,17 +61,13 @@ public class InteractionFeature extends Feature {
 			derivedField = encoder.createDerivedField(getName(), OpType.CONTINUOUS, DataType.DOUBLE, apply);
 		}
 
-		ContinuousFeature feature = new ContinuousFeature(encoder, derivedField);
-
-		return feature;
+		return new ContinuousFeature(encoder, derivedField);
 	}
 
 	@Override
 	protected ToStringHelper toStringHelper(){
-		ToStringHelper helper = super.toStringHelper()
+		return super.toStringHelper()
 			.add("features", getFeatures());
-
-		return helper;
 	}
 
 	public List<? extends Feature> getInputFeatures(){

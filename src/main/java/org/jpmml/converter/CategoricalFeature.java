@@ -59,17 +59,13 @@ public class CategoricalFeature extends Feature {
 				throw new UnsupportedOperationException();
 		}
 
-		ContinuousFeature feature = new ContinuousFeature(encoder, getName(), getDataType());
-
-		return feature;
+		return new ContinuousFeature(encoder, getName(), getDataType());
 	}
 
 	@Override
 	protected ToStringHelper toStringHelper(){
-		ToStringHelper helper = super.toStringHelper()
+		return super.toStringHelper()
 			.add("values", getValues());
-
-		return helper;
 	}
 
 	public String getValue(int index){
