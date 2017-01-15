@@ -35,6 +35,7 @@ import org.dmg.pmml.general_regression.ParameterList;
 import org.dmg.pmml.general_regression.Predictor;
 import org.dmg.pmml.general_regression.PredictorList;
 import org.jpmml.converter.BinaryFeature;
+import org.jpmml.converter.BooleanFeature;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
@@ -150,6 +151,16 @@ public class GeneralRegressionModelUtil {
 			BinaryFeature binaryFeature = (BinaryFeature)feature;
 
 			PPCell ppCell = new PPCell(binaryFeature.getValue(), binaryFeature.getName(), parameter.getName());
+
+			ppMatrix.addPPCells(ppCell);
+
+			factors.add(ppCell.getPredictorName());
+		} else
+
+		if(feature instanceof BooleanFeature){
+			BooleanFeature booleanFeature = (BooleanFeature)feature;
+
+			PPCell ppCell = new PPCell("true", booleanFeature.getName(), parameter.getName());
 
 			ppMatrix.addPPCells(ppCell);
 

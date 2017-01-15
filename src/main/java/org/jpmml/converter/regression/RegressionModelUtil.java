@@ -25,6 +25,7 @@ import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionTable;
 import org.jpmml.converter.BinaryFeature;
+import org.jpmml.converter.BooleanFeature;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
@@ -58,6 +59,17 @@ public class RegressionModelUtil {
 				CategoricalPredictor categoricalPredictor = new CategoricalPredictor()
 					.setName(binaryFeature.getName())
 					.setValue(binaryFeature.getValue())
+					.setCoefficient(coefficient);
+
+				regressionTable.addCategoricalPredictors(categoricalPredictor);
+			} else
+
+			if(feature instanceof BooleanFeature){
+				BooleanFeature booleanFeature = (BooleanFeature)feature;
+
+				CategoricalPredictor categoricalPredictor = new CategoricalPredictor()
+					.setName(booleanFeature.getName())
+					.setValue("true")
 					.setCoefficient(coefficient);
 
 				regressionTable.addCategoricalPredictors(categoricalPredictor);
