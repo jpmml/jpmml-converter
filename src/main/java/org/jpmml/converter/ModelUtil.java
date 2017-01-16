@@ -34,6 +34,7 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
 import org.dmg.pmml.Target;
+import org.dmg.pmml.Targets;
 
 public class ModelUtil {
 
@@ -76,26 +77,39 @@ public class ModelUtil {
 	}
 
 	static
-	public Target createRescaleTarget(Schema schema, Double slope, Double intercept){
-		return createRescaleTarget(schema.getLabel(), slope, intercept);
+	public Targets createRescaleTargets(Schema schema, Number slope, Number intercept){
+		return createRescaleTargets((ContinuousLabel)schema.getLabel(), slope, intercept);
 	}
 
 	static
-	public Target createRescaleTarget(Label label, Double slope, Double intercept){
+	public Targets createRescaleTargets(ContinuousLabel label, Number slope, Number intercept){
 		FieldName name = label.getName();
 
 		Target target = new Target()
 			.setField(name);
 
+		boolean rescaled = false;
+
 		if(slope != null && !ValueUtil.isOne(slope)){
-			target.setRescaleFactor(slope);
+			target.setRescaleFactor(slope.doubleValue());
+
+			rescaled = true;
 		} // End if
 
 		if(intercept != null && !ValueUtil.isZero(intercept)){
-			target.setRescaleConstant(intercept);
+			target.setRescaleConstant(intercept.doubleValue());
+
+			rescaled = true;
+		} // End if
+
+		if(!rescaled){
+			return null;
 		}
 
-		return target;
+		Targets targets = new Targets()
+			.addTargets(target);
+
+		return targets;
 	}
 
 	static
