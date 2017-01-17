@@ -64,7 +64,7 @@ public class MiningModelUtil {
 	}
 
 	static
-	public MiningModel createBinaryLogisticClassification(Schema schema, Model model, double coefficient, boolean hasProbabilityDistribution){
+	public MiningModel createBinaryLogisticClassification(Schema schema, Model model, RegressionModel.NormalizationMethod normalizationMethod, double intercept, double coefficient, boolean hasProbabilityDistribution){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		if(categoricalLabel.size() != 2){
@@ -73,14 +73,14 @@ public class MiningModelUtil {
 
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(coefficient))
-			.setTargetCategory(categoricalLabel.getValue(0));
-
-		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), null, Collections.<Double>emptyList())
+		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), intercept, Collections.singletonList(coefficient))
 			.setTargetCategory(categoricalLabel.getValue(1));
 
+		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), null, Collections.<Double>emptyList())
+			.setTargetCategory(categoricalLabel.getValue(0));
+
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
-			.setNormalizationMethod(RegressionModel.NormalizationMethod.SOFTMAX)
+			.setNormalizationMethod(normalizationMethod)
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
 			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
 
