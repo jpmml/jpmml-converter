@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Villu Ruusmann
+ * Copyright (c) 2017 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,47 +18,42 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.Interval;
+import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Value;
 
-public class ValidValueDecorator extends ValueDecorator {
+public class InvalidValueDecorator extends ValueDecorator {
 
-	private List<Interval> intervals = new ArrayList<>();
+	private InvalidValueTreatmentMethod invalidValueTreatment = null;
 
 
-	public ValidValueDecorator(){
-		super(Value.Property.VALID);
+	public InvalidValueDecorator(){
+		super(Value.Property.INVALID);
 	}
 
 	@Override
 	public void decorate(DataField dataField, MiningField miningField){
-		List<Interval> intervals = getIntervals();
-
-		if(intervals.size() > 0){
-			PMMLUtil.addIntervals(dataField, intervals);
-		}
-
 		super.decorate(dataField, miningField);
+
+		InvalidValueTreatmentMethod invalidValueTreatment = getInvalidValueTreatment();
+		if(invalidValueTreatment != null && !(InvalidValueTreatmentMethod.RETURN_INVALID).equals(invalidValueTreatment)){
+			miningField.setInvalidValueTreatment(invalidValueTreatment);
+		}
 	}
 
-	public List<Interval> getIntervals(){
-		return this.intervals;
+	public InvalidValueTreatmentMethod getInvalidValueTreatment(){
+		return this.invalidValueTreatment;
 	}
 
-	public ValidValueDecorator addIntervals(Interval... intervals){
-		getIntervals().addAll(Arrays.asList(intervals));
+	public InvalidValueDecorator setInvalidValueTreatment(InvalidValueTreatmentMethod invalidValueTreatment){
+		this.invalidValueTreatment = invalidValueTreatment;
 
 		return this;
 	}
 
 	@Override
-	public ValidValueDecorator addValues(String... values){
-		return (ValidValueDecorator)super.addValues(values);
+	public InvalidValueDecorator addValues(String... values){
+		return (InvalidValueDecorator)super.addValues(values);
 	}
 }

@@ -37,6 +37,7 @@ import org.dmg.pmml.Expression;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Header;
+import org.dmg.pmml.Interval;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
@@ -123,6 +124,11 @@ public class PMMLUtil {
 
 			pmmlValues.add(pmmlValue);
 		}
+	}
+
+	static
+	public void addIntervals(DataField dataField, List<Interval> intervals){
+		(dataField.getIntervals()).addAll(intervals);
 	}
 
 	static

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Villu Ruusmann
+ * Copyright (c) 2017 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -23,42 +23,47 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.Interval;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Value;
 
-public class ValidValueDecorator extends ValueDecorator {
+public class ValueDecorator implements FieldDecorator {
 
-	private List<Interval> intervals = new ArrayList<>();
+	private Value.Property property = null;
+
+	private List<String> values = new ArrayList<>();
 
 
-	public ValidValueDecorator(){
-		super(Value.Property.VALID);
+	protected ValueDecorator(Value.Property property){
+		setProperty(property);
 	}
 
 	@Override
 	public void decorate(DataField dataField, MiningField miningField){
-		List<Interval> intervals = getIntervals();
+		Value.Property property = getProperty();
+		List<String> values = getValues();
 
-		if(intervals.size() > 0){
-			PMMLUtil.addIntervals(dataField, intervals);
+		if(values.size() > 0){
+			PMMLUtil.addValues(dataField, values, property);
 		}
-
-		super.decorate(dataField, miningField);
 	}
 
-	public List<Interval> getIntervals(){
-		return this.intervals;
+	public Value.Property getProperty(){
+		return this.property;
 	}
 
-	public ValidValueDecorator addIntervals(Interval... intervals){
-		getIntervals().addAll(Arrays.asList(intervals));
+	private ValueDecorator setProperty(Value.Property property){
+		this.property = property;
 
 		return this;
 	}
 
-	@Override
-	public ValidValueDecorator addValues(String... values){
-		return (ValidValueDecorator)super.addValues(values);
+	public List<String> getValues(){
+		return this.values;
+	}
+
+	public ValueDecorator addValues(String... values){
+		getValues().addAll(Arrays.asList(values));
+
+		return this;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Villu Ruusmann
+ * Copyright (c) 2017 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,31 +18,25 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MissingValueTreatmentMethod;
 import org.dmg.pmml.Value;
 
-public class MissingValueDecorator implements FieldDecorator {
+public class MissingValueDecorator extends ValueDecorator {
 
 	private String missingValueReplacement = null;
 
 	private MissingValueTreatmentMethod missingValueTreatment = null;
 
-	private List<String> missingValues = new ArrayList<>();
 
+	public MissingValueDecorator(){
+		super(Value.Property.MISSING);
+	}
 
 	@Override
 	public void decorate(DataField dataField, MiningField miningField){
-		List<String> missingValues = getMissingValues();
-
-		if(missingValues.size() > 0){
-			PMMLUtil.addValues(dataField, missingValues, Value.Property.MISSING);
-		}
+		super.decorate(dataField, miningField);
 
 		miningField
 			.setMissingValueReplacement(getMissingValueReplacement())
@@ -69,13 +63,8 @@ public class MissingValueDecorator implements FieldDecorator {
 		return this;
 	}
 
-	public MissingValueDecorator addMissingValues(String... missingValues){
-		getMissingValues().addAll(Arrays.asList(missingValues));
-
-		return this;
-	}
-
-	public List<String> getMissingValues(){
-		return this.missingValues;
+	@Override
+	public MissingValueDecorator addValues(String... values){
+		return (MissingValueDecorator)super.addValues(values);
 	}
 }
