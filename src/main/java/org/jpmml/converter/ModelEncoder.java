@@ -37,7 +37,7 @@ import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 
 public class ModelEncoder extends PMMLEncoder {
 
-	private Map<FieldName, List<FieldDecorator>> decorators = new LinkedHashMap<>();
+	private Map<FieldName, List<Decorator>> decorators = new LinkedHashMap<>();
 
 
 	public PMML encodePMML(Model model){
@@ -56,7 +56,7 @@ public class ModelEncoder extends PMMLEncoder {
 		for(MiningField miningField : miningFields){
 			FieldName name = miningField.getName();
 
-			List<FieldDecorator> decorators = getDecorators(name);
+			List<Decorator> decorators = getDecorators(name);
 			if(decorators == null){
 				continue;
 			}
@@ -66,7 +66,7 @@ public class ModelEncoder extends PMMLEncoder {
 				throw new IllegalArgumentException();
 			}
 
-			for(FieldDecorator decorator : decorators){
+			for(Decorator decorator : decorators){
 				decorator.decorate(dataField, miningField);
 			}
 		}
@@ -74,12 +74,12 @@ public class ModelEncoder extends PMMLEncoder {
 		return pmml;
 	}
 
-	public List<FieldDecorator> getDecorators(FieldName name){
+	public List<Decorator> getDecorators(FieldName name){
 		return this.decorators.get(name);
 	}
 
-	public void addDecorator(FieldName name, FieldDecorator decorator){
-		List<FieldDecorator> decorators = this.decorators.get(name);
+	public void addDecorator(FieldName name, Decorator decorator){
+		List<Decorator> decorators = this.decorators.get(name);
 
 		if(decorators == null){
 			decorators = new ArrayList<>();

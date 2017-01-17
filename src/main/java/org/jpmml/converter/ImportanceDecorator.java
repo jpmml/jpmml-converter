@@ -21,7 +21,7 @@ package org.jpmml.converter;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 
-public class ImportanceDecorator implements FieldDecorator {
+public class ImportanceDecorator implements Decorator {
 
 	private Double importance = null;
 

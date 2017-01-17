@@ -26,7 +26,7 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Value;
 
-public class ValueDecorator implements FieldDecorator {
+public class ValueDecorator implements Decorator {
 
 	private Value.Property property = null;
 
