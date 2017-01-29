@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
@@ -60,6 +61,12 @@ public class PowerFeature extends Feature implements HasDerivedName {
 		}
 
 		return new ContinuousFeature(encoder, derivedField);
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper(){
+		return super.toStringHelper()
+			.add("power", getPower());
 	}
 
 	public int getPower(){
