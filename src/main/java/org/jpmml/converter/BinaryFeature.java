@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Objects;
+
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
@@ -60,6 +62,23 @@ public class BinaryFeature extends Feature implements HasDerivedName {
 		}
 
 		return new ContinuousFeature(encoder, derivedField);
+	}
+
+	@Override
+	public int hashCode(){
+		return (31 * super.hashCode()) + Objects.hashCode(this.getValue());
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof BinaryFeature){
+			BinaryFeature that = (BinaryFeature)object;
+
+			return super.equals(object) && Objects.equals(this.getValue(), that.getValue());
+		}
+
+		return false;
 	}
 
 	@Override

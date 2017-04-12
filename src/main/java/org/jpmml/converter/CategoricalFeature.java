@@ -19,6 +19,7 @@
 package org.jpmml.converter;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataField;
@@ -65,6 +66,23 @@ public class CategoricalFeature extends Feature {
 		field.setOpType(OpType.CONTINUOUS);
 
 		return new ContinuousFeature(encoder, field);
+	}
+
+	@Override
+	public int hashCode(){
+		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof CategoricalFeature){
+			CategoricalFeature that = (CategoricalFeature)object;
+
+			return super.equals(object) && Objects.equals(this.getValues(), that.getValues());
+		}
+
+		return false;
 	}
 
 	@Override

@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.Apply;
@@ -62,6 +63,23 @@ public class InteractionFeature extends Feature {
 		}
 
 		return new ContinuousFeature(encoder, derivedField);
+	}
+
+	@Override
+	public int hashCode(){
+		return (31 * super.hashCode()) + Objects.hashCode(this.getFeatures());
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof InteractionFeature){
+			InteractionFeature that = (InteractionFeature)object;
+
+			return super.equals(object) && Objects.equals(this.getFeatures(), that.getFeatures());
+		}
+
+		return false;
 	}
 
 	@Override

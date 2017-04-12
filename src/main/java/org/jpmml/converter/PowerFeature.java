@@ -64,6 +64,23 @@ public class PowerFeature extends Feature implements HasDerivedName {
 	}
 
 	@Override
+	public int hashCode(){
+		return (31 * super.hashCode()) + getPower();
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof PowerFeature){
+			PowerFeature that = (PowerFeature)object;
+
+			return super.equals(object) && (this.getPower() == that.getPower());
+		}
+
+		return false;
+	}
+
+	@Override
 	protected ToStringHelper toStringHelper(){
 		return super.toStringHelper()
 			.add("power", getPower());

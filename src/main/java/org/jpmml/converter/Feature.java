@@ -18,7 +18,8 @@
  */
 package org.jpmml.converter;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
@@ -69,6 +70,29 @@ public class Feature {
 	}
 
 	@Override
+	public int hashCode(){
+		int result = 0;
+
+		result = (31 * result) + Objects.hashCode(this.getEncoder());
+		result = (31 * result) + Objects.hashCode(this.getName());
+		result = (31 * result) + Objects.hashCode(this.getDataType());
+
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof Feature){
+			Feature that = (Feature)object;
+
+			return (this.getClass()).equals(that.getClass()) && Objects.equals(this.getEncoder(), that.getEncoder()) && Objects.equals(this.getName(), that.getName()) && Objects.equals(this.getDataType(), that.getDataType());
+		}
+
+		return false;
+	}
+
+	@Override
 	public String toString(){
 		ToStringHelper helper = toStringHelper();
 
@@ -76,7 +100,7 @@ public class Feature {
 	}
 
 	protected ToStringHelper toStringHelper(){
-		return Objects.toStringHelper(this)
+		return com.google.common.base.Objects.toStringHelper(this)
 			.add("name", getName())
 			.add("dataType", getDataType());
 	}
