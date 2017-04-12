@@ -20,12 +20,15 @@ package org.jpmml.converter.regression;
 
 import java.util.List;
 
+import com.google.common.collect.Iterables;
+import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionTable;
 import org.jpmml.converter.BinaryFeature;
 import org.jpmml.converter.BooleanFeature;
+import org.jpmml.converter.ConstantFeature;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
@@ -75,6 +78,14 @@ public class RegressionModelUtil {
 				regressionTable.addCategoricalPredictors(categoricalPredictor);
 			} else
 
+			if(feature instanceof ConstantFeature){
+				ConstantFeature constantFeature = (ConstantFeature)feature;
+
+				double value = (constantFeature.getValue()).doubleValue() * coefficient;
+
+				regressionTable.setIntercept(regressionTable.getIntercept() + value);
+			} else
+
 			if(feature instanceof InteractionFeature){
 				InteractionFeature interactionFeature = (InteractionFeature)feature;
 
@@ -84,12 +95,40 @@ public class RegressionModelUtil {
 
 				List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
 				for(Feature inputFeature : inputFeatures){
-					inputFeature = inputFeature.toContinuousFeature();
 
-					predictorTerm.addFieldRefs(inputFeature.ref());
+					if(inputFeature instanceof ConstantFeature){
+						ConstantFeature constantFeature = (ConstantFeature)inputFeature;
+
+						double value = (constantFeature.getValue()).doubleValue();
+
+						predictorTerm.setCoefficient(predictorTerm.getCoefficient() * value);
+					} else
+
+					{
+						inputFeature = inputFeature.toContinuousFeature();
+
+						predictorTerm.addFieldRefs(inputFeature.ref());
+					}
 				}
 
-				regressionTable.addPredictorTerms(predictorTerm);
+				List<FieldRef> fieldRefs = predictorTerm.getFieldRefs();
+				if(fieldRefs.size() == 0){
+					regressionTable.setIntercept(regressionTable.getIntercept() + predictorTerm.getCoefficient());
+				} else
+
+				if(fieldRefs.size() == 1){
+					FieldRef fieldRef = Iterables.getOnlyElement(fieldRefs);
+
+					NumericPredictor numericPredictor = new NumericPredictor()
+						.setName(fieldRef.getField())
+						.setCoefficient(predictorTerm.getCoefficient());
+
+					regressionTable.addNumericPredictors(numericPredictor);
+				} else
+
+				{
+					regressionTable.addPredictorTerms(predictorTerm);
+				}
 			} else
 
 			if(feature instanceof PowerFeature){

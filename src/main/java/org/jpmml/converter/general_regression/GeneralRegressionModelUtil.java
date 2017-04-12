@@ -36,6 +36,7 @@ import org.dmg.pmml.general_regression.Predictor;
 import org.dmg.pmml.general_regression.PredictorList;
 import org.jpmml.converter.BinaryFeature;
 import org.jpmml.converter.BooleanFeature;
+import org.jpmml.converter.ConstantFeature;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
@@ -109,7 +110,10 @@ public class GeneralRegressionModelUtil {
 
 			p++;
 
-			createPPCells(feature, parameter, ppMatrix, covariates, factors);
+			double multiplier = createPPCells(feature, parameter, ppMatrix, covariates, factors);
+			if(multiplier != 1d){
+				coefficient = (multiplier * coefficient);
+			}
 
 			PCell pCell = new PCell(parameter.getName(), coefficient)
 				.setTargetCategory(targetCategory);
@@ -145,56 +149,61 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	private void createPPCells(Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> covariates, Set<FieldName> factors){
+	private double createPPCells(Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> covariates, Set<FieldName> factors){
 
 		if(feature instanceof BinaryFeature){
 			BinaryFeature binaryFeature = (BinaryFeature)feature;
 
-			PPCell ppCell = new PPCell(binaryFeature.getValue(), binaryFeature.getName(), parameter.getName());
-
-			ppMatrix.addPPCells(ppCell);
-
-			factors.add(ppCell.getPredictorName());
+			return createPPCell(binaryFeature.getValue(), binaryFeature.getName(), parameter, ppMatrix, factors);
 		} else
 
 		if(feature instanceof BooleanFeature){
 			BooleanFeature booleanFeature = (BooleanFeature)feature;
 
-			PPCell ppCell = new PPCell("true", booleanFeature.getName(), parameter.getName());
+			return createPPCell("true", booleanFeature.getName(), parameter, ppMatrix, factors);
+		} else
 
-			ppMatrix.addPPCells(ppCell);
+		if(feature instanceof ConstantFeature){
+			ConstantFeature constantFeature = (ConstantFeature)feature;
 
-			factors.add(ppCell.getPredictorName());
+			return (constantFeature.getValue()).doubleValue();
 		} else
 
 		if(feature instanceof InteractionFeature){
 			InteractionFeature interactionFeature = (InteractionFeature)feature;
 
+			double result = 1d;
+
 			List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
 			for(Feature inputFeature : inputFeatures){
-				createPPCells(inputFeature, parameter, ppMatrix, covariates, factors);
+				result *= createPPCells(inputFeature, parameter, ppMatrix, covariates, factors);
 			}
+
+			return result;
 		} else
 
 		if(feature instanceof PowerFeature){
 			PowerFeature powerFeature = (PowerFeature)feature;
 
-			PPCell ppCell = new PPCell(String.valueOf(powerFeature.getPower()), powerFeature.getName(), parameter.getName());
-
-			ppMatrix.addPPCells(ppCell);
-
-			covariates.add(ppCell.getPredictorName());
+			return createPPCell(String.valueOf(powerFeature.getPower()), powerFeature.getName(), parameter, ppMatrix, covariates);
 		} else
 
 		{
 			ContinuousFeature continuousFeature = feature.toContinuousFeature();
 
-			PPCell ppCell = new PPCell("1", continuousFeature.getName(), parameter.getName());
-
-			ppMatrix.addPPCells(ppCell);
-
-			covariates.add(ppCell.getPredictorName());
+			return createPPCell("1", continuousFeature.getName(), parameter, ppMatrix, covariates);
 		}
+	}
+
+	static
+	private double createPPCell(String value, FieldName name, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> predictorNames){
+		PPCell ppCell = new PPCell(value, name, parameter.getName());
+
+		ppMatrix.addPPCells(ppCell);
+
+		predictorNames.add(ppCell.getPredictorName());
+
+		return 1d;
 	}
 
 	static

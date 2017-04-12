@@ -97,6 +97,33 @@ public class FeatureTest {
 	}
 
 	@Test
+	public void constantFeature(){
+		PMMLEncoder encoder = new PMMLEncoder();
+
+		ConstantFeature integerOne = new ConstantFeature(encoder, 1);
+
+		assertEquals(FieldName.create("1"), integerOne.getName());
+		assertEquals(DataType.INTEGER, integerOne.getDataType());
+
+		ContinuousFeature continuousIntegerOne = integerOne.toContinuousFeature();
+
+		assertEquals(FieldName.create("constant(1)"), continuousIntegerOne.getName());
+		assertEquals(DataType.INTEGER, continuousIntegerOne.getDataType());
+
+		assertNotNull(encoder.getDerivedField(continuousIntegerOne.getName()));
+
+		ConstantFeature floatOne = new ConstantFeature(encoder, 1f);
+
+		assertEquals(FieldName.create("1.0f"), floatOne.getName());
+		assertEquals(DataType.FLOAT, floatOne.getDataType());
+
+		ConstantFeature doubleOne = new ConstantFeature(encoder, 1d);
+
+		assertEquals(FieldName.create("1.0"), doubleOne.getName());
+		assertEquals(DataType.DOUBLE, doubleOne.getDataType());
+	}
+
+	@Test
 	public void interactionFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
