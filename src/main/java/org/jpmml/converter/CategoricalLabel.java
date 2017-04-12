@@ -19,6 +19,7 @@
 package org.jpmml.converter;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataField;
@@ -43,6 +44,23 @@ public class CategoricalLabel extends Label {
 	@Override
 	public CategoricalLabel toAnonymousLabel(){
 		return new CategoricalLabel(null, getDataType(), getValues());
+	}
+
+	@Override
+	public int hashCode(){
+		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof CategoricalLabel){
+			CategoricalLabel that = (CategoricalLabel)object;
+
+			return super.equals(object) && Objects.equals(this.getValues(), that.getValues());
+		}
+
+		return false;
 	}
 
 	@Override
