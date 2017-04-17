@@ -24,9 +24,9 @@ import java.util.List;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 
-public class FeatureUtil {
+public class SchemaUtil {
 
-	private FeatureUtil(){
+	private SchemaUtil(){
 	}
 
 	static

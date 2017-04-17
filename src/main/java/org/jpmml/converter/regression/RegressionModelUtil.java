@@ -33,6 +33,7 @@ import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
 import org.jpmml.converter.PowerFeature;
+import org.jpmml.converter.ValueUtil;
 
 public class RegressionModelUtil {
 
@@ -52,7 +53,7 @@ public class RegressionModelUtil {
 			Feature feature = features.get(i);
 			Double coefficient = coefficients.get(i);
 
-			if(coefficient == null || coefficient.isNaN()){
+			if(coefficient.isNaN() || ValueUtil.isZero(coefficient)){
 				continue;
 			} // End if
 

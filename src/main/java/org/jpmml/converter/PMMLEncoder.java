@@ -101,7 +101,7 @@ public class PMMLEncoder {
 			return derivedField;
 		}
 
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException(name.getValue());
 	}
 
 	public DataField getDataField(FieldName name){
@@ -114,6 +114,52 @@ public class PMMLEncoder {
 		checkName(name);
 
 		this.dataFields.put(name, dataField);
+	}
+
+	public DataField toContinuous(FieldName name){
+		DataField dataField = getDataField(name);
+
+		if(dataField == null){
+			throw new IllegalArgumentException(name.getValue());
+		}
+
+		DataType dataType = dataField.getDataType();
+		switch(dataType){
+			case INTEGER:
+			case FLOAT:
+			case DOUBLE:
+				break;
+			default:
+				throw new IllegalArgumentException("Data field " + name.getValue() + " has data type " + dataType);
+		}
+
+		dataField.setOpType(OpType.CONTINUOUS);
+
+		return dataField;
+	}
+
+	public DataField toCategorical(FieldName name, List<String> values){
+		DataField dataField = getDataField(name);
+
+		if(dataField == null){
+			throw new IllegalArgumentException(name.getValue());
+		}
+
+		dataField.setOpType(OpType.CATEGORICAL);
+
+		List<String> existingValues = PMMLUtil.getValues(dataField);
+		if(existingValues != null && existingValues.size() > 0){
+
+			if((existingValues).equals(values)){
+				return dataField;
+			}
+
+			throw new IllegalArgumentException("Data field " + name.getValue() + " has valid values " + existingValues);
+		}
+
+		PMMLUtil.addValues(dataField, values);
+
+		return dataField;
 	}
 
 	public DataField createDataField(FieldName name, OpType opType, DataType dataType){
@@ -187,7 +233,7 @@ public class PMMLEncoder {
 		} // End if
 
 		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new IllegalArgumentException((name.getValue()).toString());
+			throw new IllegalArgumentException(name.getValue());
 		}
 	}
 }

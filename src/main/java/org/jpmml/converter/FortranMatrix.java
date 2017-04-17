@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Villu Ruusmann
+ * Copyright (c) 2017 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -20,28 +20,19 @@ package org.jpmml.converter;
 
 import java.util.List;
 
-import org.dmg.pmml.DataField;
+public class FortranMatrix<V> extends Matrix<V> {
 
-public class WildcardFeature extends Feature {
-
-	public WildcardFeature(PMMLEncoder encoder, DataField dataField){
-		super(encoder, dataField.getName(), dataField.getDataType());
-	}
-
-	public CategoricalFeature toCategoricalFeature(List<String> values){
-		PMMLEncoder encoder = ensureEncoder();
-
-		DataField dataField = encoder.toCategorical(getName(), values);
-
-		return new CategoricalFeature(encoder, dataField);
+	public FortranMatrix(List<V> values, int rows, int columns){
+		super(values, rows, columns);
 	}
 
 	@Override
-	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
+	public List<V> getRowValues(int row){
+		return FortranMatrixUtil.getRow(getValues(), getRows(), getColumns(), row);
+	}
 
-		DataField dataField = encoder.toContinuous(getName());
-
-		return new ContinuousFeature(encoder, dataField);
+	@Override
+	public List<V> getColumnValues(int column){
+		return FortranMatrixUtil.getColumn(getValues(), getRows(), getColumns(), column);
 	}
 }

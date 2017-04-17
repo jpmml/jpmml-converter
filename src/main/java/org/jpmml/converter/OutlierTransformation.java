@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Villu Ruusmann
+ * Copyright (c) 2017 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,30 +18,30 @@
  */
 package org.jpmml.converter;
 
-import java.util.List;
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.OpType;
 
-import org.dmg.pmml.DataField;
+abstract
+public class OutlierTransformation implements Transformation {
 
-public class WildcardFeature extends Feature {
-
-	public WildcardFeature(PMMLEncoder encoder, DataField dataField){
-		super(encoder, dataField.getName(), dataField.getDataType());
-	}
-
-	public CategoricalFeature toCategoricalFeature(List<String> values){
-		PMMLEncoder encoder = ensureEncoder();
-
-		DataField dataField = encoder.toCategorical(getName(), values);
-
-		return new CategoricalFeature(encoder, dataField);
+	@Override
+	public FieldName getName(FieldName name){
+		return FieldName.create("outlier");
 	}
 
 	@Override
-	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
+	public OpType getOpType(OpType opType){
+		return OpType.CATEGORICAL;
+	}
 
-		DataField dataField = encoder.toContinuous(getName());
+	@Override
+	public DataType getDataType(DataType dataType){
+		return DataType.BOOLEAN;
+	}
 
-		return new ContinuousFeature(encoder, dataField);
+	@Override
+	public boolean isFinalResult(){
+		return true;
 	}
 }
