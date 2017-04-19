@@ -50,7 +50,7 @@ public class MiningModelUtil {
 	}
 
 	static
-	public MiningModel createRegression(Schema schema, Model model){
+	public MiningModel createRegression(Model model, Schema schema){
 		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
 
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
@@ -60,11 +60,11 @@ public class MiningModelUtil {
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
 			.addRegressionTables(regressionTable);
 
-		return createModelChain(schema, Arrays.asList(model, regressionModel));
+		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
 
 	static
-	public MiningModel createBinaryLogisticClassification(Schema schema, Model model, RegressionModel.NormalizationMethod normalizationMethod, double intercept, double coefficient, boolean hasProbabilityDistribution){
+	public MiningModel createBinaryLogisticClassification(Model model, double intercept, double coefficient, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		if(categoricalLabel.size() != 2){
@@ -84,11 +84,11 @@ public class MiningModelUtil {
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
 			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
 
-		return createModelChain(schema, Arrays.asList(model, regressionModel));
+		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
 
 	static
-	public MiningModel createClassification(Schema schema, List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution){
+	public MiningModel createClassification(List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		if(categoricalLabel.size() < 3 || categoricalLabel.size() != models.size()){
@@ -113,11 +113,11 @@ public class MiningModelUtil {
 		List<Model> segmentationModels = new ArrayList<>(models);
 		segmentationModels.add(regressionModel);
 
-		return createModelChain(schema, segmentationModels);
+		return createModelChain(segmentationModels, schema);
 	}
 
 	static
-	public MiningModel createModelChain(Schema schema, List<? extends Model> models){
+	public MiningModel createModelChain(List<? extends Model> models, Schema schema){
 		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models);
 
 		Model lastModel = Iterables.getLast(models);
