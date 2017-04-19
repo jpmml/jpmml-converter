@@ -73,16 +73,7 @@ public class MiningModelUtil {
 
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), intercept, Collections.singletonList(coefficient))
-			.setTargetCategory(categoricalLabel.getValue(1));
-
-		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), null, Collections.<Double>emptyList())
-			.setTargetCategory(categoricalLabel.getValue(0));
-
-		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
-			.setNormalizationMethod(normalizationMethod)
-			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
-			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
+		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(Collections.singletonList(feature), intercept, Collections.singletonList(coefficient), normalizationMethod, hasProbabilityDistribution, schema);
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}

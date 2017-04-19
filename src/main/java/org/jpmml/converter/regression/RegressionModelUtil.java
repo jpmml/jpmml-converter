@@ -18,26 +18,54 @@
  */
 package org.jpmml.converter.regression;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
+import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.jpmml.converter.BinaryFeature;
 import org.jpmml.converter.BooleanFeature;
+import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ConstantFeature;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
+import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.PowerFeature;
+import org.jpmml.converter.Schema;
 import org.jpmml.converter.ValueUtil;
 
 public class RegressionModelUtil {
 
 	private RegressionModelUtil(){
+	}
+
+	static
+	public RegressionModel createBinaryLogisticClassification(List<? extends Feature> features, Double intercept, List<Double> coefficients, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
+
+		if(categoricalLabel.size() != 2){
+			throw new IllegalArgumentException();
+		}
+
+		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(features, intercept, coefficients)
+			.setTargetCategory(categoricalLabel.getValue(1));
+
+		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), null, Collections.<Double>emptyList())
+			.setTargetCategory(categoricalLabel.getValue(0));
+
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
+			.setNormalizationMethod(normalizationMethod)
+			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
+
+		return regressionModel;
 	}
 
 	static
