@@ -55,10 +55,8 @@ public class MiningModelUtil {
 
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(1d));
-
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
-			.addRegressionTables(regressionTable);
+			.addRegressionTables(RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(1d)));
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}

@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-import org.dmg.pmml.Array;
 import org.dmg.pmml.MiningFunction;
-import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.support_vector_machine.Coefficient;
 import org.dmg.pmml.support_vector_machine.Coefficients;
@@ -179,15 +177,11 @@ public class LibSVMUtil {
 			VectorInstance vectorInstance = new VectorInstance(ids.get(i));
 
 			if(ValueUtil.isSparse(values, defaultValue, 0.75d)){
-				RealSparseArray sparseArray = PMMLUtil.createRealSparseArray(values, defaultValue);
-
-				vectorInstance.setRealSparseArray(sparseArray);
+				vectorInstance.setRealSparseArray(PMMLUtil.createRealSparseArray(values, defaultValue));
 			} else
 
 			{
-				Array array = PMMLUtil.createRealArray(values);
-
-				vectorInstance.setArray(array);
+				vectorInstance.setArray(PMMLUtil.createRealArray(values));
 			}
 
 			vectorDictionary.addVectorInstances(vectorInstance);
