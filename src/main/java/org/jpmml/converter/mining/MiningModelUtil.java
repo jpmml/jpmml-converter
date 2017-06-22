@@ -56,13 +56,13 @@ public class MiningModelUtil {
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
-			.addRegressionTables(RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(1d)));
+			.addRegressionTables(RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(1d), null));
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
 
 	static
-	public MiningModel createBinaryLogisticClassification(Model model, double intercept, double coefficient, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+	public MiningModel createBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		if(categoricalLabel.size() != 2){
@@ -71,7 +71,7 @@ public class MiningModelUtil {
 
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(Collections.singletonList(feature), intercept, Collections.singletonList(coefficient), normalizationMethod, hasProbabilityDistribution, schema);
+		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
@@ -89,7 +89,7 @@ public class MiningModelUtil {
 		for(int i = 0; i < categoricalLabel.size(); i++){
 			Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(models.get(i));
 
-			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), null, Collections.singletonList(1d))
+			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(1d), null)
 				.setTargetCategory(categoricalLabel.getValue(i));
 
 			regressionTables.add(regressionTable);

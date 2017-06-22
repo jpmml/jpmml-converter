@@ -40,19 +40,19 @@ public class RegressionModelUtilTest {
 	public void createRegressionTable(){
 		ModelEncoder encoder = new ModelEncoder();
 
-		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), null, Collections.<Double>emptyList());
+		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), Collections.<Double>emptyList(), null);
 
 		assertState(regressionTable, 0d, false, false, false);
 
 		Feature feature = SchemaUtil.createConstantFeature(encoder, 3d);
 
-		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), 1d, Collections.singletonList(2d));
+		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
 		assertState(regressionTable, 1d + (2d * 3d), false, false, false);
 
 		feature = SchemaUtil.createInteractionFeature(encoder, 3d, FieldName.create("x"), 7d);
 
-		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), 1d, Collections.singletonList(2d));
+		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
 		assertState(regressionTable, 1d, true, false, false);
 
@@ -63,7 +63,7 @@ public class RegressionModelUtilTest {
 
 		feature = SchemaUtil.createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
 
-		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), 1d, Collections.singletonList(2d));
+		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
 		assertState(regressionTable, 1d, false, false, true);
 

@@ -47,17 +47,17 @@ public class RegressionModelUtil {
 	}
 
 	static
-	public RegressionModel createBinaryLogisticClassification(List<? extends Feature> features, Double intercept, List<Double> coefficients, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+	public RegressionModel createBinaryLogisticClassification(List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		if(categoricalLabel.size() != 2){
 			throw new IllegalArgumentException();
 		}
 
-		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(features, intercept, coefficients)
+		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(features, coefficients, intercept)
 			.setTargetCategory(categoricalLabel.getValue(1));
 
-		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), null, Collections.<Double>emptyList())
+		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), Collections.<Double>emptyList(), null)
 			.setTargetCategory(categoricalLabel.getValue(0));
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
@@ -69,7 +69,7 @@ public class RegressionModelUtil {
 	}
 
 	static
-	public RegressionTable createRegressionTable(List<? extends Feature> features, Double intercept, List<Double> coefficients){
+	public RegressionTable createRegressionTable(List<? extends Feature> features, List<Double> coefficients, Double intercept){
 
 		if(features.size() != coefficients.size()){
 			throw new IllegalArgumentException();
