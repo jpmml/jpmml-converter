@@ -34,6 +34,7 @@ import org.jpmml.converter.BooleanFeature;
 import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ConstantFeature;
 import org.jpmml.converter.ContinuousFeature;
+import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
 import org.jpmml.converter.ModelUtil;
@@ -44,6 +45,16 @@ import org.jpmml.converter.ValueUtil;
 public class RegressionModelUtil {
 
 	private RegressionModelUtil(){
+	}
+
+	static
+	public RegressionModel createRegression(List<? extends Feature> features, List<Double> coefficients, Double intercept, Schema schema){
+		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
+
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
+			.addRegressionTables(createRegressionTable(features, coefficients, intercept));
+
+		return regressionModel;
 	}
 
 	static

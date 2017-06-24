@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) 2017 Villu Ruusmann
+ *
+ * This file is part of JPMML-Converter
+ *
+ * JPMML-Converter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * JPMML-Converter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.jpmml.converter.neural_network;
+
+import java.util.List;
+
+import com.google.common.collect.Iterables;
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Entity;
+import org.dmg.pmml.Expression;
+import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.NormDiscrete;
+import org.dmg.pmml.OpType;
+import org.dmg.pmml.neural_network.Connection;
+import org.dmg.pmml.neural_network.NeuralInput;
+import org.dmg.pmml.neural_network.NeuralInputs;
+import org.dmg.pmml.neural_network.NeuralOutput;
+import org.dmg.pmml.neural_network.NeuralOutputs;
+import org.dmg.pmml.neural_network.Neuron;
+import org.jpmml.converter.BinaryFeature;
+import org.jpmml.converter.BooleanFeature;
+import org.jpmml.converter.CategoricalLabel;
+import org.jpmml.converter.ContinuousFeature;
+import org.jpmml.converter.ContinuousLabel;
+import org.jpmml.converter.Feature;
+import org.jpmml.converter.ValueUtil;
+
+public class NeuralNetworkUtil {
+
+	private NeuralNetworkUtil(){
+	}
+
+	static
+	public NeuralInputs createNeuralInputs(List<? extends Feature> features, DataType dataType){
+		NeuralInputs neuralInputs = new NeuralInputs();
+
+		for(int i = 0; i < features.size(); i++){
+			Feature feature = features.get(i);
+
+			Expression expression;
+
+			if(feature instanceof BinaryFeature){
+				BinaryFeature binaryFeature = (BinaryFeature)feature;
+
+				expression = new NormDiscrete(binaryFeature.getName(), binaryFeature.getValue());
+			} else
+
+			if(feature instanceof BooleanFeature){
+				BooleanFeature booleanFeature = (BooleanFeature)feature;
+
+				expression = new NormDiscrete(booleanFeature.getName(), "true");
+			} else
+
+			{
+				ContinuousFeature continuousFeature = feature.toContinuousFeature();
+
+				expression = continuousFeature.ref();
+			}
+
+			DerivedField derivedField = new DerivedField(OpType.CONTINUOUS, dataType)
+				.setExpression(expression);
+
+			NeuralInput neuralInput = new NeuralInput()
+				.setId("input/" + String.valueOf(i + 1))
+				.setDerivedField(derivedField);
+
+			neuralInputs.addNeuralInputs(neuralInput);
+		}
+
+		return neuralInputs;
+	}
+
+	static
+	public Neuron createNeuron(List<? extends Entity> entities, List<Double> weights, Double bias){
+
+		if(entities.size() != weights.size()){
+			throw new IllegalArgumentException();
+		}
+
+		Neuron neuron = new Neuron();
+
+		for(int i = 0; i < entities.size(); i++){
+			Entity entity = entities.get(i);
+			Double weight = weights.get(i);
+
+			if(weight.isNaN() || ValueUtil.isZero(weight)){
+				continue;
+			}
+
+			Connection connection = new Connection()
+				.setFrom(entity.getId())
+				.setWeight(weight);
+
+			neuron.addConnections(connection);
+		}
+
+		if(!bias.isNaN() && !ValueUtil.isZero(bias)){
+			neuron.setBias(bias);
+		}
+
+		return neuron;
+	}
+
+	static
+	public NeuralOutputs createRegressionNeuralOutputs(List<? extends Entity> entities, ContinuousLabel continuousLabel){
+
+		if(entities.size() != 1){
+			throw new IllegalArgumentException();
+		}
+
+		Entity entity = Iterables.getOnlyElement(entities);
+
+		DerivedField derivedField = new DerivedField(OpType.CONTINUOUS, continuousLabel.getDataType())
+			.setExpression(new FieldRef(continuousLabel.getName()));
+
+		NeuralOutput neuralOutput = new NeuralOutput()
+			.setOutputNeuron(entity.getId())
+			.setDerivedField(derivedField);
+
+		NeuralOutputs neuralOutputs = new NeuralOutputs()
+			.addNeuralOutputs(neuralOutput);
+
+		return neuralOutputs;
+	}
+
+	static
+	public NeuralOutputs createClassificationNeuralOutputs(List<? extends Entity> entities, CategoricalLabel categoricalLabel){
+
+		if(entities.size() != categoricalLabel.size()){
+			throw new IllegalArgumentException();
+		}
+
+		NeuralOutputs neuralOutputs = new NeuralOutputs();
+
+		for(int i = 0; i < categoricalLabel.size(); i++){
+			Entity entity = entities.get(i);
+
+			DerivedField derivedField = new DerivedField(OpType.CATEGORICAL, categoricalLabel.getDataType())
+				.setExpression(new NormDiscrete(categoricalLabel.getName(), categoricalLabel.getValue(i)));
+
+			NeuralOutput neuralOutput = new NeuralOutput()
+				.setOutputNeuron(entity.getId())
+				.setDerivedField(derivedField);
+
+			neuralOutputs.addNeuralOutputs(neuralOutput);
+		}
+
+		return neuralOutputs;
+	}
+}

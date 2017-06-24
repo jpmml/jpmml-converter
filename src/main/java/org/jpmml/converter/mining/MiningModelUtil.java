@@ -37,7 +37,6 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ContinuousFeature;
-import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.Schema;
@@ -51,24 +50,15 @@ public class MiningModelUtil {
 
 	static
 	public MiningModel createRegression(Model model, Schema schema){
-		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
-
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
-			.addRegressionTables(RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(1d), null));
+		RegressionModel regressionModel = RegressionModelUtil.createRegression(Collections.singletonList(feature), Collections.singletonList(1d), null, schema);
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
 
 	static
 	public MiningModel createBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
-		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
-
-		if(categoricalLabel.size() != 2){
-			throw new IllegalArgumentException();
-		}
-
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
 		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
