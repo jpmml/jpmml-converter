@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
@@ -99,7 +100,7 @@ public class MiningModelUtil {
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), regressionTables)
 			.setNormalizationMethod(normalizationMethod)
-			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(DataType.DOUBLE, categoricalLabel) : null);
 
 		List<Model> segmentationModels = new ArrayList<>(models);
 		segmentationModels.add(regressionModel);

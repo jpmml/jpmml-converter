@@ -139,27 +139,27 @@ public class ModelUtil {
 	}
 
 	static
-	public Output createProbabilityOutput(Schema schema){
-		return createProbabilityOutput((CategoricalLabel)schema.getLabel());
+	public Output createProbabilityOutput(DataType dataType, Schema schema){
+		return createProbabilityOutput(dataType, (CategoricalLabel)schema.getLabel());
 	}
 
 	static
-	public Output createProbabilityOutput(CategoricalLabel label){
-		List<String> values = label.getValues();
+	public Output createProbabilityOutput(DataType dataType, CategoricalLabel label){
+		List<OutputField> outputFields = createProbabilityFields(dataType, label.getValues());
 
-		Output output = new Output(createProbabilityFields(values));
+		Output output = new Output(outputFields);
 
 		return output;
 	}
 
 	static
-	public OutputField createAffinityField(String value){
-		return createAffinityField(FieldName.create("affinity(" + value + ")"), value);
+	public OutputField createAffinityField(DataType dataType, String value){
+		return createAffinityField(FieldName.create("affinity(" + value + ")"), dataType, value);
 	}
 
 	static
-	public OutputField createAffinityField(FieldName name, String value){
-		OutputField outputField = new OutputField(name, DataType.DOUBLE)
+	public OutputField createAffinityField(FieldName name, DataType dataType, String value){
+		OutputField outputField = new OutputField(name, dataType)
 			.setOpType(OpType.CONTINUOUS)
 			.setResultFeature(ResultFeature.AFFINITY)
 			.setValue(value);
@@ -168,12 +168,12 @@ public class ModelUtil {
 	}
 
 	static
-	public List<OutputField> createAffinityFields(List<? extends Entity> entities){
+	public List<OutputField> createAffinityFields(final DataType dataType, List<? extends Entity> entities){
 		Function<Entity, OutputField> function = new Function<Entity, OutputField>(){
 
 			@Override
 			public OutputField apply(Entity entity){
-				return createAffinityField(entity.getId());
+				return createAffinityField(dataType, entity.getId());
 			}
 		};
 
@@ -199,13 +199,13 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createProbabilityField(String value){
-		return createProbabilityField(FieldName.create("probability(" + value + ")"), value);
+	public OutputField createProbabilityField(DataType dataType, String value){
+		return createProbabilityField(FieldName.create("probability(" + value + ")"), dataType, value);
 	}
 
 	static
-	public OutputField createProbabilityField(FieldName name, String value){
-		OutputField outputField = new OutputField(name, DataType.DOUBLE)
+	public OutputField createProbabilityField(FieldName name, DataType dataType, String value){
+		OutputField outputField = new OutputField(name, dataType)
 			.setOpType(OpType.CONTINUOUS)
 			.setResultFeature(ResultFeature.PROBABILITY)
 			.setValue(value);
@@ -214,12 +214,12 @@ public class ModelUtil {
 	}
 
 	static
-	public List<OutputField> createProbabilityFields(List<String> values){
+	public List<OutputField> createProbabilityFields(final DataType dataType, List<String> values){
 		Function<String, OutputField> function = new Function<String, OutputField>(){
 
 			@Override
 			public OutputField apply(String value){
-				return createProbabilityField(value);
+				return createProbabilityField(dataType, value);
 			}
 		};
 

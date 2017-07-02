@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.regression.CategoricalPredictor;
@@ -107,7 +108,7 @@ public class RegressionModelUtil {
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
 			.setNormalizationMethod(normalizationMethod)
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
-			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(categoricalLabel) : null);
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(DataType.DOUBLE, categoricalLabel) : null);
 
 		return regressionModel;
 	}
