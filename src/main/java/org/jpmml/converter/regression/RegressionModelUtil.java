@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
-import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
@@ -50,6 +50,11 @@ public class RegressionModelUtil {
 
 	static
 	public RegressionModel createRegression(List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+		return createRegression(null, features, coefficients, intercept, normalizationMethod, schema);
+	}
+
+	static
+	public RegressionModel createRegression(MathContext mathContext, List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
 		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
 
 		if(normalizationMethod != null){
@@ -71,6 +76,7 @@ public class RegressionModelUtil {
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
 			.setNormalizationMethod(normalizationMethod)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
 			.addRegressionTables(createRegressionTable(features, coefficients, intercept));
 
 		return regressionModel;
@@ -78,6 +84,11 @@ public class RegressionModelUtil {
 
 	static
 	public RegressionModel createBinaryLogisticClassification(List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		return createBinaryLogisticClassification(null, features, coefficients, intercept, normalizationMethod, hasProbabilityDistribution, schema);
+	}
+
+	static
+	public RegressionModel createBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		if(categoricalLabel.size() != 2){
@@ -107,8 +118,9 @@ public class RegressionModelUtil {
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
 			.setNormalizationMethod(normalizationMethod)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
-			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(DataType.DOUBLE, categoricalLabel) : null);
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(mathContext, categoricalLabel) : null);
 
 		return regressionModel;
 	}

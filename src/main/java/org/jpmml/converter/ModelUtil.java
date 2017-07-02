@@ -27,6 +27,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OpType;
@@ -127,6 +128,17 @@ public class ModelUtil {
 	}
 
 	static
+	public Output createProbabilityOutput(MathContext mathContext, CategoricalLabel categoricalLabel){
+		DataType dataType = DataType.DOUBLE;
+
+		if((MathContext.FLOAT).equals(mathContext)){
+			dataType = DataType.FLOAT;
+		}
+
+		return createProbabilityOutput(dataType, categoricalLabel);
+	}
+
+	static
 	public Output createProbabilityOutput(DataType dataType, CategoricalLabel categoricalLabel){
 		List<OutputField> outputFields = createProbabilityFields(dataType, categoricalLabel.getValues());
 
@@ -205,5 +217,10 @@ public class ModelUtil {
 		};
 
 		return Lists.newArrayList(Lists.transform(values, function));
+	}
+
+	static
+	public MathContext simplifyMathContext(MathContext mathContext){
+		return (MathContext.DOUBLE).equals(mathContext) ? null : mathContext;
 	}
 }

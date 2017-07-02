@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import org.dmg.pmml.DataType;
+import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
@@ -53,7 +54,7 @@ public class MiningModelUtil {
 	public MiningModel createRegression(Model model, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionModel regressionModel = RegressionModelUtil.createRegression(Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
+		RegressionModel regressionModel = RegressionModelUtil.createRegression(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
@@ -62,7 +63,7 @@ public class MiningModelUtil {
 	public MiningModel createBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
+		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
@@ -87,10 +88,29 @@ public class MiningModelUtil {
 			}
 		}
 
+		MathContext mathContext = null;
+
 		List<RegressionTable> regressionTables = new ArrayList<>();
 
 		for(int i = 0; i < categoricalLabel.size(); i++){
-			Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(models.get(i));
+			Model model = models.get(i);
+
+			MathContext modelMathContext = model.getMathContext();
+			if(modelMathContext == null){
+				modelMathContext = MathContext.DOUBLE;
+			} // End if
+
+			if(mathContext == null){
+				mathContext = modelMathContext;
+			} else
+
+			{
+				if(!Objects.equals(mathContext, modelMathContext)){
+					throw new IllegalArgumentException();
+				}
+			}
+
+			Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
 			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(1d), null)
 				.setTargetCategory(categoricalLabel.getValue(i));
@@ -100,7 +120,8 @@ public class MiningModelUtil {
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), regressionTables)
 			.setNormalizationMethod(normalizationMethod)
-			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(DataType.DOUBLE, categoricalLabel) : null);
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(mathContext, categoricalLabel) : null);
 
 		List<Model> segmentationModels = new ArrayList<>(models);
 		segmentationModels.add(regressionModel);
@@ -110,11 +131,17 @@ public class MiningModelUtil {
 
 	static
 	public MiningModel createModelChain(List<? extends Model> models, Schema schema){
+
+		if(models.size() < 1){
+			throw new IllegalArgumentException();
+		}
+
 		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models);
 
 		Model lastModel = Iterables.getLast(models);
 
 		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), ModelUtil.createMiningSchema(schema.getLabel()))
+			.setMathContext(ModelUtil.simplifyMathContext(lastModel.getMathContext()))
 			.setSegmentation(segmentation);
 
 		return miningModel;
@@ -150,9 +177,7 @@ public class MiningModelUtil {
 			segments.add(segment);
 		}
 
-		Segmentation segmentation = new Segmentation(multipleModelMethod, segments);
-
-		return segmentation;
+		return new Segmentation(multipleModelMethod, segments);
 	}
 
 	private static final Function<Model, Feature> MODEL_PREDICTION = new Function<Model, Feature>(){
