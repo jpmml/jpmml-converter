@@ -42,11 +42,6 @@ public class ModelUtil {
 	}
 
 	static
-	public MiningSchema createMiningSchema(Schema schema){
-		return createMiningSchema(schema.getLabel());
-	}
-
-	static
 	public MiningSchema createMiningSchema(Label label){
 		MiningSchema miningSchema = new MiningSchema();
 
@@ -77,13 +72,8 @@ public class ModelUtil {
 	}
 
 	static
-	public Targets createRescaleTargets(Schema schema, Number slope, Number intercept){
-		return createRescaleTargets((ContinuousLabel)schema.getLabel(), slope, intercept);
-	}
-
-	static
-	public Targets createRescaleTargets(ContinuousLabel label, Number slope, Number intercept){
-		FieldName name = label.getName();
+	public Targets createRescaleTargets(Number slope, Number intercept, ContinuousLabel continuousLabel){
+		FieldName name = continuousLabel.getName();
 
 		Target target = new Target()
 			.setField(name);
@@ -133,23 +123,14 @@ public class ModelUtil {
 			outputFields.add(outputField);
 		}
 
-		Output output = new Output(outputFields);
-
-		return output;
+		return new Output(outputFields);
 	}
 
 	static
-	public Output createProbabilityOutput(DataType dataType, Schema schema){
-		return createProbabilityOutput(dataType, (CategoricalLabel)schema.getLabel());
-	}
+	public Output createProbabilityOutput(DataType dataType, CategoricalLabel categoricalLabel){
+		List<OutputField> outputFields = createProbabilityFields(dataType, categoricalLabel.getValues());
 
-	static
-	public Output createProbabilityOutput(DataType dataType, CategoricalLabel label){
-		List<OutputField> outputFields = createProbabilityFields(dataType, label.getValues());
-
-		Output output = new Output(outputFields);
-
-		return output;
+		return new Output(outputFields);
 	}
 
 	static

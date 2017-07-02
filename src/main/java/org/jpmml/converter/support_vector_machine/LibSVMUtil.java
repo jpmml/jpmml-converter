@@ -37,6 +37,7 @@ import org.jpmml.converter.BinaryFeature;
 import org.jpmml.converter.CMatrixUtil;
 import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ContinuousFeature;
+import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.Matrix;
 import org.jpmml.converter.ModelUtil;
@@ -51,6 +52,8 @@ public class LibSVMUtil {
 
 	static
 	public SupportVectorMachineModel createRegression(Matrix<Double> sv, List<String> ids, Double rho, List<Double> coefs, Schema schema){
+		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
+
 		VectorDictionary vectorDictionary = LibSVMUtil.createVectorDictionary(sv, ids, schema);
 
 		List<VectorInstance> vectorInstances = vectorDictionary.getVectorInstances();
@@ -58,13 +61,15 @@ public class LibSVMUtil {
 		List<SupportVectorMachine> supportVectorMachines = new ArrayList<>();
 		supportVectorMachines.add(LibSVMUtil.createSupportVectorMachine(vectorInstances, rho, coefs));
 
-		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(schema), vectorDictionary, supportVectorMachines);
+		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), vectorDictionary, supportVectorMachines);
 
 		return supportVectorMachineModel;
 	}
 
 	static
 	public SupportVectorMachineModel createClassification(Matrix<Double> sv, List<Integer> nSv, List<String> ids, List<Double> rho, List<Double> coefs, Schema schema){
+		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
+
 		int numberOfVectors = sv.getRows();
 		int numberOfFeatures = sv.getColumns();
 
@@ -81,8 +86,6 @@ public class LibSVMUtil {
 		}
 
 		int i = 0;
-
-		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		for(int first = 0, size = categoricalLabel.size(); first < size; first++){
 
@@ -107,7 +110,7 @@ public class LibSVMUtil {
 			}
 		}
 
-		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(schema), vectorDictionary, supportVectorMachines)
+		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), vectorDictionary, supportVectorMachines)
 			.setClassificationMethod(SupportVectorMachineModel.ClassificationMethod.ONE_AGAINST_ONE);
 
 		return supportVectorMachineModel;

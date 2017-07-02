@@ -114,7 +114,7 @@ public class MiningModelUtil {
 
 		Model lastModel = Iterables.getLast(models);
 
-		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), ModelUtil.createMiningSchema(schema))
+		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), ModelUtil.createMiningSchema(schema.getLabel()))
 			.setSegmentation(segmentation);
 
 		return miningModel;
