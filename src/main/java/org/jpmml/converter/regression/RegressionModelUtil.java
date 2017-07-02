@@ -48,10 +48,28 @@ public class RegressionModelUtil {
 	}
 
 	static
-	public RegressionModel createRegression(List<? extends Feature> features, List<Double> coefficients, Double intercept, Schema schema){
+	public RegressionModel createRegression(List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
 		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
 
+		if(normalizationMethod != null){
+
+			switch(normalizationMethod){
+				case NONE:
+				case SOFTMAX:
+				case LOGIT:
+				case PROBIT:
+				case CLOGLOG:
+				case EXP:
+				case LOGLOG:
+				case CAUCHIT:
+					break;
+				default:
+					throw new IllegalArgumentException();
+			}
+		}
+
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
+			.setNormalizationMethod(normalizationMethod)
 			.addRegressionTables(createRegressionTable(features, coefficients, intercept));
 
 		return regressionModel;
@@ -63,6 +81,21 @@ public class RegressionModelUtil {
 
 		if(categoricalLabel.size() != 2){
 			throw new IllegalArgumentException();
+		} // End if
+
+		if(normalizationMethod != null){
+
+			switch(normalizationMethod){
+				case NONE:
+				case LOGIT:
+				case PROBIT:
+				case CLOGLOG:
+				case LOGLOG:
+				case CAUCHIT:
+					break;
+				default:
+					throw new IllegalArgumentException();
+			}
 		}
 
 		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(features, coefficients, intercept)

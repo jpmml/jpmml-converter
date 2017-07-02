@@ -49,10 +49,10 @@ public class MiningModelUtil {
 	}
 
 	static
-	public MiningModel createRegression(Model model, Schema schema){
+	public MiningModel createRegression(Model model, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
 		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-		RegressionModel regressionModel = RegressionModelUtil.createRegression(Collections.singletonList(feature), Collections.singletonList(1d), null, schema);
+		RegressionModel regressionModel = RegressionModelUtil.createRegression(Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
 
 		return createModelChain(Arrays.asList(model, regressionModel), schema);
 	}
@@ -72,6 +72,18 @@ public class MiningModelUtil {
 
 		if(categoricalLabel.size() < 3 || categoricalLabel.size() != models.size()){
 			throw new IllegalArgumentException();
+		} // End if
+
+		if(normalizationMethod != null){
+
+			switch(normalizationMethod){
+				case NONE:
+				case SIMPLEMAX:
+				case SOFTMAX:
+					break;
+				default:
+					throw new IllegalArgumentException();
+			}
 		}
 
 		List<RegressionTable> regressionTables = new ArrayList<>();
