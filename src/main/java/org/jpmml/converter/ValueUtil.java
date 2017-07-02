@@ -161,6 +161,24 @@ public class ValueUtil {
 	}
 
 	static
+	public Double floatToDouble(Float value){
+		return Double.parseDouble(Float.toString(value));
+	}
+
+	static
+	public List<Double> floatsToDoubles(List<Float> values){
+		Function<Float, Double> function = new Function<Float, Double>(){
+
+			@Override
+			public Double apply(Float value){
+				return floatToDouble(value);
+			}
+		};
+
+		return Lists.transform(values, function);
+	}
+
+	static
 	public BitSet getIndices(List<? extends Number> values, Number targetValue){
 		BitSet result = new BitSet(values.size());
 
