@@ -46,12 +46,6 @@ public class ValueUtil {
 
 	static
 	public String formatValue(Number number){
-		double value = number.doubleValue();
-
-		if(DoubleMath.isMathematicalInteger(value)){
-			return Long.toString((long)value);
-		}
-
 		return number.toString();
 	}
 

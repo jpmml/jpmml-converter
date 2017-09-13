@@ -68,12 +68,6 @@ public class ValueUtilTest {
 	}
 
 	@Test
-	public void formatValue(){
-		assertEquals("1", ValueUtil.formatValue(1d));
-		assertEquals("1", ValueUtil.formatValue(1.0d));
-	}
-
-	@Test
 	public void formatArrayValue(){
 		assertEquals("", ValueUtil.formatArrayValue(Collections.<String>emptyList()));
 
