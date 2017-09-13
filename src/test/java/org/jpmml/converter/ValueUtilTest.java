@@ -68,11 +68,14 @@ public class ValueUtilTest {
 	}
 
 	@Test
-	public void formatArrayValue(){
-		assertEquals("", ValueUtil.formatArrayValue(Collections.<String>emptyList()));
+	public void formatArray(){
+		assertEquals("", ValueUtil.formatArray(Collections.emptyList()));
 
-		assertEquals("one two three", ValueUtil.formatArrayValue(Arrays.asList("one", "two", "three")));
-		assertEquals("one \" two \" three", ValueUtil.formatArrayValue(Arrays.asList("one", " two ", "three")));
+		assertEquals("one two three", ValueUtil.formatArray(Arrays.asList("one", "two", "three")));
+		assertEquals("one \" two \" three", ValueUtil.formatArray(Arrays.asList("one", " two ", "three")));
+
+		assertEquals("1 2 3", ValueUtil.formatArray(Arrays.asList(1, 2, 3)));
+		assertEquals("1.0 2.0 3.0", ValueUtil.formatArray(Arrays.asList(1d, 2d, 3d)));
 	}
 
 	@Test

@@ -64,16 +64,15 @@ public class PredicateManager {
 
 	static
 	private Array createArray(DataType dataType, List<String> values){
-		String value = ValueUtil.formatArrayValue(values);
 
 		switch(dataType){
 			case STRING:
-				return new Array(Array.Type.STRING, value);
+				return new Array(Array.Type.STRING, ValueUtil.formatArray(values));
+			case INTEGER:
+				return new Array(Array.Type.INT, ValueUtil.formatArray(values));
 			case DOUBLE:
 			case FLOAT:
-				return new Array(Array.Type.REAL, value);
-			case INTEGER:
-				return new Array(Array.Type.INT, value);
+				return new Array(Array.Type.REAL, ValueUtil.formatArray(values));
 			default:
 				throw new IllegalArgumentException();
 		}

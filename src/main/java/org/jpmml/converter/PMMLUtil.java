@@ -25,8 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
@@ -149,18 +147,22 @@ public class PMMLUtil {
 	}
 
 	static
+	public Array createStringArray(List<?> values){
+		Array array = new Array(Array.Type.STRING, ValueUtil.formatArray(values));
+
+		return array;
+	}
+
+	static
+	public Array createIntArray(List<Integer> values){
+		Array array = new Array(Array.Type.INT, ValueUtil.formatArray(values));
+
+		return array;
+	}
+
+	static
 	public Array createRealArray(List<? extends Number> values){
-		Function<Number, String> function = new Function<Number, String>(){
-
-			@Override
-			public String apply(Number number){
-				return ValueUtil.formatValue(number);
-			}
-		};
-
-		String value = ValueUtil.formatArrayValue(Lists.transform(values, function));
-
-		Array array = new Array(Array.Type.REAL, value);
+		Array array = new Array(Array.Type.REAL, ValueUtil.formatArray(values));
 
 		return array;
 	}

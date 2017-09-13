@@ -50,27 +50,34 @@ public class ValueUtil {
 	}
 
 	static
-	public String formatArrayValue(List<String> values){
-		StringBuilder sb = new StringBuilder();
+	public String formatArray(List<?> values){
+		StringBuilder sb = new StringBuilder(values.size() * 16);
 
-		String sep = "";
+		for(int i = 0; i < values.size(); i++){
+			Object value = values.get(i);
 
-		for(String value : values){
+			if(i > 0){
+				sb.append(" ");
+			} // End if
 
-			if(value == null || ("").equals(value)){
-				throw new IllegalArgumentException();
-			}
+			if(value instanceof String){
+				String string = (String)value;
 
-			sb.append(sep);
+				if(("").equals(string)){
+					throw new IllegalArgumentException();
+				} // End if
 
-			sep = " ";
+				if(string.indexOf(' ') > -1){
+					sb.append('\"').append(string).append('\"');
+				} else
 
-			if(value.indexOf(' ') > -1){
-				sb.append('\"').append(value).append('\"');
+				{
+					sb.append(string);
+				}
 			} else
 
 			{
-				sb.append(value);
+				sb.append(ValueUtil.formatValue(value));
 			}
 		}
 
