@@ -31,7 +31,7 @@ public class WildcardFeature extends Feature {
 	public CategoricalFeature toCategoricalFeature(List<String> values){
 		PMMLEncoder encoder = ensureEncoder();
 
-		DataField dataField = encoder.toCategorical(getName(), values);
+		DataField dataField = (DataField)encoder.toCategorical(getName(), values);
 
 		return new CategoricalFeature(encoder, dataField);
 	}
@@ -40,7 +40,7 @@ public class WildcardFeature extends Feature {
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		DataField dataField = encoder.toContinuous(getName());
+		DataField dataField = (DataField)encoder.toContinuous(getName());
 
 		return new ContinuousFeature(encoder, dataField);
 	}

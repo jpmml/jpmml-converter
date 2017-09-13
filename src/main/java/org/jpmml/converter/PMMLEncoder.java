@@ -89,21 +89,6 @@ public class PMMLEncoder {
 		return PMMLUtil.createHeader(getClass());
 	}
 
-	public TypeDefinitionField getField(FieldName name){
-		DataField dataField = getDataField(name);
-		DerivedField derivedField = getDerivedField(name);
-
-		if(dataField != null && derivedField == null){
-			return dataField;
-		} else
-
-		if(dataField == null && derivedField != null){
-			return derivedField;
-		}
-
-		throw new IllegalArgumentException(name.getValue());
-	}
-
 	public DataField getDataField(FieldName name){
 		return this.dataFields.get(name);
 	}
@@ -114,52 +99,6 @@ public class PMMLEncoder {
 		checkName(name);
 
 		this.dataFields.put(name, dataField);
-	}
-
-	public DataField toContinuous(FieldName name){
-		DataField dataField = getDataField(name);
-
-		if(dataField == null){
-			throw new IllegalArgumentException(name.getValue());
-		}
-
-		DataType dataType = dataField.getDataType();
-		switch(dataType){
-			case INTEGER:
-			case FLOAT:
-			case DOUBLE:
-				break;
-			default:
-				throw new IllegalArgumentException("Data field " + name.getValue() + " has data type " + dataType);
-		}
-
-		dataField.setOpType(OpType.CONTINUOUS);
-
-		return dataField;
-	}
-
-	public DataField toCategorical(FieldName name, List<String> values){
-		DataField dataField = getDataField(name);
-
-		if(dataField == null){
-			throw new IllegalArgumentException(name.getValue());
-		}
-
-		dataField.setOpType(OpType.CATEGORICAL);
-
-		List<String> existingValues = PMMLUtil.getValues(dataField);
-		if(existingValues != null && existingValues.size() > 0){
-
-			if((existingValues).equals(values)){
-				return dataField;
-			}
-
-			throw new IllegalArgumentException("Data field " + name.getValue() + " has valid values " + existingValues);
-		}
-
-		PMMLUtil.addValues(dataField, values);
-
-		return dataField;
 	}
 
 	public DataField createDataField(FieldName name, OpType opType, DataType dataType){
@@ -198,6 +137,64 @@ public class PMMLEncoder {
 		addDerivedField(derivedField);
 
 		return derivedField;
+	}
+
+	public TypeDefinitionField getField(FieldName name){
+		DataField dataField = getDataField(name);
+		DerivedField derivedField = getDerivedField(name);
+
+		if(dataField != null && derivedField == null){
+			return dataField;
+		} else
+
+		if(dataField == null && derivedField != null){
+			return derivedField;
+		}
+
+		throw new IllegalArgumentException(name.getValue());
+	}
+
+	public TypeDefinitionField toContinuous(FieldName name){
+		TypeDefinitionField field = getField(name);
+
+		DataType dataType = field.getDataType();
+		switch(dataType){
+			case INTEGER:
+			case FLOAT:
+			case DOUBLE:
+				break;
+			default:
+				throw new IllegalArgumentException("Field " + name.getValue() + " has data type " + dataType);
+		}
+
+		field.setOpType(OpType.CONTINUOUS);
+
+		return field;
+	}
+
+	public TypeDefinitionField toCategorical(FieldName name, List<String> values){
+		TypeDefinitionField field = getField(name);
+
+		dataField:
+		if(field instanceof DataField){
+			DataField dataField = (DataField)field;
+
+			List<String> existingValues = PMMLUtil.getValues(dataField);
+			if(existingValues != null && existingValues.size() > 0){
+
+				if((existingValues).equals(values)){
+					break dataField;
+				}
+
+				throw new IllegalArgumentException("Field " + name.getValue() + " has valid values " + existingValues);
+			}
+
+			PMMLUtil.addValues(dataField, values);
+		}
+
+		field.setOpType(OpType.CATEGORICAL);
+
+		return field;
 	}
 
 	public DefineFunction getDefineFunction(String name){
