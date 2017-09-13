@@ -95,6 +95,34 @@ public class ValueUtil {
 	}
 
 	static
+	public Number asNumber(Object object){
+
+		if(object instanceof Number){
+			return (Number)object;
+		}
+
+		throw new IllegalArgumentException();
+	}
+
+	static
+	public List<Number> asNumbers(List<?> objects){
+
+		if(objects == null){
+			return null;
+		}
+
+		Function<Object, Number> function = new Function<Object, Number>(){
+
+			@Override
+			public Number apply(Object object){
+				return asNumber(object);
+			}
+		};
+
+		return Lists.transform(objects, function);
+	}
+
+	static
 	public int asInt(Number number){
 
 		if(number instanceof Integer){
