@@ -20,5 +20,5 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.Field;
 
-public class FieldComparator<F extends Field> extends FieldNameComparator<F> {
+public class FieldComparator<F extends Field<F>> extends FieldNameComparator<F> {
 }

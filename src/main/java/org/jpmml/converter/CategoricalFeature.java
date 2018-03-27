@@ -24,9 +24,9 @@ import java.util.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.TypeDefinitionField;
 
 public class CategoricalFeature extends Feature {
 
@@ -37,7 +37,7 @@ public class CategoricalFeature extends Feature {
 		this(encoder, dataField, PMMLUtil.getValues(dataField));
 	}
 
-	public CategoricalFeature(PMMLEncoder encoder, TypeDefinitionField field, List<String> values){
+	public CategoricalFeature(PMMLEncoder encoder, Field<?> field, List<String> values){
 		this(encoder, field.getName(), field.getDataType(), values);
 	}
 
@@ -51,7 +51,7 @@ public class CategoricalFeature extends Feature {
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		TypeDefinitionField field = encoder.getField(getName());
+		Field<?> field = encoder.getField(getName());
 
 		DataType dataType = field.getDataType();
 		switch(dataType){

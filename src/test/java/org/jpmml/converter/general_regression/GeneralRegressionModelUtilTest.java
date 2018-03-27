@@ -86,7 +86,7 @@ public class GeneralRegressionModelUtilTest {
 		assertEquals((Double)beta, (Double)(pCells.get(0)).getBeta());
 
 		for(int i = 0; i < predictorNames.size(); i++){
-			assertEquals(predictorNames.get(i), (ppCells.get(i)).getPredictorName());
+			assertEquals(predictorNames.get(i), (ppCells.get(i)).getField());
 		}
 	}
 

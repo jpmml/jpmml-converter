@@ -22,14 +22,14 @@ import java.util.Arrays;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.TypeDefinitionField;
 
 public class BooleanFeature extends CategoricalFeature implements HasDerivedName {
 
-	public BooleanFeature(PMMLEncoder encoder, TypeDefinitionField field){
+	public BooleanFeature(PMMLEncoder encoder, Field<?> field){
 		super(encoder, field, Arrays.asList("false", "true"));
 	}
 

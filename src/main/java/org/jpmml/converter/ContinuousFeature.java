@@ -19,12 +19,12 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.TypeDefinitionField;
 
 public class ContinuousFeature extends Feature {
 
-	public ContinuousFeature(PMMLEncoder encoder, TypeDefinitionField field){
+	public ContinuousFeature(PMMLEncoder encoder, Field<?> field){
 		this(encoder, field.getName(), field.getDataType());
 	}
 

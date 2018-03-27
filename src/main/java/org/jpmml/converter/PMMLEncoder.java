@@ -30,12 +30,12 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.TypeDefinitionField;
 
 public class PMMLEncoder {
 
@@ -139,7 +139,7 @@ public class PMMLEncoder {
 		return derivedField;
 	}
 
-	public TypeDefinitionField getField(FieldName name){
+	public Field<?> getField(FieldName name){
 		DataField dataField = getDataField(name);
 		DerivedField derivedField = getDerivedField(name);
 
@@ -154,8 +154,8 @@ public class PMMLEncoder {
 		throw new IllegalArgumentException(name.getValue());
 	}
 
-	public TypeDefinitionField toContinuous(FieldName name){
-		TypeDefinitionField field = getField(name);
+	public Field<?> toContinuous(FieldName name){
+		Field<?> field = getField(name);
 
 		DataType dataType = field.getDataType();
 		switch(dataType){
@@ -172,8 +172,8 @@ public class PMMLEncoder {
 		return field;
 	}
 
-	public TypeDefinitionField toCategorical(FieldName name, List<String> values){
-		TypeDefinitionField field = getField(name);
+	public Field<?> toCategorical(FieldName name, List<String> values){
+		Field<?> field = getField(name);
 
 		dataField:
 		if(field instanceof DataField){

@@ -22,17 +22,17 @@ import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.TypeDefinitionField;
 
 public class PowerFeature extends Feature implements HasDerivedName {
 
 	private int power = 1;
 
 
-	public PowerFeature(PMMLEncoder encoder, TypeDefinitionField field, int power){
+	public PowerFeature(PMMLEncoder encoder, Field<?> field, int power){
 		this(encoder, field.getName(), field.getDataType(), power);
 	}
 

@@ -26,16 +26,16 @@ import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.TypeDefinitionField;
 
 public class InteractionFeature extends Feature {
 
 	private List<? extends Feature> features = null;
 
 
-	public InteractionFeature(PMMLEncoder encoder, TypeDefinitionField field, List<? extends Feature> features){
+	public InteractionFeature(PMMLEncoder encoder, Field<?> field, List<? extends Feature> features){
 		this(encoder, field.getName(), field.getDataType(), features);
 	}
 

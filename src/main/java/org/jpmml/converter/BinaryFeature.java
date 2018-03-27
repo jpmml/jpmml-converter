@@ -23,17 +23,17 @@ import java.util.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.TypeDefinitionField;
 
 public class BinaryFeature extends Feature implements HasDerivedName {
 
 	private String value = null;
 
 
-	public BinaryFeature(PMMLEncoder encoder, TypeDefinitionField field, String value){
+	public BinaryFeature(PMMLEncoder encoder, Field<?> field, String value){
 		this(encoder, field.getName(), field.getDataType(), value);
 	}
 

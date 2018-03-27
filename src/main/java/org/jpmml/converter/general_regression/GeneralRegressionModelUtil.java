@@ -201,7 +201,7 @@ public class GeneralRegressionModelUtil {
 
 		ppMatrix.addPPCells(ppCell);
 
-		predictorNames.add(ppCell.getPredictorName());
+		predictorNames.add(ppCell.getField());
 
 		return 1d;
 	}
@@ -212,7 +212,7 @@ public class GeneralRegressionModelUtil {
 
 		List<Predictor> predictors = predictorList.getPredictors();
 		for(Predictor predictor : predictors){
-			names.remove(predictor.getName());
+			names.remove(predictor.getField());
 		}
 
 		if(names.isEmpty()){
