@@ -121,7 +121,7 @@ public class LibSVMUtil {
 		int numberOfVectors = sv.getRows();
 		int numberOfFeatures = sv.getColumns();
 
-		List<Feature> features = schema.getFeatures();
+		List<? extends Feature> features = schema.getFeatures();
 
 		if(numberOfFeatures != features.size()){
 			throw new IllegalArgumentException();

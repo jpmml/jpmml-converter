@@ -28,24 +28,24 @@ public class Schema {
 
 	private Label label = null;
 
-	private List<Feature> features = null;
+	private List<? extends Feature> features = null;
 
 
-	public Schema(Label label, List<Feature> features){
+	public Schema(Label label, List<? extends Feature> features){
 		setLabel(label);
 		setFeatures(features);
 	}
 
 	public Schema toAnonymousSchema(){
 		Label label = getLabel();
-		List<Feature> features = getFeatures();
+		List<? extends Feature> features = getFeatures();
 
 		return new Schema(label != null ? label.toAnonymousLabel() : null, features);
 	}
 
 	public Schema toSubSchema(int[] indexes){
 		Label label = getLabel();
-		List<Feature> features = getFeatures();
+		List<? extends Feature> features = getFeatures();
 
 		List<Feature> selectedFeatures = new ArrayList<>(indexes.length);
 
@@ -60,9 +60,10 @@ public class Schema {
 
 	public Schema toTransformedSchema(Function<Feature, Feature> function){
 		Label label = getLabel();
-		List<Feature> features = getFeatures();
+		List<? extends Feature> features = getFeatures();
 
-		List<Feature> transformedFeatures = new ArrayList<>(Lists.transform(features, function));
+		List<Feature> transformedFeatures = new ArrayList<>(features.size());
+		transformedFeatures.addAll(Lists.transform(features, function));
 
 		return new Schema(label, transformedFeatures);
 	}
@@ -76,16 +77,21 @@ public class Schema {
 	}
 
 	public Feature getFeature(int index){
-		List<Feature> features = getFeatures();
+		List<? extends Feature> features = getFeatures();
 
 		return features.get(index);
 	}
 
-	public List<Feature> getFeatures(){
+	public List<? extends Feature> getFeatures(){
 		return this.features;
 	}
 
-	private void setFeatures(List<Feature> features){
+	private void setFeatures(List<? extends Feature> features){
+
+		if(features == null){
+			throw new IllegalArgumentException();
+		}
+
 		this.features = features;
 	}
 }
