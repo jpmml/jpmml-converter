@@ -24,7 +24,6 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 
 public class PowerFeature extends Feature implements HasDerivedName {
@@ -55,7 +54,7 @@ public class PowerFeature extends Feature implements HasDerivedName {
 
 		DerivedField derivedField = encoder.getDerivedField(derivedName);
 		if(derivedField == null){
-			Apply apply = PMMLUtil.createApply("pow", new FieldRef(getName()), PMMLUtil.createConstant(getPower()));
+			Apply apply = PMMLUtil.createApply("pow", ref(), PMMLUtil.createConstant(getPower()));
 
 			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, DataType.DOUBLE, apply);
 		}

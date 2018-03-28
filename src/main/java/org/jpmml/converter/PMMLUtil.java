@@ -136,12 +136,14 @@ public class PMMLUtil {
 	}
 
 	static
-	public Constant createConstant(Object value){
-		Constant constant = new Constant(ValueUtil.formatValue(value));
+	public Constant createConstant(Number value){
+		return createConstant(value, ValueUtil.getDataType(value));
+	}
 
-		if(value instanceof Double){
-			constant.setDataType(DataType.DOUBLE);
-		}
+	static
+	public Constant createConstant(Object value, DataType dataType){
+		Constant constant = new Constant(ValueUtil.formatValue(value))
+			.setDataType(dataType);
 
 		return constant;
 	}

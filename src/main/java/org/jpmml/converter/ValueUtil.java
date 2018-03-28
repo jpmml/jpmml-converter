@@ -26,6 +26,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.primitives.Ints;
+import org.dmg.pmml.DataType;
 
 public class ValueUtil {
 
@@ -205,6 +206,24 @@ public class ValueUtil {
 		};
 
 		return Lists.transform(values, function);
+	}
+
+	static
+	public DataType getDataType(Number value){
+
+		if((value instanceof Byte) || (value instanceof Short) || (value instanceof Integer) || (value instanceof Long)){
+			return DataType.INTEGER;
+		} else
+
+		if(value instanceof Float){
+			return DataType.FLOAT;
+		} else
+
+		if(value instanceof Double){
+			return DataType.DOUBLE;
+		}
+
+		throw new IllegalArgumentException();
 	}
 
 	static

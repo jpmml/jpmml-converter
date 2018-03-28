@@ -33,7 +33,11 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 
 
 	public ConstantFeature(PMMLEncoder encoder, Number value){
-		super(encoder, getName(value), getDataType(value));
+		this(encoder, FieldName.create(ValueUtil.formatValue(value) + (value instanceof Float ? "f" : "")), ValueUtil.getDataType(value), value);
+	}
+
+	public ConstantFeature(PMMLEncoder encoder, FieldName name, DataType dataType, Number value){
+		super(encoder, name, dataType);
 
 		setValue(value);
 	}
@@ -51,7 +55,7 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 
 		DerivedField derivedField = encoder.getDerivedField(derivedName);
 		if(derivedField == null){
-			Constant constant = PMMLUtil.createConstant(getValue());
+			Constant constant = PMMLUtil.createConstant(getValue(), getDataType());
 
 			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, getDataType(), constant);
 		}
@@ -93,41 +97,5 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 		}
 
 		this.value = value;
-	}
-
-	static
-	private FieldName getName(Number number){
-
-		if((number instanceof Integer) || (number instanceof Long)){
-			return FieldName.create(number.toString());
-		} else
-
-		if(number instanceof Float){
-			return FieldName.create(number.toString() + "f");
-		} else
-
-		if(number instanceof Double){
-			return FieldName.create(number.toString());
-		}
-
-		throw new IllegalArgumentException();
-	}
-
-	static
-	private DataType getDataType(Number number){
-
-		if((number instanceof Integer) || (number instanceof Long)){
-			return DataType.INTEGER;
-		} else
-
-		if(number instanceof Float){
-			return DataType.FLOAT;
-		} else
-
-		if(number instanceof Double){
-			return DataType.DOUBLE;
-		}
-
-		throw new IllegalArgumentException();
 	}
 }
