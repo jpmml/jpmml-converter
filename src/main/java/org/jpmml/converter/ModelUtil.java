@@ -20,9 +20,8 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
 import org.dmg.pmml.FieldName;
@@ -162,15 +161,9 @@ public class ModelUtil {
 
 	static
 	public List<OutputField> createAffinityFields(final DataType dataType, List<? extends Entity> entities){
-		Function<Entity, OutputField> function = new Function<Entity, OutputField>(){
-
-			@Override
-			public OutputField apply(Entity entity){
-				return createAffinityField(dataType, entity.getId());
-			}
-		};
-
-		return Lists.newArrayList(Lists.transform(entities, function));
+		return entities.stream()
+			.map(entity -> createAffinityField(dataType, entity.getId()))
+			.collect(Collectors.toList());
 	}
 
 	static
@@ -208,15 +201,9 @@ public class ModelUtil {
 
 	static
 	public List<OutputField> createProbabilityFields(final DataType dataType, List<String> values){
-		Function<String, OutputField> function = new Function<String, OutputField>(){
-
-			@Override
-			public OutputField apply(String value){
-				return createProbabilityField(dataType, value);
-			}
-		};
-
-		return Lists.newArrayList(Lists.transform(values, function));
+		return values.stream()
+			.map(value -> createProbabilityField(dataType, value))
+			.collect(Collectors.toList());
 	}
 
 	static

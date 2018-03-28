@@ -20,9 +20,8 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Schema {
 
@@ -62,8 +61,9 @@ public class Schema {
 		Label label = getLabel();
 		List<? extends Feature> features = getFeatures();
 
-		List<Feature> transformedFeatures = new ArrayList<>(features.size());
-		transformedFeatures.addAll(Lists.transform(features, function));
+		List<? extends Feature> transformedFeatures = features.stream()
+			.map(function)
+			.collect(Collectors.toList());
 
 		return new Schema(label, transformedFeatures);
 	}

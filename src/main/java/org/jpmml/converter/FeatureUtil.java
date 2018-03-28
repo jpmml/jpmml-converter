@@ -18,12 +18,10 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.dmg.pmml.FieldName;
 
 public class FeatureUtil {
@@ -43,37 +41,28 @@ public class FeatureUtil {
 
 	static
 	public FieldName createName(String function, List<? extends Feature> features){
-		Function<Feature, String> nameFunction = new Function<Feature, String>(){
-
-			@Override
-			public String apply(Feature feature){
-				FieldName name = getName(feature);
-
-				return name.getValue();
-			}
-		};
-
-		List<String> values;
+		Stream<FieldName> nameStream;
 
 		if(features.size() <= 5){
-			values = Lists.transform(features, nameFunction);
+			nameStream = features.stream()
+				.map(feature -> getName(feature));
 		} else
 
 		{
-			values = new ArrayList<>();
-
-			values.addAll(Lists.transform(features.subList(0, 2), nameFunction));
-			values.add("..");
-			values.addAll(Lists.transform(features.subList(features.size() - 2, features.size()), nameFunction));
+			nameStream = Stream.of(
+				features.subList(0, 2).stream()
+					.map(feature -> getName(feature)),
+				Stream.of(FieldName.create("..")),
+				features.subList(features.size() - 2, features.size()).stream()
+					.map(feature -> getName(feature))
+			).flatMap(x -> x);
 		}
 
-		StringJoiner joiner = new StringJoiner(", ", function + "(", ")");
+		String value = nameStream
+			.map(name -> name.getValue())
+			.collect(Collectors.joining(", ", function + "(", ")"));
 
-		for(String value : values){
-			joiner.add(value);
-		}
-
-		return FieldName.create(joiner.toString());
+		return FieldName.create(value);
 	}
 
 	static
