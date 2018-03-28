@@ -30,6 +30,18 @@ public class FeatureUtil {
 	}
 
 	static
+	public FieldName getName(Feature feature){
+
+		if(feature instanceof HasDerivedName){
+			HasDerivedName hasDerivedName = (HasDerivedName)feature;
+
+			return hasDerivedName.getDerivedName();
+		}
+
+		return feature.getName();
+	}
+
+	static
 	public FieldName createName(String function, Feature feature){
 		return FieldName.create(function + "(" + getName(feature).getValue() + ")");
 	}
@@ -63,17 +75,5 @@ public class FeatureUtil {
 			.collect(Collectors.joining(", ", function + "(", ")"));
 
 		return FieldName.create(value);
-	}
-
-	static
-	public FieldName getName(Feature feature){
-
-		if(feature instanceof HasDerivedName){
-			HasDerivedName hasDerivedName = (HasDerivedName)feature;
-
-			return hasDerivedName.getDerivedName();
-		}
-
-		return feature.getName();
 	}
 }
