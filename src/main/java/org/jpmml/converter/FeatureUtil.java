@@ -20,9 +20,9 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.dmg.pmml.FieldName;
 
@@ -42,6 +42,41 @@ public class FeatureUtil {
 	}
 
 	static
+	public FieldName createName(String function, List<? extends Feature> features){
+		Function<Feature, String> nameFunction = new Function<Feature, String>(){
+
+			@Override
+			public String apply(Feature feature){
+				FieldName name = getName(feature);
+
+				return name.getValue();
+			}
+		};
+
+		List<String> values;
+
+		if(features.size() <= 5){
+			values = Lists.transform(features, nameFunction);
+		} else
+
+		{
+			values = new ArrayList<>();
+
+			values.addAll(Lists.transform(features.subList(0, 2), nameFunction));
+			values.add("..");
+			values.addAll(Lists.transform(features.subList(features.size() - 2, features.size()), nameFunction));
+		}
+
+		StringJoiner joiner = new StringJoiner(", ", function + "(", ")");
+
+		for(String value : values){
+			joiner.add(value);
+		}
+
+		return FieldName.create(joiner.toString());
+	}
+
+	static
 	public FieldName getName(Feature feature){
 
 		if(feature instanceof HasDerivedName){
@@ -52,46 +87,4 @@ public class FeatureUtil {
 
 		return feature.getName();
 	}
-
-	static
-	public String formatFeatureList(List<Feature> features){
-		Function<Feature, FieldName> function = new Function<Feature, FieldName>(){
-
-			@Override
-			public FieldName apply(Feature feature){
-				return FeatureUtil.getName(feature);
-			}
-		};
-
-		return formatNameList(Lists.transform(features, function));
-	}
-
-	static
-	public String formatNameList(List<FieldName> names){
-		Function<FieldName, String> function = new Function<FieldName, String>(){
-
-			@Override
-			public String apply(FieldName name){
-				return name.getValue();
-			}
-		};
-
-		List<String> values;
-
-		if(names.size() <= 5){
-			values = Lists.transform(names, function);
-		} else
-
-		{
-			values = new ArrayList<>();
-
-			values.addAll(Lists.transform(names.subList(0, 2), function));
-			values.add("..");
-			values.addAll(Lists.transform(names.subList(names.size() - 2, names.size()), function));
-		}
-
-		return JOINER.join(values);
-	}
-
-	private static final Joiner JOINER = Joiner.on(", ");
 }
