@@ -192,7 +192,7 @@ public class MiningModelUtil {
 
 			OutputField outputField = Iterables.getLast(output.getOutputFields());
 
-			return new ContinuousFeature(null, outputField.getName(), outputField.getDataType());
+			return new ContinuousFeature(null, outputField);
 		}
 	};
 }

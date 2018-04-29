@@ -41,6 +41,10 @@ public class CategoricalFeature extends Feature {
 		this(encoder, field.getName(), field.getDataType(), values);
 	}
 
+	public CategoricalFeature(PMMLEncoder encoder, Feature feature, List<String> values){
+		this(encoder, feature.getName(), feature.getDataType(), values);
+	}
+
 	public CategoricalFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<String> values){
 		super(encoder, name, dataType);
 

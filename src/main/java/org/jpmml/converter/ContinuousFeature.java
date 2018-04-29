@@ -28,6 +28,10 @@ public class ContinuousFeature extends Feature {
 		this(encoder, field.getName(), field.getDataType());
 	}
 
+	public ContinuousFeature(PMMLEncoder encoder, Feature feature){
+		this(encoder, feature.getName(), feature.getDataType());
+	}
+
 	public ContinuousFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
 		super(encoder, name, dataType);
 	}

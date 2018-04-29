@@ -35,6 +35,10 @@ public class PowerFeature extends Feature implements HasDerivedName {
 		this(encoder, field.getName(), field.getDataType(), power);
 	}
 
+	public PowerFeature(PMMLEncoder encoder, Feature feature, int power){
+		this(encoder, feature.getName(), feature.getDataType(), power);
+	}
+
 	public PowerFeature(PMMLEncoder encoder, FieldName name, DataType dataType, int power){
 		super(encoder, name, dataType);
 

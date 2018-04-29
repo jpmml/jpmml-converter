@@ -37,6 +37,10 @@ public class BinaryFeature extends Feature implements HasDerivedName {
 		this(encoder, field.getName(), field.getDataType(), value);
 	}
 
+	public BinaryFeature(PMMLEncoder encoder, Feature feature, String value){
+		this(encoder, feature.getName(), feature.getDataType(), value);
+	}
+
 	public BinaryFeature(PMMLEncoder encoder, FieldName name, DataType dataType, String value){
 		super(encoder, name, dataType);
 
