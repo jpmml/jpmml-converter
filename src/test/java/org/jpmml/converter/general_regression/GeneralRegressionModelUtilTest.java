@@ -43,13 +43,13 @@ public class GeneralRegressionModelUtilTest {
 
 		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
 
-		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.emptyList(), null, Collections.emptyList(), null);
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.emptyList(), Collections.emptyList(), null, null);
 
 		assertState(generalRegressionModel, false, false, false);
 
 		Feature feature = SchemaUtil.createConstantFeature(encoder, 3d);
 
-		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), 1d, Collections.singletonList(2d), null);
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), Collections.singletonList(2d), 1d, null);
 
 		assertState(generalRegressionModel, true, true, false);
 
@@ -60,7 +60,7 @@ public class GeneralRegressionModelUtilTest {
 
 		feature = SchemaUtil.createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
 
-		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), 1d, Collections.singletonList(2d), null);
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), Collections.singletonList(2d), 1d, null);
 
 		assertState(generalRegressionModel, true, true, true);
 
