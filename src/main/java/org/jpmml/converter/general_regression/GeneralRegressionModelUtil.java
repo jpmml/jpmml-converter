@@ -78,7 +78,7 @@ public class GeneralRegressionModelUtil {
 
 		int p = (parameterList.getParameters()).size();
 
-		if(intercept != null && !ValueUtil.isZero(intercept)){
+		if(intercept != null && !ValueUtil.isZeroLike(intercept)){
 			Parameter parameter = new Parameter("p" + String.valueOf(p))
 				.setLabel("(intercept)");
 
@@ -100,7 +100,7 @@ public class GeneralRegressionModelUtil {
 			Feature feature = features.get(i);
 			Double coefficient = coefficients.get(i);
 
-			if(coefficient == null || coefficient.isNaN()){
+			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
 			}
 

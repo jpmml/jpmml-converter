@@ -100,7 +100,7 @@ public class NeuralNetworkUtil {
 			Entity entity = entities.get(i);
 			Double weight = weights.get(i);
 
-			if(weight.isNaN() || ValueUtil.isZero(weight)){
+			if(weight == null || ValueUtil.isZeroLike(weight)){
 				continue;
 			}
 
@@ -111,7 +111,7 @@ public class NeuralNetworkUtil {
 			neuron.addConnections(connection);
 		}
 
-		if(!bias.isNaN() && !ValueUtil.isZero(bias)){
+		if(bias != null && !ValueUtil.isZeroLike(bias)){
 			neuron.setBias(bias);
 		}
 

@@ -132,13 +132,17 @@ public class RegressionModelUtil {
 			throw new IllegalArgumentException();
 		}
 
-		RegressionTable regressionTable = new RegressionTable(intercept != null ? intercept : 0d);
+		RegressionTable regressionTable = new RegressionTable(0d);
+
+		if(intercept != null && !ValueUtil.isZeroLike(intercept)){
+			regressionTable.setIntercept(intercept);
+		}
 
 		for(int i = 0; i < features.size(); i++){
 			Feature feature = features.get(i);
 			Double coefficient = coefficients.get(i);
 
-			if(coefficient.isNaN() || ValueUtil.isZero(coefficient)){
+			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
 			} // End if
 

@@ -86,7 +86,7 @@ public class ModelUtil {
 			rescaled = true;
 		} // End if
 
-		if(intercept != null && !ValueUtil.isZero(intercept)){
+		if(intercept != null && !ValueUtil.isZeroLike(intercept)){
 			target.setRescaleConstant(intercept.doubleValue());
 
 			rescaled = true;

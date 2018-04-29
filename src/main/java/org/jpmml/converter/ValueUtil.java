@@ -96,6 +96,11 @@ public class ValueUtil {
 	}
 
 	static
+	public boolean isZeroLike(Number number){
+		return isZero(number) || Double.isNaN(number.doubleValue());
+	}
+
+	static
 	public Number asNumber(Object object){
 
 		if(object instanceof Number){
