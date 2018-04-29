@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter.neural_network;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
@@ -31,6 +32,8 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.neural_network.Connection;
 import org.dmg.pmml.neural_network.NeuralInput;
 import org.dmg.pmml.neural_network.NeuralInputs;
+import org.dmg.pmml.neural_network.NeuralLayer;
+import org.dmg.pmml.neural_network.NeuralNetwork;
 import org.dmg.pmml.neural_network.NeuralOutput;
 import org.dmg.pmml.neural_network.NeuralOutputs;
 import org.dmg.pmml.neural_network.Neuron;
@@ -116,6 +119,38 @@ public class NeuralNetworkUtil {
 		}
 
 		return neuron;
+	}
+
+	static
+	public List<NeuralLayer> createBinaryLogisticTransformation(Entity entity){
+		NeuralLayer inputLayer = new NeuralLayer()
+			.setActivationFunction(NeuralNetwork.ActivationFunction.LOGISTIC);
+
+		Neuron logisticNeuron = new Neuron()
+			.setId("logistic/1")
+			.setBias(null)
+			.addConnections(new Connection(entity.getId(), 1d));
+
+		inputLayer.addNeurons(logisticNeuron);
+
+		entity = logisticNeuron;
+
+		NeuralLayer outputLayer = new NeuralLayer()
+			.setActivationFunction(NeuralNetwork.ActivationFunction.IDENTITY);
+
+		Neuron noEventNeuron = new Neuron()
+			.setId("event/false")
+			.setBias(1d)
+			.addConnections(new Connection(entity.getId(), -1d));
+
+		Neuron eventNeuron = new Neuron()
+			.setId("event/true")
+			.setBias(null)
+			.addConnections(new Connection(entity.getId(), 1d));
+
+		outputLayer.addNeurons(noEventNeuron, eventNeuron);
+
+		return Arrays.asList(inputLayer, outputLayer);
 	}
 
 	static

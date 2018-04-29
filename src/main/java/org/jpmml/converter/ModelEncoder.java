@@ -20,20 +20,21 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.UnivariateStats;
 import org.dmg.pmml.Visitor;
 import org.jpmml.model.visitors.DataDictionaryCleaner;
-import org.jpmml.model.visitors.FieldRenamer;
 import org.jpmml.model.visitors.MiningSchemaCleaner;
 import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 
@@ -41,7 +42,7 @@ public class ModelEncoder extends PMMLEncoder {
 
 	private Map<FieldName, List<Decorator>> decorators = new LinkedHashMap<>();
 
-	private Map<FieldName, FieldName> renamedFields = new LinkedHashMap<>();
+	private Map<FieldName, UnivariateStats> univariateStats = new LinkedHashMap<>();
 
 
 	public PMML encodePMML(Model model){
@@ -75,11 +76,24 @@ public class ModelEncoder extends PMMLEncoder {
 			}
 		}
 
-		Collection<Map.Entry<FieldName, FieldName>> entries = this.renamedFields.entrySet();
-		for(Map.Entry<FieldName, FieldName> entry : entries){
-			FieldRenamer renamer = new FieldRenamer(entry.getKey(), entry.getValue());
+		DataDictionary dataDictionary = pmml.getDataDictionary();
 
-			renamer.applyTo(pmml);
+		List<DataField> dataFields = dataDictionary.getDataFields();
+		for(DataField dataField : dataFields){
+			UnivariateStats univariateStats = getUnivariateStats(dataField.getName());
+
+			if(univariateStats == null){
+				continue;
+			}
+
+			ModelStats modelStats = model.getModelStats();
+			if(modelStats == null){
+				modelStats = new ModelStats();
+
+				model.setModelStats(modelStats);
+			}
+
+			modelStats.addUnivariateStats(univariateStats);
 		}
 
 		return pmml;
@@ -101,17 +115,15 @@ public class ModelEncoder extends PMMLEncoder {
 		decorators.add(decorator);
 	}
 
-	public FieldName getFinalName(FieldName name){
-		FieldName renamedName = this.renamedFields.get(name);
-
-		if(renamedName != null){
-			return renamedName;
-		}
-
-		return name;
+	public UnivariateStats getUnivariateStats(FieldName name){
+		return this.univariateStats.get(name);
 	}
 
-	public void renameField(FieldName name, FieldName renamedName){
-		this.renamedFields.put(name, renamedName);
+	public void putUnivariateStats(UnivariateStats univariateStats){
+		putUnivariateStats(univariateStats.getField(), univariateStats);
+	}
+
+	public void putUnivariateStats(FieldName name, UnivariateStats univariateStats){
+		this.univariateStats.put(name, univariateStats);
 	}
 }

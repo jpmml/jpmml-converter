@@ -19,22 +19,35 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.ModelVerification;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
+import org.dmg.pmml.Row;
 import org.dmg.pmml.Target;
 import org.dmg.pmml.Targets;
+import org.dmg.pmml.VerificationField;
+import org.dmg.pmml.VerificationFields;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class ModelUtil {
 
@@ -210,4 +223,79 @@ public class ModelUtil {
 	public MathContext simplifyMathContext(MathContext mathContext){
 		return (MathContext.DOUBLE).equals(mathContext) ? null : mathContext;
 	}
+
+	static
+	public VerificationField createVerificationField(FieldName name){
+		String tagName = name.getValue();
+
+		// Replace "function(arg)" with "function_arg"
+		Matcher matcher = ModelUtil.FUNCTION_INVOCATION.matcher(tagName);
+		if(matcher.matches()){
+			tagName = (matcher.group(1) + "_" + matcher.group(2));
+		}
+
+		VerificationField verificationField = new VerificationField()
+			.setField(name)
+			.setColumn(XMLUtil.createTagName(tagName));
+
+		return verificationField;
+	}
+
+	static
+	public ModelVerification createModelVerification(Map<VerificationField, List<?>> data){
+		VerificationFields verificationFields = new VerificationFields();
+
+		int rows = 0;
+
+		Collection<? extends Map.Entry<VerificationField, List<?>>> entries = data.entrySet();
+		for(Map.Entry<VerificationField, List<?>> entry : entries){
+			VerificationField verificationField = entry.getKey();
+			List<?> columnData = entry.getValue();
+
+			verificationFields.addVerificationFields(verificationField);
+
+			if(rows == 0){
+				rows = columnData.size();
+			} else
+
+			{
+				if(rows != columnData.size()){
+					throw new IllegalArgumentException();
+				}
+			}
+		}
+
+		DocumentBuilder documentBuilder = DOMUtil.createDocumentBuilder();
+
+		InlineTable inlineTable = new InlineTable();
+
+		for(int i = 0; i < rows; i++){
+			Row row = new Row();
+
+			Document document = documentBuilder.newDocument();
+
+			for(VerificationField verificationField : verificationFields){
+				List<?> columnData = data.get(verificationField);
+
+				Object cell = columnData.get(i);
+				if(cell == null){
+					continue;
+				}
+
+				Element element = document.createElement(verificationField.getColumn());
+				element.setTextContent(ValueUtil.formatValue(cell));
+
+				row.addContent(element);
+			}
+
+			inlineTable.addRows(row);
+		}
+
+		ModelVerification modelVerification = new ModelVerification(verificationFields, inlineTable)
+			.setRecordCount(rows);
+
+		return modelVerification;
+	}
+
+	private static final Pattern FUNCTION_INVOCATION = Pattern.compile("^(.+)\\((.+)\\)$");
 }
