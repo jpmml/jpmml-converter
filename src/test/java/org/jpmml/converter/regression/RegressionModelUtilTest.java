@@ -40,7 +40,7 @@ public class RegressionModelUtilTest {
 	public void createRegressionTable(){
 		ModelEncoder encoder = new ModelEncoder();
 
-		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), Collections.<Double>emptyList(), null);
+		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.emptyList(), Collections.emptyList(), null);
 
 		assertState(regressionTable, 0d, false, false, false);
 

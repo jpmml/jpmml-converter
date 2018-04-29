@@ -43,7 +43,7 @@ public class GeneralRegressionModelUtilTest {
 
 		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
 
-		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.<Feature>emptyList(), null, Collections.<Double>emptyList(), null);
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.emptyList(), null, Collections.emptyList(), null);
 
 		assertState(generalRegressionModel, false, false, false);
 
@@ -53,8 +53,8 @@ public class GeneralRegressionModelUtilTest {
 
 		assertState(generalRegressionModel, true, true, false);
 
-		assertParameter(generalRegressionModel, "p0", 1d, Collections.<FieldName>emptyList());
-		assertParameter(generalRegressionModel, "p1", (2d * 3d), Collections.<FieldName>emptyList());
+		assertParameter(generalRegressionModel, "p0", 1d, Collections.emptyList());
+		assertParameter(generalRegressionModel, "p1", (2d * 3d), Collections.emptyList());
 
 		generalRegressionModel = new GeneralRegressionModel();
 
@@ -64,7 +64,7 @@ public class GeneralRegressionModelUtilTest {
 
 		assertState(generalRegressionModel, true, true, true);
 
-		assertParameter(generalRegressionModel, "p0", 1d, Collections.<FieldName>emptyList());
+		assertParameter(generalRegressionModel, "p0", 1d, Collections.emptyList());
 		assertParameter(generalRegressionModel, "p1", (2d * 5d), Arrays.asList(FieldName.create("x1"), FieldName.create("x2")));
 	}
 

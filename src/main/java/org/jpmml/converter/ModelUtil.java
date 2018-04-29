@@ -160,7 +160,7 @@ public class ModelUtil {
 	}
 
 	static
-	public List<OutputField> createAffinityFields(final DataType dataType, List<? extends Entity> entities){
+	public List<OutputField> createAffinityFields(DataType dataType, List<? extends Entity> entities){
 		return entities.stream()
 			.map(entity -> createAffinityField(dataType, entity.getId()))
 			.collect(Collectors.toList());
@@ -200,7 +200,7 @@ public class ModelUtil {
 	}
 
 	static
-	public List<OutputField> createProbabilityFields(final DataType dataType, List<String> values){
+	public List<OutputField> createProbabilityFields(DataType dataType, List<String> values){
 		return values.stream()
 			.map(value -> createProbabilityField(dataType, value))
 			.collect(Collectors.toList());

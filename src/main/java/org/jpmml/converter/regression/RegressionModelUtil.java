@@ -113,7 +113,7 @@ public class RegressionModelUtil {
 		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(features, coefficients, intercept)
 			.setTargetCategory(categoricalLabel.getValue(1));
 
-		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.<Feature>emptyList(), Collections.<Double>emptyList(), null)
+		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.emptyList(), Collections.emptyList(), null)
 			.setTargetCategory(categoricalLabel.getValue(0));
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
