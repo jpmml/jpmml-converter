@@ -21,10 +21,10 @@ package org.jpmml.converter;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.jpmml.model.ToStringHelper;
 
 public class CategoricalLabel extends Label {
 

@@ -20,12 +20,12 @@ package org.jpmml.converter;
 
 import java.util.Objects;
 
-import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
+import org.jpmml.model.ToStringHelper;
 
 abstract
 public class Feature {
@@ -100,7 +100,7 @@ public class Feature {
 	}
 
 	protected ToStringHelper toStringHelper(){
-		return com.google.common.base.Objects.toStringHelper(this)
+		return new ToStringHelper(this)
 			.add("name", getName())
 			.add("dataType", getDataType());
 	}

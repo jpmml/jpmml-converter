@@ -20,9 +20,9 @@ package org.jpmml.converter;
 
 import java.util.Objects;
 
-import com.google.common.base.Objects.ToStringHelper;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.jpmml.model.ToStringHelper;
 
 abstract
 public class Label {
@@ -70,7 +70,7 @@ public class Label {
 	}
 
 	protected ToStringHelper toStringHelper(){
-		return com.google.common.base.Objects.toStringHelper(this)
+		return new ToStringHelper(this)
 			.add("name", getName())
 			.add("dataType", getDataType());
 	}
