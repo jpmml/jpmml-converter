@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.primitives.Ints;
@@ -117,15 +116,7 @@ public class ValueUtil {
 			return null;
 		}
 
-		Function<Object, Number> function = new Function<Object, Number>(){
-
-			@Override
-			public Number apply(Object object){
-				return asNumber(object);
-			}
-		};
-
-		return Lists.transform(objects, function);
+		return Lists.transform(objects, object -> asNumber(object));
 	}
 
 	static
@@ -156,15 +147,7 @@ public class ValueUtil {
 			return null;
 		}
 
-		Function<Number, Integer> function = new Function<Number, Integer>(){
-
-			@Override
-			public Integer apply(Number number){
-				return asInteger(number);
-			}
-		};
-
-		return Lists.transform(numbers, function);
+		return Lists.transform(numbers, number -> asInteger(number));
 	}
 
 	static
@@ -184,15 +167,7 @@ public class ValueUtil {
 			return null;
 		}
 
-		Function<Number, Double> function = new Function<Number, Double>(){
-
-			@Override
-			public Double apply(Number number){
-				return asDouble(number);
-			}
-		};
-
-		return Lists.transform(numbers, function);
+		return Lists.transform(numbers, number -> asDouble(number));
 	}
 
 	static
@@ -202,15 +177,12 @@ public class ValueUtil {
 
 	static
 	public List<Double> floatsToDoubles(List<Float> values){
-		Function<Float, Double> function = new Function<Float, Double>(){
 
-			@Override
-			public Double apply(Float value){
-				return floatToDouble(value);
-			}
-		};
+		if(values == null){
+			return null;
+		}
 
-		return Lists.transform(values, function);
+		return Lists.transform(values, value -> floatToDouble(value));
 	}
 
 	static
