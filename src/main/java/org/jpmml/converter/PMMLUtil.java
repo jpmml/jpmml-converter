@@ -39,9 +39,12 @@ import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.FieldColumnPair;
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.Interval;
+import org.dmg.pmml.MapValues;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
@@ -155,6 +158,37 @@ public class PMMLUtil {
 			.setDataType(dataType);
 
 		return constant;
+	}
+
+	static
+	public MapValues createMapValues(FieldName name, Map<?, ?> mapping){
+		List<Object> inputValues = new ArrayList<>();
+		List<Object> outputValues = new ArrayList<>();
+
+		Collection<? extends Map.Entry<?, ?>> entries = mapping.entrySet();
+		for(Map.Entry<?, ?> entry : entries){
+			inputValues.add(entry.getKey());
+			outputValues.add(entry.getValue());
+		}
+
+		return createMapValues(name, inputValues, outputValues);
+	}
+
+	static
+	public MapValues createMapValues(FieldName name, List<?> inputValues, List<?> outputValues){
+		String inputColumn = "data:input";
+		String outputColumn = "data:output";
+
+		Map<String, List<?>> data = new LinkedHashMap<>();
+		data.put(inputColumn, inputValues);
+		data.put(outputColumn, outputValues);
+
+		MapValues mapValues = new MapValues()
+			.addFieldColumnPairs(new FieldColumnPair(name, inputColumn))
+			.setOutputColumn(outputColumn)
+			.setInlineTable(PMMLUtil.createInlineTable(data));
+
+		return mapValues;
 	}
 
 	static
