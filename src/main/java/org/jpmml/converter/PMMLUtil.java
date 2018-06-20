@@ -21,9 +21,16 @@ package org.jpmml.converter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.function.Function;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
@@ -33,8 +40,10 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Header;
+import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.Interval;
 import org.dmg.pmml.RealSparseArray;
+import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
 
@@ -188,6 +197,77 @@ public class PMMLUtil {
 		}
 
 		return sparseArray;
+	}
+
+	static
+	public InlineTable createInlineTable(Map<String, ? extends List<?>> data){
+		return createInlineTable(Function.identity(), data);
+	}
+
+	static
+	public <K> InlineTable createInlineTable(Function<K, String> function, Map<K, ? extends List<?>> data){
+		int rows = 0;
+
+		Map<K, QName> columns = new LinkedHashMap<>();
+
+		{
+			Collection<? extends Map.Entry<K, ? extends List<?>>> entries = data.entrySet();
+			for(Map.Entry<K, ? extends List<?>> entry : entries){
+				K column = entry.getKey();
+				List<?> columnData = entry.getValue();
+
+				if(rows == 0){
+					rows = columnData.size();
+				} else
+
+				{
+					if(rows != columnData.size()){
+						throw new IllegalArgumentException();
+					}
+				}
+
+				QName columnName;
+
+				String tagName = function.apply(column);
+				if(tagName.startsWith("data:")){
+					columnName = new QName("http://jpmml.org/jpmml-model/InlineTable", tagName.substring("data:".length()), "data");
+				} else
+
+				{
+					if(tagName.indexOf(':') > -1){
+						throw new IllegalArgumentException(tagName);
+					}
+
+					columnName = new QName("http://www.dmg.org/PMML-4_3", tagName);
+				}
+
+				columns.put(column, columnName);
+			}
+		}
+
+		InlineTable inlineTable = new InlineTable();
+
+		for(int i = 0; i < rows; i++){
+			Row row = new Row();
+
+			Collection<Map.Entry<K, QName>> entries = columns.entrySet();
+			for(Map.Entry<K, QName> entry : entries){
+				List<?> columnData = data.get(entry.getKey());
+
+				Object value = columnData.get(i);
+				if(value == null){
+					continue;
+				}
+
+				JAXBElement<String> cell = new JAXBElement<>(entry.getValue(), String.class, ValueUtil.formatValue(value));
+
+				row.addContent(cell);
+			}
+
+			inlineTable.addRows(row);
+		}
+
+		return inlineTable;
 	}
 
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
