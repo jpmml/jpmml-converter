@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Villu Ruusmann
+ * Copyright (c) 2018 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,27 +18,26 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
-import org.dmg.pmml.DataType;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.dmg.pmml.FieldName;
 
-public class ContinuousLabel extends Label {
+public class FlagManager extends ValueManager<Boolean> {
 
-	public ContinuousLabel(DataField dataField){
-		this(dataField.getName(), dataField.getDataType());
+	public FlagManager(){
 	}
 
-	public ContinuousLabel(FieldName name, DataType dataType){
-		super(name, dataType);
-	}
-
-	@Override
-	public ContinuousLabel toRenamedLabel(FieldName name){
-		return new ContinuousLabel(name, getDataType());
+	public FlagManager(Map<FieldName, Boolean> valueMap){
+		super(valueMap);
 	}
 
 	@Override
-	public ContinuousLabel toAnonymousLabel(){
-		return (ContinuousLabel)super.toAnonymousLabel();
+	public FlagManager fork(FieldName name, Boolean value){
+		Map<FieldName, Boolean> valueMap = new LinkedHashMap<>(getValueMap());
+
+		valueMap.put(name, value);
+
+		return new FlagManager(valueMap);
 	}
 }

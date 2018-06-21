@@ -42,8 +42,13 @@ public class CategoricalLabel extends Label {
 	}
 
 	@Override
+	public CategoricalLabel toRenamedLabel(FieldName name){
+		return new CategoricalLabel(name, getDataType(), getValues());
+	}
+
+	@Override
 	public CategoricalLabel toAnonymousLabel(){
-		return new CategoricalLabel(null, getDataType(), getValues());
+		return (CategoricalLabel)super.toAnonymousLabel();
 	}
 
 	@Override

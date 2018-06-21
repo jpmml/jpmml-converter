@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Villu Ruusmann
+ * Copyright (c) 2018 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,27 +18,43 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
-import org.dmg.pmml.DataType;
+import java.util.Collections;
+import java.util.Map;
+
 import org.dmg.pmml.FieldName;
 
-public class ContinuousLabel extends Label {
+abstract
+public class ValueManager<V> {
 
-	public ContinuousLabel(DataField dataField){
-		this(dataField.getName(), dataField.getDataType());
+	private Map<FieldName, V> valueMap = Collections.emptyMap();
+
+
+	public ValueManager(){
 	}
 
-	public ContinuousLabel(FieldName name, DataType dataType){
-		super(name, dataType);
+	public ValueManager(Map<FieldName, V> valueMap){
+		setValueMap(valueMap);
 	}
 
-	@Override
-	public ContinuousLabel toRenamedLabel(FieldName name){
-		return new ContinuousLabel(name, getDataType());
+	abstract
+	public ValueManager<V> fork(FieldName name, V value);
+
+	public V getValue(FieldName name){
+		Map<FieldName, V> valueMap = getValueMap();
+
+		return valueMap.get(name);
 	}
 
-	@Override
-	public ContinuousLabel toAnonymousLabel(){
-		return (ContinuousLabel)super.toAnonymousLabel();
+	public Map<FieldName, V> getValueMap(){
+		return this.valueMap;
+	}
+
+	private void setValueMap(Map<FieldName, V> valueMap){
+
+		if(valueMap == null){
+			throw new IllegalArgumentException();
+		}
+
+		this.valueMap = valueMap;
 	}
 }

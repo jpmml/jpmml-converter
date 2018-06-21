@@ -38,7 +38,11 @@ public class Label {
 	}
 
 	abstract
-	public Label toAnonymousLabel();
+	public Label toRenamedLabel(FieldName name);
+
+	public Label toAnonymousLabel(){
+		return toRenamedLabel(null);
+	}
 
 	@Override
 	public int hashCode(){
