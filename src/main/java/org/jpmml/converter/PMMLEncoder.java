@@ -117,6 +117,16 @@ public class PMMLEncoder {
 		return dataField;
 	}
 
+	public DataField removeDataField(FieldName name){
+		DataField dataField = this.dataFields.remove(name);
+
+		if(dataField == null){
+			throw new IllegalArgumentException(name.getValue());
+		}
+
+		return dataField;
+	}
+
 	public DerivedField getDerivedField(FieldName name){
 		return this.derivedFields.get(name);
 	}
@@ -135,6 +145,16 @@ public class PMMLEncoder {
 			.setExpression(expression);
 
 		addDerivedField(derivedField);
+
+		return derivedField;
+	}
+
+	public DerivedField removeDerivedField(FieldName name){
+		DerivedField derivedField = this.derivedFields.remove(name);
+
+		if(derivedField == null){
+			throw new IllegalArgumentException(name.getValue());
+		}
 
 		return derivedField;
 	}
@@ -215,12 +235,16 @@ public class PMMLEncoder {
 		this.defineFunctions.put(name, defineFunction);
 	}
 
-	protected Map<FieldName, DataField> getDataFields(){
+	public Map<FieldName, DataField> getDataFields(){
 		return this.dataFields;
 	}
 
-	protected Map<FieldName, DerivedField> getDerivedFields(){
+	public Map<FieldName, DerivedField> getDerivedFields(){
 		return this.derivedFields;
+	}
+
+	public Map<String, DefineFunction> getDefineFunctions(){
+		return this.defineFunctions;
 	}
 
 	private void checkName(FieldName name){
