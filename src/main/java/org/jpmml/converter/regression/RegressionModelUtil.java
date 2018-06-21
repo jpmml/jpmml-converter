@@ -40,6 +40,7 @@ import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.PowerFeature;
+import org.jpmml.converter.ProductFeature;
 import org.jpmml.converter.Schema;
 import org.jpmml.converter.ValueUtil;
 
@@ -144,6 +145,13 @@ public class RegressionModelUtil {
 
 			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
+			} // End if
+
+			if(feature instanceof ProductFeature){
+				ProductFeature productFeature = (ProductFeature)feature;
+
+				feature = productFeature.getFeature();
+				coefficient = (productFeature.getFactor()).doubleValue() * coefficient;
 			} // End if
 
 			if(feature instanceof BinaryFeature){
