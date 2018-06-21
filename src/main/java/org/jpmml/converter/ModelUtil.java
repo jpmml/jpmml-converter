@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -34,6 +33,7 @@ import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelVerification;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
@@ -112,15 +112,28 @@ public class ModelUtil {
 	}
 
 	static
+	public Output ensureOutput(Model model){
+		Output output = model.getOutput();
+
+		if(output == null){
+			output = new Output();
+
+			model.setOutput(output);
+		}
+
+		return output;
+	}
+
+	static
 	public Output createPredictedOutput(FieldName name, OpType opType, DataType dataType, Transformation... transformations){
-		List<OutputField> outputFields = new ArrayList<>();
+		Output output = new Output();
 
 		OutputField outputField = new OutputField(name, dataType)
 			.setOpType(opType)
 			.setResultFeature(ResultFeature.PREDICTED_VALUE)
 			.setFinalResult(false);
 
-		outputFields.add(outputField);
+		output.addOutputFields(outputField);
 
 		for(Transformation transformation : transformations){
 			outputField = new OutputField(transformation.getName(outputField.getName()), transformation.getDataType(outputField.getDataType()))
@@ -129,10 +142,10 @@ public class ModelUtil {
 				.setFinalResult(transformation.isFinalResult())
 				.setExpression(transformation.createExpression(new FieldRef(outputField.getName())));
 
-			outputFields.add(outputField);
+			output.addOutputFields(outputField);
 		}
 
-		return new Output(outputFields);
+		return output;
 	}
 
 	static
@@ -148,9 +161,12 @@ public class ModelUtil {
 
 	static
 	public Output createProbabilityOutput(DataType dataType, CategoricalLabel categoricalLabel){
-		List<OutputField> outputFields = createProbabilityFields(dataType, categoricalLabel.getValues());
+		Output output = new Output();
 
-		return new Output(outputFields);
+		List<OutputField> outputFields = output.getOutputFields();
+		outputFields.addAll(createProbabilityFields(dataType, categoricalLabel.getValues()));
+
+		return output;
 	}
 
 	static
