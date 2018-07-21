@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.jpmml.model.ToStringHelper;
+
 public class Schema {
 
 	private Label label = null;
@@ -66,6 +68,19 @@ public class Schema {
 			.collect(Collectors.toList());
 
 		return new Schema(label, transformedFeatures);
+	}
+
+	@Override
+	public String toString(){
+		ToStringHelper helper = toStringHelper();
+
+		return helper.toString();
+	}
+
+	protected ToStringHelper toStringHelper(){
+		return new ToStringHelper(this)
+			.add("label", getLabel())
+			.add("features", getFeatures());
 	}
 
 	public Label getLabel(){
