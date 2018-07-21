@@ -49,6 +49,8 @@ import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
+import org.jpmml.model.inlinetable.InputCell;
+import org.jpmml.model.inlinetable.OutputCell;
 
 public class PMMLUtil {
 
@@ -279,6 +281,9 @@ public class PMMLUtil {
 			}
 		}
 
+		QName inputColumnName = new QName("http://jpmml.org/jpmml-model/InlineTable", "input", "data");
+		QName outputColumnName = new QName("http://jpmml.org/jpmml-model/InlineTable", "output", "data");
+
 		InlineTable inlineTable = new InlineTable();
 
 		for(int i = 0; i < rows; i++){
@@ -293,7 +298,21 @@ public class PMMLUtil {
 					continue;
 				}
 
-				JAXBElement<String> cell = new JAXBElement<>(entry.getValue(), String.class, ValueUtil.formatValue(value));
+				QName columName = entry.getValue();
+
+				Object cell;
+
+				if((inputColumnName).equals(columName)){
+					cell = new InputCell(ValueUtil.formatValue(value));
+				} else
+
+				if((outputColumnName).equals(columName)){
+					cell = new OutputCell(ValueUtil.formatValue(value));
+				} else
+
+				{
+					cell = new JAXBElement<>(columName, String.class, ValueUtil.formatValue(value));
+				}
 
 				row.addContent(cell);
 			}
