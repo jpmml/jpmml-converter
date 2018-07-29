@@ -62,7 +62,7 @@ public class CellTransformer extends AbstractVisitor {
 			transform(content);
 		}
 
-		return VisitorAction.CONTINUE;
+		return super.visit(row);
 	}
 
 	private void transform(List<Object> content){
