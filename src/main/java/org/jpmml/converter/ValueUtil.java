@@ -187,6 +187,32 @@ public class ValueUtil {
 	}
 
 	static
+	public DataType getDataType(Object value){
+
+		if(value instanceof String){
+			return DataType.STRING;
+		} else
+
+		if((value instanceof Byte) || (value instanceof Short) || (value instanceof Integer) || (value instanceof Long)){
+			return DataType.INTEGER;
+		} else
+
+		if(value instanceof Float){
+			return DataType.FLOAT;
+		} else
+
+		if(value instanceof Double){
+			return DataType.DOUBLE;
+		} else
+
+		if(value instanceof Boolean){
+			return DataType.BOOLEAN;
+		}
+
+		throw new IllegalArgumentException();
+	}
+
+	static
 	public DataType getDataType(Collection<String> values){
 
 		if(values.isEmpty()){
@@ -235,24 +261,6 @@ public class ValueUtil {
 		}
 
 		return dataType;
-	}
-
-	static
-	public DataType getDataType(Number value){
-
-		if((value instanceof Byte) || (value instanceof Short) || (value instanceof Integer) || (value instanceof Long)){
-			return DataType.INTEGER;
-		} else
-
-		if(value instanceof Float){
-			return DataType.FLOAT;
-		} else
-
-		if(value instanceof Double){
-			return DataType.DOUBLE;
-		}
-
-		throw new IllegalArgumentException();
 	}
 
 	static
