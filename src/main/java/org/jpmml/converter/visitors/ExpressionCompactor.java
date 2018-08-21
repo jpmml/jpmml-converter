@@ -112,8 +112,20 @@ public class ExpressionCompactor extends AbstractVisitor {
 		switch(function){
 			case "equal":
 				return "notEqual";
+			case "greaterOrEqual":
+				return "lessThan";
+			case "greaterThan":
+				return "lessOrEqual";
 			case "isMissing":
 				return "isNotMissing";
+			case "isNotMissing":
+				return "isMissing";
+			case "lessOrEqual":
+				return "greaterThan";
+			case "lessThan":
+				return "greaterOrEqual";
+			case "notEqual":
+				return "equal";
 			default:
 				return null;
 		}

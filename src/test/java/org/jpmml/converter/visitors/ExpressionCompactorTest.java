@@ -55,17 +55,29 @@ public class ExpressionCompactorTest {
 	@Test
 	public void compactNegationExpression(){
 		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
+
+		checkNegation("isMissing", "isNotMissing", fieldRef);
+
 		Constant constant = createConstant("0");
 
-		Apply apply = compact(createApply("not", createApply("equal", fieldRef, constant)));
+		checkNegation("equal", "notEqual", fieldRef, constant);
+		checkNegation("lessThan", "greaterOrEqual", fieldRef, constant);
+		checkNegation("lessOrEqual", "greaterThan", fieldRef, constant);;
+	}
 
-		assertEquals("notEqual", apply.getFunction());
-		assertEquals(Arrays.asList(fieldRef, constant), apply.getExpressions());
+	static
+	private void checkNegation(String function, String negatedFunction, Expression... expressions){
+		Apply apply = createApply(function, expressions);
 
-		apply = compact(createApply("not", createApply("isMissing", fieldRef)));
+		Apply negatedApply = compact(createApply("not", apply));
 
-		assertEquals("isNotMissing", apply.getFunction());
-		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
+		assertEquals(negatedFunction, negatedApply.getFunction());
+		assertEquals(Arrays.asList(expressions), negatedApply.getExpressions());
+
+		apply = compact(createApply("not", negatedApply));
+
+		assertEquals(function, apply.getFunction());
+		assertEquals(Arrays.asList(expressions), apply.getExpressions());
 	}
 
 	static
