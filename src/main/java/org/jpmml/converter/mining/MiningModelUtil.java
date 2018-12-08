@@ -27,7 +27,9 @@ import java.util.function.Function;
 
 import com.google.common.collect.Iterables;
 import org.dmg.pmml.MathContext;
+import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
+import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
@@ -56,7 +58,7 @@ public class MiningModelUtil {
 
 		RegressionModel regressionModel = RegressionModelUtil.createRegression(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
 
-		return createModelChain(Arrays.asList(model, regressionModel), schema);
+		return createModelChain(Arrays.asList(model, regressionModel));
 	}
 
 	static
@@ -65,7 +67,7 @@ public class MiningModelUtil {
 
 		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
 
-		return createModelChain(Arrays.asList(model, regressionModel), schema);
+		return createModelChain(Arrays.asList(model, regressionModel));
 	}
 
 	static
@@ -139,21 +141,43 @@ public class MiningModelUtil {
 		List<Model> segmentationModels = new ArrayList<>(models);
 		segmentationModels.add(regressionModel);
 
-		return createModelChain(segmentationModels, schema);
+		return createModelChain(segmentationModels);
 	}
 
 	static
-	public MiningModel createModelChain(List<? extends Model> models, Schema schema){
+	public MiningModel createModelChain(List<? extends Model> models){
 
 		if(models.size() < 1){
 			throw new IllegalArgumentException();
 		}
 
+		MiningSchema miningSchema = new MiningSchema();
+
+		models.stream()
+			.map(Model::getMiningSchema)
+			.map(MiningSchema::getMiningFields)
+			.flatMap(List::stream)
+			.filter(miningField -> {
+				MiningField.UsageType usageType = miningField.getUsageType();
+
+				switch(usageType){
+					case PREDICTED:
+					case TARGET:
+						return true;
+					default:
+						return false;
+				}
+			})
+			.map(MiningField::getName)
+			.distinct()
+			.map(name -> ModelUtil.createMiningField(name, MiningField.UsageType.TARGET))
+			.forEach(miningSchema::addMiningFields);
+
 		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models);
 
 		Model lastModel = Iterables.getLast(models);
 
-		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), ModelUtil.createMiningSchema(schema.getLabel()))
+		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), miningSchema)
 			.setMathContext(ModelUtil.simplifyMathContext(lastModel.getMathContext()))
 			.setSegmentation(segmentation);
 
