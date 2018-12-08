@@ -19,7 +19,6 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,10 +32,7 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
-import org.dmg.pmml.Visitor;
-import org.jpmml.model.visitors.DataDictionaryCleaner;
-import org.jpmml.model.visitors.MiningSchemaCleaner;
-import org.jpmml.model.visitors.TransformationDictionaryCleaner;
+import org.jpmml.model.VisitorBattery;
 
 public class ModelEncoder extends PMMLEncoder {
 
@@ -50,9 +46,9 @@ public class ModelEncoder extends PMMLEncoder {
 
 		pmml.addModels(model);
 
-		List<? extends Visitor> visitors = Arrays.asList(new MiningSchemaCleaner(), new TransformationDictionaryCleaner(), new DataDictionaryCleaner());
-		for(Visitor visitor : visitors){
-			visitor.applyTo(pmml);
+		VisitorBattery visitorBattery = new CleanerBattery();
+		if(visitorBattery.size() > 0){
+			visitorBattery.applyTo(pmml);
 		}
 
 		MiningSchema miningSchema = model.getMiningSchema();
