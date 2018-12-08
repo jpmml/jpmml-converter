@@ -72,7 +72,7 @@ public class MiningModelUtil {
 	public MiningModel createClassification(List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
-		if(categoricalLabel.size() < 3 || categoricalLabel.size() != models.size()){
+		if(categoricalLabel.size() != models.size()){
 			throw new IllegalArgumentException();
 		} // End if
 
@@ -80,11 +80,24 @@ public class MiningModelUtil {
 
 			switch(normalizationMethod){
 				case NONE:
+					if(categoricalLabel.size() < 3){
+						throw new IllegalArgumentException();
+					}
+					break;
 				case SIMPLEMAX:
 				case SOFTMAX:
+					if(categoricalLabel.size() < 2){
+						throw new IllegalArgumentException();
+					}
 					break;
 				default:
 					throw new IllegalArgumentException();
+			}
+		} else
+
+		{
+			if(categoricalLabel.size() < 3){
+				throw new IllegalArgumentException();
 			}
 		}
 
