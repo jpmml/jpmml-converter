@@ -21,11 +21,9 @@ package org.jpmml.converter;
 import java.util.Arrays;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
-import org.dmg.pmml.OpType;
 
 public class BooleanFeature extends CategoricalFeature implements HasDerivedName {
 
@@ -40,17 +38,6 @@ public class BooleanFeature extends CategoricalFeature implements HasDerivedName
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
-
-		FieldName derivedName = getDerivedName();
-
-		DerivedField derivedField = encoder.getDerivedField(derivedName);
-		if(derivedField == null){
-			NormDiscrete normDiscrete = new NormDiscrete(getName(), "true");
-
-			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, DataType.DOUBLE, normDiscrete);
-		}
-
-		return new ContinuousFeature(encoder, derivedField);
+		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> new NormDiscrete(getName(), "true"));
 	}
 }

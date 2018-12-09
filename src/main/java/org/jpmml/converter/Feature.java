@@ -19,9 +19,11 @@
 package org.jpmml.converter;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
@@ -53,14 +55,15 @@ public class Feature {
 			return continuousFeature;
 		}
 
-		PMMLEncoder encoder = ensureEncoder();
-
 		FieldName name = FieldName.create((dataType.name()).toLowerCase() + "(" + (continuousFeature.getName()).getValue() + ")");
 
-		DerivedField derivedField = encoder.getDerivedField(name);
-		if(derivedField == null){
-			derivedField = encoder.createDerivedField(name, OpType.CONTINUOUS, dataType, continuousFeature.ref());
-		}
+		return toContinuousFeature(name, dataType, continuousFeature::ref);
+	}
+
+	protected ContinuousFeature toContinuousFeature(FieldName name, DataType dataType, Supplier<? extends Expression> expressionSupplier){
+		PMMLEncoder encoder = ensureEncoder();
+
+		DerivedField derivedField = encoder.ensureDerivedField(name, OpType.CONTINUOUS, dataType, expressionSupplier);
 
 		return new ContinuousFeature(encoder, derivedField);
 	}

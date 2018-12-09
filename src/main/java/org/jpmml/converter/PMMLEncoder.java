@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -125,6 +126,18 @@ public class PMMLEncoder {
 		}
 
 		return dataField;
+	}
+
+	public DerivedField ensureDerivedField(FieldName name, OpType opType, DataType dataType, Supplier<? extends Expression> expressionSupplier){
+		DerivedField derivedField = getDerivedField(name);
+
+		if(derivedField == null){
+			Expression expression = expressionSupplier.get();
+
+			derivedField = createDerivedField(name, opType, dataType, expression);
+		}
+
+		return derivedField;
 	}
 
 	public DerivedField getDerivedField(FieldName name){

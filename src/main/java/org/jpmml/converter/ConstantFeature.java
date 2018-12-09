@@ -20,11 +20,8 @@ package org.jpmml.converter;
 
 import java.util.Objects;
 
-import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.OpType;
 import org.jpmml.model.ToStringHelper;
 
 public class ConstantFeature extends Feature implements HasDerivedName {
@@ -49,18 +46,7 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
-
-		FieldName derivedName = getDerivedName();
-
-		DerivedField derivedField = encoder.getDerivedField(derivedName);
-		if(derivedField == null){
-			Constant constant = PMMLUtil.createConstant(getValue(), getDataType());
-
-			derivedField = encoder.createDerivedField(derivedName, OpType.CONTINUOUS, getDataType(), constant);
-		}
-
-		return new ContinuousFeature(encoder, derivedField);
+		return toContinuousFeature(getDerivedName(), getDataType(), () -> PMMLUtil.createConstant(getValue(), getDataType()));
 	}
 
 	@Override

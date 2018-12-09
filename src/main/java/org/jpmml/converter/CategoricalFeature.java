@@ -25,7 +25,6 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.OpType;
 import org.jpmml.model.ToStringHelper;
 
 public class CategoricalFeature extends Feature {
@@ -55,19 +54,7 @@ public class CategoricalFeature extends Feature {
 	public ContinuousFeature toContinuousFeature(){
 		PMMLEncoder encoder = ensureEncoder();
 
-		Field<?> field = encoder.getField(getName());
-
-		DataType dataType = field.getDataType();
-		switch(dataType){
-			case INTEGER:
-			case FLOAT:
-			case DOUBLE:
-				break;
-			default:
-				throw new UnsupportedOperationException();
-		}
-
-		field.setOpType(OpType.CONTINUOUS);
+		Field<?> field = encoder.toContinuous(getName());
 
 		return new ContinuousFeature(encoder, field);
 	}

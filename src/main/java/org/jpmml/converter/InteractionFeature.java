@@ -21,13 +21,12 @@ package org.jpmml.converter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.OpType;
 import org.jpmml.model.ToStringHelper;
 
 public class InteractionFeature extends Feature {
@@ -47,22 +46,19 @@ public class InteractionFeature extends Feature {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
+		Supplier<Apply> applySupplier = () -> {
+			List<? extends Feature> features = getFeatures();
 
-		List<? extends Feature> features = getFeatures();
-
-		DerivedField derivedField = encoder.getDerivedField(getName());
-		if(derivedField == null){
 			Apply apply = PMMLUtil.createApply("*", ((features.get(0)).toContinuousFeature()).ref(), ((features.get(1)).toContinuousFeature()).ref());
 
 			for(int i = 2; i < features.size(); i++){
 				apply = PMMLUtil.createApply("*", apply, ((features.get(i)).toContinuousFeature()).ref());
 			}
 
-			derivedField = encoder.createDerivedField(getName(), OpType.CONTINUOUS, DataType.DOUBLE, apply);
-		}
+			return apply;
+		};
 
-		return new ContinuousFeature(encoder, derivedField);
+		return toContinuousFeature(getName(), DataType.DOUBLE, applySupplier);
 	}
 
 	@Override
