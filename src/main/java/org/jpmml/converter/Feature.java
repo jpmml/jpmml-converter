@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
@@ -70,6 +71,12 @@ public class Feature {
 
 	public FieldRef ref(){
 		return new FieldRef(getName());
+	}
+
+	public Field<?> getField(){
+		PMMLEncoder encoder = ensureEncoder();
+
+		return encoder.getField(getName());
 	}
 
 	@Override
