@@ -33,6 +33,7 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.Predicate;
 import org.dmg.pmml.True;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
@@ -215,6 +216,45 @@ public class MiningModelUtil {
 		}
 
 		return new Segmentation(multipleModelMethod, segments);
+	}
+
+	static
+	public Model getFinalModel(MiningModel miningModel){
+		Segmentation segmentation = miningModel.getSegmentation();
+
+		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.getMultipleModelMethod();
+		switch(multipleModelMethod){
+			case SELECT_FIRST:
+			case SELECT_ALL:
+				throw new IllegalArgumentException();
+			case MODEL_CHAIN:
+				{
+					List<Segment> segments = segmentation.getSegments();
+					if(segments.isEmpty()){
+						throw new IllegalArgumentException();
+					}
+
+					Segment finalSegment = segments.get(segments.size() - 1);
+
+					Predicate predicate = finalSegment.getPredicate();
+					if(!(predicate instanceof True)){
+						throw new IllegalArgumentException();
+					}
+
+					Model model = finalSegment.getModel();
+					if(model instanceof MiningModel){
+						MiningModel finalMiningModel = (MiningModel)model;
+
+						return getFinalModel(finalMiningModel);
+					}
+
+					return model;
+				}
+			default:
+				break;
+		}
+
+		return miningModel;
 	}
 
 	private static final Function<Model, Feature> MODEL_PREDICTION = new Function<Model, Feature>(){
