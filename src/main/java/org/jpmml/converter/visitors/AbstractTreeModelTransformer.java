@@ -164,10 +164,9 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void initScore(Node parentNode, Node node){
-		String score = node.getScore();
+		Object score = node.getScore();
 
-		String parentScore = parentNode.getScore();
-		if(parentScore != null){
+		if(parentNode.hasScore()){
 			throw new IllegalArgumentException();
 		}
 
@@ -176,11 +175,10 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void initScoreDistribution(Node parentNode, Node node){
-		String score = node.getScore();
+		Object score = node.getScore();
 		Double recordCount = node.getRecordCount();
 
-		String parentScore = parentNode.getScore();
-		if(parentScore != null){
+		if(parentNode.hasScore()){
 			throw new IllegalArgumentException();
 		}
 
@@ -243,7 +241,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	protected boolean hasValue(Predicate predicate, String value){
 
 		if(predicate instanceof HasValue){
-			HasValue<?> hasValue = (HasValue)predicate;
+			HasValue<?> hasValue = (HasValue<?>)predicate;
 
 			return (hasValue.getValue()).equals(value);
 		}
