@@ -18,8 +18,9 @@
  */
 package org.jpmml.converter;
 
-import java.util.Arrays;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
@@ -28,7 +29,15 @@ import org.dmg.pmml.NormDiscrete;
 public class BooleanFeature extends CategoricalFeature implements HasDerivedName {
 
 	public BooleanFeature(PMMLEncoder encoder, Field<?> field){
-		super(encoder, field, Arrays.asList("false", "true"));
+		this(encoder, field.getName());
+	}
+
+	public BooleanFeature(PMMLEncoder encoder, Feature feature){
+		this(encoder, feature.getName());
+	}
+
+	public BooleanFeature(PMMLEncoder encoder, FieldName name){
+		super(encoder, name, DataType.BOOLEAN, BooleanFeature.VALUES);
 	}
 
 	@Override
@@ -40,4 +49,6 @@ public class BooleanFeature extends CategoricalFeature implements HasDerivedName
 	public ContinuousFeature toContinuousFeature(){
 		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> new NormDiscrete(getName(), "true"));
 	}
+
+	public static final List<String> VALUES = ImmutableList.of("false", "true");
 }
