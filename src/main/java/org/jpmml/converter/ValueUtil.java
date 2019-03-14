@@ -34,58 +34,6 @@ public class ValueUtil {
 	}
 
 	static
-	public String formatValue(Object object){
-
-		if(object instanceof Number){
-			Number number = (Number)object;
-
-			return ValueUtil.formatValue(number);
-		}
-
-		return object.toString();
-	}
-
-	static
-	public String formatValue(Number number){
-		return number.toString();
-	}
-
-	static
-	public String formatArray(List<?> values){
-		StringBuilder sb = new StringBuilder(values.size() * 16);
-
-		for(int i = 0; i < values.size(); i++){
-			Object value = values.get(i);
-
-			if(i > 0){
-				sb.append(" ");
-			} // End if
-
-			if(value instanceof String){
-				String string = (String)value;
-
-				if(("").equals(string)){
-					throw new IllegalArgumentException();
-				} // End if
-
-				if(string.indexOf(' ') > -1){
-					sb.append('\"').append(string).append('\"');
-				} else
-
-				{
-					sb.append(string);
-				}
-			} else
-
-			{
-				sb.append(ValueUtil.formatValue(value));
-			}
-		}
-
-		return sb.toString();
-	}
-
-	static
 	public boolean isZero(Number number){
 		return equals(number, ZERO);
 	}

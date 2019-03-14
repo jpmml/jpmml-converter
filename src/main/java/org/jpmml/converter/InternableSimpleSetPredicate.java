@@ -55,7 +55,7 @@ public class InternableSimpleSetPredicate extends SimpleSetPredicate {
 		return array.getType();
 	}
 
-	private String getArrayValue(){
+	private Object getArrayValue(){
 		Array array = getArray();
 
 		return array.getValue();

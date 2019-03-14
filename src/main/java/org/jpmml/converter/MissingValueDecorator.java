@@ -25,7 +25,7 @@ import org.dmg.pmml.Value;
 
 public class MissingValueDecorator extends ValueDecorator {
 
-	private String missingValueReplacement = null;
+	private Object missingValueReplacement = null;
 
 	private MissingValueTreatmentMethod missingValueTreatment = null;
 
@@ -43,11 +43,11 @@ public class MissingValueDecorator extends ValueDecorator {
 			.setMissingValueTreatment(getMissingValueTreatment());
 	}
 
-	public String getMissingValueReplacement(){
+	public Object getMissingValueReplacement(){
 		return this.missingValueReplacement;
 	}
 
-	public MissingValueDecorator setMissingValueReplacement(String missingValueReplacement){
+	public MissingValueDecorator setMissingValueReplacement(Object missingValueReplacement){
 		this.missingValueReplacement = missingValueReplacement;
 
 		return this;
@@ -64,7 +64,7 @@ public class MissingValueDecorator extends ValueDecorator {
 	}
 
 	@Override
-	public MissingValueDecorator addValues(String... values){
+	public MissingValueDecorator addValues(Object... values){
 		return (MissingValueDecorator)super.addValues(values);
 	}
 }

@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Value;
+import org.jpmml.model.ValueUtil;
 
 public class ValueDecorator implements Decorator {
 
@@ -61,8 +63,8 @@ public class ValueDecorator implements Decorator {
 		return this.values;
 	}
 
-	public ValueDecorator addValues(String... values){
-		getValues().addAll(Arrays.asList(values));
+	public ValueDecorator addValues(Object... values){
+		getValues().addAll(Lists.transform(Arrays.asList(values), ValueUtil::toString));
 
 		return this;
 	}

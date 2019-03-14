@@ -58,7 +58,7 @@ public class ValidValueDecorator extends ValueDecorator {
 	}
 
 	@Override
-	public ValidValueDecorator addValues(String... values){
+	public ValidValueDecorator addValues(Object... values){
 		return (ValidValueDecorator)super.addValues(values);
 	}
 }

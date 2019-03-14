@@ -19,7 +19,6 @@
 package org.jpmml.converter;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.dmg.pmml.DataType;
 import org.junit.Test;
@@ -66,17 +65,6 @@ public class ValueUtilTest {
 
 		assertTrue(ValueUtil.equals(-0d, 0f));
 		assertTrue(ValueUtil.equals(0d, 0f));
-	}
-
-	@Test
-	public void formatArray(){
-		assertEquals("", ValueUtil.formatArray(Collections.emptyList()));
-
-		assertEquals("one two three", ValueUtil.formatArray(Arrays.asList("one", "two", "three")));
-		assertEquals("one \" two \" three", ValueUtil.formatArray(Arrays.asList("one", " two ", "three")));
-
-		assertEquals("1 2 3", ValueUtil.formatArray(Arrays.asList(1, 2, 3)));
-		assertEquals("1.0 2.0 3.0", ValueUtil.formatArray(Arrays.asList(1d, 2d, 3d)));
 	}
 
 	@Test

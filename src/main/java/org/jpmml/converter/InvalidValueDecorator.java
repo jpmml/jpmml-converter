@@ -53,7 +53,7 @@ public class InvalidValueDecorator extends ValueDecorator {
 	}
 
 	@Override
-	public InvalidValueDecorator addValues(String... values){
+	public InvalidValueDecorator addValues(Object... values){
 		return (InvalidValueDecorator)super.addValues(values);
 	}
 }

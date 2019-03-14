@@ -35,6 +35,7 @@ import javax.xml.namespace.QName;
 import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
+import org.dmg.pmml.ComplexArray;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -108,7 +109,7 @@ public class PMMLUtil {
 		for(Value pmmlValue : pmmlValues){
 
 			if((property).equals(pmmlValue.getProperty())){
-				result.add(pmmlValue.getValue());
+				result.add((String)pmmlValue.getValue());
 			}
 		}
 
@@ -156,7 +157,7 @@ public class PMMLUtil {
 
 	static
 	public Constant createConstant(Object value, DataType dataType){
-		Constant constant = new Constant(ValueUtil.formatValue(value))
+		Constant constant = new Constant(value)
 			.setDataType(dataType);
 
 		return constant;
@@ -195,21 +196,21 @@ public class PMMLUtil {
 
 	static
 	public Array createStringArray(List<?> values){
-		Array array = new Array(Array.Type.STRING, ValueUtil.formatArray(values));
+		Array array = new ComplexArray(Array.Type.STRING, values);
 
 		return array;
 	}
 
 	static
 	public Array createIntArray(List<Integer> values){
-		Array array = new Array(Array.Type.INT, ValueUtil.formatArray(values));
+		Array array = new ComplexArray(Array.Type.INT, values);
 
 		return array;
 	}
 
 	static
 	public Array createRealArray(List<? extends Number> values){
-		Array array = new Array(Array.Type.REAL, ValueUtil.formatArray(values));
+		Array array = new ComplexArray(Array.Type.REAL, values);
 
 		return array;
 	}
@@ -281,8 +282,8 @@ public class PMMLUtil {
 			}
 		}
 
-		QName inputColumnName = new QName("http://jpmml.org/jpmml-model/InlineTable", "input", "data");
-		QName outputColumnName = new QName("http://jpmml.org/jpmml-model/InlineTable", "output", "data");
+		QName inputColumnName = InputCell.QNAME;
+		QName outputColumnName = OutputCell.QNAME;
 
 		InlineTable inlineTable = new InlineTable();
 
@@ -303,15 +304,15 @@ public class PMMLUtil {
 				Object cell;
 
 				if((inputColumnName).equals(columName)){
-					cell = new InputCell(ValueUtil.formatValue(value));
+					cell = new InputCell(value);
 				} else
 
 				if((outputColumnName).equals(columName)){
-					cell = new OutputCell(ValueUtil.formatValue(value));
+					cell = new OutputCell(value);
 				} else
 
 				{
-					cell = new JAXBElement<>(columName, String.class, ValueUtil.formatValue(value));
+					cell = new JAXBElement<>(columName, String.class, org.jpmml.model.ValueUtil.toString(value));
 				}
 
 				row.addContent(cell);

@@ -33,10 +33,10 @@ public class PredicateManager {
 	private Interner<Predicate> interner = Interners.newStrongInterner();
 
 
-	public Predicate createSimpleSetPredicate(Feature feature, List<String> values){
+	public Predicate createSimpleSetPredicate(Feature feature, List<?> values){
 
 		if(values.size() == 1){
-			String value = values.get(0);
+			Object value = values.get(0);
 
 			return createSimplePredicate(feature, SimplePredicate.Operator.EQUAL, value);
 		}
@@ -49,7 +49,7 @@ public class PredicateManager {
 		return intern(predicate);
 	}
 
-	public Predicate createSimplePredicate(Feature feature, SimplePredicate.Operator operator, String value){
+	public Predicate createSimplePredicate(Feature feature, SimplePredicate.Operator operator, Object value){
 		Predicate predicate = new InternableSimplePredicate()
 			.setField(feature.getName())
 			.setOperator(operator)
@@ -63,16 +63,18 @@ public class PredicateManager {
 	}
 
 	static
-	private Array createArray(DataType dataType, List<String> values){
+	private Array createArray(DataType dataType, List<?> values){
 
 		switch(dataType){
 			case STRING:
-				return new Array(Array.Type.STRING, ValueUtil.formatArray(values));
+				return PMMLUtil.createStringArray(values);
 			case INTEGER:
-				return new Array(Array.Type.INT, ValueUtil.formatArray(values));
+				// XXX
+				return PMMLUtil.createIntArray((List)values);
 			case DOUBLE:
 			case FLOAT:
-				return new Array(Array.Type.REAL, ValueUtil.formatArray(values));
+				// XXX
+				return PMMLUtil.createRealArray((List)values);
 			default:
 				throw new IllegalArgumentException();
 		}
