@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -102,11 +103,6 @@ public class Schema {
 	}
 
 	private void setFeatures(List<? extends Feature> features){
-
-		if(features == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.features = features;
+		this.features = Objects.requireNonNull(features);
 	}
 }

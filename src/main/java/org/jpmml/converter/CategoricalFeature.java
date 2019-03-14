@@ -93,8 +93,9 @@ public class CategoricalFeature extends Feature {
 	}
 
 	private void setValues(List<String> values){
+		values = Objects.requireNonNull(values);
 
-		if(values == null || values.size() < 1){
+		if(values.isEmpty()){
 			throw new IllegalArgumentException();
 		}
 

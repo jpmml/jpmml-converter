@@ -138,12 +138,7 @@ public class Feature {
 	}
 
 	private void setName(FieldName name){
-
-		if(name == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.name = name;
+		this.name = Objects.requireNonNull(name);
 	}
 
 	public DataType getDataType(){
@@ -151,11 +146,6 @@ public class Feature {
 	}
 
 	private void setDataType(DataType dataType){
-
-		if(dataType == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.dataType = dataType;
+		this.dataType = Objects.requireNonNull(dataType);
 	}
 }

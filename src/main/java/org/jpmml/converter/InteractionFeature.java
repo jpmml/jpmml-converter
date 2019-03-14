@@ -109,8 +109,9 @@ public class InteractionFeature extends Feature {
 	}
 
 	private void setFeatures(List<? extends Feature> features){
+		features = Objects.requireNonNull(features);
 
-		if(features == null || features.size() < 2){
+		if(features.size() < 2){
 			throw new IllegalArgumentException();
 		}
 

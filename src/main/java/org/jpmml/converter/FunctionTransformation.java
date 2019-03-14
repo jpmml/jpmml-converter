@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Objects;
+
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
@@ -50,11 +52,6 @@ public class FunctionTransformation extends AbstractTransformation {
 	}
 
 	private void setFunction(String function){
-
-		if(function == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.function = function;
+		this.function = Objects.requireNonNull(function);
 	}
 }

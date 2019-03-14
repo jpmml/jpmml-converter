@@ -83,11 +83,6 @@ public class BinaryFeature extends Feature implements HasDerivedName {
 	}
 
 	private void setValue(String value){
-
-		if(value == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.value = value;
+		this.value = Objects.requireNonNull(value);
 	}
 }

@@ -19,6 +19,7 @@
 package org.jpmml.converter;
 
 import java.util.List;
+import java.util.Objects;
 
 abstract
 public class Matrix<V> {
@@ -31,11 +32,6 @@ public class Matrix<V> {
 
 
 	public Matrix(List<V> values, int rows, int columns){
-
-		if(values.size() != (rows * columns)){
-			throw new IllegalArgumentException();
-		}
-
 		setValues(values);
 		setRows(rows);
 		setColumns(columns);
@@ -52,7 +48,7 @@ public class Matrix<V> {
 	}
 
 	private void setValues(List<V> values){
-		this.values = values;
+		this.values = Objects.requireNonNull(values);
 	}
 
 	public int getRows(){

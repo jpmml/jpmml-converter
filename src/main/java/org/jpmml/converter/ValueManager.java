@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 import org.dmg.pmml.FieldName;
 
@@ -50,11 +51,6 @@ public class ValueManager<V> {
 	}
 
 	private void setValueMap(Map<FieldName, V> valueMap){
-
-		if(valueMap == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.valueMap = valueMap;
+		this.valueMap = Objects.requireNonNull(valueMap);
 	}
 }

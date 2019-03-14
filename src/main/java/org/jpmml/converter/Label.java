@@ -92,11 +92,6 @@ public class Label {
 	}
 
 	private void setDataType(DataType dataType){
-
-		if(dataType == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.dataType = dataType;
+		this.dataType = Objects.requireNonNull(dataType);
 	}
 }

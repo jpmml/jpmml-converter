@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Objects;
+
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
 
@@ -40,12 +42,7 @@ public class SigmoidTransformation extends AbstractTransformation {
 	}
 
 	private void setMultiplier(Number multiplier){
-
-		if(multiplier == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.multiplier = multiplier;
+		this.multiplier = Objects.requireNonNull(multiplier);
 	}
 
 	static

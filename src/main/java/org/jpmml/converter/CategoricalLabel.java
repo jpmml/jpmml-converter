@@ -91,11 +91,6 @@ public class CategoricalLabel extends Label {
 	}
 
 	private void setValues(List<String> values){
-
-		if(values == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.values = values;
+		this.values = Objects.requireNonNull(values);
 	}
 }

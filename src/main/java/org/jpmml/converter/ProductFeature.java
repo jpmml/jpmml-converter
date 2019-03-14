@@ -71,12 +71,7 @@ public class ProductFeature extends Feature {
 	}
 
 	private void setFeature(Feature feature){
-
-		if(feature == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.feature = feature;
+		this.feature = Objects.requireNonNull(feature);
 	}
 
 	public Number getFactor(){
@@ -84,11 +79,6 @@ public class ProductFeature extends Feature {
 	}
 
 	private void setFactor(Number factor){
-
-		if(factor == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.factor = factor;
+		this.factor = Objects.requireNonNull(factor);
 	}
 }

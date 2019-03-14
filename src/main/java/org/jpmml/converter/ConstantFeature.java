@@ -77,11 +77,6 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 	}
 
 	private void setValue(Number value){
-
-		if(value == null){
-			throw new IllegalArgumentException();
-		}
-
-		this.value = value;
+		this.value = Objects.requireNonNull(value);
 	}
 }
