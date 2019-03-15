@@ -29,7 +29,7 @@ public class WildcardFeature extends Feature {
 		super(encoder, dataField.getName(), dataField.getDataType());
 	}
 
-	public CategoricalFeature toCategoricalFeature(List<String> values){
+	public CategoricalFeature toCategoricalFeature(List<?> values){
 		PMMLEncoder encoder = ensureEncoder();
 
 		DataField dataField = (DataField)encoder.toCategorical(getName(), values);

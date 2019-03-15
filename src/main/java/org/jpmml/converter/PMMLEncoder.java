@@ -106,7 +106,7 @@ public class PMMLEncoder {
 		return createDataField(name, opType, dataType, null);
 	}
 
-	public DataField createDataField(FieldName name, OpType opType, DataType dataType, List<String> values){
+	public DataField createDataField(FieldName name, OpType opType, DataType dataType, List<?> values){
 		DataField dataField = new DataField(name, opType, dataType);
 
 		if(values != null && values.size() > 0){
@@ -205,14 +205,14 @@ public class PMMLEncoder {
 		return field;
 	}
 
-	public Field<?> toCategorical(FieldName name, List<String> values){
+	public Field<?> toCategorical(FieldName name, List<?> values){
 		Field<?> field = getField(name);
 
 		dataField:
 		if(field instanceof DataField){
 			DataField dataField = (DataField)field;
 
-			List<String> existingValues = PMMLUtil.getValues(dataField);
+			List<?> existingValues = PMMLUtil.getValues(dataField);
 			if(existingValues != null && existingValues.size() > 0){
 
 				if((existingValues).equals(values)){

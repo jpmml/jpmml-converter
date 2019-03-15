@@ -18,13 +18,16 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.common.collect.Lists;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.jpmml.model.ToStringHelper;
+import org.jpmml.model.ValueUtil;
 
 public class CategoricalLabel extends Label {
 
@@ -32,7 +35,7 @@ public class CategoricalLabel extends Label {
 
 
 	public CategoricalLabel(DataField dataField){
-		this(dataField.getName(), dataField.getDataType(), PMMLUtil.getValues(dataField));
+		this(dataField.getName(), dataField.getDataType(), formatValues(PMMLUtil.getValues(dataField)));
 	}
 
 	public CategoricalLabel(FieldName name, DataType dataType, List<String> values){
@@ -92,5 +95,15 @@ public class CategoricalLabel extends Label {
 
 	private void setValues(List<String> values){
 		this.values = Objects.requireNonNull(values);
+	}
+
+	static
+	public List<String> formatValues(List<?> values){
+
+		if(values == null){
+			return null;
+		}
+
+		return new ArrayList<>(Lists.transform(values, ValueUtil::toString));
 	}
 }

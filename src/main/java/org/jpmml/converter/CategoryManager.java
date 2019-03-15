@@ -27,35 +27,35 @@ import java.util.function.Predicate;
 
 import org.dmg.pmml.FieldName;
 
-public class CategoryManager extends ValueManager<Set<String>> {
+public class CategoryManager extends ValueManager<Set<Object>> {
 
 	public CategoryManager(){
 	}
 
-	public CategoryManager(Map<FieldName, Set<String>> valueMap){
+	public CategoryManager(Map<FieldName, Set<Object>> valueMap){
 		super(valueMap);
 	}
 
-	public CategoryManager fork(FieldName name, Collection<String> values){
+	public CategoryManager fork(FieldName name, Collection<Object> values){
 		return fork(name, new LinkedHashSet<>(values));
 	}
 
 	@Override
-	public CategoryManager fork(FieldName name, Set<String> values){
-		Map<FieldName, Set<String>> valueMap = new LinkedHashMap<>(getValueMap());
+	public CategoryManager fork(FieldName name, Set<Object> values){
+		Map<FieldName, Set<Object>> valueMap = new LinkedHashMap<>(getValueMap());
 
 		valueMap.put(name, values);
 
 		return new CategoryManager(valueMap);
 	}
 
-	public Predicate<String> getValueFilter(FieldName name){
-		Set<String> values = getValue(name);
+	public Predicate<Object> getValueFilter(FieldName name){
+		Set<Object> values = getValue(name);
 
-		Predicate<String> predicate = new Predicate<String>(){
+		Predicate<Object> predicate = new Predicate<Object>(){
 
 			@Override
-			public boolean test(String value){
+			public boolean test(Object value){
 
 				if(values != null){
 					return values.contains(value);

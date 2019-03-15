@@ -93,13 +93,13 @@ public class PMMLUtil {
 	}
 
 	static
-	public List<String> getValues(DataField dataField){
+	public List<?> getValues(DataField dataField){
 		return getValues(dataField, null);
 	}
 
 	static
-	public List<String> getValues(DataField dataField, Value.Property property){
-		List<String> result = new ArrayList<>();
+	public List<?> getValues(DataField dataField, Value.Property property){
+		List<Object> result = new ArrayList<>();
 
 		if(property == null){
 			property = Value.Property.VALID;
@@ -109,7 +109,7 @@ public class PMMLUtil {
 		for(Value pmmlValue : pmmlValues){
 
 			if((property).equals(pmmlValue.getProperty())){
-				result.add((String)pmmlValue.getValue());
+				result.add(pmmlValue.getValue());
 			}
 		}
 
@@ -117,19 +117,19 @@ public class PMMLUtil {
 	}
 
 	static
-	public void addValues(DataField dataField, List<String> values){
+	public void addValues(DataField dataField, List<?> values){
 		addValues(dataField, values, null);
 	}
 
 	static
-	public void addValues(DataField dataField, List<String> values, Value.Property property){
+	public void addValues(DataField dataField, List<?> values, Value.Property property){
 
 		if((Value.Property.VALID).equals(property)){
 			property = null;
 		}
 
 		List<Value> pmmlValues = dataField.getValues();
-		for(String value : values){
+		for(Object value : values){
 			Value pmmlValue = new Value(value)
 				.setProperty(property);
 

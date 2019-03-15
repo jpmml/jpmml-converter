@@ -28,18 +28,18 @@ import org.jpmml.model.ToStringHelper;
 
 public class BinaryFeature extends Feature implements HasDerivedName {
 
-	private String value = null;
+	private Object value = null;
 
 
-	public BinaryFeature(PMMLEncoder encoder, Field<?> field, String value){
+	public BinaryFeature(PMMLEncoder encoder, Field<?> field, Object value){
 		this(encoder, field.getName(), field.getDataType(), value);
 	}
 
-	public BinaryFeature(PMMLEncoder encoder, Feature feature, String value){
+	public BinaryFeature(PMMLEncoder encoder, Feature feature, Object value){
 		this(encoder, feature.getName(), feature.getDataType(), value);
 	}
 
-	public BinaryFeature(PMMLEncoder encoder, FieldName name, DataType dataType, String value){
+	public BinaryFeature(PMMLEncoder encoder, FieldName name, DataType dataType, Object value){
 		super(encoder, name, dataType);
 
 		setValue(value);
@@ -78,11 +78,11 @@ public class BinaryFeature extends Feature implements HasDerivedName {
 			.add("value", getValue());
 	}
 
-	public String getValue(){
+	public Object getValue(){
 		return this.value;
 	}
 
-	private void setValue(String value){
+	private void setValue(Object value){
 		this.value = Objects.requireNonNull(value);
 	}
 }

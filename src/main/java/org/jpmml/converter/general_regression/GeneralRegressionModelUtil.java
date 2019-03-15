@@ -204,7 +204,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	private double createPPCell(String value, FieldName name, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> predictorNames){
+	private double createPPCell(Object value, FieldName name, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> predictorNames){
 		PPCell ppCell = new PPCell(value, name, parameter.getName());
 
 		ppMatrix.addPPCells(ppCell);

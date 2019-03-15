@@ -47,8 +47,8 @@ public class BooleanFeature extends CategoricalFeature implements HasDerivedName
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> new NormDiscrete(getName(), "true"));
+		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> new NormDiscrete(getName(), Boolean.TRUE));
 	}
 
-	public static final List<String> VALUES = ImmutableList.of("false", "true");
+	public static final List<Object> VALUES = ImmutableList.of(Boolean.FALSE, Boolean.TRUE);
 }

@@ -22,17 +22,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.Value;
-import org.jpmml.model.ValueUtil;
 
 public class ValueDecorator implements Decorator {
 
 	private Value.Property property = null;
 
-	private List<String> values = new ArrayList<>();
+	private List<Object> values = new ArrayList<>();
 
 
 	protected ValueDecorator(Value.Property property){
@@ -42,7 +40,7 @@ public class ValueDecorator implements Decorator {
 	@Override
 	public void decorate(DataField dataField, MiningField miningField){
 		Value.Property property = getProperty();
-		List<String> values = getValues();
+		List<?> values = getValues();
 
 		if(values.size() > 0){
 			PMMLUtil.addValues(dataField, values, property);
@@ -59,12 +57,12 @@ public class ValueDecorator implements Decorator {
 		return this;
 	}
 
-	public List<String> getValues(){
+	public List<Object> getValues(){
 		return this.values;
 	}
 
 	public ValueDecorator addValues(Object... values){
-		getValues().addAll(Lists.transform(Arrays.asList(values), ValueUtil::toString));
+		getValues().addAll(Arrays.asList(values));
 
 		return this;
 	}

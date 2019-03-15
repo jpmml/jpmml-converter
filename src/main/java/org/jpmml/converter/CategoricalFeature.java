@@ -29,22 +29,22 @@ import org.jpmml.model.ToStringHelper;
 
 public class CategoricalFeature extends Feature {
 
-	private List<String> values = null;
+	private List<?> values = null;
 
 
 	public CategoricalFeature(PMMLEncoder encoder, DataField dataField){
 		this(encoder, dataField, PMMLUtil.getValues(dataField));
 	}
 
-	public CategoricalFeature(PMMLEncoder encoder, Field<?> field, List<String> values){
+	public CategoricalFeature(PMMLEncoder encoder, Field<?> field, List<?> values){
 		this(encoder, field.getName(), field.getDataType(), values);
 	}
 
-	public CategoricalFeature(PMMLEncoder encoder, Feature feature, List<String> values){
+	public CategoricalFeature(PMMLEncoder encoder, Feature feature, List<?> values){
 		this(encoder, feature.getName(), feature.getDataType(), values);
 	}
 
-	public CategoricalFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<String> values){
+	public CategoricalFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<?> values){
 		super(encoder, name, dataType);
 
 		setValues(values);
@@ -82,17 +82,17 @@ public class CategoricalFeature extends Feature {
 			.add("values", getValues());
 	}
 
-	public String getValue(int index){
-		List<String> values = getValues();
+	public Object getValue(int index){
+		List<?> values = getValues();
 
 		return values.get(index);
 	}
 
-	public List<String> getValues(){
+	public List<?> getValues(){
 		return this.values;
 	}
 
-	private void setValues(List<String> values){
+	private void setValues(List<?> values){
 		values = Objects.requireNonNull(values);
 
 		if(values.isEmpty()){
