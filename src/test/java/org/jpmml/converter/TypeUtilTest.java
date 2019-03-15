@@ -29,14 +29,17 @@ public class TypeUtilTest {
 
 	@Test
 	public void getDataType(){
-		assertEquals(DataType.INTEGER, TypeUtil.getDataType(Arrays.asList("1")));
-		assertEquals(DataType.INTEGER, TypeUtil.getDataType(Arrays.asList("1.0")));
-		assertEquals(DataType.DOUBLE, TypeUtil.getDataType(Arrays.asList("1.1")));
-		assertEquals(DataType.STRING, TypeUtil.getDataType(Arrays.asList("one")));
+		assertEquals(DataType.INTEGER, TypeUtil.getDataType(1));
+		assertEquals(DataType.DOUBLE, TypeUtil.getDataType(1.0d));
+
+		assertEquals(DataType.INTEGER, TypeUtil.getDataType("1"));
+		assertEquals(DataType.INTEGER, TypeUtil.getDataType("1.0"));
+		assertEquals(DataType.DOUBLE, TypeUtil.getDataType("1.1"));
+		assertEquals(DataType.STRING, TypeUtil.getDataType("one"));
 
 		assertEquals(DataType.INTEGER, TypeUtil.getDataType(Arrays.asList("1", "2", "3")));
 		assertEquals(DataType.INTEGER, TypeUtil.getDataType(Arrays.asList("1", "2.0", "3")));
-		assertEquals(DataType.DOUBLE, TypeUtil.getDataType(Arrays.asList("1", "2.1", "3")));
+		assertEquals(DataType.STRING, TypeUtil.getDataType(Arrays.asList("1", "2.1", "3")));
 		assertEquals(DataType.STRING, TypeUtil.getDataType(Arrays.asList("1", "two", "3")));
 	}
 }

@@ -19,7 +19,10 @@
 package org.jpmml.converter;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.google.common.collect.Iterables;
 import com.google.common.math.DoubleMath;
 import org.dmg.pmml.DataType;
 
@@ -55,53 +58,75 @@ public class TypeUtil {
 	}
 
 	static
-	public DataType getDataType(Collection<String> values){
+	public DataType getDataType(String value){
+
+		try {
+			Integer.parseInt(value);
+
+			return DataType.INTEGER;
+		} catch(NumberFormatException integerNfe){
+
+			try {
+				double doubleValue = Double.parseDouble(value);
+
+				if(DoubleMath.isMathematicalInteger(doubleValue)){
+					return DataType.INTEGER;
+				}
+
+				return DataType.DOUBLE;
+			} catch(NumberFormatException doubleNfe){
+				return DataType.STRING;
+			}
+		}
+	}
+
+	static
+	public DataType getDataType(Collection<?> values){
+		return getDataType(values, null);
+	}
+
+	static
+	public DataType getDataType(Collection<?> values, DataType defaultDataType){
 
 		if(values.isEmpty()){
+
+			if(defaultDataType != null){
+				return defaultDataType;
+			}
+
 			throw new IllegalArgumentException();
 		}
 
-		DataType dataType = DataType.INTEGER;
+		boolean allStrings = true;
 
-		for(String value : values){
+		Set<DataType> dataTypes = new HashSet<>();
 
-			switch(dataType){
-				case INTEGER:
-					try {
-						Integer.parseInt(value);
+		for(Object value : values){
+			DataType dataType;
 
-						continue;
-					} catch(NumberFormatException integerNfe){
+			if(value instanceof String){
+				dataType = getDataType((String)value);
+			} else
 
-						try {
-							double doubleValue = Double.parseDouble(value);
+			{
+				allStrings = false;
 
-							if(DoubleMath.isMathematicalInteger(doubleValue)){
-								continue;
-							}
-
-							dataType = DataType.DOUBLE;
-						} catch(NumberFormatException doubleNfe){
-							dataType = DataType.STRING;
-						}
-					}
-					break;
-				case DOUBLE:
-					try {
-						Double.parseDouble(value);
-
-						continue;
-					} catch(NumberFormatException nfe){
-						dataType = DataType.STRING;
-					}
-					break;
-				case STRING:
-					break;
-				default:
-					throw new IllegalArgumentException();
+				dataType = getDataType(value);
 			}
+
+			dataTypes.add(dataType);
 		}
 
-		return dataType;
+		if(dataTypes.size() == 1){
+			return Iterables.getOnlyElement(dataTypes);
+		} else
+
+		{
+			if(allStrings){
+				return DataType.STRING;
+			}
+
+			throw new IllegalArgumentException("Expected all values to be of the same data type, got " + dataTypes.size() + " different data types (" + dataTypes + ")");
+		}
 	}
 }
