@@ -18,9 +18,6 @@
  */
 package org.jpmml.converter;
 
-import java.util.Arrays;
-
-import org.dmg.pmml.DataType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -89,18 +86,5 @@ public class ValueUtilTest {
 		} catch(IllegalArgumentException iae){
 			// Ignored
 		}
-	}
-
-	@Test
-	public void getDataType(){
-		assertEquals(DataType.INTEGER, ValueUtil.getDataType(Arrays.asList("1")));
-		assertEquals(DataType.INTEGER, ValueUtil.getDataType(Arrays.asList("1.0")));
-		assertEquals(DataType.DOUBLE, ValueUtil.getDataType(Arrays.asList("1.1")));
-		assertEquals(DataType.STRING, ValueUtil.getDataType(Arrays.asList("one")));
-
-		assertEquals(DataType.INTEGER, ValueUtil.getDataType(Arrays.asList("1", "2", "3")));
-		assertEquals(DataType.INTEGER, ValueUtil.getDataType(Arrays.asList("1", "2.0", "3")));
-		assertEquals(DataType.DOUBLE, ValueUtil.getDataType(Arrays.asList("1", "2.1", "3")));
-		assertEquals(DataType.STRING, ValueUtil.getDataType(Arrays.asList("1", "two", "3")));
 	}
 }

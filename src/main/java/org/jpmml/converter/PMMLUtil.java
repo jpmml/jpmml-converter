@@ -152,7 +152,7 @@ public class PMMLUtil {
 
 	static
 	public Constant createConstant(Number value){
-		return createConstant(value, ValueUtil.getDataType(value));
+		return createConstant(value, TypeUtil.getDataType(value));
 	}
 
 	static

@@ -20,13 +20,11 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.primitives.Ints;
-import org.dmg.pmml.DataType;
 
 public class ValueUtil {
 
@@ -132,83 +130,6 @@ public class ValueUtil {
 		}
 
 		return Lists.transform(values, value -> floatToDouble(value));
-	}
-
-	static
-	public DataType getDataType(Object value){
-
-		if(value instanceof String){
-			return DataType.STRING;
-		} else
-
-		if((value instanceof Byte) || (value instanceof Short) || (value instanceof Integer) || (value instanceof Long)){
-			return DataType.INTEGER;
-		} else
-
-		if(value instanceof Float){
-			return DataType.FLOAT;
-		} else
-
-		if(value instanceof Double){
-			return DataType.DOUBLE;
-		} else
-
-		if(value instanceof Boolean){
-			return DataType.BOOLEAN;
-		}
-
-		throw new IllegalArgumentException();
-	}
-
-	static
-	public DataType getDataType(Collection<String> values){
-
-		if(values.isEmpty()){
-			throw new IllegalArgumentException();
-		}
-
-		DataType dataType = DataType.INTEGER;
-
-		for(String value : values){
-
-			switch(dataType){
-				case INTEGER:
-					try {
-						Integer.parseInt(value);
-
-						continue;
-					} catch(NumberFormatException integerNfe){
-
-						try {
-							double doubleValue = Double.parseDouble(value);
-
-							if(DoubleMath.isMathematicalInteger(doubleValue)){
-								continue;
-							}
-
-							dataType = DataType.DOUBLE;
-						} catch(NumberFormatException doubleNfe){
-							dataType = DataType.STRING;
-						}
-					}
-					break;
-				case DOUBLE:
-					try {
-						Double.parseDouble(value);
-
-						continue;
-					} catch(NumberFormatException nfe){
-						dataType = DataType.STRING;
-					}
-					break;
-				case STRING:
-					break;
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		return dataType;
 	}
 
 	static

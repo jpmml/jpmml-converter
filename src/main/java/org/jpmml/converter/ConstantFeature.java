@@ -30,7 +30,7 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 
 
 	public ConstantFeature(PMMLEncoder encoder, Number value){
-		this(encoder, FieldName.create(value.toString() + (value instanceof Float ? "f" : "")), ValueUtil.getDataType(value), value);
+		this(encoder, FieldName.create(value.toString() + (value instanceof Float ? "f" : "")), TypeUtil.getDataType(value), value);
 	}
 
 	public ConstantFeature(PMMLEncoder encoder, FieldName name, DataType dataType, Number value){
