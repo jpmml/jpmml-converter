@@ -43,6 +43,7 @@ import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
+import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 
 public class NeuralNetworkUtil {
@@ -177,10 +178,7 @@ public class NeuralNetworkUtil {
 
 	static
 	public NeuralOutputs createClassificationNeuralOutputs(List<? extends NeuralEntity> entities, CategoricalLabel categoricalLabel){
-
-		if(entities.size() != categoricalLabel.size()){
-			throw new IllegalArgumentException();
-		}
+		SchemaUtil.checkSize(entities.size(), categoricalLabel);
 
 		NeuralOutputs neuralOutputs = new NeuralOutputs();
 

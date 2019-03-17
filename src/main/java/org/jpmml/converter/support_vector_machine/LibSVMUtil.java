@@ -43,6 +43,7 @@ import org.jpmml.converter.Matrix;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.PMMLUtil;
 import org.jpmml.converter.Schema;
+import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 
 public class LibSVMUtil {
@@ -123,9 +124,7 @@ public class LibSVMUtil {
 
 		List<? extends Feature> features = schema.getFeatures();
 
-		if(numberOfFeatures != features.size()){
-			throw new IllegalArgumentException();
-		}
+		SchemaUtil.checkSize(numberOfFeatures, features);
 
 		BitSet featureMask = new BitSet(numberOfFeatures);
 

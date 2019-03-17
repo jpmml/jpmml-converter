@@ -45,6 +45,7 @@ import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.Schema;
+import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 import org.jpmml.converter.regression.RegressionModelUtil;
 
@@ -75,9 +76,7 @@ public class MiningModelUtil {
 	public MiningModel createClassification(List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
-		if(categoricalLabel.size() != models.size()){
-			throw new IllegalArgumentException();
-		} // End if
+		SchemaUtil.checkSize(models.size(), categoricalLabel);
 
 		if(normalizationMethod != null){
 

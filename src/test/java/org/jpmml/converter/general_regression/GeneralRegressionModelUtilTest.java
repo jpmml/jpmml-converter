@@ -30,12 +30,12 @@ import org.dmg.pmml.general_regression.PPCell;
 import org.dmg.pmml.general_regression.ParameterCell;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelEncoder;
-import org.jpmml.converter.SchemaUtil;
+import org.jpmml.converter.ModelTest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class GeneralRegressionModelUtilTest {
+public class GeneralRegressionModelUtilTest extends ModelTest {
 
 	@Test
 	public void encodeRegressionTable(){
@@ -47,7 +47,7 @@ public class GeneralRegressionModelUtilTest {
 
 		assertState(generalRegressionModel, false, false, false);
 
-		Feature feature = SchemaUtil.createConstantFeature(encoder, 3d);
+		Feature feature = createConstantFeature(encoder, 3d);
 
 		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), Collections.singletonList(2d), 1d, null);
 
@@ -58,7 +58,7 @@ public class GeneralRegressionModelUtilTest {
 
 		generalRegressionModel = new GeneralRegressionModel();
 
-		feature = SchemaUtil.createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
+		feature = createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
 
 		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), Collections.singletonList(2d), 1d, null);
 

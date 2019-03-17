@@ -42,6 +42,7 @@ import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.PowerFeature;
 import org.jpmml.converter.ProductFeature;
 import org.jpmml.converter.Schema;
+import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 
 public class RegressionModelUtil {
@@ -92,9 +93,7 @@ public class RegressionModelUtil {
 	public RegressionModel createBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
-		if(categoricalLabel.size() != 2){
-			throw new IllegalArgumentException();
-		} // End if
+		SchemaUtil.checkSize(2, categoricalLabel);
 
 		if(normalizationMethod != null){
 

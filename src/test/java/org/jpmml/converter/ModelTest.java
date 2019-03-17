@@ -24,10 +24,8 @@ import java.util.List;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 
-public class SchemaUtil {
-
-	private SchemaUtil(){
-	}
+abstract
+public class ModelTest {
 
 	static
 	public ContinuousFeature createContinuousFeature(ModelEncoder encoder, FieldName name){

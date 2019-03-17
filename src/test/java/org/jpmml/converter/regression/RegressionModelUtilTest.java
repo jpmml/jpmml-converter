@@ -29,12 +29,12 @@ import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionTable;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelEncoder;
-import org.jpmml.converter.SchemaUtil;
+import org.jpmml.converter.ModelTest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class RegressionModelUtilTest {
+public class RegressionModelUtilTest extends ModelTest {
 
 	@Test
 	public void createRegressionTable(){
@@ -44,13 +44,13 @@ public class RegressionModelUtilTest {
 
 		assertState(regressionTable, 0d, false, false, false);
 
-		Feature feature = SchemaUtil.createConstantFeature(encoder, 3d);
+		Feature feature = createConstantFeature(encoder, 3d);
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
 		assertState(regressionTable, 1d + (2d * 3d), false, false, false);
 
-		feature = SchemaUtil.createInteractionFeature(encoder, 3d, FieldName.create("x"), 7d);
+		feature = createInteractionFeature(encoder, 3d, FieldName.create("x"), 7d);
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
@@ -61,7 +61,7 @@ public class RegressionModelUtilTest {
 		assertEquals(FieldName.create("x"), numericPredictor.getName());
 		assertEquals((Double)(2d * 3d * 7d), (Double)numericPredictor.getCoefficient());
 
-		feature = SchemaUtil.createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
+		feature = createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
