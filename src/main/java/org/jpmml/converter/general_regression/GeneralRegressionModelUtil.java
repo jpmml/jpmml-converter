@@ -50,7 +50,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	public GeneralRegressionModel encodeRegressionTable(GeneralRegressionModel generalRegressionModel, List<? extends Feature> features, List<Double> coefficients, Double intercept, String targetCategory){
+	public GeneralRegressionModel encodeRegressionTable(GeneralRegressionModel generalRegressionModel, List<? extends Feature> features, List<Double> coefficients, Double intercept, Object targetCategory){
 
 		if(features.size() != coefficients.size()){
 			throw new IllegalArgumentException();

@@ -170,12 +170,12 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createAffinityField(DataType dataType, String value){
+	public OutputField createAffinityField(DataType dataType, Object value){
 		return createAffinityField(FieldName.create("affinity(" + value + ")"), dataType, value);
 	}
 
 	static
-	public OutputField createAffinityField(FieldName name, DataType dataType, String value){
+	public OutputField createAffinityField(FieldName name, DataType dataType, Object value){
 		OutputField outputField = new OutputField(name, dataType)
 			.setOpType(OpType.CONTINUOUS)
 			.setResultFeature(ResultFeature.AFFINITY)
@@ -187,7 +187,7 @@ public class ModelUtil {
 	static
 	public List<OutputField> createAffinityFields(DataType dataType, List<? extends Entity<?>> entities){
 		return entities.stream()
-			.map(entity -> createAffinityField(dataType, org.jpmml.model.ValueUtil.toString(entity.getId())))
+			.map(entity -> createAffinityField(dataType, entity.getId()))
 			.collect(Collectors.toList());
 	}
 
@@ -210,12 +210,12 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createProbabilityField(DataType dataType, String value){
+	public OutputField createProbabilityField(DataType dataType, Object value){
 		return createProbabilityField(FieldName.create("probability(" + value + ")"), dataType, value);
 	}
 
 	static
-	public OutputField createProbabilityField(FieldName name, DataType dataType, String value){
+	public OutputField createProbabilityField(FieldName name, DataType dataType, Object value){
 		OutputField outputField = new OutputField(name, dataType)
 			.setOpType(OpType.CONTINUOUS)
 			.setResultFeature(ResultFeature.PROBABILITY)
@@ -225,7 +225,7 @@ public class ModelUtil {
 	}
 
 	static
-	public List<OutputField> createProbabilityFields(DataType dataType, List<String> values){
+	public List<OutputField> createProbabilityFields(DataType dataType, List<?> values){
 		return values.stream()
 			.map(value -> createProbabilityField(dataType, value))
 			.collect(Collectors.toList());
