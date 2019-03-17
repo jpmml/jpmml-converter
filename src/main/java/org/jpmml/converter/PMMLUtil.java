@@ -196,21 +196,27 @@ public class PMMLUtil {
 
 	static
 	public Array createStringArray(List<?> values){
-		Array array = new ComplexArray(Array.Type.STRING, values);
+		Array array = new ComplexArray()
+			.setType(Array.Type.STRING)
+			.setValue(values);
 
 		return array;
 	}
 
 	static
 	public Array createIntArray(List<Integer> values){
-		Array array = new ComplexArray(Array.Type.INT, values);
+		Array array = new ComplexArray()
+			.setType(Array.Type.INT)
+			.setValue(values);
 
 		return array;
 	}
 
 	static
 	public Array createRealArray(List<? extends Number> values){
-		Array array = new ComplexArray(Array.Type.REAL, values);
+		Array array = new ComplexArray()
+			.setType(Array.Type.REAL)
+			.setValue(values);
 
 		return array;
 	}

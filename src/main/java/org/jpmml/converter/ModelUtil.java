@@ -185,9 +185,9 @@ public class ModelUtil {
 	}
 
 	static
-	public List<OutputField> createAffinityFields(DataType dataType, List<? extends Entity> entities){
+	public List<OutputField> createAffinityFields(DataType dataType, List<? extends Entity<?>> entities){
 		return entities.stream()
-			.map(entity -> createAffinityField(dataType, entity.getId()))
+			.map(entity -> createAffinityField(dataType, org.jpmml.model.ValueUtil.toString(entity.getId())))
 			.collect(Collectors.toList());
 	}
 

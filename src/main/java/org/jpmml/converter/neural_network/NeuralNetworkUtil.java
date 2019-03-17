@@ -24,12 +24,12 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.Entity;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.neural_network.Connection;
+import org.dmg.pmml.neural_network.NeuralEntity;
 import org.dmg.pmml.neural_network.NeuralInput;
 import org.dmg.pmml.neural_network.NeuralInputs;
 import org.dmg.pmml.neural_network.NeuralLayer;
@@ -91,7 +91,7 @@ public class NeuralNetworkUtil {
 	}
 
 	static
-	public Neuron createNeuron(List<? extends Entity> entities, List<Double> weights, Double bias){
+	public Neuron createNeuron(List<? extends NeuralEntity> entities, List<Double> weights, Double bias){
 
 		if(entities.size() != weights.size()){
 			throw new IllegalArgumentException();
@@ -100,7 +100,7 @@ public class NeuralNetworkUtil {
 		Neuron neuron = new Neuron();
 
 		for(int i = 0; i < entities.size(); i++){
-			Entity entity = entities.get(i);
+			NeuralEntity entity = entities.get(i);
 			Double weight = weights.get(i);
 
 			if(weight == null || ValueUtil.isZeroLike(weight)){
@@ -122,7 +122,7 @@ public class NeuralNetworkUtil {
 	}
 
 	static
-	public List<NeuralLayer> createBinaryLogisticTransformation(Entity entity){
+	public List<NeuralLayer> createBinaryLogisticTransformation(NeuralEntity entity){
 		NeuralLayer inputLayer = new NeuralLayer()
 			.setActivationFunction(NeuralNetwork.ActivationFunction.LOGISTIC);
 
@@ -154,13 +154,13 @@ public class NeuralNetworkUtil {
 	}
 
 	static
-	public NeuralOutputs createRegressionNeuralOutputs(List<? extends Entity> entities, ContinuousLabel continuousLabel){
+	public NeuralOutputs createRegressionNeuralOutputs(List<? extends NeuralEntity> entities, ContinuousLabel continuousLabel){
 
 		if(entities.size() != 1){
 			throw new IllegalArgumentException();
 		}
 
-		Entity entity = Iterables.getOnlyElement(entities);
+		NeuralEntity entity = Iterables.getOnlyElement(entities);
 
 		DerivedField derivedField = new DerivedField(OpType.CONTINUOUS, continuousLabel.getDataType())
 			.setExpression(new FieldRef(continuousLabel.getName()));
@@ -176,7 +176,7 @@ public class NeuralNetworkUtil {
 	}
 
 	static
-	public NeuralOutputs createClassificationNeuralOutputs(List<? extends Entity> entities, CategoricalLabel categoricalLabel){
+	public NeuralOutputs createClassificationNeuralOutputs(List<? extends NeuralEntity> entities, CategoricalLabel categoricalLabel){
 
 		if(entities.size() != categoricalLabel.size()){
 			throw new IllegalArgumentException();
@@ -185,7 +185,7 @@ public class NeuralNetworkUtil {
 		NeuralOutputs neuralOutputs = new NeuralOutputs();
 
 		for(int i = 0; i < categoricalLabel.size(); i++){
-			Entity entity = entities.get(i);
+			NeuralEntity entity = entities.get(i);
 
 			DerivedField derivedField = new DerivedField(OpType.CATEGORICAL, categoricalLabel.getDataType())
 				.setExpression(new NormDiscrete(categoricalLabel.getName(), categoricalLabel.getValue(i)));
