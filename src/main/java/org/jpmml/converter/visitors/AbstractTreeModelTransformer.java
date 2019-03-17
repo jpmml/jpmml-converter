@@ -226,6 +226,16 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
+	protected boolean equalsNode(Object defaultChild, Node node){
+
+		if(defaultChild instanceof Node){
+			return (defaultChild).equals(node);
+		}
+
+		return (defaultChild).equals(node.getId());
+	}
+
+	static
 	protected boolean hasFieldReference(Predicate predicate, FieldName name){
 
 		if(predicate instanceof HasFieldReference){
