@@ -19,11 +19,13 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.DataType;
 import org.jpmml.model.ToStringHelper;
 
 public class Schema {
@@ -38,11 +40,37 @@ public class Schema {
 		setFeatures(features);
 	}
 
-	public Schema toAnonymousSchema(){
-		Label label = getLabel();
+	public Schema toRelabeledSchema(Label label){
 		List<? extends Feature> features = getFeatures();
 
-		return new Schema(label != null ? label.toAnonymousLabel() : null, features);
+		return new Schema(label, features);
+	}
+
+	public Schema toAnonymousSchema(){
+		Label label = getLabel();
+
+		return toRelabeledSchema(label != null ? label.toAnonymousLabel() : null);
+	}
+
+	public Schema toAnonymousRegressorSchema(DataType dataType){
+
+		switch(dataType){
+			case FLOAT:
+			case DOUBLE:
+				break;
+			default:
+				throw new IllegalArgumentException();
+		}
+
+		Label label = new ContinuousLabel(null, dataType);
+
+		return toRelabeledSchema(label);
+	}
+
+	public Schema toEmptySchema(){
+		Label label = getLabel();
+
+		return new Schema(label, Collections.emptyList());
 	}
 
 	public Schema toSubSchema(int[] indexes){
