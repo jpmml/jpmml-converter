@@ -82,6 +82,12 @@ public class CategoricalFeature extends Feature {
 			.add("values", getValues());
 	}
 
+	public int size(){
+		List<?> values = getValues();
+
+		return values.size();
+	}
+
 	public Object getValue(int index){
 		List<?> values = getValues();
 

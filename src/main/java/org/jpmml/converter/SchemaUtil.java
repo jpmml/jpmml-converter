@@ -48,4 +48,12 @@ public class SchemaUtil {
 			throw new IllegalArgumentException("Expected " + size + " feature(s), got " + features.size() + " feature(s)");
 		}
 	}
+
+	static
+	public void checkSize(int size, CategoricalFeature categoricalFeature){
+
+		if(categoricalFeature.size() != size){
+			throw new IllegalArgumentException("Expected " + size + " categories, got " + categoricalFeature.size() + " categories");
+		}
+	}
 }
