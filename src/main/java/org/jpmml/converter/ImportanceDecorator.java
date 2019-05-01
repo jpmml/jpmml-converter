@@ -23,7 +23,7 @@ import org.dmg.pmml.MiningField;
 
 public class ImportanceDecorator implements Decorator {
 
-	private Double importance = null;
+	private Number importance = null;
 
 
 	@Override
@@ -31,11 +31,11 @@ public class ImportanceDecorator implements Decorator {
 		miningField.setImportance(getImportance());
 	}
 
-	public Double getImportance(){
+	public Number getImportance(){
 		return this.importance;
 	}
 
-	public ImportanceDecorator setImportance(Double importance){
+	public ImportanceDecorator setImportance(Number importance){
 		this.importance = importance;
 
 		return this;

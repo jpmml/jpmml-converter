@@ -90,13 +90,13 @@ public class ModelUtil {
 		boolean rescaled = false;
 
 		if(slope != null && !ValueUtil.isOne(slope)){
-			target.setRescaleFactor(slope.doubleValue());
+			target.setRescaleFactor(slope);
 
 			rescaled = true;
 		} // End if
 
 		if(intercept != null && !ValueUtil.isZeroLike(intercept)){
-			target.setRescaleConstant(intercept.doubleValue());
+			target.setRescaleConstant(intercept);
 
 			rescaled = true;
 		} // End if

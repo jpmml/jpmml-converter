@@ -52,7 +52,7 @@ public class LibSVMUtil {
 	}
 
 	static
-	public SupportVectorMachineModel createRegression(Matrix<Double> sv, List<String> ids, Double rho, List<Double> coefs, Schema schema){
+	public SupportVectorMachineModel createRegression(Matrix<? extends Number> sv, List<String> ids, Number rho, List<? extends Number> coefs, Schema schema){
 		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
 
 		VectorDictionary vectorDictionary = LibSVMUtil.createVectorDictionary(sv, ids, schema);
@@ -68,7 +68,7 @@ public class LibSVMUtil {
 	}
 
 	static
-	public SupportVectorMachineModel createClassification(Matrix<Double> sv, List<Integer> nSv, List<String> ids, List<Double> rho, List<Double> coefs, Schema schema){
+	public SupportVectorMachineModel createClassification(Matrix<? extends Number> sv, List<Integer> nSv, List<String> ids, List<? extends Number> rho, List<? extends Number> coefs, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		int numberOfVectors = sv.getRows();
@@ -95,9 +95,9 @@ public class LibSVMUtil {
 				svmVectorInstances.addAll(slice(vectorInstances, offsets, first));
 				svmVectorInstances.addAll(slice(vectorInstances, offsets, second));
 
-				Double svmRho = rho.get(i);
+				Number svmRho = rho.get(i);
 
-				List<Double> svmCoefs = new ArrayList<>();
+				List<Number> svmCoefs = new ArrayList<>();
 				svmCoefs.addAll(slice(CMatrixUtil.getRow(coefs, size - 1, numberOfVectors, second - 1), offsets, first));
 				svmCoefs.addAll(slice(CMatrixUtil.getRow(coefs, size - 1, numberOfVectors, first), offsets, second));
 
@@ -118,7 +118,7 @@ public class LibSVMUtil {
 	}
 
 	static
-	public VectorDictionary createVectorDictionary(Matrix<Double> sv, List<String> ids, Schema schema){
+	public VectorDictionary createVectorDictionary(Matrix<? extends Number> sv, List<String> ids, Schema schema){
 		int numberOfVectors = sv.getRows();
 		int numberOfFeatures = sv.getColumns();
 
@@ -128,7 +128,7 @@ public class LibSVMUtil {
 
 		BitSet featureMask = new BitSet(numberOfFeatures);
 
-		Double defaultValue = Double.valueOf(0d);
+		Double defaultValue = 0d;
 
 		for(int i = 0; i < numberOfVectors; i++){
 			List<? extends Number> values = sv.getRowValues(i);
@@ -193,7 +193,7 @@ public class LibSVMUtil {
 	}
 
 	static
-	public SupportVectorMachine createSupportVectorMachine(List<VectorInstance> vectorInstances, Double rho, List<Double> coefs){
+	public SupportVectorMachine createSupportVectorMachine(List<VectorInstance> vectorInstances, Number rho, List<? extends Number> coefs){
 
 		if(vectorInstances.size() != coefs.size()){
 			throw new IllegalArgumentException();

@@ -26,17 +26,17 @@ public class OutlierDecorator implements Decorator {
 
 	private OutlierTreatmentMethod outlierTreatment = null;
 
-	private Double lowValue = null;
+	private Number lowValue = null;
 
-	private Double highValue = null;
+	private Number highValue = null;
 
 
 	@Override
 	public void decorate(DataField dataField, MiningField miningField){
 		OutlierTreatmentMethod outlierTreatment = getOutlierTreatmentMethod();
 
-		Double lowValue = getLowValue();
-		Double highValue = getHighValue();
+		Number lowValue = getLowValue();
+		Number highValue = getHighValue();
 
 		if(outlierTreatment != null && !(OutlierTreatmentMethod.AS_IS).equals(outlierTreatment)){
 			miningField.setOutlierTreatment(outlierTreatment)
@@ -55,21 +55,21 @@ public class OutlierDecorator implements Decorator {
 		return this;
 	}
 
-	public Double getLowValue(){
+	public Number getLowValue(){
 		return this.lowValue;
 	}
 
-	public OutlierDecorator setLowValue(Double lowValue){
+	public OutlierDecorator setLowValue(Number lowValue){
 		this.lowValue = lowValue;
 
 		return this;
 	}
 
-	public Double getHighValue(){
+	public Number getHighValue(){
 		return this.highValue;
 	}
 
-	public OutlierDecorator setHighValue(Double highValue){
+	public OutlierDecorator setHighValue(Number highValue){
 		this.highValue = highValue;
 
 		return this;

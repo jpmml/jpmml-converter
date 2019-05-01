@@ -51,12 +51,12 @@ public class RegressionModelUtil {
 	}
 
 	static
-	public RegressionModel createRegression(List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+	public RegressionModel createRegression(List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
 		return createRegression(null, features, coefficients, intercept, normalizationMethod, schema);
 	}
 
 	static
-	public RegressionModel createRegression(MathContext mathContext, List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+	public RegressionModel createRegression(MathContext mathContext, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
 		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
 
 		if(normalizationMethod != null){
@@ -79,18 +79,18 @@ public class RegressionModelUtil {
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
 			.setNormalizationMethod(normalizationMethod)
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
-			.addRegressionTables(createRegressionTable(features, coefficients, intercept));
+			.addRegressionTables(createRegressionTable(mathContext, features, coefficients, intercept));
 
 		return regressionModel;
 	}
 
 	static
-	public RegressionModel createBinaryLogisticClassification(List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+	public RegressionModel createBinaryLogisticClassification(List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		return createBinaryLogisticClassification(null, features, coefficients, intercept, normalizationMethod, hasProbabilityDistribution, schema);
 	}
 
 	static
-	public RegressionModel createBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<Double> coefficients, Double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+	public RegressionModel createBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		SchemaUtil.checkSize(2, categoricalLabel);
@@ -110,10 +110,10 @@ public class RegressionModelUtil {
 			}
 		}
 
-		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(features, coefficients, intercept)
+		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(mathContext, features, coefficients, intercept)
 			.setTargetCategory(categoricalLabel.getValue(1));
 
-		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(Collections.emptyList(), Collections.emptyList(), null)
+		RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.emptyList(), Collections.emptyList(), null)
 			.setTargetCategory(categoricalLabel.getValue(0));
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), null)
@@ -126,7 +126,12 @@ public class RegressionModelUtil {
 	}
 
 	static
-	public RegressionTable createRegressionTable(List<? extends Feature> features, List<Double> coefficients, Double intercept){
+	public RegressionTable createRegressionTable(List<? extends Feature> features, List<? extends Number> coefficients, Number intercept){
+		return createRegressionTable(null, features, coefficients, intercept);
+	}
+
+	static
+	public RegressionTable createRegressionTable(MathContext mathContext, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept){
 
 		if(features.size() != coefficients.size()){
 			throw new IllegalArgumentException();
@@ -140,7 +145,7 @@ public class RegressionModelUtil {
 
 		for(int i = 0; i < features.size(); i++){
 			Feature feature = features.get(i);
-			Double coefficient = coefficients.get(i);
+			Number coefficient = coefficients.get(i);
 
 			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
@@ -150,7 +155,7 @@ public class RegressionModelUtil {
 				ProductFeature productFeature = (ProductFeature)feature;
 
 				feature = productFeature.getFeature();
-				coefficient = (productFeature.getFactor()).doubleValue() * coefficient;
+				coefficient = ValueUtil.multiply(mathContext, coefficient, productFeature.getFactor());
 			} // End if
 
 			if(feature instanceof BinaryFeature){
@@ -178,9 +183,9 @@ public class RegressionModelUtil {
 			if(feature instanceof ConstantFeature){
 				ConstantFeature constantFeature = (ConstantFeature)feature;
 
-				double value = (constantFeature.getValue()).doubleValue() * coefficient;
+				Number value = ValueUtil.add(mathContext, regressionTable.getIntercept(), ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue()));
 
-				regressionTable.setIntercept(regressionTable.getIntercept() + value);
+				regressionTable.setIntercept(value);
 			} else
 
 			if(feature instanceof InteractionFeature){
@@ -196,9 +201,9 @@ public class RegressionModelUtil {
 					if(inputFeature instanceof ConstantFeature){
 						ConstantFeature constantFeature = (ConstantFeature)inputFeature;
 
-						double value = (constantFeature.getValue()).doubleValue();
+						Number value = ValueUtil.multiply(mathContext, predictorTerm.getCoefficient(), constantFeature.getValue());
 
-						predictorTerm.setCoefficient(predictorTerm.getCoefficient() * value);
+						predictorTerm.setCoefficient(value);
 					} else
 
 					{
@@ -210,7 +215,9 @@ public class RegressionModelUtil {
 
 				List<FieldRef> fieldRefs = predictorTerm.getFieldRefs();
 				if(fieldRefs.size() == 0){
-					regressionTable.setIntercept(regressionTable.getIntercept() + predictorTerm.getCoefficient());
+					Number value = ValueUtil.add(mathContext, regressionTable.getIntercept(), predictorTerm.getCoefficient());
+
+					regressionTable.setIntercept(value);
 				} else
 
 				if(fieldRefs.size() == 1){

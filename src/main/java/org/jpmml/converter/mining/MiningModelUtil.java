@@ -127,7 +127,7 @@ public class MiningModelUtil {
 
 			Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
 
-			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(1d), null)
+			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.singletonList(feature), Collections.singletonList(1d), null)
 				.setTargetCategory(categoricalLabel.getValue(i));
 
 			regressionTables.add(regressionTable);
@@ -208,7 +208,7 @@ public class MiningModelUtil {
 				.setModel(model);
 
 			if(weight != null && !ValueUtil.isOne(weight)){
-				segment.setWeight(ValueUtil.asDouble(weight));
+				segment.setWeight(weight);
 			}
 
 			segments.add(segment);

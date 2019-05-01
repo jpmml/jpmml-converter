@@ -176,7 +176,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	static
 	protected void initScoreDistribution(Node parentNode, Node node){
 		Object score = node.getScore();
-		Double recordCount = node.getRecordCount();
+		Number recordCount = node.getRecordCount();
 
 		if(parentNode.hasScore()){
 			throw new IllegalArgumentException();
@@ -184,7 +184,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 		parentNode.setScore(score);
 
-		Double parentRecordCount = parentNode.getRecordCount();
+		Number parentRecordCount = parentNode.getRecordCount();
 		if(parentRecordCount != null){
 			throw new IllegalArgumentException();
 		}

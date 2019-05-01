@@ -92,7 +92,7 @@ public class NeuralNetworkUtil {
 	}
 
 	static
-	public Neuron createNeuron(List<? extends NeuralEntity> entities, List<Double> weights, Double bias){
+	public Neuron createNeuron(List<? extends NeuralEntity> entities, List<? extends Number> weights, Number bias){
 
 		if(entities.size() != weights.size()){
 			throw new IllegalArgumentException();
@@ -102,7 +102,7 @@ public class NeuralNetworkUtil {
 
 		for(int i = 0; i < entities.size(); i++){
 			NeuralEntity entity = entities.get(i);
-			Double weight = weights.get(i);
+			Number weight = weights.get(i);
 
 			if(weight == null || ValueUtil.isZeroLike(weight)){
 				continue;

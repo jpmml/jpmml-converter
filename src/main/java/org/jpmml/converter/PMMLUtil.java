@@ -227,13 +227,16 @@ public class PMMLUtil {
 			.setN(values.size())
 			.setDefaultValue(defaultValue);
 
+		List<Integer> indices = sparseArray.getIndices();
+		List<Double> entries = sparseArray.getEntries();
+
 		int index = 1;
 
 		for(Number value : values){
 
 			if(!ValueUtil.equals(value, defaultValue)){
-				sparseArray.addIndices(index);
-				sparseArray.addEntries(ValueUtil.asDouble(value));
+				indices.add(index);
+				entries.add(ValueUtil.asDouble(value));
 			}
 
 			index++;

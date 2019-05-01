@@ -25,6 +25,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.primitives.Ints;
+import org.dmg.pmml.MathContext;
 
 public class ValueUtil {
 
@@ -189,6 +190,40 @@ public class ValueUtil {
 		}
 
 		return (value.doubleValue() == targetValue.doubleValue());
+	}
+
+	static
+	public Number add(MathContext mathContext, Number first, Number second){
+
+		if(mathContext == null){
+			mathContext = MathContext.DOUBLE;
+		}
+
+		switch(mathContext){
+			case FLOAT:
+				return (first.floatValue() + second.floatValue());
+			case DOUBLE:
+				return (first.doubleValue() + second.doubleValue());
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	static
+	public Number multiply(MathContext mathContext, Number first, Number second){
+
+		if(mathContext == null){
+			mathContext = MathContext.DOUBLE;
+		}
+
+		switch(mathContext){
+			case FLOAT:
+				return (first.floatValue() * second.floatValue());
+			case DOUBLE:
+				return (first.doubleValue() * second.doubleValue());
+			default:
+				throw new IllegalArgumentException();
+		}
 	}
 
 	private static final Double ZERO = Double.valueOf(0d);

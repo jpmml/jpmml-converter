@@ -44,7 +44,7 @@ public class ClusteringModelUtil {
 	}
 
 	static
-	public List<ClusteringField> createClusteringFields(List<? extends Feature> features, List<Number> weights){
+	public List<ClusteringField> createClusteringFields(List<? extends Feature> features, List<? extends Number> weights){
 
 		if((weights != null) && (features.size() != weights.size())){
 			throw new IllegalArgumentException();
@@ -61,7 +61,7 @@ public class ClusteringModelUtil {
 			ClusteringField clusteringField = new ClusteringField(continuousFeature.getName());
 
 			if(weight != null && !ValueUtil.isOne(weight)){
-				clusteringField.setFieldWeight(ValueUtil.asDouble(weight));
+				clusteringField.setFieldWeight(weight);
 			}
 
 			clusteringFields.add(clusteringField);

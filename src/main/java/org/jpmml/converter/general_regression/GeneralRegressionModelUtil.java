@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.MathContext;
 import org.dmg.pmml.general_regression.CovariateList;
 import org.dmg.pmml.general_regression.FactorList;
 import org.dmg.pmml.general_regression.GeneralRegressionModel;
@@ -50,7 +51,12 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	public GeneralRegressionModel encodeRegressionTable(GeneralRegressionModel generalRegressionModel, List<? extends Feature> features, List<Double> coefficients, Double intercept, Object targetCategory){
+	public GeneralRegressionModel encodeRegressionTable(GeneralRegressionModel generalRegressionModel, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, Object targetCategory){
+		return encodeRegressionTable(null, generalRegressionModel, features, coefficients, intercept, targetCategory);
+	}
+
+	static
+	public GeneralRegressionModel encodeRegressionTable(MathContext mathContext, GeneralRegressionModel generalRegressionModel, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, Object targetCategory){
 
 		if(features.size() != coefficients.size()){
 			throw new IllegalArgumentException();
@@ -99,7 +105,7 @@ public class GeneralRegressionModelUtil {
 
 		for(int i = 0; i < features.size(); i++){
 			Feature feature = features.get(i);
-			Double coefficient = coefficients.get(i);
+			Number coefficient = coefficients.get(i);
 
 			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
@@ -109,7 +115,7 @@ public class GeneralRegressionModelUtil {
 				ProductFeature productFeature = (ProductFeature)feature;
 
 				feature = productFeature.getFeature();
-				coefficient = (productFeature.getFactor()).doubleValue() * coefficient;
+				coefficient = ValueUtil.multiply(mathContext, coefficient, productFeature.getFactor());
 			}
 
 			Parameter parameter = new Parameter("p" + String.valueOf(p));
@@ -118,9 +124,9 @@ public class GeneralRegressionModelUtil {
 
 			p++;
 
-			double multiplier = createPPCells(feature, parameter, ppMatrix, covariates, factors);
-			if(multiplier != 1d){
-				coefficient = (multiplier * coefficient);
+			Number multiplier = createPPCells(mathContext, feature, parameter, ppMatrix, covariates, factors);
+			if(!ValueUtil.isOne(multiplier)){
+				coefficient = ValueUtil.multiply(mathContext, coefficient, multiplier);
 			}
 
 			PCell pCell = new PCell(parameter.getName(), coefficient)
@@ -157,7 +163,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	private double createPPCells(Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> covariates, Set<FieldName> factors){
+	private Number createPPCells(MathContext mathContext, Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> covariates, Set<FieldName> factors){
 
 		if(feature instanceof BinaryFeature){
 			BinaryFeature binaryFeature = (BinaryFeature)feature;
@@ -174,17 +180,19 @@ public class GeneralRegressionModelUtil {
 		if(feature instanceof ConstantFeature){
 			ConstantFeature constantFeature = (ConstantFeature)feature;
 
-			return (constantFeature.getValue()).doubleValue();
+			return constantFeature.getValue();
 		} else
 
 		if(feature instanceof InteractionFeature){
 			InteractionFeature interactionFeature = (InteractionFeature)feature;
 
-			double result = 1d;
+			Number result = 1d;
 
 			List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
 			for(Feature inputFeature : inputFeatures){
-				result *= createPPCells(inputFeature, parameter, ppMatrix, covariates, factors);
+				Number value = createPPCells(mathContext, inputFeature, parameter, ppMatrix, covariates, factors);
+
+				result = ValueUtil.multiply(mathContext, result, value);
 			}
 
 			return result;
@@ -204,7 +212,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	private double createPPCell(Object value, FieldName name, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> predictorNames){
+	private Number createPPCell(Object value, FieldName name, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> predictorNames){
 		PPCell ppCell = new PPCell(value, name, parameter.getName());
 
 		ppMatrix.addPPCells(ppCell);
