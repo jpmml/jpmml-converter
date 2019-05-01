@@ -50,7 +50,7 @@ public class PMMLEncoder {
 	public PMML encodePMML(){
 
 		if(!Collections.disjoint(this.dataFields.keySet(), this.derivedFields.keySet())){
-			throw new IllegalArgumentException();
+			throw new IllegalStateException();
 		}
 
 		List<DataField> dataFields = new ArrayList<>(this.dataFields.values());
@@ -95,9 +95,7 @@ public class PMMLEncoder {
 	}
 
 	public void addDataField(DataField dataField){
-		FieldName name = dataField.getName();
-
-		checkName(name);
+		FieldName name = checkName(dataField);
 
 		this.dataFields.put(name, dataField);
 	}
@@ -122,7 +120,7 @@ public class PMMLEncoder {
 		DataField dataField = this.dataFields.remove(name);
 
 		if(dataField == null){
-			throw new IllegalArgumentException(name.getValue());
+			throw new IllegalArgumentException("Field " + name.getValue() + " is undefined");
 		}
 
 		return dataField;
@@ -145,9 +143,7 @@ public class PMMLEncoder {
 	}
 
 	public void addDerivedField(DerivedField derivedField){
-		FieldName name = derivedField.getName();
-
-		checkName(name);
+		FieldName name = checkName(derivedField);
 
 		this.derivedFields.put(name, derivedField);
 	}
@@ -166,7 +162,7 @@ public class PMMLEncoder {
 		DerivedField derivedField = this.derivedFields.remove(name);
 
 		if(derivedField == null){
-			throw new IllegalArgumentException(name.getValue());
+			throw new IllegalArgumentException("Field " +name.getValue() + " is undefined");
 		}
 
 		return derivedField;
@@ -176,6 +172,10 @@ public class PMMLEncoder {
 		DataField dataField = getDataField(name);
 		DerivedField derivedField = getDerivedField(name);
 
+		if(dataField != null && derivedField != null){
+			throw new IllegalStateException();
+		} // End if
+
 		if(dataField != null && derivedField == null){
 			return dataField;
 		} else
@@ -184,7 +184,7 @@ public class PMMLEncoder {
 			return derivedField;
 		}
 
-		throw new IllegalArgumentException(name.getValue());
+		throw new IllegalArgumentException("Field " + name.getValue() + " is undefined");
 	}
 
 	public Field<?> toContinuous(FieldName name){
@@ -260,14 +260,17 @@ public class PMMLEncoder {
 		return this.defineFunctions;
 	}
 
-	private void checkName(FieldName name){
+	private FieldName checkName(Field<?> field){
+		FieldName name = field.getName();
 
 		if(name == null){
-			throw new NullPointerException();
+			throw new IllegalArgumentException();
 		} // End if
 
 		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new IllegalArgumentException(name.getValue());
+			throw new IllegalArgumentException("Field " + name.getValue() + " is already defined");
 		}
+
+		return name;
 	}
 }

@@ -54,7 +54,7 @@ public class ValueUtil {
 			return (Number)object;
 		}
 
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Expected number, got " + object);
 	}
 
 	static
@@ -80,7 +80,7 @@ public class ValueUtil {
 			return Ints.checkedCast((long)value);
 		}
 
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Expected integer, got " + number);
 	}
 
 	static
