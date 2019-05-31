@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.PMMLFunctions;
 
 public class SigmoidTransformation extends AbstractTransformation {
 
@@ -61,6 +62,6 @@ public class SigmoidTransformation extends AbstractTransformation {
 			throw new IllegalArgumentException();
 		}
 
-		return PMMLUtil.createApply("/", PMMLUtil.createConstant(one), PMMLUtil.createApply("+", PMMLUtil.createConstant(one), PMMLUtil.createApply("exp", PMMLUtil.createApply("*", PMMLUtil.createConstant(multiplier), fieldRef))));
+		return PMMLUtil.createApply(PMMLFunctions.DIVIDE, PMMLUtil.createConstant(one), PMMLUtil.createApply(PMMLFunctions.ADD, PMMLUtil.createConstant(one), PMMLUtil.createApply(PMMLFunctions.EXP, PMMLUtil.createApply(PMMLFunctions.MULTIPLY, PMMLUtil.createConstant(multiplier), fieldRef))));
 	}
 }

@@ -23,6 +23,7 @@ import java.util.ListIterator;
 
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.VisitorAction;
 import org.jpmml.model.visitors.AbstractVisitor;
 
@@ -33,11 +34,11 @@ public class ExpressionCompactor extends AbstractVisitor {
 		String function = apply.getFunction();
 
 		switch(function){
-			case "and":
-			case "or":
+			case PMMLFunctions.AND:
+			case PMMLFunctions.OR:
 				inlineLogicalExpressions(apply);
 				break;
-			case "not":
+			case PMMLFunctions.NOT:
 				negateExpression(apply);
 				break;
 			default:
@@ -110,22 +111,22 @@ public class ExpressionCompactor extends AbstractVisitor {
 	private String negate(String function){
 
 		switch(function){
-			case "equal":
-				return "notEqual";
-			case "greaterOrEqual":
-				return "lessThan";
-			case "greaterThan":
-				return "lessOrEqual";
-			case "isMissing":
-				return "isNotMissing";
-			case "isNotMissing":
-				return "isMissing";
-			case "lessOrEqual":
-				return "greaterThan";
-			case "lessThan":
-				return "greaterOrEqual";
-			case "notEqual":
-				return "equal";
+			case PMMLFunctions.EQUAL:
+				return PMMLFunctions.NOTEQUAL;
+			case PMMLFunctions.GREATEROREQUAL:
+				return PMMLFunctions.LESSTHAN;
+			case PMMLFunctions.GREATERTHAN:
+				return PMMLFunctions.LESSOREQUAL;
+			case PMMLFunctions.ISMISSING:
+				return PMMLFunctions.ISNOTMISSING;
+			case PMMLFunctions.ISNOTMISSING:
+				return PMMLFunctions.ISMISSING;
+			case PMMLFunctions.LESSOREQUAL:
+				return PMMLFunctions.GREATERTHAN;
+			case PMMLFunctions.LESSTHAN:
+				return PMMLFunctions.GREATEROREQUAL;
+			case PMMLFunctions.NOTEQUAL:
+				return PMMLFunctions.EQUAL;
 			default:
 				return null;
 		}

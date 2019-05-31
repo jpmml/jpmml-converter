@@ -18,9 +18,11 @@
  */
 package org.jpmml.converter;
 
+import org.dmg.pmml.PMMLFunctions;
+
 public class ExpTransformation extends FunctionTransformation {
 
 	public ExpTransformation(){
-		super("exp");
+		super(PMMLFunctions.EXP);
 	}
 }

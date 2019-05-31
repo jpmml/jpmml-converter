@@ -21,6 +21,7 @@ package org.jpmml.converter;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.model.ToStringHelper;
 
 public class PowerFeature extends Feature implements HasDerivedName {
@@ -49,7 +50,7 @@ public class PowerFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> PMMLUtil.createApply("pow", ref(), PMMLUtil.createConstant(getPower())));
+		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> PMMLUtil.createApply(PMMLFunctions.POW, ref(), PMMLUtil.createConstant(getPower())));
 	}
 
 	@Override

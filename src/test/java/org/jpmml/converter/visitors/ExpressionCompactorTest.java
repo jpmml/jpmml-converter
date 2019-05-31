@@ -22,9 +22,12 @@ import java.util.Arrays;
 
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.PMMLFunctions;
+import org.jpmml.converter.PMMLUtil;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -35,19 +38,19 @@ public class ExpressionCompactorTest {
 	public void compactLogicalExpression(){
 		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
 
-		Apply first = createApply("equal", fieldRef, createConstant("1"));
+		Apply first = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("1", DataType.STRING));
 
-		Apply leftLeftChild = createApply("equal", fieldRef, createConstant("2/L/L"));
-		Apply leftRightChild = createApply("equal", fieldRef, createConstant("2/L/R"));
+		Apply leftLeftChild = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("2/L/L", DataType.STRING));
+		Apply leftRightChild = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("2/L/R", DataType.STRING));
 
-		Apply leftChild = createApply("or", leftLeftChild, leftRightChild);
-		Apply rightChild = createApply("equal", fieldRef, createConstant("2/R"));
+		Apply leftChild = PMMLUtil.createApply(PMMLFunctions.OR, leftLeftChild, leftRightChild);
+		Apply rightChild = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("2/R", DataType.STRING));
 
-		Apply second = createApply("or", leftChild, rightChild);
+		Apply second = PMMLUtil.createApply(PMMLFunctions.OR, leftChild, rightChild);
 
-		Apply third = createApply("equal", fieldRef, createConstant("3"));
+		Apply third = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("3", DataType.STRING));
 
-		Apply apply = compact(createApply("or", first, second, third));
+		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.OR, first, second, third));
 
 		assertEquals(Arrays.asList(first, leftLeftChild, leftRightChild, rightChild, third), apply.getExpressions());
 	}
@@ -56,46 +59,28 @@ public class ExpressionCompactorTest {
 	public void compactNegationExpression(){
 		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
 
-		checkNegation("isMissing", "isNotMissing", fieldRef);
+		checkNegation(PMMLFunctions.ISMISSING, PMMLFunctions.ISNOTMISSING, fieldRef);
 
-		Constant constant = createConstant("0");
+		Constant constant = PMMLUtil.createConstant(0);
 
-		checkNegation("equal", "notEqual", fieldRef, constant);
-		checkNegation("lessThan", "greaterOrEqual", fieldRef, constant);
-		checkNegation("lessOrEqual", "greaterThan", fieldRef, constant);;
+		checkNegation(PMMLFunctions.EQUAL, PMMLFunctions.NOTEQUAL, fieldRef, constant);
+		checkNegation(PMMLFunctions.LESSTHAN, PMMLFunctions.GREATEROREQUAL, fieldRef, constant);
+		checkNegation(PMMLFunctions.LESSOREQUAL, PMMLFunctions.GREATERTHAN, fieldRef, constant);
 	}
 
 	static
 	private void checkNegation(String function, String negatedFunction, Expression... expressions){
-		Apply apply = createApply(function, expressions);
+		Apply apply = PMMLUtil.createApply(function, expressions);
 
-		Apply negatedApply = compact(createApply("not", apply));
+		Apply negatedApply = compact(PMMLUtil.createApply(PMMLFunctions.NOT, apply));
 
 		assertEquals(negatedFunction, negatedApply.getFunction());
 		assertEquals(Arrays.asList(expressions), negatedApply.getExpressions());
 
-		apply = compact(createApply("not", negatedApply));
+		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOT, negatedApply));
 
 		assertEquals(function, apply.getFunction());
 		assertEquals(Arrays.asList(expressions), apply.getExpressions());
-	}
-
-	static
-	private Apply createApply(String function, Expression... expressions){
-		Apply apply = new Apply(function);
-
-		for(Expression expression : expressions){
-			apply.addExpressions(expression);
-		}
-
-		return apply;
-	}
-
-	static
-	private Constant createConstant(String value){
-		Constant constant = new Constant(value);
-
-		return constant;
 	}
 
 	static

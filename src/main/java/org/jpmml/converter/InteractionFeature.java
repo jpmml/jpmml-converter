@@ -27,6 +27,7 @@ import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.model.ToStringHelper;
 
 public class InteractionFeature extends Feature {
@@ -49,10 +50,10 @@ public class InteractionFeature extends Feature {
 		Supplier<Apply> applySupplier = () -> {
 			List<? extends Feature> features = getFeatures();
 
-			Apply apply = PMMLUtil.createApply("*", ((features.get(0)).toContinuousFeature()).ref(), ((features.get(1)).toContinuousFeature()).ref());
+			Apply apply = PMMLUtil.createApply(PMMLFunctions.MULTIPLY, ((features.get(0)).toContinuousFeature()).ref(), ((features.get(1)).toContinuousFeature()).ref());
 
 			for(int i = 2; i < features.size(); i++){
-				apply = PMMLUtil.createApply("*", apply, ((features.get(i)).toContinuousFeature()).ref());
+				apply = PMMLUtil.createApply(PMMLFunctions.MULTIPLY, apply, ((features.get(i)).toContinuousFeature()).ref());
 			}
 
 			return apply;

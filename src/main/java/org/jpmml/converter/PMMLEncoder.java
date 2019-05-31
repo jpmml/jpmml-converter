@@ -162,7 +162,7 @@ public class PMMLEncoder {
 		DerivedField derivedField = this.derivedFields.remove(name);
 
 		if(derivedField == null){
-			throw new IllegalArgumentException("Field " +name.getValue() + " is undefined");
+			throw new IllegalArgumentException("Field " + name.getValue() + " is undefined");
 		}
 
 		return derivedField;
