@@ -46,6 +46,7 @@ import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.Interval;
 import org.dmg.pmml.MapValues;
+import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
@@ -192,6 +193,52 @@ public class PMMLUtil {
 			.setInlineTable(PMMLUtil.createInlineTable(data));
 
 		return mapValues;
+	}
+
+	static
+	public Expression toNegative(Expression expression){
+
+		if(expression instanceof Constant){
+			Constant constant = (Constant)expression;
+
+			Object value = constant.getValue();
+
+			if(value instanceof Long){
+				value = -((Long)value).longValue();
+			} else
+
+			if(value instanceof Integer){
+				value = -((Integer)value).intValue();
+			} else
+
+			if(value instanceof Float){
+				value = -((Float)value).floatValue();
+			} else
+
+			if(value instanceof Double){
+				value = -((Double)value).doubleValue();
+			} else
+
+			{
+				String string = org.jpmml.model.ValueUtil.toString(value);
+
+				if(string.startsWith("-")){
+					string = string.substring(1);
+				} else
+
+				{
+					string = ("-" + string);
+				}
+
+				value = string;
+			}
+
+			constant.setValue(value);
+
+			return constant;
+		}
+
+		return createApply(PMMLFunctions.MULTIPLY, createConstant(-1), expression);
 	}
 
 	static
