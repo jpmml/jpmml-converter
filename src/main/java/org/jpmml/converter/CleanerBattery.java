@@ -26,8 +26,11 @@ import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 public class CleanerBattery extends VisitorBattery {
 
 	public CleanerBattery(){
-		add(MiningSchemaCleaner.class);
 		add(TransformationDictionaryCleaner.class);
 		add(DataDictionaryCleaner.class);
+
+		// Most "aggressive", should be applied last,
+		// when all surviving fields are on their final locations
+		add(MiningSchemaCleaner.class);
 	}
 }
