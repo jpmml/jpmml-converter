@@ -119,21 +119,6 @@ public class ValueUtil {
 	}
 
 	static
-	public Double floatToDouble(Float value){
-		return Double.parseDouble(Float.toString(value));
-	}
-
-	static
-	public List<Double> floatsToDoubles(List<Float> values){
-
-		if(values == null){
-			return null;
-		}
-
-		return Lists.transform(values, value -> floatToDouble(value));
-	}
-
-	static
 	public BitSet getIndices(List<? extends Number> values, Number targetValue){
 		BitSet result = new BitSet(values.size());
 
