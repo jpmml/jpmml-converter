@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import org.jpmml.model.VisitorBattery;
 import org.jpmml.model.visitors.DataDictionaryCleaner;
+import org.jpmml.model.visitors.DerivedFieldRelocator;
 import org.jpmml.model.visitors.MiningSchemaCleaner;
 import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 
@@ -27,6 +28,7 @@ public class CleanerBattery extends VisitorBattery {
 
 	public CleanerBattery(){
 		add(TransformationDictionaryCleaner.class);
+		add(DerivedFieldRelocator.class);
 		add(DataDictionaryCleaner.class);
 
 		// Most "aggressive", should be applied last,
