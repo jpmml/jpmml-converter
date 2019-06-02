@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import org.jpmml.converter.visitors.DerivedOutputFieldTransformer;
 import org.jpmml.model.VisitorBattery;
 import org.jpmml.model.visitors.DataDictionaryCleaner;
 import org.jpmml.model.visitors.DerivedFieldRelocator;
@@ -30,6 +31,8 @@ public class CleanerBattery extends VisitorBattery {
 		add(TransformationDictionaryCleaner.class);
 		add(DerivedFieldRelocator.class);
 		add(DataDictionaryCleaner.class);
+
+		add(DerivedOutputFieldTransformer.class);
 
 		// Most "aggressive", should be applied last,
 		// when all surviving fields are on their final locations

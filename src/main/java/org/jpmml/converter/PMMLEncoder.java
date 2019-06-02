@@ -35,6 +35,8 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.Output;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 
@@ -152,6 +154,14 @@ public class PMMLEncoder {
 		DerivedField derivedField = new DerivedField(opType, dataType)
 			.setName(name)
 			.setExpression(expression);
+
+		addDerivedField(derivedField);
+
+		return derivedField;
+	}
+
+	public DerivedOutputField createDerivedField(Output output, OutputField outputField){
+		DerivedOutputField derivedField = new DerivedOutputField(output, outputField);
 
 		addDerivedField(derivedField);
 
