@@ -32,6 +32,7 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
+import org.jpmml.converter.visitors.CleanerBattery;
 import org.jpmml.model.VisitorBattery;
 
 public class ModelEncoder extends PMMLEncoder {

@@ -16,13 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter;
+package org.jpmml.converter.visitors;
 
-import org.jpmml.converter.visitors.DataDictionaryCleaner;
-import org.jpmml.converter.visitors.DerivedFieldRelocator;
-import org.jpmml.converter.visitors.DerivedOutputFieldTransformer;
-import org.jpmml.converter.visitors.MiningSchemaCleaner;
-import org.jpmml.converter.visitors.TransformationDictionaryCleaner;
 import org.jpmml.model.VisitorBattery;
 
 public class CleanerBattery extends VisitorBattery {
