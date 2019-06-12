@@ -18,12 +18,12 @@
  */
 package org.jpmml.converter;
 
+import org.jpmml.converter.visitors.DataDictionaryCleaner;
+import org.jpmml.converter.visitors.DerivedFieldRelocator;
 import org.jpmml.converter.visitors.DerivedOutputFieldTransformer;
+import org.jpmml.converter.visitors.MiningSchemaCleaner;
+import org.jpmml.converter.visitors.TransformationDictionaryCleaner;
 import org.jpmml.model.VisitorBattery;
-import org.jpmml.model.visitors.DataDictionaryCleaner;
-import org.jpmml.model.visitors.DerivedFieldRelocator;
-import org.jpmml.model.visitors.MiningSchemaCleaner;
-import org.jpmml.model.visitors.TransformationDictionaryCleaner;
 
 public class CleanerBattery extends VisitorBattery {
 
