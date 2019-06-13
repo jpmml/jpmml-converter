@@ -41,19 +41,13 @@ public class PredicateManager {
 			return createSimplePredicate(feature, SimplePredicate.Operator.EQUAL, value);
 		}
 
-		Predicate predicate = new InternableSimpleSetPredicate()
-			.setField(feature.getName())
-			.setBooleanOperator(SimpleSetPredicate.BooleanOperator.IS_IN)
-			.setArray(createArray(feature.getDataType(), values));
+		Predicate predicate = new InternableSimpleSetPredicate(feature.getName(), SimpleSetPredicate.BooleanOperator.IS_IN, createArray(feature.getDataType(), values));
 
 		return intern(predicate);
 	}
 
 	public Predicate createSimplePredicate(Feature feature, SimplePredicate.Operator operator, Object value){
-		Predicate predicate = new InternableSimplePredicate()
-			.setField(feature.getName())
-			.setOperator(operator)
-			.setValue(value);
+		Predicate predicate = new InternableSimplePredicate(feature.getName(), operator, value);
 
 		return intern(predicate);
 	}

@@ -20,9 +20,17 @@ package org.jpmml.converter;
 
 import java.util.Objects;
 
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimplePredicate;
 
 public class InternableSimplePredicate extends SimplePredicate {
+
+	public InternableSimplePredicate(){
+	}
+
+	public InternableSimplePredicate(FieldName name, SimplePredicate.Operator operator, Object value){
+		super(name, operator, value);
+	}
 
 	@Override
 	public int hashCode(){

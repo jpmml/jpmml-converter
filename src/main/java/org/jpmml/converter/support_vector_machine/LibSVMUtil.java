@@ -26,6 +26,7 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.support_vector_machine.Coefficient;
 import org.dmg.pmml.support_vector_machine.Coefficients;
+import org.dmg.pmml.support_vector_machine.Kernel;
 import org.dmg.pmml.support_vector_machine.SupportVector;
 import org.dmg.pmml.support_vector_machine.SupportVectorMachine;
 import org.dmg.pmml.support_vector_machine.SupportVectorMachineModel;
@@ -52,7 +53,7 @@ public class LibSVMUtil {
 	}
 
 	static
-	public SupportVectorMachineModel createRegression(Matrix<? extends Number> sv, List<String> ids, Number rho, List<? extends Number> coefs, Schema schema){
+	public SupportVectorMachineModel createRegression(Kernel kernel, Matrix<? extends Number> sv, List<String> ids, Number rho, List<? extends Number> coefs, Schema schema){
 		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
 
 		VectorDictionary vectorDictionary = LibSVMUtil.createVectorDictionary(sv, ids, schema);
@@ -62,13 +63,13 @@ public class LibSVMUtil {
 		List<SupportVectorMachine> supportVectorMachines = new ArrayList<>();
 		supportVectorMachines.add(LibSVMUtil.createSupportVectorMachine(vectorInstances, rho, coefs));
 
-		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), vectorDictionary, supportVectorMachines);
+		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), kernel, vectorDictionary, supportVectorMachines);
 
 		return supportVectorMachineModel;
 	}
 
 	static
-	public SupportVectorMachineModel createClassification(Matrix<? extends Number> sv, List<Integer> nSv, List<String> ids, List<? extends Number> rho, List<? extends Number> coefs, Schema schema){
+	public SupportVectorMachineModel createClassification(Kernel kernel, Matrix<? extends Number> sv, List<Integer> nSv, List<String> ids, List<? extends Number> rho, List<? extends Number> coefs, Schema schema){
 		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
 
 		int numberOfVectors = sv.getRows();
@@ -111,7 +112,7 @@ public class LibSVMUtil {
 			}
 		}
 
-		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), vectorDictionary, supportVectorMachines)
+		SupportVectorMachineModel supportVectorMachineModel = new SupportVectorMachineModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(categoricalLabel), kernel, vectorDictionary, supportVectorMachines)
 			.setClassificationMethod(SupportVectorMachineModel.ClassificationMethod.ONE_AGAINST_ONE);
 
 		return supportVectorMachineModel;
@@ -170,20 +171,21 @@ public class LibSVMUtil {
 		VectorDictionary vectorDictionary = new VectorDictionary(vectorFields);
 
 		for(int i = 0; i < numberOfVectors; i++){
+			String id = ids.get(i);
 			List<? extends Number> values = sv.getRowValues(i);
 
 			if(numberOfUsedFeatures < numberOfFeatures){
 				values = ValueUtil.filterByIndices(values, featureMask);
 			}
 
-			VectorInstance vectorInstance = new VectorInstance(ids.get(i));
+			VectorInstance vectorInstance;;
 
 			if(ValueUtil.isSparse(values, defaultValue, 0.75d)){
-				vectorInstance.setRealSparseArray(PMMLUtil.createRealSparseArray(values, defaultValue));
+				vectorInstance = new VectorInstance(id, PMMLUtil.createRealSparseArray(values, defaultValue), null);
 			} else
 
 			{
-				vectorInstance.setArray(PMMLUtil.createRealArray(values));
+				vectorInstance = new VectorInstance(id, null, PMMLUtil.createRealArray(values));
 			}
 
 			vectorDictionary.addVectorInstances(vectorInstance);

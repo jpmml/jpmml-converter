@@ -78,8 +78,7 @@ public class NeuralNetworkUtil {
 				expression = continuousFeature.ref();
 			}
 
-			DerivedField derivedField = new DerivedField(OpType.CONTINUOUS, dataType)
-				.setExpression(expression);
+			DerivedField derivedField = new DerivedField(null, OpType.CONTINUOUS, dataType, expression);
 
 			NeuralInput neuralInput = new NeuralInput()
 				.setId("input/" + String.valueOf(i + 1))
@@ -163,8 +162,7 @@ public class NeuralNetworkUtil {
 
 		NeuralEntity entity = Iterables.getOnlyElement(entities);
 
-		DerivedField derivedField = new DerivedField(OpType.CONTINUOUS, continuousLabel.getDataType())
-			.setExpression(new FieldRef(continuousLabel.getName()));
+		DerivedField derivedField = new DerivedField(null, OpType.CONTINUOUS, continuousLabel.getDataType(), new FieldRef(continuousLabel.getName()));
 
 		NeuralOutput neuralOutput = new NeuralOutput()
 			.setOutputNeuron(entity.getId())
@@ -185,8 +183,7 @@ public class NeuralNetworkUtil {
 		for(int i = 0; i < categoricalLabel.size(); i++){
 			NeuralEntity entity = entities.get(i);
 
-			DerivedField derivedField = new DerivedField(OpType.CATEGORICAL, categoricalLabel.getDataType())
-				.setExpression(new NormDiscrete(categoricalLabel.getName(), categoricalLabel.getValue(i)));
+			DerivedField derivedField = new DerivedField(null, OpType.CATEGORICAL, categoricalLabel.getDataType(), new NormDiscrete(categoricalLabel.getName(), categoricalLabel.getValue(i)));
 
 			NeuralOutput neuralOutput = new NeuralOutput()
 				.setOutputNeuron(entity.getId())

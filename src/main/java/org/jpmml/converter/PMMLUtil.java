@@ -187,10 +187,8 @@ public class PMMLUtil {
 		data.put(inputColumn, inputValues);
 		data.put(outputColumn, outputValues);
 
-		MapValues mapValues = new MapValues()
-			.addFieldColumnPairs(new FieldColumnPair(name, inputColumn))
-			.setOutputColumn(outputColumn)
-			.setInlineTable(PMMLUtil.createInlineTable(data));
+		MapValues mapValues = new MapValues(outputColumn, null, PMMLUtil.createInlineTable(data))
+			.addFieldColumnPairs(new FieldColumnPair(name, inputColumn));
 
 		return mapValues;
 	}

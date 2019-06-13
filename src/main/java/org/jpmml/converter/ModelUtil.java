@@ -128,16 +128,14 @@ public class ModelUtil {
 	public Output createPredictedOutput(FieldName name, OpType opType, DataType dataType, Transformation... transformations){
 		Output output = new Output();
 
-		OutputField outputField = new OutputField(name, dataType)
-			.setOpType(opType)
+		OutputField outputField = new OutputField(name, opType, dataType)
 			.setResultFeature(ResultFeature.PREDICTED_VALUE)
 			.setFinalResult(false);
 
 		output.addOutputFields(outputField);
 
 		for(Transformation transformation : transformations){
-			outputField = new OutputField(transformation.getName(outputField.getName()), transformation.getDataType(outputField.getDataType()))
-				.setOpType(transformation.getOpType(outputField.getOpType()))
+			outputField = new OutputField(transformation.getName(outputField.getName()), transformation.getOpType(outputField.getOpType()), transformation.getDataType(outputField.getDataType()))
 				.setResultFeature(ResultFeature.TRANSFORMED_VALUE)
 				.setFinalResult(transformation.isFinalResult())
 				.setExpression(transformation.createExpression(new FieldRef(outputField.getName())));
@@ -176,8 +174,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createAffinityField(FieldName name, DataType dataType, Object value){
-		OutputField outputField = new OutputField(name, dataType)
-			.setOpType(OpType.CONTINUOUS)
+		OutputField outputField = new OutputField(name, OpType.CONTINUOUS, dataType)
 			.setResultFeature(ResultFeature.AFFINITY)
 			.setValue(value);
 
@@ -193,8 +190,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createEntityIdField(FieldName name){
-		OutputField outputField = new OutputField(name, DataType.STRING)
-			.setOpType(OpType.CATEGORICAL)
+		OutputField outputField = new OutputField(name, OpType.CATEGORICAL, DataType.STRING)
 			.setResultFeature(ResultFeature.ENTITY_ID);
 
 		return outputField;
@@ -202,8 +198,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createPredictedField(FieldName name, DataType dataType, OpType opType){
-		OutputField outputField = new OutputField(name, dataType)
-			.setOpType(opType)
+		OutputField outputField = new OutputField(name, opType, dataType)
 			.setResultFeature(ResultFeature.PREDICTED_VALUE);
 
 		return outputField;
@@ -216,8 +211,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createProbabilityField(FieldName name, DataType dataType, Object value){
-		OutputField outputField = new OutputField(name, dataType)
-			.setOpType(OpType.CONTINUOUS)
+		OutputField outputField = new OutputField(name, OpType.CONTINUOUS, dataType)
 			.setResultFeature(ResultFeature.PROBABILITY)
 			.setValue(value);
 

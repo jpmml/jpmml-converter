@@ -32,12 +32,10 @@ public class DerivedOutputField extends DerivedField {
 
 
 	public DerivedOutputField(Output output, OutputField outputField){
+		super(outputField.getName(), outputField.getOpType(), outputField.getDataType(), null);
+
 		setOutput(output);
 		setOutputField(outputField);
-
-		setName(outputField.getName());
-		setOpType(outputField.getOpType());
-		setDataType(outputField.getDataType());
 	}
 
 	public void addOutputField(){

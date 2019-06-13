@@ -202,10 +202,8 @@ public class MiningModelUtil {
 			Model model = models.get(i);
 			Number weight = (weights != null ? weights.get(i) : null);
 
-			Segment segment = new Segment()
-				.setId(String.valueOf(i + 1))
-				.setPredicate(new True())
-				.setModel(model);
+			Segment segment = new Segment(True.INSTANCE, model)
+				.setId(String.valueOf(i + 1));
 
 			if(weight != null && !ValueUtil.isOne(weight)){
 				segment.setWeight(weight);

@@ -151,9 +151,7 @@ public class PMMLEncoder {
 	}
 
 	public DerivedField createDerivedField(FieldName name, OpType opType, DataType dataType, Expression expression){
-		DerivedField derivedField = new DerivedField(opType, dataType)
-			.setName(name)
-			.setExpression(expression);
+		DerivedField derivedField = new DerivedField(name, opType, dataType, expression);
 
 		addDerivedField(derivedField);
 
