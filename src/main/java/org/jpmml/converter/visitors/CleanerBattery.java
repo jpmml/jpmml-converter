@@ -23,6 +23,8 @@ import org.jpmml.model.VisitorBattery;
 public class CleanerBattery extends VisitorBattery {
 
 	public CleanerBattery(){
+		add(AttributeCleaner.class);
+
 		add(TransformationDictionaryCleaner.class);
 		add(DerivedFieldRelocator.class);
 		add(DataDictionaryCleaner.class);

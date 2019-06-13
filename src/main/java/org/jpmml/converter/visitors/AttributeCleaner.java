@@ -59,8 +59,8 @@ public class AttributeCleaner extends AbstractVisitor {
 				if(Objects.equals(fieldValue, getterMethodValue)){
 					ReflectionUtil.setFieldValue(field, object, null);
 
-					getterMethodValue = ReflectionUtil.getGetterMethodValue(getterMethod, object);
-					if(getterMethodValue != null && !Objects.equals(fieldValue, getterMethodValue)){
+					Object defaultGetterMethodValue = ReflectionUtil.getGetterMethodValue(getterMethod, object);
+					if(defaultGetterMethodValue == null || !Objects.equals(fieldValue, defaultGetterMethodValue)){
 						ReflectionUtil.setFieldValue(field, object, fieldValue);
 					}
 				}

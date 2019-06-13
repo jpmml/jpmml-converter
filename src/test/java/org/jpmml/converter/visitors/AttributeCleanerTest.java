@@ -18,12 +18,19 @@
  */
 package org.jpmml.converter.visitors;
 
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.OutlierTreatmentMethod;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMMLAttributes;
+import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.True;
+import org.dmg.pmml.tree.BranchNode;
+import org.dmg.pmml.tree.LeafNode;
+import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.jpmml.model.ReflectionUtil;
 import org.junit.Test;
@@ -54,9 +61,21 @@ public class AttributeCleanerTest {
 		Output output = new Output()
 			.addOutputFields(outputField);
 
-		TreeModel treeModel = new TreeModel()
+		Node root = new BranchNode(null, True.INSTANCE);
+
+		SimplePredicate leftPredicate = new SimplePredicate(FieldName.create("x"), SimplePredicate.Operator.LESS_THAN, 0);
+		SimplePredicate rightPredicate = new SimplePredicate(FieldName.create("x"), SimplePredicate.Operator.GREATER_OR_EQUAL, 0);
+
+		assertEquals((Integer)0, ReflectionUtil.getFieldValue(PMMLAttributes.SIMPLEPREDICATE_VALUE, leftPredicate));
+		assertEquals((Integer)0, ReflectionUtil.getFieldValue(PMMLAttributes.SIMPLEPREDICATE_VALUE, rightPredicate));
+
+		root.addNodes(
+			new LeafNode("negative", leftPredicate),
+			new LeafNode("nonNegative", rightPredicate)
+		);
+
+		TreeModel treeModel = new TreeModel(MiningFunction.CLASSIFICATION, miningSchema, root)
 			.setScorable(Boolean.FALSE)
-			.setMiningSchema(miningSchema)
 			.setOutput(output);
 
 		assertEquals(Boolean.FALSE, ReflectionUtil.getFieldValue(org.dmg.pmml.tree.PMMLAttributes.TREEMODEL_SCORABLE, treeModel));
@@ -77,5 +96,8 @@ public class AttributeCleanerTest {
 		assertEquals("0", outputField.getIsMultiValued());
 
 		assertEquals(Boolean.FALSE, ReflectionUtil.getFieldValue(org.dmg.pmml.tree.PMMLAttributes.TREEMODEL_SCORABLE, treeModel));
+
+		assertEquals((Integer)0, ReflectionUtil.getFieldValue(PMMLAttributes.SIMPLEPREDICATE_VALUE, leftPredicate));
+		assertEquals((Integer)0, ReflectionUtil.getFieldValue(PMMLAttributes.SIMPLEPREDICATE_VALUE, rightPredicate));
 	}
 }
