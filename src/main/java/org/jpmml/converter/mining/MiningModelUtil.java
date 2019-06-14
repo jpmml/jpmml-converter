@@ -146,6 +146,11 @@ public class MiningModelUtil {
 
 	static
 	public MiningModel createModelChain(List<? extends Model> models){
+		return createModelChain(models, Segmentation.MissingPredictionTreatment.RETURN_MISSING);
+	}
+
+	static
+	public MiningModel createModelChain(List<? extends Model> models, Segmentation.MissingPredictionTreatment missingPredictionTreatment){
 
 		if(models.size() < 1){
 			throw new IllegalArgumentException();
@@ -173,7 +178,8 @@ public class MiningModelUtil {
 			.map(name -> ModelUtil.createMiningField(name, MiningField.UsageType.TARGET))
 			.forEach(miningSchema::addMiningFields);
 
-		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models);
+		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models)
+			.setMissingPredictionTreatment(missingPredictionTreatment);
 
 		Model lastModel = Iterables.getLast(models);
 
