@@ -31,13 +31,13 @@ public class AbstractTransformation implements Transformation {
 	}
 
 	@Override
-	public DataType getDataType(DataType dataType){
-		return dataType;
+	public OpType getOpType(OpType opType){
+		return opType;
 	}
 
 	@Override
-	public OpType getOpType(OpType opType){
-		return opType;
+	public DataType getDataType(DataType dataType){
+		return dataType;
 	}
 
 	@Override

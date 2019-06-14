@@ -28,9 +28,9 @@ public interface Transformation {
 
 	FieldName getName(FieldName name);
 
-	DataType getDataType(DataType dataType);
-
 	OpType getOpType(OpType opType);
+
+	DataType getDataType(DataType dataType);
 
 	boolean isFinalResult();
 
