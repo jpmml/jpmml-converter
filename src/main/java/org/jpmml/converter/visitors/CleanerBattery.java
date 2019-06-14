@@ -34,5 +34,7 @@ public class CleanerBattery extends VisitorBattery {
 		// Most "aggressive", should be applied last,
 		// when all surviving fields are on their final locations
 		add(MiningSchemaCleaner.class);
+
+		add(ModelVerificationCleaner.class);
 	}
 }
