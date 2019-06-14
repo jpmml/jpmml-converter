@@ -197,7 +197,7 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createPredictedField(FieldName name, DataType dataType, OpType opType){
+	public OutputField createPredictedField(FieldName name, OpType opType, DataType dataType){
 		OutputField outputField = new OutputField(name, opType, dataType)
 			.setResultFeature(ResultFeature.PREDICTED_VALUE);
 

@@ -75,7 +75,7 @@ public class ClusteringModelUtil {
 		Output output = new Output();
 
 		List<OutputField> outputFields = output.getOutputFields();
-		outputFields.add(ModelUtil.createPredictedField(name, DataType.STRING, OpType.CATEGORICAL));
+		outputFields.add(ModelUtil.createPredictedField(name, OpType.CATEGORICAL, DataType.STRING));
 		outputFields.addAll(ModelUtil.createAffinityFields(dataType, clusters));
 
 		return output;
