@@ -19,18 +19,23 @@
 package org.jpmml.converter.visitors;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
@@ -50,23 +55,23 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		if(parent instanceof MiningModel){
 			MiningModel miningModel = (MiningModel)parent;
 
-			Set<FieldName> activeFieldNames = processMiningModel(miningModel);
+			Set<Field<?>> activeFields = processMiningModel(miningModel);
 
-			clean(miningModel, activeFieldNames);
+			clean(miningModel, activeFields);
 		} else
 
 		if(parent instanceof Model){
 			Model model = (Model)parent;
 
-			Set<FieldName> activeFieldNames = processModel(model);
+			Set<Field<?>> activeFields = processModel(model);
 
-			clean(model, activeFieldNames);
+			clean(model, activeFields);
 		}
 
 		return parent;
 	}
 
-	private Set<FieldName> processMiningModel(MiningModel miningModel){
+	private Set<Field<?>> processMiningModel(MiningModel miningModel){
 		Set<Field<?>> activeFields = DeepFieldResolverUtil.getActiveFields(this, miningModel);
 
 		Set<FieldName> activeFieldNames = new HashSet<>();
@@ -104,15 +109,15 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 		expandDerivedFields(miningModel, activeFields);
 
-		return FieldUtil.nameSet(activeFields);
+		return activeFields;
 	}
 
-	private Set<FieldName> processModel(Model model){
+	private Set<Field<?>> processModel(Model model){
 		Set<Field<?>> activeFields = DeepFieldResolverUtil.getActiveFields(this, model);
 
 		expandDerivedFields(model, activeFields);
 
-		return FieldUtil.nameSet(activeFields);
+		return activeFields;
 	}
 
 	private void expandDerivedFields(Model model, Set<Field<?>> fields){
@@ -126,12 +131,12 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		}
 	}
 
-	private void clean(Model model, Set<FieldName> activeFieldNames){
+	private void clean(Model model, Set<Field<?>> activeFields){
 		MiningSchema miningSchema = model.getMiningSchema();
 
-		activeFieldNames = new LinkedHashSet<>(activeFieldNames);
-
 		List<MiningField> miningFields = miningSchema.getMiningFields();
+
+		Map<FieldName, Field<?>> activeFieldMap = FieldUtil.nameMap(activeFields);
 
 		for(Iterator<MiningField> it = miningFields.iterator(); it.hasNext(); ){
 			MiningField miningField = it.next();
@@ -141,7 +146,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 			MiningField.UsageType usageType = miningField.getUsageType();
 			switch(usageType){
 				case ACTIVE:
-					if(!(activeFieldNames).contains(name)){
+					if(!(activeFieldMap).containsKey(name)){
 						it.remove();
 					}
 					break;
@@ -149,13 +154,73 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 					break;
 			}
 
-			activeFieldNames.remove(name);
+			activeFieldMap.remove(name);
 		}
 
-		for(FieldName activeFieldName : activeFieldNames){
-			MiningField miningField = new MiningField(activeFieldName);
+		activeFields = new LinkedHashSet<>(activeFieldMap.values());
+
+		for(Field<?> activeField : activeFields){
+			FieldName name = activeField.getName();
+
+			MiningField miningField = new MiningField(name);
 
 			miningSchema.addMiningFields(miningField);
 		}
+
+		miningFields = miningSchema.getMiningFields();
+
+		Comparator<MiningField> comparator = new Comparator<MiningField>(){
+
+			@Override
+			public int compare(MiningField left, MiningField right){
+				int order;
+
+				order = Integer.compare(getGroup(left), getGroup(right));
+				if(order != 0){
+					return order;
+				}
+
+				order = Integer.compare(getFieldType(left), getFieldType(right));
+				if(order != 0){
+					return order;
+				}
+
+				return 0;
+			}
+
+			private int getGroup(MiningField miningField){
+				MiningField.UsageType usageType = miningField.getUsageType();
+
+				switch(usageType){
+					case PREDICTED:
+					case TARGET:
+						return -1;
+					default:
+						return usageType.ordinal();
+				}
+			}
+
+			private int getFieldType(MiningField miningField){
+				Field<?> field = activeFieldMap.get(miningField.getName());
+
+				if(field instanceof DataField){
+					return 0;
+				} else
+
+				if(field instanceof DerivedField){
+					return 1;
+				} else
+
+				if(field instanceof OutputField){
+					return 2;
+				} else
+
+				{
+					return 3;
+				}
+			}
+		};
+
+		miningFields.sort(comparator);
 	}
 }

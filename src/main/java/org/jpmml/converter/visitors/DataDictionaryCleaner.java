@@ -87,8 +87,8 @@ public class DataDictionaryCleaner extends ModelCleaner {
 
 				MiningField.UsageType usageType = miningField.getUsageType();
 				switch(usageType){
-					case TARGET:
 					case PREDICTED:
+					case TARGET:
 						targetFieldNames.add(name);
 						break;
 					default:
