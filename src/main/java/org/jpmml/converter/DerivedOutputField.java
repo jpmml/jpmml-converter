@@ -21,36 +21,39 @@ package org.jpmml.converter;
 import java.util.Objects;
 
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 
 public class DerivedOutputField extends DerivedField {
 
-	private Output output = null;
+	private Model model = null;
 
 	private OutputField outputField = null;
 
 
-	public DerivedOutputField(Output output, OutputField outputField){
+	public DerivedOutputField(Model model, OutputField outputField){
 		super(outputField.getName(), outputField.getOpType(), outputField.getDataType(), null);
 
-		setOutput(output);
+		setModel(model);
 		setOutputField(outputField);
 	}
 
 	public void addOutputField(){
-		Output output = getOutput();
+		Model model = getModel();
 		OutputField outputField = getOutputField();
+
+		Output output = ModelUtil.ensureOutput(model);
 
 		output.addOutputFields(outputField);
 	}
 
-	public Output getOutput(){
-		return this.output;
+	public Model getModel(){
+		return this.model;
 	}
 
-	private void setOutput(Output output){
-		this.output = Objects.requireNonNull(output);
+	private void setModel(Model model){
+		this.model = Objects.requireNonNull(model);
 	}
 
 	public OutputField getOutputField(){
