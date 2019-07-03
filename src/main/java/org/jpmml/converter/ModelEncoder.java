@@ -32,10 +32,13 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
+import org.jpmml.converter.mining.MiningModelUtil;
 import org.jpmml.converter.visitors.CleanerBattery;
 import org.jpmml.model.VisitorBattery;
 
 public class ModelEncoder extends PMMLEncoder {
+
+	private List<Model> transformers = new ArrayList<>();
 
 	private Map<FieldName, List<Decorator>> decorators = new LinkedHashMap<>();
 
@@ -43,7 +46,16 @@ public class ModelEncoder extends PMMLEncoder {
 
 
 	public PMML encodePMML(Model model){
+		List<Model> transformers = getTransformers();
+
 		PMML pmml = encodePMML();
+
+		if(transformers.size() > 0){
+			List<Model> models = new ArrayList<>(transformers);
+			models.add(model);
+
+			model = MiningModelUtil.createModelChain(models);
+		}
 
 		pmml.addModels(model);
 
@@ -94,6 +106,14 @@ public class ModelEncoder extends PMMLEncoder {
 		}
 
 		return pmml;
+	}
+
+	public List<Model> getTransformers(){
+		return this.transformers;
+	}
+
+	public void addTransformer(Model transformer){
+		this.transformers.add(transformer);
 	}
 
 	public List<Decorator> getDecorators(FieldName name){

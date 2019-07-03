@@ -222,6 +222,18 @@ public class MiningModelUtil {
 	}
 
 	static
+	public Model getFinalModel(Model model){
+
+		if(model instanceof MiningModel){
+			MiningModel miningModel = (MiningModel)model;
+
+			return getFinalModel(miningModel);
+		}
+
+		return model;
+	}
+
+	static
 	public Model getFinalModel(MiningModel miningModel){
 		Segmentation segmentation = miningModel.getSegmentation();
 
@@ -245,13 +257,8 @@ public class MiningModelUtil {
 					}
 
 					Model model = finalSegment.getModel();
-					if(model instanceof MiningModel){
-						MiningModel finalMiningModel = (MiningModel)model;
 
-						return getFinalModel(finalMiningModel);
-					}
-
-					return model;
+					return getFinalModel(model);
 				}
 			default:
 				break;
