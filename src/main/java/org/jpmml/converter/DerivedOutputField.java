@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.DerivedField;
@@ -40,12 +41,24 @@ public class DerivedOutputField extends DerivedField {
 	}
 
 	public void addOutputField(){
+		addOutputField(-1);
+	}
+
+	public void addOutputField(int index){
 		Model model = getModel();
 		OutputField outputField = getOutputField();
 
 		Output output = ModelUtil.ensureOutput(model);
 
-		output.addOutputFields(outputField);
+		List<OutputField> outputFields = output.getOutputFields();
+
+		if(index > -1){
+			outputFields.add(index, outputField);
+		} else
+
+		{
+			outputFields.add(outputField);
+		}
 	}
 
 	public Model getModel(){

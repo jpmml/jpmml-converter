@@ -20,6 +20,7 @@ package org.jpmml.converter.visitors;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.TransformationDictionary;
+import org.jpmml.converter.DerivedOutputField;
 
 /**
  * <p>
@@ -79,7 +81,25 @@ public class TransformationDictionaryCleaner extends ModelCleaner {
 
 			Set<DerivedField> activeDerivedFields = getActiveDerivedFields(derivedFields);
 
-			derivedFields.retainAll(activeDerivedFields);
+			for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
+				DerivedField derivedField = it.next();
+
+				boolean retain;
+
+				if(derivedField instanceof DerivedOutputField){
+					DerivedOutputField derivedOutputField = (DerivedOutputField)derivedField;
+
+					retain = true;
+				} else
+
+				{
+					retain = activeDerivedFields.contains(derivedField);
+				} // End if
+
+				if(!retain){
+					it.remove();
+				}
+			}
 		}
 	}
 

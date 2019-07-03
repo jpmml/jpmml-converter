@@ -18,12 +18,15 @@
  */
 package org.jpmml.converter.visitors;
 
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.HasDerivedFields;
 import org.dmg.pmml.LocalTransformations;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.VisitorAction;
 import org.jpmml.converter.DerivedOutputField;
@@ -50,13 +53,26 @@ public class DerivedOutputFieldTransformer extends AbstractVisitor {
 		if(hasDerivedFields.hasDerivedFields()){
 			List<DerivedField> derivedFields = hasDerivedFields.getDerivedFields();
 
+			Map<Model, Integer> indices = new IdentityHashMap<>();
+
 			for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
 				DerivedField derivedField = it.next();
 
 				if(derivedField instanceof DerivedOutputField){
 					DerivedOutputField derivedOutputField = (DerivedOutputField)derivedField;
 
-					derivedOutputField.addOutputField();
+					Model model = derivedOutputField.getModel();
+
+					Integer index = indices.get(model);
+					if(index == null){
+						index = 0;
+					}
+
+					derivedOutputField.addOutputField(index);
+
+					index = (index + 1);
+
+					indices.put(model, index);
 
 					it.remove();
 				}

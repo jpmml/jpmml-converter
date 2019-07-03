@@ -42,6 +42,7 @@ import org.dmg.pmml.Visitable;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
+import org.jpmml.converter.DerivedOutputField;
 import org.jpmml.model.visitors.AbstractVisitor;
 
 /**
@@ -116,6 +117,12 @@ public class DerivedFieldRelocator extends DeepFieldResolver {
 			DerivedField derivedField = entry.getKey();
 			Set<Model> models = entry.getValue();
 
+			if(derivedField instanceof DerivedOutputField){
+				DerivedOutputField derivedOutputField = (DerivedOutputField)derivedField;
+
+				continue;
+			} // End if
+
 			if(models.size() > 0){
 				Model model = (models.iterator()).next();
 
@@ -162,18 +169,7 @@ public class DerivedFieldRelocator extends DeepFieldResolver {
 			public VisitorAction visit(LocalTransformations localTransformations){
 				Model model = (Model)getParent();
 
-				if(localTransformations.hasDerivedFields()){
-					List<DerivedField> derivedFields = localTransformations.getDerivedFields();
-
-					for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
-						DerivedField derivedField = it.next();
-
-						Model scope = derivedFieldScopes.get(derivedField);
-						if(scope != null && !Objects.equals(scope, model)){
-							it.remove();
-						}
-					}
-				}
+				processDerivedFields(localTransformations, model);
 
 				return super.visit(localTransformations);
 			}
@@ -205,20 +201,30 @@ public class DerivedFieldRelocator extends DeepFieldResolver {
 
 			@Override
 			public VisitorAction visit(TransformationDictionary transformationDictionary){
+				processDerivedFields(transformationDictionary, null);
 
-				if(transformationDictionary.hasDerivedFields()){
-					List<DerivedField> derivedFields = transformationDictionary.getDerivedFields();
+				return super.visit(transformationDictionary);
+			}
+
+			private void processDerivedFields(HasDerivedFields<?> hasDerivedFields, Model parent){
+
+				if(hasDerivedFields.hasDerivedFields()){
+					List<DerivedField> derivedFields = hasDerivedFields.getDerivedFields();
 
 					for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
 						DerivedField derivedField = it.next();
 
 						Model scope = derivedFieldScopes.get(derivedField);
 						if(scope != null){
+
+							if(parent != null && Objects.equals(scope, parent)){
+								continue;
+							}
+
 							it.remove();
 						}
 					}
 				}
-				return super.visit(transformationDictionary);
 			}
 		};
 
