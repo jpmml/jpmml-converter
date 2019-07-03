@@ -84,16 +84,12 @@ public class TransformationDictionaryCleaner extends ModelCleaner {
 			for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
 				DerivedField derivedField = it.next();
 
-				boolean retain;
+				boolean retain = activeDerivedFields.contains(derivedField);
 
 				if(derivedField instanceof DerivedOutputField){
 					DerivedOutputField derivedOutputField = (DerivedOutputField)derivedField;
 
-					retain = true;
-				} else
-
-				{
-					retain = activeDerivedFields.contains(derivedField);
+					retain |= derivedOutputField.isRequired();
 				} // End if
 
 				if(!retain){

@@ -158,8 +158,8 @@ public class PMMLEncoder {
 		return derivedField;
 	}
 
-	public DerivedOutputField createDerivedField(Model model, OutputField outputField){
-		DerivedOutputField derivedField = new DerivedOutputField(model, outputField);
+	public DerivedOutputField createDerivedField(Model model, OutputField outputField, boolean required){
+		DerivedOutputField derivedField = new DerivedOutputField(model, outputField, required);
 
 		addDerivedField(derivedField);
 

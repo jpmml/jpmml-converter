@@ -32,12 +32,15 @@ public class DerivedOutputField extends DerivedField {
 
 	private OutputField outputField = null;
 
+	private boolean required = false;
 
-	public DerivedOutputField(Model model, OutputField outputField){
+
+	public DerivedOutputField(Model model, OutputField outputField, boolean required){
 		super(outputField.getName(), outputField.getOpType(), outputField.getDataType(), null);
 
 		setModel(model);
 		setOutputField(outputField);
+		setRequired(required);
 	}
 
 	public void addOutputField(){
@@ -75,5 +78,13 @@ public class DerivedOutputField extends DerivedField {
 
 	private void setOutputField(OutputField outputField){
 		this.outputField = Objects.requireNonNull(outputField);
+	}
+
+	public boolean isRequired(){
+		return this.required;
+	}
+
+	private void setRequired(boolean required){
+		this.required = required;
 	}
 }
