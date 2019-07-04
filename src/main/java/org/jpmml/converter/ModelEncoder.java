@@ -32,8 +32,10 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
+import org.dmg.pmml.Visitor;
 import org.jpmml.converter.mining.MiningModelUtil;
-import org.jpmml.converter.visitors.CleanerBattery;
+import org.jpmml.converter.visitors.AttributeCleaner;
+import org.jpmml.converter.visitors.ModelCleanerBattery;
 import org.jpmml.model.VisitorBattery;
 
 public class ModelEncoder extends PMMLEncoder {
@@ -59,9 +61,9 @@ public class ModelEncoder extends PMMLEncoder {
 
 		pmml.addModels(model);
 
-		VisitorBattery visitorBattery = new CleanerBattery();
-		if(visitorBattery.size() > 0){
-			visitorBattery.applyTo(pmml);
+		VisitorBattery modelCleanerBattery = new ModelCleanerBattery();
+		if(modelCleanerBattery.size() > 0){
+			modelCleanerBattery.applyTo(pmml);
 		}
 
 		MiningSchema miningSchema = model.getMiningSchema();
@@ -104,6 +106,9 @@ public class ModelEncoder extends PMMLEncoder {
 
 			modelStats.addUnivariateStats(univariateStats);
 		}
+
+		Visitor pmmlCleaner = new AttributeCleaner();
+		pmmlCleaner.applyTo(pmml);
 
 		return pmml;
 	}

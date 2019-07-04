@@ -20,11 +20,9 @@ package org.jpmml.converter.visitors;
 
 import org.jpmml.model.VisitorBattery;
 
-public class CleanerBattery extends VisitorBattery {
+public class ModelCleanerBattery extends VisitorBattery {
 
-	public CleanerBattery(){
-		add(AttributeCleaner.class);
-
+	public ModelCleanerBattery(){
 		// DataField and DerivedField elements
 		add(TransformationDictionaryCleaner.class);
 		add(DerivedFieldRelocator.class);
