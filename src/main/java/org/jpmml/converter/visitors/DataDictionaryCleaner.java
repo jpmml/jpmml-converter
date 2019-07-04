@@ -40,7 +40,7 @@ import org.dmg.pmml.Visitable;
  * A Visitor that removes redundant {@link DataField data fields} from the {@link DataDictionary data dictionary}.
  * </p>
  */
-public class DataDictionaryCleaner extends ModelCleaner {
+public class DataDictionaryCleaner extends ActiveFieldFinder {
 
 	private Set<Field<?>> targetFields = new LinkedHashSet<>();
 
@@ -109,22 +109,22 @@ public class DataDictionaryCleaner extends ModelCleaner {
 		if(dataDictionary.hasDataFields()){
 			List<DataField> dataFields = dataDictionary.getDataFields();
 
-			Set<DataField> usedDataFields = getUsedDataFields();
+			Set<DataField> activeDataFields = getActiveDataFields();
 
-			dataFields.retainAll(usedDataFields);
+			dataFields.retainAll(activeDataFields);
 		}
 	}
 
-	private Set<DataField> getUsedDataFields(){
+	private Set<DataField> getActiveDataFields(){
 		FieldDependencyResolver fieldDependencyResolver = getFieldDependencyResolver();
 
-		Set<Field<?>> usedFields = new HashSet<>(getActiveFields());
-		usedFields.addAll(getTargetFields());
+		Set<Field<?>> activeFields = new HashSet<>(getActiveFields());
+		activeFields.addAll(getTargetFields());
 
-		fieldDependencyResolver.expand(usedFields, fieldDependencyResolver.getLocalDerivedFields());
-		fieldDependencyResolver.expand(usedFields, fieldDependencyResolver.getGlobalDerivedFields());
+		fieldDependencyResolver.expand(activeFields, fieldDependencyResolver.getLocalDerivedFields());
+		fieldDependencyResolver.expand(activeFields, fieldDependencyResolver.getGlobalDerivedFields());
 
-		return (Set)usedFields;
+		return (Set)activeFields;
 	}
 
 	public Set<Field<?>> getTargetFields(){

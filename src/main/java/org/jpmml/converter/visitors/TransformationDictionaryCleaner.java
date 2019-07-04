@@ -39,7 +39,7 @@ import org.jpmml.converter.DerivedOutputField;
  * A Visitor that removes redundant {@link DerivedField derived fields} from global and local transformation dictionaries.
  * </p>
  */
-public class TransformationDictionaryCleaner extends ModelCleaner {
+public class TransformationDictionaryCleaner extends ActiveFieldFinder {
 
 	@Override
 	public PMMLObject popParent(){

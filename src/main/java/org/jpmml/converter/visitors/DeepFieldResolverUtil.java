@@ -35,6 +35,7 @@ import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
 import org.jpmml.model.visitors.FieldReferenceFinder;
+import org.jpmml.model.visitors.FieldResolver;
 
 public class DeepFieldResolverUtil {
 
@@ -42,7 +43,7 @@ public class DeepFieldResolverUtil {
 	}
 
 	static
-	public Set<Field<?>> getActiveFields(DeepFieldResolver resolver, MiningModel miningModel){
+	public Set<Field<?>> getActiveFields(FieldResolver resolver, MiningModel miningModel){
 		Collection<Field<?>> modelFields = getModelFields(resolver, miningModel);
 
 		Set<Field<?>> activeFields = new LinkedHashSet<>();
@@ -91,7 +92,7 @@ public class DeepFieldResolverUtil {
 	}
 
 	static
-	public Set<Field<?>> getActiveFields(DeepFieldResolver resolver, Model model){
+	public Set<Field<?>> getActiveFields(FieldResolver resolver, Model model){
 		Collection<Field<?>> modelFields = getModelFields(resolver, model);
 
 		Set<Field<?>> activeFields = new LinkedHashSet<>();
@@ -118,7 +119,7 @@ public class DeepFieldResolverUtil {
 	}
 
 	static
-	private Collection<Field<?>> getModelFields(DeepFieldResolver resolver, Model model){
+	private Collection<Field<?>> getModelFields(FieldResolver resolver, Model model){
 		Output output = model.getOutput();
 
 		if(output != null && output.hasOutputFields()){

@@ -28,7 +28,7 @@ import org.dmg.pmml.Visitable;
 import org.dmg.pmml.mining.MiningModel;
 
 abstract
-class ModelCleaner extends DeepFieldResolver {
+public class ActiveFieldFinder extends DeepFieldResolver {
 
 	private Set<Field<?>> activeFields = new HashSet<>();
 
