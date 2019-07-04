@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Villu Ruusmann
+ * Copyright (c) 2019 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,26 +18,34 @@
  */
 package org.jpmml.converter.visitors;
 
-import org.jpmml.model.VisitorBattery;
+import org.dmg.pmml.Model;
+import org.dmg.pmml.Output;
+import org.dmg.pmml.PMMLObject;
+import org.jpmml.model.visitors.AbstractVisitor;
 
-public class CleanerBattery extends VisitorBattery {
+public class OutputCleaner extends AbstractVisitor {
 
-	public CleanerBattery(){
-		add(AttributeCleaner.class);
+	@Override
+	public PMMLObject popParent(){
+		PMMLObject parent = super.popParent();
 
-		// DataField and DerivedField elements
-		add(TransformationDictionaryCleaner.class);
-		add(DerivedFieldRelocator.class);
-		add(DataDictionaryCleaner.class);
+		if(parent instanceof Model){
+			Model model = (Model)parent;
 
-		// OutputField elements
-		add(DerivedOutputFieldTransformer.class);
-		add(OutputCleaner.class);
+			clean(model);
+		}
 
-		// Most "aggressive", should be applied last,
-		// when all surviving fields are on their final locations
-		add(MiningSchemaCleaner.class);
+		return parent;
+	}
 
-		add(ModelVerificationCleaner.class);
+	private void clean(Model model){
+		Output output = model.getOutput();
+
+		if(output != null){
+
+			if(!output.hasOutputFields()){
+				model.setOutput(null);
+			}
+		}
 	}
 }
