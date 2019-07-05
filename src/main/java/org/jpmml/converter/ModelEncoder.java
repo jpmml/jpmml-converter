@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
@@ -48,58 +47,53 @@ public class ModelEncoder extends PMMLEncoder {
 
 
 	public PMML encodePMML(Model model){
-		List<Model> transformers = getTransformers();
-
 		PMML pmml = encodePMML();
 
+		List<Model> transformers = getTransformers();
 		if(transformers.size() > 0){
 			List<Model> models = new ArrayList<>(transformers);
-			models.add(model);
+
+			if(model != null){
+				models.add(model);
+			}
 
 			model = MiningModelUtil.createModelChain(models);
-		}
+		} // End if
 
-		pmml.addModels(model);
+		if(model != null){
+			pmml.addModels(model);
 
-		VisitorBattery modelCleanerBattery = new ModelCleanerBattery();
-		if(modelCleanerBattery.size() > 0){
-			modelCleanerBattery.applyTo(pmml);
-		}
-
-		MiningSchema miningSchema = model.getMiningSchema();
-
-		List<MiningField> miningFields = miningSchema.getMiningFields();
-		for(MiningField miningField : miningFields){
-			FieldName name = miningField.getName();
-
-			List<Decorator> decorators = getDecorators(name);
-			if(decorators == null){
-				continue;
+			VisitorBattery modelCleanerBattery = new ModelCleanerBattery();
+			if(modelCleanerBattery.size() > 0){
+				modelCleanerBattery.applyTo(pmml);
 			}
 
-			DataField dataField = getDataField(name);
-			if(dataField == null){
-				throw new IllegalArgumentException();
+			MiningSchema miningSchema = model.getMiningSchema();
+
+			List<MiningField> miningFields = miningSchema.getMiningFields();
+			for(MiningField miningField : miningFields){
+				FieldName name = miningField.getName();
+
+				DataField dataField = getDataField(name);
+				if(dataField == null){
+					throw new IllegalArgumentException("Field " + name.getValue() + " is not referentiable");
+				}
+
+				List<Decorator> decorators = getDecorators(name);
+				if(decorators != null){
+
+					for(Decorator decorator : decorators){
+						decorator.decorate(dataField, miningField);
+					}
+				}
+
+				UnivariateStats univariateStats = getUnivariateStats(name);
+				if(univariateStats != null){
+					ModelStats modelStats = ModelUtil.ensureModelStats(model);
+
+					modelStats.addUnivariateStats(univariateStats);
+				}
 			}
-
-			for(Decorator decorator : decorators){
-				decorator.decorate(dataField, miningField);
-			}
-		}
-
-		DataDictionary dataDictionary = pmml.getDataDictionary();
-
-		List<DataField> dataFields = dataDictionary.getDataFields();
-		for(DataField dataField : dataFields){
-			UnivariateStats univariateStats = getUnivariateStats(dataField.getName());
-
-			if(univariateStats == null){
-				continue;
-			}
-
-			ModelStats modelStats = ModelUtil.ensureModelStats(model);
-
-			modelStats.addUnivariateStats(univariateStats);
 		}
 
 		Visitor pmmlCleaner = new AttributeCleaner();
@@ -118,6 +112,10 @@ public class ModelEncoder extends PMMLEncoder {
 
 	public List<Decorator> getDecorators(FieldName name){
 		return this.decorators.get(name);
+	}
+
+	public void addDecorator(DataField dataField, Decorator decorator){
+		addDecorator(dataField.getName(), decorator);
 	}
 
 	public void addDecorator(FieldName name, Decorator decorator){
