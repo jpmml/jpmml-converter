@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OutlierTreatmentMethod;
 
@@ -31,47 +30,50 @@ public class OutlierDecorator implements Decorator {
 	private Number highValue = null;
 
 
-	@Override
-	public void decorate(DataField dataField, MiningField miningField){
-		OutlierTreatmentMethod outlierTreatment = getOutlierTreatmentMethod();
+	public OutlierDecorator(OutlierTreatmentMethod outlierTreatment, Number lowValue, Number highValue){
 
-		Number lowValue = getLowValue();
-		Number highValue = getHighValue();
+		if(outlierTreatment == null || (OutlierTreatmentMethod.AS_IS).equals(outlierTreatment)){
 
-		if(outlierTreatment != null && !(OutlierTreatmentMethod.AS_IS).equals(outlierTreatment)){
-			miningField.setOutlierTreatment(outlierTreatment)
-				.setLowValue(lowValue)
-				.setHighValue(highValue);
+			if(lowValue != null || highValue != null){
+				throw new IllegalArgumentException();
+			}
 		}
+
+		setOutlierTreatment(outlierTreatment);
+
+		setLowValue(lowValue);
+		setHighValue(highValue);
+	}
+
+	@Override
+	public void decorate(MiningField miningField){
+		miningField
+			.setOutlierTreatment(getOutlierTreatmentMethod())
+			.setLowValue(getLowValue())
+			.setHighValue(getHighValue());
 	}
 
 	public OutlierTreatmentMethod getOutlierTreatmentMethod(){
 		return this.outlierTreatment;
 	}
 
-	public OutlierDecorator setOutlierTreatment(OutlierTreatmentMethod outlierTreatment){
+	private void setOutlierTreatment(OutlierTreatmentMethod outlierTreatment){
 		this.outlierTreatment = outlierTreatment;
-
-		return this;
 	}
 
 	public Number getLowValue(){
 		return this.lowValue;
 	}
 
-	public OutlierDecorator setLowValue(Number lowValue){
+	private void setLowValue(Number lowValue){
 		this.lowValue = lowValue;
-
-		return this;
 	}
 
 	public Number getHighValue(){
 		return this.highValue;
 	}
 
-	public OutlierDecorator setHighValue(Number highValue){
+	private void setHighValue(Number highValue){
 		this.highValue = highValue;
-
-		return this;
 	}
 }

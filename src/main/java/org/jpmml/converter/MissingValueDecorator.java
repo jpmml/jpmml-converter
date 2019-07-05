@@ -18,53 +18,49 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MissingValueTreatmentMethod;
-import org.dmg.pmml.Value;
 
-public class MissingValueDecorator extends ValueDecorator {
-
-	private Object missingValueReplacement = null;
+public class MissingValueDecorator implements Decorator {
 
 	private MissingValueTreatmentMethod missingValueTreatment = null;
 
+	private Object missingValueReplacement = null;
 
-	public MissingValueDecorator(){
-		super(Value.Property.MISSING);
+
+	public MissingValueDecorator(MissingValueTreatmentMethod missingValueTreatment, Object missingValueReplacement){
+
+		if((MissingValueTreatmentMethod.RETURN_INVALID).equals(missingValueTreatment)){
+
+			if(missingValueReplacement != null){
+				throw new IllegalArgumentException();
+			}
+		}
+
+		setMissingValueTreatment(missingValueTreatment);
+		setMissingValueReplacement(missingValueReplacement);
 	}
 
 	@Override
-	public void decorate(DataField dataField, MiningField miningField){
-		super.decorate(dataField, miningField);
-
+	public void decorate(MiningField miningField){
 		miningField
-			.setMissingValueReplacement(getMissingValueReplacement())
-			.setMissingValueTreatment(getMissingValueTreatment());
-	}
-
-	public Object getMissingValueReplacement(){
-		return this.missingValueReplacement;
-	}
-
-	public MissingValueDecorator setMissingValueReplacement(Object missingValueReplacement){
-		this.missingValueReplacement = missingValueReplacement;
-
-		return this;
+			.setMissingValueTreatment(getMissingValueTreatment())
+			.setMissingValueReplacement(getMissingValueReplacement());
 	}
 
 	public MissingValueTreatmentMethod getMissingValueTreatment(){
 		return this.missingValueTreatment;
 	}
 
-	public MissingValueDecorator setMissingValueTreatment(MissingValueTreatmentMethod missingValueTreatment){
+	private void setMissingValueTreatment(MissingValueTreatmentMethod missingValueTreatment){
 		this.missingValueTreatment = missingValueTreatment;
-
-		return this;
 	}
 
-	@Override
-	public MissingValueDecorator addValues(Object... values){
-		return (MissingValueDecorator)super.addValues(values);
+	public Object getMissingValueReplacement(){
+		return this.missingValueReplacement;
+	}
+
+	private void setMissingValueReplacement(Object missingValueReplacement){
+		this.missingValueReplacement = missingValueReplacement;
 	}
 }

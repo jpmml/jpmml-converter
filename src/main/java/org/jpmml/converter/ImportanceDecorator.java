@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 
 public class ImportanceDecorator implements Decorator {
@@ -26,8 +25,12 @@ public class ImportanceDecorator implements Decorator {
 	private Number importance = null;
 
 
+	public ImportanceDecorator(Number importance){
+		setImportance(importance);
+	}
+
 	@Override
-	public void decorate(DataField dataField, MiningField miningField){
+	public void decorate(MiningField miningField){
 		miningField.setImportance(getImportance());
 	}
 
@@ -35,9 +38,7 @@ public class ImportanceDecorator implements Decorator {
 		return this.importance;
 	}
 
-	public ImportanceDecorator setImportance(Number importance){
+	private void setImportance(Number importance){
 		this.importance = importance;
-
-		return this;
 	}
 }

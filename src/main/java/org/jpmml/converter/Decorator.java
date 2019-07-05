@@ -18,10 +18,9 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.MiningField;
 
 public interface Decorator {
 
-	void decorate(DataField dataField, MiningField miningField);
+	void decorate(MiningField miningField);
 }

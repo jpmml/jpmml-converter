@@ -18,42 +18,49 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.dmg.pmml.MiningField;
-import org.dmg.pmml.Value;
 
-public class InvalidValueDecorator extends ValueDecorator {
+public class InvalidValueDecorator implements Decorator {
 
 	private InvalidValueTreatmentMethod invalidValueTreatment = null;
 
+	private Object invalidValueReplacement = null;
 
-	public InvalidValueDecorator(){
-		super(Value.Property.INVALID);
+
+	public InvalidValueDecorator(InvalidValueTreatmentMethod invalidValueTreatment, Object invalidValueReplacement){
+
+		if(!(InvalidValueTreatmentMethod.AS_IS).equals(invalidValueTreatment)){
+
+			if(invalidValueReplacement != null){
+				throw new IllegalArgumentException();
+			}
+		}
+
+		setInvalidValueTreatment(invalidValueTreatment);
+		setInvalidValueReplacement(invalidValueReplacement);
 	}
 
 	@Override
-	public void decorate(DataField dataField, MiningField miningField){
-		super.decorate(dataField, miningField);
-
-		InvalidValueTreatmentMethod invalidValueTreatment = getInvalidValueTreatment();
-		if(invalidValueTreatment != null && !(InvalidValueTreatmentMethod.RETURN_INVALID).equals(invalidValueTreatment)){
-			miningField.setInvalidValueTreatment(invalidValueTreatment);
-		}
+	public void decorate(MiningField miningField){
+		miningField
+			.setInvalidValueTreatment(getInvalidValueTreatment())
+			.setInvalidValueReplacement(getInvalidValueReplacement());
 	}
 
 	public InvalidValueTreatmentMethod getInvalidValueTreatment(){
 		return this.invalidValueTreatment;
 	}
 
-	public InvalidValueDecorator setInvalidValueTreatment(InvalidValueTreatmentMethod invalidValueTreatment){
+	private void setInvalidValueTreatment(InvalidValueTreatmentMethod invalidValueTreatment){
 		this.invalidValueTreatment = invalidValueTreatment;
-
-		return this;
 	}
 
-	@Override
-	public InvalidValueDecorator addValues(Object... values){
-		return (InvalidValueDecorator)super.addValues(values);
+	public Object getInvalidValueReplacement(){
+		return this.invalidValueReplacement;
+	}
+
+	private void setInvalidValueReplacement(Object invalidValueReplacement){
+		this.invalidValueReplacement = invalidValueReplacement;
 	}
 }

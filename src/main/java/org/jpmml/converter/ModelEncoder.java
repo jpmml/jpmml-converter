@@ -83,7 +83,7 @@ public class ModelEncoder extends PMMLEncoder {
 				if(decorators != null){
 
 					for(Decorator decorator : decorators){
-						decorator.decorate(dataField, miningField);
+						decorator.decorate(miningField);
 					}
 				}
 
