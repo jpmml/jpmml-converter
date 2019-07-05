@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Interval;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
@@ -41,6 +42,16 @@ public class DerivedOutputField extends DerivedField {
 		setModel(model);
 		setOutputField(outputField);
 		setRequired(required);
+	}
+
+	@Override
+	public boolean hasIntervals(){
+		return false;
+	}
+
+	@Override
+	public List<Interval> getIntervals(){
+		throw new UnsupportedOperationException();
 	}
 
 	public void addOutputField(){

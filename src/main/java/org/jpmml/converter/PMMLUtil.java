@@ -37,14 +37,14 @@ import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.ComplexArray;
 import org.dmg.pmml.Constant;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldColumnPair;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
-import org.dmg.pmml.Interval;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.RealSparseArray;
@@ -94,19 +94,19 @@ public class PMMLUtil {
 	}
 
 	static
-	public List<?> getValues(DataField dataField){
-		return getValues(dataField, null);
+	public <F extends Field<F> & HasDiscreteDomain<F>> List<?> getValues(F field){
+		return getValues(field, null);
 	}
 
 	static
-	public List<?> getValues(DataField dataField, Value.Property property){
+	public <F extends Field<F> & HasDiscreteDomain<F>> List<?> getValues(F field, Value.Property property){
 		List<Object> result = new ArrayList<>();
 
 		if(property == null){
 			property = Value.Property.VALID;
 		}
 
-		List<Value> pmmlValues = dataField.getValues();
+		List<Value> pmmlValues = field.getValues();
 		for(Value pmmlValue : pmmlValues){
 
 			if((property).equals(pmmlValue.getProperty())){
@@ -118,29 +118,24 @@ public class PMMLUtil {
 	}
 
 	static
-	public void addValues(DataField dataField, List<?> values){
-		addValues(dataField, values, null);
+	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, List<?> values){
+		addValues(field, values, null);
 	}
 
 	static
-	public void addValues(DataField dataField, List<?> values, Value.Property property){
+	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, List<?> values, Value.Property property){
 
 		if((Value.Property.VALID).equals(property)){
 			property = null;
 		}
 
-		List<Value> pmmlValues = dataField.getValues();
+		List<Value> pmmlValues = field.getValues();
 		for(Object value : values){
 			Value pmmlValue = new Value(value)
 				.setProperty(property);
 
 			pmmlValues.add(pmmlValue);
 		}
-	}
-
-	static
-	public void addIntervals(DataField dataField, List<Interval> intervals){
-		(dataField.getIntervals()).addAll(intervals);
 	}
 
 	static

@@ -22,11 +22,22 @@ import java.util.List;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 
 public class WildcardFeature extends Feature {
 
 	public WildcardFeature(PMMLEncoder encoder, DataField dataField){
 		super(encoder, dataField.getName(), dataField.getDataType());
+	}
+
+	@Override
+	public DataField getField(){
+		Field<?> field = super.getField();
+		if(field == null){
+			throw new IllegalArgumentException();
+		}
+
+		return (DataField)field;
 	}
 
 	public CategoricalFeature toCategoricalFeature(List<?> values){
