@@ -97,12 +97,7 @@ public class ModelEncoder extends PMMLEncoder {
 				continue;
 			}
 
-			ModelStats modelStats = model.getModelStats();
-			if(modelStats == null){
-				modelStats = new ModelStats();
-
-				model.setModelStats(modelStats);
-			}
+			ModelStats modelStats = ModelUtil.ensureModelStats(model);
 
 			modelStats.addUnivariateStats(univariateStats);
 		}

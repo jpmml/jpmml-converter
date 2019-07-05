@@ -34,6 +34,7 @@ import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.ModelVerification;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
@@ -48,6 +49,11 @@ import org.dmg.pmml.VerificationFields;
 public class ModelUtil {
 
 	private ModelUtil(){
+	}
+
+	static
+	public MathContext simplifyMathContext(MathContext mathContext){
+		return (MathContext.DOUBLE).equals(mathContext) ? null : mathContext;
 	}
 
 	static
@@ -226,8 +232,16 @@ public class ModelUtil {
 	}
 
 	static
-	public MathContext simplifyMathContext(MathContext mathContext){
-		return (MathContext.DOUBLE).equals(mathContext) ? null : mathContext;
+	public ModelStats ensureModelStats(Model model){
+		ModelStats modelStats = model.getModelStats();
+
+		if(modelStats == null){
+			modelStats = new ModelStats();
+
+			model.setModelStats(modelStats);
+		}
+
+		return modelStats;
 	}
 
 	static
