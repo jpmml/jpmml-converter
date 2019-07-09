@@ -5,6 +5,7 @@ Java library for authoring PMML.
 
 This project provides base functionality for the following projects:
 
+* [JPMML-CatBoost](https://github.com/jpmml/jpmml-catboost)
 * [JPMML-H2O](https://github.com/jpmml/jpmml-h2o)
 * [JPMML-LightGBM](https://github.com/jpmml/jpmml-lightgbm)
 * [JPMML-R](https://github.com/jpmml/jpmml-r)
