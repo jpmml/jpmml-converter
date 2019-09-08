@@ -54,6 +54,8 @@ public class DataDictionaryCleanerTest {
 		List<Model> models = pmml.getModels();
 		models.clear();
 
+		cleaner.reset();
+
 		cleaner.applyTo(pmml);
 
 		checkFields(Collections.emptySet(), dataDictionary.getDataFields());
@@ -74,6 +76,8 @@ public class DataDictionaryCleanerTest {
 
 		List<Model> models = pmml.getModels();
 		models.clear();
+
+		cleaner.reset();
 
 		cleaner.applyTo(pmml);
 

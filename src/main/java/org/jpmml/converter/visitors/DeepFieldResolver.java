@@ -28,6 +28,13 @@ public class DeepFieldResolver extends FieldResolver {
 
 
 	@Override
+	public void reset(){
+		super.reset();
+
+		this.fieldDependencyResolver = null;
+	}
+
+	@Override
 	public void applyTo(Visitable visitable){
 		FieldDependencyResolver fieldDependencyResolver = new FieldDependencyResolver();
 		fieldDependencyResolver.applyTo(visitable);
@@ -38,10 +45,20 @@ public class DeepFieldResolver extends FieldResolver {
 	}
 
 	public FieldDependencyResolver getFieldDependencyResolver(){
+
+		if(this.fieldDependencyResolver == null){
+			throw new IllegalStateException();
+		}
+
 		return this.fieldDependencyResolver;
 	}
 
 	private void setFieldDependencyResolver(FieldDependencyResolver fieldDependencyResolver){
+
+		if(this.fieldDependencyResolver != null){
+			throw new IllegalStateException();
+		}
+
 		this.fieldDependencyResolver = fieldDependencyResolver;
 	}
 }

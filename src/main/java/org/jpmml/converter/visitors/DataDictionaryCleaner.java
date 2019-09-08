@@ -33,7 +33,6 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.PMMLObject;
-import org.dmg.pmml.Visitable;
 
 /**
  * <p>
@@ -46,10 +45,10 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 
 
 	@Override
-	public void applyTo(Visitable visitable){
-		this.targetFields.clear();
+	public void reset(){
+		super.reset();
 
-		super.applyTo(visitable);
+		this.targetFields.clear();
 	}
 
 	@Override

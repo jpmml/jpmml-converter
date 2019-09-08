@@ -38,7 +38,6 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.Visitable;
 import org.dmg.pmml.VisitorAction;
 import org.jpmml.model.visitors.FieldReferenceFinder;
 import org.jpmml.model.visitors.FieldResolver;
@@ -62,15 +61,15 @@ public class FieldDependencyResolver extends FieldResolver {
 
 
 	@Override
-	public void applyTo(Visitable visitable){
+	public void reset(){
+		super.reset();
+
 		this.dependencies.clear();
 
 		this.dataFields.clear();
 		this.globalDerivedFields.clear();
 		this.localDerivedFields.clear();
 		this.outputFields.clear();
-
-		super.applyTo(visitable);
 	}
 
 	@Override

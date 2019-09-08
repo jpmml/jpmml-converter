@@ -105,6 +105,8 @@ public class TransformationDictionaryCleanerTest {
 		List<Model> models = pmml.getModels();
 		models.clear();
 
+		cleaner.reset();
+
 		cleaner.applyTo(pmml);
 
 		assertFalse(transformationDictionary.hasDerivedFields());

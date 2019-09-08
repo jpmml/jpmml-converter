@@ -38,7 +38,6 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.Visitable;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
@@ -58,10 +57,10 @@ public class DerivedFieldRelocator extends DeepFieldResolver {
 
 
 	@Override
-	public void applyTo(Visitable visitable){
-		this.derivedFieldModels.clear();
+	public void reset(){
+		super.reset();
 
-		super.applyTo(visitable);
+		this.derivedFieldModels.clear();
 	}
 
 	@Override

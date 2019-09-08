@@ -24,7 +24,6 @@ import java.util.Set;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMMLObject;
-import org.dmg.pmml.Visitable;
 import org.dmg.pmml.mining.MiningModel;
 
 abstract
@@ -34,10 +33,10 @@ public class ActiveFieldFinder extends DeepFieldResolver {
 
 
 	@Override
-	public void applyTo(Visitable visitable){
-		this.activeFields.clear();
+	public void reset(){
+		super.reset();
 
-		super.applyTo(visitable);
+		this.activeFields.clear();
 	}
 
 	@Override
