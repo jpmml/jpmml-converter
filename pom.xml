@@ -75,17 +75,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.jpmml</groupId>
-			<artifactId>pmml-model</artifactId>
-			<version>1.4.15</version>
-			<classifier>tests</classifier>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<groupId>org.jpmml</groupId>
+			<artifactId>pmml-model</artifactId>
+			<version>1.4.15</version>
+			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -104,7 +104,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.2.0</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -125,7 +125,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
