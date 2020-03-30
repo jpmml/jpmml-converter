@@ -26,10 +26,18 @@ import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.primitives.Ints;
 import org.dmg.pmml.MathContext;
+import org.dmg.pmml.adapters.ObjectUtil;
 
 public class ValueUtil {
 
 	private ValueUtil(){
+	}
+
+	static
+	public String asString(Object value){
+		value = ObjectUtil.toSimpleValue(value);
+
+		return value.toString();
 	}
 
 	static

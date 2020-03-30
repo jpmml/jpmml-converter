@@ -35,7 +35,7 @@ import org.dmg.pmml.Visitor;
 import org.jpmml.converter.mining.MiningModelUtil;
 import org.jpmml.converter.visitors.AttributeCleaner;
 import org.jpmml.converter.visitors.ModelCleanerBattery;
-import org.jpmml.model.VisitorBattery;
+import org.jpmml.model.visitors.VisitorBattery;
 
 public class ModelEncoder extends PMMLEncoder {
 

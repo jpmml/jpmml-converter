@@ -18,7 +18,7 @@
  */
 package org.jpmml.converter.visitors;
 
-import org.jpmml.model.VisitorBattery;
+import org.jpmml.model.visitors.VisitorBattery;
 
 public class ModelCleanerBattery extends VisitorBattery {
 

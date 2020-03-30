@@ -213,7 +213,7 @@ public class PMMLUtil {
 			} else
 
 			{
-				String string = org.jpmml.model.ValueUtil.toString(value);
+				String string = ValueUtil.asString(value);
 
 				if(string.startsWith("-")){
 					string = string.substring(1);
@@ -361,7 +361,7 @@ public class PMMLUtil {
 				} else
 
 				{
-					cell = new JAXBElement<>(columName, String.class, org.jpmml.model.ValueUtil.toString(value));
+					cell = new JAXBElement<>(columName, String.class, ValueUtil.asString(value));
 				}
 
 				row.addContent(cell);

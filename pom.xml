@@ -52,12 +52,12 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>pmml-model</artifactId>
-			<version>1.4.15</version>
+			<version>1.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>pmml-model-metro</artifactId>
-			<version>1.4.15</version>
+			<version>1.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.sun.xml.fastinfoset</groupId>
@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>pmml-model</artifactId>
-			<version>1.4.15</version>
+			<version>1.5.0</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
