@@ -148,13 +148,19 @@ public class PMMLUtil {
 
 	static
 	public Constant createConstant(Number value){
+
+		if(value == null){
+			return createConstant(value, null);
+		}
+
 		return createConstant(value, TypeUtil.getDataType(value));
 	}
 
 	static
 	public Constant createConstant(Object value, DataType dataType){
 		Constant constant = new Constant(value)
-			.setDataType(dataType);
+			.setDataType(dataType)
+			.setMissing(value == null);
 
 		return constant;
 	}
