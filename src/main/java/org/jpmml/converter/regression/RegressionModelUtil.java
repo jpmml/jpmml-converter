@@ -174,7 +174,7 @@ public class RegressionModelUtil {
 
 				CategoricalPredictor categoricalPredictor = new CategoricalPredictor()
 					.setName(booleanFeature.getName())
-					.setValue("true")
+					.setValue(BooleanFeature.VALUE_TRUE)
 					.setCoefficient(coefficient);
 
 				regressionTable.addCategoricalPredictors(categoricalPredictor);

@@ -174,7 +174,7 @@ public class GeneralRegressionModelUtil {
 		if(feature instanceof BooleanFeature){
 			BooleanFeature booleanFeature = (BooleanFeature)feature;
 
-			return createPPCell("true", booleanFeature.getName(), parameter, ppMatrix, factors);
+			return createPPCell(BooleanFeature.VALUE_TRUE, booleanFeature.getName(), parameter, ppMatrix, factors);
 		} else
 
 		if(feature instanceof ConstantFeature){
