@@ -18,15 +18,20 @@
  */
 package org.jpmml.converter.regression;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Iterables;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
 import org.dmg.pmml.regression.RegressionTable;
+import org.jpmml.converter.BooleanFeature;
+import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelEncoder;
 import org.jpmml.converter.ModelTest;
@@ -44,7 +49,18 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		assertState(regressionTable, 0d, false, false, false);
 
-		Feature feature = createConstantFeature(encoder, 3d);
+		Feature feature = new BooleanFeature(encoder, FieldName.create("x"));
+
+		regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), null);
+
+		assertState(regressionTable, 0d, false, true, false);
+
+		CategoricalPredictor categoricalPredictor = Iterables.getOnlyElement(regressionTable.getCategoricalPredictors());
+
+		assertEquals(FieldName.create("x"), categoricalPredictor.getField());
+		assertEquals(1d + 1d, categoricalPredictor.getCoefficient());
+
+		feature = createConstantFeature(encoder, 3d);
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
@@ -75,6 +91,17 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		assertEquals(FieldName.create("x1"), (fieldRefs.get(0)).getField());
 		assertEquals(FieldName.create("x2"), (fieldRefs.get(1)).getField());
+
+		feature = new ContinuousFeature(encoder, FieldName.create("x"), DataType.DOUBLE);
+
+		regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), 1d);
+
+		assertState(regressionTable, 1d, true, false, false);
+
+		numericPredictor = Iterables.getOnlyElement(regressionTable.getNumericPredictors());
+
+		assertEquals(FieldName.create("x"), numericPredictor.getField());
+		assertEquals(1d + 1d, numericPredictor.getCoefficient());
 	}
 
 	static
