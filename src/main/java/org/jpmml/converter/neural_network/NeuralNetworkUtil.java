@@ -69,7 +69,7 @@ public class NeuralNetworkUtil {
 			if(feature instanceof BooleanFeature){
 				BooleanFeature booleanFeature = (BooleanFeature)feature;
 
-				expression = new NormDiscrete(booleanFeature.getName(), "true");
+				expression = new NormDiscrete(booleanFeature.getName(), BooleanFeature.VALUE_TRUE);
 			} else
 
 			{

@@ -19,9 +19,13 @@
 package org.jpmml.converter.regression;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.collect.Iterables;
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningFunction;
@@ -143,6 +147,9 @@ public class RegressionModelUtil {
 			regressionTable.setIntercept(intercept);
 		}
 
+		Map<PredictorKey, NumericPredictor> numericPredictors = new LinkedHashMap<>();
+		Map<PredictorKey, CategoricalPredictor> categoricalPredictors = new LinkedHashMap<>();
+
 		for(int i = 0; i < features.size(); i++){
 			Feature feature = features.get(i);
 			Number coefficient = coefficients.get(i);
@@ -161,23 +168,45 @@ public class RegressionModelUtil {
 			if(feature instanceof BinaryFeature){
 				BinaryFeature binaryFeature = (BinaryFeature)feature;
 
-				CategoricalPredictor categoricalPredictor = new CategoricalPredictor()
-					.setName(binaryFeature.getName())
-					.setValue(binaryFeature.getValue())
-					.setCoefficient(coefficient);
+				PredictorKey predictorKey = new PredictorKey(binaryFeature.getName(), binaryFeature.getValue());
 
-				regressionTable.addCategoricalPredictors(categoricalPredictor);
+				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(predictorKey);
+				if(categoricalPredictor == null){
+					categoricalPredictor = new CategoricalPredictor()
+						.setName(binaryFeature.getName())
+						.setValue(binaryFeature.getValue())
+						.setCoefficient(coefficient);
+
+					categoricalPredictors.put(predictorKey, categoricalPredictor);
+
+					regressionTable.addCategoricalPredictors(categoricalPredictor);
+				} else
+
+				{
+					categoricalPredictor.setCoefficient(ValueUtil.add(mathContext, categoricalPredictor.getCoefficient(), coefficient));
+				}
 			} else
 
 			if(feature instanceof BooleanFeature){
 				BooleanFeature booleanFeature = (BooleanFeature)feature;
 
-				CategoricalPredictor categoricalPredictor = new CategoricalPredictor()
-					.setName(booleanFeature.getName())
-					.setValue("true")
-					.setCoefficient(coefficient);
+				PredictorKey predictorKey = new PredictorKey(booleanFeature.getName(), BooleanFeature.VALUE_TRUE);
 
-				regressionTable.addCategoricalPredictors(categoricalPredictor);
+				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(predictorKey);
+				if(categoricalPredictor == null){
+					categoricalPredictor = new CategoricalPredictor()
+						.setName(booleanFeature.getName())
+						.setValue(BooleanFeature.VALUE_TRUE)
+						.setCoefficient(coefficient);
+
+					categoricalPredictors.put(predictorKey, categoricalPredictor);
+
+					regressionTable.addCategoricalPredictors(categoricalPredictor);
+				} else
+
+				{
+					categoricalPredictor.setCoefficient(ValueUtil.add(mathContext, categoricalPredictor.getCoefficient(), coefficient));
+				}
 			} else
 
 			if(feature instanceof ConstantFeature){
@@ -249,14 +278,65 @@ public class RegressionModelUtil {
 			{
 				ContinuousFeature continuousFeature = feature.toContinuousFeature();
 
-				NumericPredictor numericPredictor = new NumericPredictor()
-					.setName(continuousFeature.getName())
-					.setCoefficient(coefficient);
+				PredictorKey predictorKey = new PredictorKey(continuousFeature.getName());
 
-				regressionTable.addNumericPredictors(numericPredictor);
+				NumericPredictor numericPredictor = numericPredictors.get(predictorKey);
+				if(numericPredictor == null){
+					numericPredictor = new NumericPredictor()
+						.setName(continuousFeature.getName())
+						.setCoefficient(coefficient);
+
+					numericPredictors.put(predictorKey, numericPredictor);
+
+					regressionTable.addNumericPredictors(numericPredictor);
+				} else
+
+				{
+					numericPredictor.setCoefficient(ValueUtil.add(mathContext, numericPredictor.getCoefficient(), coefficient));
+				}
 			}
 		}
 
 		return regressionTable;
+	}
+
+	static
+	private class PredictorKey {
+
+		private FieldName name = null;
+
+		private Object value = null;
+
+
+		private PredictorKey(FieldName name){
+			this(name, null);
+		}
+
+		private PredictorKey(FieldName name, Object value){
+			this.name = name;
+			this.value = value;
+		}
+
+		@Override
+		public boolean equals(Object object){
+
+			if(object instanceof PredictorKey){
+				PredictorKey that = (PredictorKey)object;
+
+				return Objects.equals(this.name, that.name) && Objects.equals(this.value, that.value);
+			}
+
+			return false;
+		}
+
+		@Override
+		public int hashCode(){
+			int result = 0;
+
+			result = (31 * result) + Objects.hashCode(this.name);
+			result = (31 * result) + Objects.hashCode(this.value);
+
+			return result;
+		}
 	}
 }

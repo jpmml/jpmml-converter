@@ -156,7 +156,10 @@ public class LibSVMUtil {
 			if(feature instanceof BinaryFeature){
 				BinaryFeature binaryFeature = (BinaryFeature)feature;
 
-				CategoricalPredictor categoricalPredictor = new CategoricalPredictor(binaryFeature.getName(), binaryFeature.getValue(), 1d);
+				CategoricalPredictor categoricalPredictor = new CategoricalPredictor()
+					.setField(binaryFeature.getName())
+					.setValue(binaryFeature.getValue())
+					.setCoefficient(1d);
 
 				vectorFields.addContent(categoricalPredictor);
 			} else
@@ -178,7 +181,7 @@ public class LibSVMUtil {
 				values = ValueUtil.filterByIndices(values, featureMask);
 			}
 
-			VectorInstance vectorInstance;;
+			VectorInstance vectorInstance;
 
 			if(ValueUtil.isSparse(values, defaultValue, 0.75d)){
 				vectorInstance = new VectorInstance(id, PMMLUtil.createRealSparseArray(values, defaultValue), null);
