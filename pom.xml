@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>pmml-model</artifactId>
-			<version>1.5.0</version>
+			<version>1.5.1</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
