@@ -21,6 +21,7 @@ package org.jpmml.converter;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
@@ -178,7 +179,7 @@ public class ValueUtil {
 	static
 	public boolean equals(Number value, Number targetValue){
 
-		if((value).equals(targetValue)){
+		if(Objects.equals(value, targetValue)){
 			return true;
 		}
 

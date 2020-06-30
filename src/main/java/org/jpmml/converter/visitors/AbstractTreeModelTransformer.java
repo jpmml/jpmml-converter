@@ -21,6 +21,7 @@ package org.jpmml.converter.visitors;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.FieldName;
@@ -231,10 +232,10 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	protected boolean equalsNode(Object defaultChild, Node node){
 
 		if(defaultChild instanceof Node){
-			return (defaultChild).equals(node);
+			return Objects.equals(defaultChild, node);
 		}
 
-		return (defaultChild).equals(node.getId());
+		return Objects.equals(defaultChild, node.getId());
 	}
 
 	static
@@ -243,7 +244,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		if(predicate instanceof HasFieldReference){
 			HasFieldReference<?> hasFieldReference = (HasFieldReference<?>)predicate;
 
-			return (hasFieldReference.getField()).equals(name);
+			return Objects.equals(hasFieldReference.getField(), name);
 		}
 
 		return false;
@@ -255,7 +256,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		if(predicate instanceof HasValue){
 			HasValue<?> hasValue = (HasValue<?>)predicate;
 
-			return (hasValue.getValue()).equals(value);
+			return Objects.equals(hasValue.getValue(), value);
 		}
 
 		return false;
@@ -295,7 +296,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		FieldName leftName = left.getField();
 		FieldName rightName = right.getField();
 
-		if(!(leftName).equals(rightName)){
+		if(!Objects.equals(leftName, rightName)){
 			throw new IllegalArgumentException("Field names " + leftName + " and " + rightName + " are not the same");
 		}
 	}
@@ -310,7 +311,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		Object leftValue = left.getValue();
 		Object rightValue = right.getValue();
 
-		if(!(leftValue).equals(rightValue)){
+		if(!Objects.equals(leftValue, rightValue)){
 			throw new IllegalArgumentException("Field values " + leftValue + " and " + rightValue + " are not the same");
 		}
 	}
@@ -325,7 +326,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		Array leftArray = left.getArray();
 		Array rightArray = right.getArray();
 
-		if(!(leftArray.getValue()).equals(rightArray.getValue())){
+		if(!Objects.equals(leftArray.getValue(), rightArray.getValue())){
 			throw new IllegalArgumentException("Field value sets " + leftArray.getValue() + " and " + rightArray.getValue() + " are not the same");
 		}
 	}
