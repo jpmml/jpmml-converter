@@ -22,9 +22,11 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import org.dmg.pmml.Array;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.HasFieldReference;
 import org.dmg.pmml.HasValue;
+import org.dmg.pmml.HasValueSet;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.ScoreDistribution;
@@ -290,9 +292,11 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void checkFieldReference(HasFieldReference<?> left, HasFieldReference<?> right){
+		FieldName leftName = left.getField();
+		FieldName rightName = right.getField();
 
-		if(!(left.getField()).equals(right.getField())){
-			throw new IllegalArgumentException();
+		if(!(leftName).equals(rightName)){
+			throw new IllegalArgumentException("Field names " + leftName + " and " + rightName + " are not the same");
 		}
 	}
 
@@ -303,9 +307,26 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void checkValue(HasValue<?> left, HasValue<?> right){
+		Object leftValue = left.getValue();
+		Object rightValue = right.getValue();
 
-		if(!(left.getValue()).equals(right.getValue())){
-			throw new IllegalArgumentException();
+		if(!(leftValue).equals(rightValue)){
+			throw new IllegalArgumentException("Field values " + leftValue + " and " + rightValue + " are not the same");
+		}
+	}
+
+	static
+	protected void checkValueSet(Predicate left, Predicate right){
+		checkValueSet((HasValueSet<?>)left, (HasValueSet<?>)right);
+	}
+
+	static
+	protected void checkValueSet(HasValueSet<?> left, HasValueSet<?> right){
+		Array leftArray = left.getArray();
+		Array rightArray = right.getArray();
+
+		if(!(leftArray.getValue()).equals(rightArray.getValue())){
+			throw new IllegalArgumentException("Field value sets " + leftArray.getValue() + " and " + rightArray.getValue() + " are not the same");
 		}
 	}
 }
