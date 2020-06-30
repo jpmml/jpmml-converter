@@ -33,6 +33,7 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
@@ -254,25 +255,24 @@ public class PMMLEncoder {
 	private Field<?> toDiscrete(FieldName name, OpType opType, List<?> values){
 		Field<?> field = getField(name);
 
-		dataField:
-		if(field instanceof DataField){
-			DataField dataField = (DataField)field;
+		values:
+		if(field instanceof HasDiscreteDomain){
 
 			if(values == null || values.isEmpty()){
-				break dataField;
+				break values;
 			}
 
-			List<?> existingValues = PMMLUtil.getValues(dataField);
+			List<?> existingValues = PMMLUtil.getValues((Field & HasDiscreteDomain)field);
 			if(existingValues != null && !existingValues.isEmpty()){
 
 				if((existingValues).equals(values)){
-					break dataField;
+					break values;
 				}
 
-				throw new IllegalArgumentException("Field " + name.getValue() + " has valid values " + existingValues);
+				throw new IllegalArgumentException("Expected " + existingValues + "as valid values, got " + values);
 			}
 
-			PMMLUtil.addValues(dataField, values);
+			PMMLUtil.addValues((Field & HasDiscreteDomain)field, values);
 		}
 
 		field.setOpType(opType);
