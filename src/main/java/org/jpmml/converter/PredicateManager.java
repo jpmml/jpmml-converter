@@ -33,7 +33,7 @@ public class PredicateManager {
 	private Interner<Predicate> interner = Interners.newStrongInterner();
 
 
-	public Predicate createSimpleSetPredicate(Feature feature, List<?> values){
+	public Predicate createPredicate(Feature feature, List<?> values){
 
 		if(values.size() == 1){
 			Object value = values.get(0);
@@ -41,13 +41,19 @@ public class PredicateManager {
 			return createSimplePredicate(feature, SimplePredicate.Operator.EQUAL, value);
 		}
 
-		Predicate predicate = new InternableSimpleSetPredicate(feature.getName(), SimpleSetPredicate.BooleanOperator.IS_IN, createArray(feature.getDataType(), values));
-
-		return intern(predicate);
+		return createSimpleSetPredicate(feature, SimpleSetPredicate.BooleanOperator.IS_IN, values);
 	}
 
 	public Predicate createSimplePredicate(Feature feature, SimplePredicate.Operator operator, Object value){
 		Predicate predicate = new InternableSimplePredicate(feature.getName(), operator, value);
+
+		return intern(predicate);
+	}
+
+	public Predicate createSimpleSetPredicate(Feature feature, SimpleSetPredicate.BooleanOperator booleanOperator, List<?> values){
+		Array array = createArray(feature.getDataType(), values);
+
+		Predicate predicate = new InternableSimpleSetPredicate(feature.getName(), booleanOperator, array);
 
 		return intern(predicate);
 	}
