@@ -19,9 +19,14 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 
 public class ObjectFeature extends Feature {
+
+	public ObjectFeature(PMMLEncoder encoder, Field<?> field){
+		this(encoder, field.getName(), field.getDataType());
+	}
 
 	public ObjectFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
 		super(encoder, name, dataType);

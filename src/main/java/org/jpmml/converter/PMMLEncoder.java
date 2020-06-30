@@ -109,7 +109,7 @@ public class PMMLEncoder {
 	public DataField createDataField(FieldName name, OpType opType, DataType dataType, List<?> values){
 		DataField dataField = new DataField(name, opType, dataType);
 
-		if(values != null && values.size() > 0){
+		if(values != null && !values.isEmpty()){
 			PMMLUtil.addValues(dataField, values);
 		}
 
@@ -214,28 +214,11 @@ public class PMMLEncoder {
 	}
 
 	public Field<?> toCategorical(FieldName name, List<?> values){
-		Field<?> field = getField(name);
+		return toDiscrete(name, OpType.CATEGORICAL, values);
+	}
 
-		dataField:
-		if(field instanceof DataField){
-			DataField dataField = (DataField)field;
-
-			List<?> existingValues = PMMLUtil.getValues(dataField);
-			if(existingValues != null && existingValues.size() > 0){
-
-				if((existingValues).equals(values)){
-					break dataField;
-				}
-
-				throw new IllegalArgumentException("Field " + name.getValue() + " has valid values " + existingValues);
-			}
-
-			PMMLUtil.addValues(dataField, values);
-		}
-
-		field.setOpType(OpType.CATEGORICAL);
-
-		return field;
+	public Field<?> toOrdinal(FieldName name, List<?> values){
+		return toDiscrete(name, OpType.ORDINAL, values);
 	}
 
 	public DefineFunction getDefineFunction(String name){
@@ -266,6 +249,35 @@ public class PMMLEncoder {
 
 	public Map<String, DefineFunction> getDefineFunctions(){
 		return this.defineFunctions;
+	}
+
+	private Field<?> toDiscrete(FieldName name, OpType opType, List<?> values){
+		Field<?> field = getField(name);
+
+		dataField:
+		if(field instanceof DataField){
+			DataField dataField = (DataField)field;
+
+			if(values == null || values.isEmpty()){
+				break dataField;
+			}
+
+			List<?> existingValues = PMMLUtil.getValues(dataField);
+			if(existingValues != null && !existingValues.isEmpty()){
+
+				if((existingValues).equals(values)){
+					break dataField;
+				}
+
+				throw new IllegalArgumentException("Field " + name.getValue() + " has valid values " + existingValues);
+			}
+
+			PMMLUtil.addValues(dataField, values);
+		}
+
+		field.setOpType(opType);
+
+		return field;
 	}
 
 	private FieldName checkName(Field<?> field){
