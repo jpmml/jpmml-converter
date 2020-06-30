@@ -28,6 +28,14 @@ import static org.junit.Assert.fail;
 public class ValueUtilTest {
 
 	@Test
+	public void isNaN(){
+		assertFalse(ValueUtil.isNaN("NaN"));
+
+		assertTrue(ValueUtil.isNaN(Float.NaN));
+		assertTrue(ValueUtil.isNaN(Double.NaN));
+	}
+
+	@Test
 	public void isZero(){
 		assertTrue(ValueUtil.isZero(0));
 		assertTrue(ValueUtil.isZero(-0f));

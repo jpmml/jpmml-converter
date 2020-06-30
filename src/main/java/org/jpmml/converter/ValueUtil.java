@@ -42,6 +42,11 @@ public class ValueUtil {
 	}
 
 	static
+	public boolean isNaN(Object value){
+		return Objects.equals(Float.NaN, value) || Objects.equals(Double.NaN, value);
+	}
+
+	static
 	public boolean isZero(Number number){
 		return equals(number, ZERO);
 	}
@@ -53,7 +58,7 @@ public class ValueUtil {
 
 	static
 	public boolean isZeroLike(Number number){
-		return isZero(number) || Double.isNaN(number.doubleValue());
+		return isZero(number) ||isNaN(number);
 	}
 
 	static
