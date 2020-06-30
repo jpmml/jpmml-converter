@@ -22,11 +22,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
-import org.dmg.pmml.OpType;
 
 public class IndexFeature extends CategoricalFeature {
 
@@ -57,8 +55,6 @@ public class IndexFeature extends CategoricalFeature {
 			return IndexFeature.this.ref();
 		};
 
-		DerivedField derivedField = encoder.ensureDerivedField(FeatureUtil.createName("continuous", this), OpType.CONTINUOUS, getDataType(), fieldRefSupplier);
-
-		return new ContinuousFeature(encoder, derivedField);
+		return toContinuousFeature(FeatureUtil.createName("continuous", this), getDataType(), fieldRefSupplier);
 	}
 }
