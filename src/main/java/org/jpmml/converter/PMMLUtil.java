@@ -51,6 +51,7 @@ import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
+import org.dmg.pmml.Version;
 import org.jpmml.model.inlinetable.InputCell;
 import org.jpmml.model.inlinetable.OutputCell;
 
@@ -330,7 +331,7 @@ public class PMMLUtil {
 						throw new IllegalArgumentException(tagName);
 					}
 
-					columnName = new QName("http://www.dmg.org/PMML-4_3", tagName);
+					columnName = new QName(Version.PMML_4_4.getNamespaceURI(), tagName);
 				}
 
 				columns.put(column, columnName);
