@@ -84,7 +84,7 @@ public class PMMLEncoder {
 
 		Header header = encodeHeader();
 
-		PMML pmml = new PMML(Version.PMML_4_4.getVersion(), header, dataDictionary)
+		PMML pmml = new PMML(PMMLEncoder.VERSION.getVersion(), header, dataDictionary)
 			.setTransformationDictionary(transformationDictionary);
 
 		return pmml;
@@ -294,4 +294,6 @@ public class PMMLEncoder {
 
 		return name;
 	}
+
+	public static final Version VERSION = Version.PMML_4_4;
 }
