@@ -40,6 +40,7 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.Version;
 
 public class PMMLEncoder {
 
@@ -83,7 +84,7 @@ public class PMMLEncoder {
 
 		Header header = encodeHeader();
 
-		PMML pmml = new PMML("4.3", header, dataDictionary)
+		PMML pmml = new PMML(Version.PMML_4_4.getVersion(), header, dataDictionary)
 			.setTransformationDictionary(transformationDictionary);
 
 		return pmml;
