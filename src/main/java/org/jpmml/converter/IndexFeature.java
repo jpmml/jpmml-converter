@@ -55,6 +55,6 @@ public class IndexFeature extends CategoricalFeature {
 			return IndexFeature.this.ref();
 		};
 
-		return toContinuousFeature(FeatureUtil.createName("continuous", this), getDataType(), fieldRefSupplier);
+		return toContinuousFeature(FieldNameUtil.create("continuous", this), getDataType(), fieldRefSupplier);
 	}
 }

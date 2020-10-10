@@ -19,11 +19,17 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -32,6 +38,7 @@ import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
 import org.jpmml.converter.mining.MiningModelUtil;
+import org.jpmml.converter.visitors.FeatureExpander;
 import org.jpmml.converter.visitors.ModelCleanerBattery;
 import org.jpmml.converter.visitors.PMMLCleanerBattery;
 import org.jpmml.model.visitors.VisitorBattery;
@@ -41,6 +48,8 @@ public class ModelEncoder extends PMMLEncoder {
 	private List<Model> transformers = new ArrayList<>();
 
 	private Map<FieldName, List<Decorator>> decorators = new LinkedHashMap<>();
+
+	private Map<Model, ListMultimap<FieldName, Number>> featureImportances = new LinkedHashMap<>();
 
 	private Map<FieldName, UnivariateStats> univariateStats = new LinkedHashMap<>();
 
@@ -91,6 +100,8 @@ public class ModelEncoder extends PMMLEncoder {
 					modelStats.addUnivariateStats(univariateStats);
 				}
 			}
+
+			encodeFeatureImportances(pmml);
 		}
 
 		VisitorBattery pmmlCleanerBattery = new PMMLCleanerBattery();
@@ -127,6 +138,22 @@ public class ModelEncoder extends PMMLEncoder {
 		decorators.add(decorator);
 	}
 
+	public void addFeatureImportance(Model model, FieldName name, Number featureImportance){
+		ListMultimap<FieldName, Number> featureImportances = this.featureImportances.get(model);
+
+		if(featureImportances == null){
+			featureImportances = ArrayListMultimap.create();
+
+			this.featureImportances.put(model, featureImportances);
+		}
+
+		featureImportances.put(name, featureImportance);
+	}
+
+	public Map<Model, ListMultimap<FieldName, Number>> getFeatureImportances(){
+		return this.featureImportances;
+	}
+
 	public UnivariateStats getUnivariateStats(FieldName name){
 		return this.univariateStats.get(name);
 	}
@@ -137,5 +164,82 @@ public class ModelEncoder extends PMMLEncoder {
 
 	public void putUnivariateStats(FieldName name, UnivariateStats univariateStats){
 		this.univariateStats.put(name, univariateStats);
+	}
+
+	private void encodeFeatureImportances(PMML pmml){
+		Map<Model, ListMultimap<FieldName, Number>> importances = getFeatureImportances();
+
+		if(importances.isEmpty()){
+			return;
+		}
+
+		Map<Model, Set<FieldName>> expandableFeatures = (importances.entrySet()).stream()
+			.collect(Collectors.toMap(entry -> entry.getKey(), entry -> (entry.getValue()).keySet()));
+
+		FeatureExpander featureExpander = new FeatureExpander(expandableFeatures);
+		featureExpander.applyTo(pmml);
+
+		Collection<? extends Map.Entry<Model, ListMultimap<FieldName, Number>>> entries = importances.entrySet();
+		for(Map.Entry<Model, ListMultimap<FieldName, Number>> entry : entries){
+			Model model = entry.getKey();
+			ListMultimap<FieldName, Number> featureImportances = entry.getValue();
+
+			Map<FieldName, Set<Field<?>>> featureFields = featureExpander.getExpandedFeatures(model);
+			if(featureFields == null){
+				throw new IllegalArgumentException();
+			}
+
+			ListMultimap<FieldName, Number> fieldImportances = ArrayListMultimap.create();
+
+			Collection<Map.Entry<FieldName, Collection<Number>>> importanceEntries = (featureImportances.asMap()).entrySet();
+			for(Map.Entry<FieldName, Collection<Number>> importanceEntry : importanceEntries){
+				FieldName featureName = importanceEntry.getKey();
+				Double featureImportanceSum = (importanceEntry.getValue()).stream()
+					.collect(Collectors.summingDouble(Number::doubleValue));
+
+				if(ValueUtil.isZero(featureImportanceSum)){
+					continue;
+				}
+
+				Set<Field<?>> fields = featureFields.get(featureName);
+				if(fields == null){
+					continue;
+				}
+
+				Double fieldImportance = (featureImportanceSum.doubleValue() / fields.size());
+
+				for(Field<?> field : fields){
+					FieldName fieldName = field.getName();
+
+					fieldImportances.put(fieldName, fieldImportance);
+				}
+			}
+
+			MiningSchema miningSchema = model.getMiningSchema();
+
+			if(miningSchema != null && miningSchema.hasMiningFields()){
+				List<MiningField> miningFields = miningSchema.getMiningFields();
+
+				for(MiningField miningField : miningFields){
+					FieldName name = miningField.getName();
+					MiningField.UsageType usageType = miningField.getUsageType();
+
+					switch(usageType){
+						case ACTIVE:
+							break;
+						default:
+							continue;
+					}
+
+					List<Number> fieldImportance = fieldImportances.get(name);
+					if(fieldImportance != null){
+						Double fieldImportanceSum = fieldImportance.stream()
+							.collect(Collectors.summingDouble(Number::doubleValue));
+
+						miningField.setImportance(fieldImportanceSum);
+					}
+				}
+			}
+		}
 	}
 }

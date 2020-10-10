@@ -67,7 +67,7 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public FieldName getDerivedName(){
-		return FieldName.create("base" + getBase() + "(" + (getName()).getValue() + ", " + getIndex() + ")");
+		return FieldNameUtil.create("base" + getBase(), getName(), getIndex());
 	}
 
 	@Override

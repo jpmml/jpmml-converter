@@ -41,7 +41,7 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public FieldName getDerivedName(){
-		return FieldName.create("constant(" + (getName()).getValue() + ")");
+		return FieldNameUtil.create("constant", getName());
 	}
 
 	@Override

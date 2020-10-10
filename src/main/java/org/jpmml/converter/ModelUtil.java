@@ -175,7 +175,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createAffinityField(DataType dataType, Object value){
-		return createAffinityField(FieldName.create("affinity(" + value + ")"), dataType, value);
+		return createAffinityField(FieldNameUtil.create("affinity", value), dataType, value);
 	}
 
 	static
@@ -212,7 +212,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createProbabilityField(DataType dataType, Object value){
-		return createProbabilityField(FieldName.create("probability(" + value + ")"), dataType, value);
+		return createProbabilityField(FieldNameUtil.create("probability", value), dataType, value);
 	}
 
 	static
