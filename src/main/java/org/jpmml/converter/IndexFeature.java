@@ -42,7 +42,7 @@ public class IndexFeature extends CategoricalFeature {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
+		PMMLEncoder encoder = getEncoder();
 
 		// XXX: Cannot derive a global field from a local field
 		try {

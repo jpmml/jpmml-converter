@@ -30,20 +30,24 @@ import org.jpmml.model.ToStringHelper;
 
 public class Schema {
 
+	private PMMLEncoder encoder = null;
+
 	private Label label = null;
 
 	private List<? extends Feature> features = null;
 
 
-	public Schema(Label label, List<? extends Feature> features){
+	public Schema(PMMLEncoder encoder, Label label, List<? extends Feature> features){
+		setEncoder(encoder);
 		setLabel(label);
 		setFeatures(features);
 	}
 
 	public Schema toRelabeledSchema(Label label){
+		PMMLEncoder encoder = getEncoder();
 		List<? extends Feature> features = getFeatures();
 
-		return new Schema(label, features);
+		return new Schema(encoder, label, features);
 	}
 
 	public Schema toAnonymousSchema(){
@@ -68,12 +72,14 @@ public class Schema {
 	}
 
 	public Schema toEmptySchema(){
+		PMMLEncoder encoder = getEncoder();
 		Label label = getLabel();
 
-		return new Schema(label, Collections.emptyList());
+		return new Schema(encoder, label, Collections.emptyList());
 	}
 
 	public Schema toSubSchema(int[] indexes){
+		PMMLEncoder encoder = getEncoder();
 		Label label = getLabel();
 		List<? extends Feature> features = getFeatures();
 
@@ -85,10 +91,11 @@ public class Schema {
 			selectedFeatures.add(feature);
 		}
 
-		return new Schema(label, selectedFeatures);
+		return new Schema(encoder, label, selectedFeatures);
 	}
 
 	public Schema toTransformedSchema(Function<Feature, Feature> function){
+		PMMLEncoder encoder = getEncoder();
 		Label label = getLabel();
 		List<? extends Feature> features = getFeatures();
 
@@ -96,7 +103,7 @@ public class Schema {
 			.map(function)
 			.collect(Collectors.toList());
 
-		return new Schema(label, transformedFeatures);
+		return new Schema(encoder, label, transformedFeatures);
 	}
 
 	@Override
@@ -110,6 +117,14 @@ public class Schema {
 		return new ToStringHelper(this)
 			.add("label", getLabel())
 			.add("features", getFeatures());
+	}
+
+	public PMMLEncoder getEncoder(){
+		return this.encoder;
+	}
+
+	private void setEncoder(PMMLEncoder encoder){
+		this.encoder = Objects.requireNonNull(encoder);
 	}
 
 	public Label getLabel(){

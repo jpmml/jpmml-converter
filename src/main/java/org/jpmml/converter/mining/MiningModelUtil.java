@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import com.google.common.collect.Iterables;
 import org.dmg.pmml.MathContext;
@@ -44,6 +43,7 @@ import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelUtil;
+import org.jpmml.converter.PMMLEncoder;
 import org.jpmml.converter.Schema;
 import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
@@ -56,7 +56,7 @@ public class MiningModelUtil {
 
 	static
 	public MiningModel createRegression(Model model, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
-		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
+		Feature feature = getPrediction(model, schema);
 
 		RegressionModel regressionModel = RegressionModelUtil.createRegression(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
 
@@ -65,7 +65,7 @@ public class MiningModelUtil {
 
 	static
 	public MiningModel createBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
-		Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
+		Feature feature = getPrediction(model, schema);
 
 		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
 
@@ -125,7 +125,7 @@ public class MiningModelUtil {
 				}
 			}
 
-			Feature feature = MiningModelUtil.MODEL_PREDICTION.apply(model);
+			Feature feature = getPrediction(model, schema);
 
 			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.singletonList(feature), Collections.singletonList(1d), null)
 				.setTargetCategory(categoricalLabel.getValue(i));
@@ -267,19 +267,18 @@ public class MiningModelUtil {
 		return miningModel;
 	}
 
-	private static final Function<Model, Feature> MODEL_PREDICTION = new Function<Model, Feature>(){
+	static
+	private ContinuousFeature getPrediction(Model model, Schema schema){
+		Output output = model.getOutput();
 
-		@Override
-		public Feature apply(Model model){
-			Output output = model.getOutput();
-
-			if(output == null || !output.hasOutputFields()){
-				throw new IllegalArgumentException();
-			}
-
-			OutputField outputField = Iterables.getLast(output.getOutputFields());
-
-			return new ContinuousFeature(null, outputField);
+		if(output == null || !output.hasOutputFields()){
+			throw new IllegalArgumentException();
 		}
-	};
+
+		OutputField outputField = Iterables.getLast(output.getOutputFields());
+
+		PMMLEncoder encoder = schema.getEncoder();
+
+		return new ContinuousFeature(encoder, outputField);
+	}
 }

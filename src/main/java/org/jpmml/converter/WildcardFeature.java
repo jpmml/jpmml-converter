@@ -42,7 +42,7 @@ public class WildcardFeature extends Feature {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
+		PMMLEncoder encoder = getEncoder();
 
 		DataField dataField = (DataField)encoder.toContinuous(getName());
 
@@ -50,7 +50,7 @@ public class WildcardFeature extends Feature {
 	}
 
 	public CategoricalFeature toCategoricalFeature(List<?> values){
-		PMMLEncoder encoder = ensureEncoder();
+		PMMLEncoder encoder = getEncoder();
 
 		DataField dataField = (DataField)encoder.toCategorical(getName(), values);
 
@@ -62,7 +62,7 @@ public class WildcardFeature extends Feature {
 	}
 
 	public ObjectFeature toOrdinalFeature(List<?> values){
-		PMMLEncoder encoder = ensureEncoder();
+		PMMLEncoder encoder = getEncoder();
 
 		DataField dataField = (DataField)encoder.toOrdinal(getName(), values);
 

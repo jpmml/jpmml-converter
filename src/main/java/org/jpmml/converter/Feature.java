@@ -62,7 +62,7 @@ public class Feature {
 	}
 
 	protected ContinuousFeature toContinuousFeature(FieldName name, DataType dataType, Supplier<? extends Expression> expressionSupplier){
-		PMMLEncoder encoder = ensureEncoder();
+		PMMLEncoder encoder = getEncoder();
 
 		DerivedField derivedField = encoder.ensureDerivedField(name, OpType.CONTINUOUS, dataType, expressionSupplier);
 
@@ -74,7 +74,7 @@ public class Feature {
 	}
 
 	public Field<?> getField(){
-		PMMLEncoder encoder = ensureEncoder();
+		PMMLEncoder encoder = getEncoder();
 
 		return encoder.getField(getName());
 	}
@@ -115,22 +115,12 @@ public class Feature {
 			.add("dataType", getDataType());
 	}
 
-	protected PMMLEncoder ensureEncoder(){
-		PMMLEncoder encoder = getEncoder();
-
-		if(encoder == null){
-			throw new IllegalStateException();
-		}
-
-		return encoder;
-	}
-
 	public PMMLEncoder getEncoder(){
 		return this.encoder;
 	}
 
 	private void setEncoder(PMMLEncoder encoder){
-		this.encoder = encoder;
+		this.encoder = Objects.requireNonNull(encoder);
 	}
 
 	public FieldName getName(){

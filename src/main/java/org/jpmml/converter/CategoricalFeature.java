@@ -52,7 +52,7 @@ public class CategoricalFeature extends Feature {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		PMMLEncoder encoder = ensureEncoder();
+		PMMLEncoder encoder = getEncoder();
 
 		Field<?> field = encoder.toContinuous(getName());
 
