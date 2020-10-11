@@ -42,6 +42,8 @@ import org.jpmml.converter.visitors.FeatureExpander;
 import org.jpmml.converter.visitors.ModelCleanerBattery;
 import org.jpmml.converter.visitors.PMMLCleanerBattery;
 import org.jpmml.model.visitors.VisitorBattery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModelEncoder extends PMMLEncoder {
 
@@ -203,6 +205,8 @@ public class ModelEncoder extends PMMLEncoder {
 
 				Set<Field<?>> fields = featureFields.get(featureName);
 				if(fields == null){
+					logger.warn("Unused feature \'" + featureName.getValue() + "\' has non-zero importance");
+
 					continue;
 				}
 
@@ -242,4 +246,6 @@ public class ModelEncoder extends PMMLEncoder {
 			}
 		}
 	}
+
+	private static final Logger logger = LoggerFactory.getLogger(ModelEncoder.class);
 }
