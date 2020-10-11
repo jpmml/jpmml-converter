@@ -133,6 +133,36 @@ public class ValueUtil {
 	}
 
 	static
+	public Number narrow(double value){
+
+		if(DoubleMath.isMathematicalInteger(value)){
+			return narrow((long)value);
+		}
+
+		return value;
+	}
+
+	static
+	public Number narrow(long value){
+
+		if(value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE){
+			return (byte)value;
+		} else
+
+		if(value >= Short.MIN_VALUE && value <= Short.MAX_VALUE){
+			return (short)value;
+		} else
+
+		if(value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE){
+			return (int)value;
+		} else
+
+		{
+			return value;
+		}
+	}
+
+	static
 	public BitSet getIndices(List<? extends Number> values, Number targetValue){
 		BitSet result = new BitSet(values.size());
 

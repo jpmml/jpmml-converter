@@ -95,4 +95,21 @@ public class ValueUtilTest {
 			// Ignored
 		}
 	}
+
+	@Test
+	public void narrow(){
+		assertEquals((byte)-1, ValueUtil.narrow(-1d));
+		assertEquals((byte)0, ValueUtil.narrow(0d));
+		assertEquals((byte)1, ValueUtil.narrow(1d));
+
+		assertEquals((short)-129, ValueUtil.narrow(Byte.MIN_VALUE - 1L));
+		assertEquals((byte)-128, ValueUtil.narrow(Byte.MIN_VALUE));
+		assertEquals((byte)127, ValueUtil.narrow(Byte.MAX_VALUE));
+		assertEquals((short)128, ValueUtil.narrow(Byte.MAX_VALUE + 1L));
+
+		assertEquals((int)-32769, ValueUtil.narrow(Short.MIN_VALUE - 1L));
+		assertEquals((short)-32768, ValueUtil.narrow(Short.MIN_VALUE));
+		assertEquals((short)32767, ValueUtil.narrow(Short.MAX_VALUE));
+		assertEquals((int)32768, ValueUtil.narrow(Short.MAX_VALUE + 1L));
+	}
 }

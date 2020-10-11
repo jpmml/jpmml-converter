@@ -39,7 +39,7 @@ public class ScoreDistributionManager {
 
 			ScoreDistribution scoreDistribution = new InternableScoreDistribution()
 				.setValue(value)
-				.setRecordCount(recordCount);
+				.setRecordCount(ValueUtil.narrow(recordCount));
 
 			scoreDistribution = intern(scoreDistribution);
 
