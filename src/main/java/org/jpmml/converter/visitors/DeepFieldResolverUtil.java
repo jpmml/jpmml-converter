@@ -34,7 +34,7 @@ import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
-import org.jpmml.model.visitors.FieldReferenceFinder;
+import org.jpmml.model.visitors.ActiveFieldFinder;
 import org.jpmml.model.visitors.FieldResolver;
 
 public class DeepFieldResolverUtil {
@@ -97,16 +97,16 @@ public class DeepFieldResolverUtil {
 
 		Set<Field<?>> activeFields = new LinkedHashSet<>();
 
-		FieldReferenceFinder fieldReferenceFinder = new FieldReferenceFinder(){
+		ActiveFieldFinder activeFieldFinder = new ActiveFieldFinder(){
 
 			@Override
 			public VisitorAction visit(LocalTransformations localTransformations){
 				return VisitorAction.SKIP;
 			}
 		};
-		fieldReferenceFinder.applyTo(model);
+		activeFieldFinder.applyTo(model);
 
-		Set<FieldName> names = fieldReferenceFinder.getFieldNames();
+		Set<FieldName> names = activeFieldFinder.getFieldNames();
 
 		activeFields.addAll(FieldUtil.selectAll(modelFields, names));
 
@@ -133,9 +133,9 @@ public class DeepFieldResolverUtil {
 
 	static
 	private Set<FieldName> getFieldNames(PMMLObject object){
-		FieldReferenceFinder fieldReferenceFinder = new FieldReferenceFinder();
-		fieldReferenceFinder.applyTo(object);
+		ActiveFieldFinder activeFieldFinder = new ActiveFieldFinder();
+		activeFieldFinder.applyTo(object);
 
-		return fieldReferenceFinder.getFieldNames();
+		return activeFieldFinder.getFieldNames();
 	}
 }

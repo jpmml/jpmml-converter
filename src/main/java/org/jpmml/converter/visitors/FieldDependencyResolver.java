@@ -39,7 +39,7 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.VisitorAction;
-import org.jpmml.model.visitors.FieldReferenceFinder;
+import org.jpmml.model.visitors.ActiveFieldFinder;
 import org.jpmml.model.visitors.FieldResolver;
 
 /**
@@ -217,10 +217,10 @@ public class FieldDependencyResolver extends FieldResolver {
 
 			Expression expression = hasExpression.getExpression();
 			if(expression != null){
-				FieldReferenceFinder fieldReferenceFinder = new FieldReferenceFinder();
-				fieldReferenceFinder.applyTo(expression);
+				ActiveFieldFinder activeFieldFinder = new ActiveFieldFinder();
+				activeFieldFinder.applyTo(expression);
 
-				Set<FieldName> names = fieldReferenceFinder.getFieldNames();
+				Set<FieldName> names = activeFieldFinder.getFieldNames();
 
 				if(names.size() > 0){
 					Collection<Field<?>> fields = getFields();
