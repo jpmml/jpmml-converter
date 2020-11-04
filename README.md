@@ -8,9 +8,11 @@ This project provides base functionality for the following projects:
 * [JPMML-CatBoost](https://github.com/jpmml/jpmml-catboost)
 * [JPMML-H2O](https://github.com/jpmml/jpmml-h2o)
 * [JPMML-LightGBM](https://github.com/jpmml/jpmml-lightgbm)
+* [JPMML-Python](https://github.com/jpmml/jpmml-python)
 * [JPMML-R](https://github.com/jpmml/jpmml-r)
 * [JPMML-SkLearn](https://github.com/jpmml/jpmml-sklearn)
 * [JPMML-SparkML](https://github.com/jpmml/jpmml-sparkml)
+* [JPMML-StatsModels](https://github.com/jpmml/jpmml-statsmodels)
 * [JPMML-XGBoost](https://github.com/jpmml/jpmml-xgboost)
 
 # License #
