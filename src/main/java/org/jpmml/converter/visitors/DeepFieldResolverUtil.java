@@ -28,7 +28,6 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
-import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
@@ -55,7 +54,7 @@ public class DeepFieldResolverUtil {
 			Predicate predicate = segment.getPredicate();
 
 			if(predicate != null){
-				Set<FieldName> names = getFieldNames(predicate);
+				Set<FieldName> names = ActiveFieldFinder.getFieldNames(predicate);
 
 				if(names.size() > 0){
 					Collection<Field<?>> segmentFields = resolver.getFields(miningModel, segmentation, segment);
@@ -67,7 +66,7 @@ public class DeepFieldResolverUtil {
 
 		Output output = miningModel.getOutput();
 		if(output != null){
-			Set<FieldName> names = getFieldNames(output);
+			Set<FieldName> names = ActiveFieldFinder.getFieldNames(output);
 
 			if(names.size() > 0){
 				activeFields.addAll(FieldUtil.selectAll(modelFields, names));
@@ -104,9 +103,8 @@ public class DeepFieldResolverUtil {
 				return VisitorAction.SKIP;
 			}
 		};
-		activeFieldFinder.applyTo(model);
 
-		Set<FieldName> names = activeFieldFinder.getFieldNames();
+		Set<FieldName> names = ActiveFieldFinder.getFieldNames(activeFieldFinder, model);
 
 		activeFields.addAll(FieldUtil.selectAll(modelFields, names));
 
@@ -129,13 +127,5 @@ public class DeepFieldResolverUtil {
 		{
 			return resolver.getFields(model);
 		}
-	}
-
-	static
-	private Set<FieldName> getFieldNames(PMMLObject object){
-		ActiveFieldFinder activeFieldFinder = new ActiveFieldFinder();
-		activeFieldFinder.applyTo(object);
-
-		return activeFieldFinder.getFieldNames();
 	}
 }

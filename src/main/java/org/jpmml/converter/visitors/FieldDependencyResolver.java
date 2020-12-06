@@ -217,10 +217,7 @@ public class FieldDependencyResolver extends FieldResolver {
 
 			Expression expression = hasExpression.getExpression();
 			if(expression != null){
-				ActiveFieldFinder activeFieldFinder = new ActiveFieldFinder();
-				activeFieldFinder.applyTo(expression);
-
-				Set<FieldName> names = activeFieldFinder.getFieldNames();
+				Set<FieldName> names = ActiveFieldFinder.getFieldNames(expression);
 
 				if(names.size() > 0){
 					Collection<Field<?>> fields = getFields();
