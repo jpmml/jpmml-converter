@@ -27,6 +27,7 @@ public class ModelCleanerBattery extends VisitorBattery {
 		add(TransformationDictionaryCleaner.class);
 		add(DerivedFieldRelocator.class);
 		add(DataDictionaryCleaner.class);
+		add(FunctionDictionaryCleaner.class);
 
 		// OutputField elements
 		add(DerivedOutputFieldTransformer.class);
