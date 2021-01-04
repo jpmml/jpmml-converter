@@ -46,6 +46,7 @@ import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MapValues;
+import org.dmg.pmml.Namespaces;
 import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
@@ -322,7 +323,7 @@ public class PMMLUtil {
 
 				String tagName = function.apply(column);
 				if(tagName.startsWith("data:")){
-					columnName = new QName("http://jpmml.org/jpmml-model/InlineTable", tagName.substring("data:".length()), "data");
+					columnName = new QName(Namespaces.JPMML_INLINETABLE, tagName.substring("data:".length()), "data");
 				} else
 
 				{
