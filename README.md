@@ -1,4 +1,4 @@
-JPMML-Converter
+JPMML-Converter [![Build Status](https://github.com/jpmml/jpmml-converter/workflows/maven/badge.svg)](https://github.com/jpmml/jpmml-converter/actions?query=workflow%3A%22maven%22)
 ===============
 
 Java library for authoring PMML.
