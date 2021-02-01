@@ -140,6 +140,10 @@ public class ModelEncoder extends PMMLEncoder {
 		decorators.add(decorator);
 	}
 
+	public void addFeatureImportance(FieldName name, Number featureImportance){
+		addFeatureImportance(null, name, featureImportance);
+	}
+
 	public void addFeatureImportance(Model model, FieldName name, Number featureImportance){
 		ListMultimap<FieldName, Number> featureImportances = this.featureImportances.get(model);
 
@@ -150,6 +154,18 @@ public class ModelEncoder extends PMMLEncoder {
 		}
 
 		featureImportances.put(name, featureImportance);
+	}
+
+	public void transferFeatureImportances(Model model){
+		transferFeatureImportances(null, model);
+	}
+
+	public void transferFeatureImportances(Model left, Model right){
+		ListMultimap<FieldName, Number> featureImportances = this.featureImportances.remove(left);
+
+		if(featureImportances != null && !featureImportances.isEmpty()){
+			this.featureImportances.put(right, featureImportances);
+		}
 	}
 
 	public Map<Model, ListMultimap<FieldName, Number>> getFeatureImportances(){
@@ -173,6 +189,10 @@ public class ModelEncoder extends PMMLEncoder {
 
 		if(importances.isEmpty()){
 			return;
+		} // End if
+
+		if(importances.containsKey(null)){
+			throw new IllegalStateException();
 		}
 
 		Map<Model, Set<FieldName>> expandableFeatures = (importances.entrySet()).stream()
