@@ -70,7 +70,7 @@ public class DerivedFieldRelocatorTest {
 				} else
 
 				if(("third").equals(segment.getId())){
-					assertNull(localTransformations);
+					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
 				if(("sum").equals(segment.getId())){

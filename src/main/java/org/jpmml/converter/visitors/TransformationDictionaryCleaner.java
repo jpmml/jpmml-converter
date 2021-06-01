@@ -51,10 +51,6 @@ public class TransformationDictionaryCleaner extends ActiveFieldFinder {
 			LocalTransformations localTransformations = model.getLocalTransformations();
 			if(localTransformations != null){
 				processDerivedFields(localTransformations);
-
-				if(!localTransformations.hasDerivedFields()){
-					model.setLocalTransformations(null);
-				}
 			}
 		} else
 
@@ -64,10 +60,6 @@ public class TransformationDictionaryCleaner extends ActiveFieldFinder {
 			TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
 			if(transformationDictionary != null){
 				processDerivedFields(transformationDictionary);
-
-				if(!transformationDictionary.hasDefineFunctions() && !transformationDictionary.hasDerivedFields()){
-					pmml.setTransformationDictionary(null);
-				}
 			}
 		}
 

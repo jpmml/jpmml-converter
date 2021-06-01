@@ -18,34 +18,33 @@
  */
 package org.jpmml.converter.visitors;
 
+import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
-import org.dmg.pmml.PMMLObject;
+import org.dmg.pmml.Targets;
+import org.dmg.pmml.VisitorAction;
 import org.jpmml.model.visitors.AbstractVisitor;
 
-public class OutputCleaner extends AbstractVisitor {
+public class ModelCleaner extends AbstractVisitor {
 
 	@Override
-	public PMMLObject popParent(){
-		PMMLObject parent = super.popParent();
-
-		if(parent instanceof Model){
-			Model model = (Model)parent;
-
-			clean(model);
-		}
-
-		return parent;
-	}
-
-	private void clean(Model model){
+	public VisitorAction visit(Model model){
+		LocalTransformations localTransformations = model.getLocalTransformations();
+		Targets targets = model.getTargets();
 		Output output = model.getOutput();
 
-		if(output != null){
+		if(localTransformations != null && !localTransformations.hasDerivedFields()){
+			model.setLocalTransformations(null);
+		} // End if
 
-			if(!output.hasOutputFields()){
-				model.setOutput(null);
-			}
+		if(targets != null && !targets.hasTargets()){
+			model.setTargets(null);
+		} // End if
+
+		if(output != null && !output.hasOutputFields()){
+			model.setOutput(null);
 		}
+
+		return super.visit(model);
 	}
 }

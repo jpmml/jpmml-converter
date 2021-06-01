@@ -42,7 +42,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -66,7 +65,7 @@ public class TransformationDictionaryCleanerTest {
 				String id = segment.getId();
 
 				if("first".equals(id)){
-					assertNull(localTransformations);
+					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
 				if("second".equals(id)){
@@ -74,7 +73,7 @@ public class TransformationDictionaryCleanerTest {
 				} else
 
 				if("third".equals(id)){
-					assertNull(localTransformations);
+					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
 				if("sum".equals(id)){
@@ -116,12 +115,14 @@ public class TransformationDictionaryCleanerTest {
 	public void cleanNested() throws Exception {
 		PMML pmml = ResourceUtil.unmarshal(NestedSegmentationTest.class);
 
-		assertNotNull(pmml.getTransformationDictionary());
+		TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
+
+		assertFalse(transformationDictionary.hasDerivedFields());
 
 		TransformationDictionaryCleaner cleaner = new TransformationDictionaryCleaner();
 		cleaner.applyTo(pmml);
 
-		assertNull(pmml.getTransformationDictionary());
+		assertFalse(transformationDictionary.hasDerivedFields());
 
 		Visitor miningModelVisitor = new AbstractVisitor(){
 
@@ -148,7 +149,7 @@ public class TransformationDictionaryCleanerTest {
 				} else
 
 				if("second".equals(id)){
-					assertNull(localTransformations);
+					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
 				{
@@ -167,7 +168,7 @@ public class TransformationDictionaryCleanerTest {
 			public VisitorAction visit(RegressionModel regressionModel){
 				LocalTransformations localTransformations = regressionModel.getLocalTransformations();
 
-				assertNull(localTransformations);
+				assertFalse(localTransformations.hasDerivedFields());
 
 				return super.visit(regressionModel);
 			}

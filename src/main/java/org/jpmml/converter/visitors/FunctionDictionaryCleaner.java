@@ -55,12 +55,8 @@ public class FunctionDictionaryCleaner extends AbstractVisitor implements Resett
 			PMML pmml = (PMML)parent;
 
 			TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
-			if(transformationDictionary != null && transformationDictionary.hasDefineFunctions()){
+			if(transformationDictionary != null){
 				processDefineFunctions(transformationDictionary);
-
-				if(!transformationDictionary.hasDefineFunctions() && !transformationDictionary.hasDerivedFields()){
-					pmml.setTransformationDictionary(null);
-				}
 			}
 		}
 

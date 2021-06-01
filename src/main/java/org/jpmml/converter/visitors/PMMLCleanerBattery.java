@@ -24,5 +24,8 @@ public class PMMLCleanerBattery extends VisitorBattery {
 
 	public PMMLCleanerBattery(){
 		add(AttributeCleaner.class);
+
+		// Field container elements
+		add(PMMLCleaner.class);
 	}
 }
