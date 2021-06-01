@@ -39,7 +39,7 @@ import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.model.ToStringHelper;
 
-public class BaseNFeature extends Feature implements HasDerivedName {
+public class BaseNFeature extends ThresholdFeature {
 
 	private int base = -1;
 
@@ -47,25 +47,25 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 
 	private SetMultimap<Integer, ?> values = null;
 
-	private Object missingCategory = null;
+	private Object missingValue = null;
 
 
-	public BaseNFeature(PMMLEncoder encoder, Field<?> field, int base, int index, SetMultimap<Integer, ?> values, Object missingCategory){
-		this(encoder, field.getName(), field.getDataType(), base, index, values, missingCategory);
+	public BaseNFeature(PMMLEncoder encoder, Field<?> field, int base, int index, SetMultimap<Integer, ?> values, Object missingValue){
+		this(encoder, field.getName(), field.getDataType(), base, index, values, missingValue);
 	}
 
-	public BaseNFeature(PMMLEncoder encoder, Feature feature, int base, int index, SetMultimap<Integer, ?> values, Object missingCategory){
-		this(encoder, feature.getName(), feature.getDataType(), base, index, values, missingCategory);
+	public BaseNFeature(PMMLEncoder encoder, Feature feature, int base, int index, SetMultimap<Integer, ?> values, Object missingValue){
+		this(encoder, feature.getName(), feature.getDataType(), base, index, values, missingValue);
 	}
 
-	public BaseNFeature(PMMLEncoder encoder, FieldName name, DataType dataType, int base, int index, SetMultimap<Integer, ?> values, Object missingCategory){
+	public BaseNFeature(PMMLEncoder encoder, FieldName name, DataType dataType, int base, int index, SetMultimap<Integer, ?> values, Object missingValue){
 		super(encoder, name, dataType);
 
 		setBase(base);
 		setIndex(index);
 
 		setValues(values);
-		setMissingCategory(missingCategory);
+		setMissingValue(missingValue);
 	}
 
 	@Override
@@ -79,9 +79,9 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 		DataType dataType = getDataType();
 		int base = getBase();
 		SetMultimap<Integer, ?> values = getValues();
-		Object missingCategory = getMissingCategory();
+		Object missingValue = getMissingValue();
 
-		boolean missingValueAware = values.containsValue(missingCategory);
+		boolean missingValueAware = values.containsValue(missingValue);
 
 		Supplier<Expression> expressionSupplier = () -> {
 			Map<Integer, ? extends Collection<?>> valueMap = values.asMap();
@@ -118,8 +118,8 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 
 				if(missingValueAware){
 
-					if(categories.contains(missingCategory)){
-						categories.remove(missingCategory);
+					if(categories.contains(missingValue)){
+						categories.remove(missingValue);
 
 						missingBaseValue = baseValue;
 					} // End if
@@ -169,7 +169,8 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 		return toContinuousFeature(getDerivedName(), DataType.INTEGER, expressionSupplier);
 	}
 
-	public Set<?> getValues(Predicate<Integer> predicate){
+	@Override
+	public Set<?> getValues(Predicate<Number> predicate){
 		SetMultimap<Integer, ?> values = getValues();
 
 		Map<Integer, ? extends Collection<?>> valueMap = values.asMap();
@@ -194,7 +195,7 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 		result = (31 * result) + Objects.hash(this.getBase());
 		result = (31 * result) + Objects.hash(this.getIndex());
 		result = (31 * result) + Objects.hash(this.getValues());
-		result = (31 * result) + Objects.hash(this.getMissingCategory());
+		result = (31 * result) + Objects.hash(this.getMissingValue());
 
 		return result;
 	}
@@ -205,7 +206,7 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 		if(object instanceof BaseNFeature){
 			BaseNFeature that = (BaseNFeature)object;
 
-			return super.equals(object) && Objects.equals(this.getBase(), that.getBase()) && Objects.equals(this.getIndex(), that.getIndex()) && Objects.equals(this.getValues(), that.getValues()) && Objects.equals(this.getMissingCategory(), that.getMissingCategory());
+			return super.equals(object) && Objects.equals(this.getBase(), that.getBase()) && Objects.equals(this.getIndex(), that.getIndex()) && Objects.equals(this.getValues(), that.getValues()) && Objects.equals(this.getMissingValue(), that.getMissingValue());
 		}
 
 		return false;
@@ -217,7 +218,7 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 			.add("base", getBase())
 			.add("index", getIndex())
 			.add("values", getValues())
-			.add("missingCategory", getMissingCategory());
+			.add("missingValue", getMissingValue());
 	}
 
 	public int getBase(){
@@ -244,11 +245,12 @@ public class BaseNFeature extends Feature implements HasDerivedName {
 		this.values = Objects.requireNonNull(values);
 	}
 
-	public Object getMissingCategory(){
-		return this.missingCategory;
+	@Override
+	public Object getMissingValue(){
+		return this.missingValue;
 	}
 
-	private void setMissingCategory(Object missingCategory){
-		this.missingCategory = missingCategory;
+	private void setMissingValue(Object missingValue){
+		this.missingValue = missingValue;
 	}
 }
