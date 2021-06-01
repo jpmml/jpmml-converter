@@ -56,7 +56,7 @@ public class Feature {
 			return continuousFeature;
 		}
 
-		FieldName name = FieldNameUtil.create((dataType.name()).toLowerCase(), continuousFeature);
+		FieldName name = FieldNameUtil.create(dataType, continuousFeature);
 
 		return toContinuousFeature(name, dataType, continuousFeature::ref);
 	}

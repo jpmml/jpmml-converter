@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.OpType;
 
 public class FieldNameUtil {
 
@@ -33,6 +35,16 @@ public class FieldNameUtil {
 	static
 	public FieldName create(String function){
 		return FieldName.create(function);
+	}
+
+	static
+	public FieldName create(DataType dataType, Object... args){
+		return create((dataType.name()).toLowerCase(), args);
+	}
+
+	static
+	public FieldName create(OpType opType, Object... args){
+		return create((opType.name()).toLowerCase(), args);
 	}
 
 	static

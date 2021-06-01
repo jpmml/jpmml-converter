@@ -25,6 +25,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.OpType;
 
 public class IndexFeature extends CategoricalFeature {
 
@@ -55,6 +56,6 @@ public class IndexFeature extends CategoricalFeature {
 			return IndexFeature.this.ref();
 		};
 
-		return toContinuousFeature(FieldNameUtil.create("continuous", this), getDataType(), fieldRefSupplier);
+		return toContinuousFeature(FieldNameUtil.create(OpType.CONTINUOUS, this), getDataType(), fieldRefSupplier);
 	}
 }
