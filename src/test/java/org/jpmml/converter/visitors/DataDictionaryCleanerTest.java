@@ -26,12 +26,19 @@ import java.util.Set;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.MiningField;
+import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.Visitor;
+import org.dmg.pmml.VisitorAction;
+import org.dmg.pmml.mining.MiningModel;
+import org.jpmml.converter.ModelUtil;
 import org.jpmml.model.ChainedSegmentationTest;
 import org.jpmml.model.FieldNameUtil;
 import org.jpmml.model.NestedSegmentationTest;
 import org.jpmml.model.ResourceUtil;
+import org.jpmml.model.visitors.AbstractVisitor;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +53,17 @@ public class DataDictionaryCleanerTest {
 
 		checkFields(FieldNameUtil.create("y", "x1", "x2", "x3", "x4"), dataDictionary.getDataFields());
 
+		updateUsageType(pmml, MiningField.UsageType.SUPPLEMENTARY);
+
 		DataDictionaryCleaner cleaner = new DataDictionaryCleaner();
+		cleaner.applyTo(pmml);
+
+		checkFields(FieldNameUtil.create("y", "x1", "x2", "x3", "x4"), dataDictionary.getDataFields());
+
+		updateUsageType(pmml, MiningField.UsageType.ACTIVE);
+
+		cleaner.reset();
+
 		cleaner.applyTo(pmml);
 
 		checkFields(FieldNameUtil.create("y", "x1", "x2", "x3"), dataDictionary.getDataFields());
@@ -87,5 +104,32 @@ public class DataDictionaryCleanerTest {
 	static
 	private void checkFields(Set<FieldName> names, Collection<DataField> dataFields){
 		assertEquals(names, FieldUtil.nameSet(dataFields));
+	}
+
+	static
+	private void updateUsageType(PMML pmml, MiningField.UsageType usageType){
+		Visitor visitor = new AbstractVisitor(){
+
+			@Override
+			public VisitorAction visit(MiningSchema miningSchema){
+				Model model = (Model)getParent();
+
+				if(model instanceof MiningModel){
+					MiningModel miningModel = (MiningModel)model;
+
+					List<MiningField> miningFields = miningSchema.getMiningFields();
+					if(miningFields.size() > 4){
+						List<MiningField> extraMiningFields = miningFields.subList(4, miningFields.size());
+
+						extraMiningFields.clear();
+					}
+
+					miningSchema.addMiningFields(ModelUtil.createMiningField(FieldName.create("x4"), usageType));
+				}
+
+				return super.visit(miningSchema);
+			}
+		};
+		visitor.applyTo(pmml);
 	}
 }

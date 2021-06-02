@@ -41,14 +41,14 @@ import org.dmg.pmml.PMMLObject;
  */
 public class DataDictionaryCleaner extends ActiveFieldFinder {
 
-	private Set<Field<?>> targetFields = new LinkedHashSet<>();
+	private Set<Field<?>> nonActiveFields = new LinkedHashSet<>();
 
 
 	@Override
 	public void reset(){
 		super.reset();
 
-		this.targetFields.clear();
+		this.nonActiveFields.clear();
 	}
 
 	@Override
@@ -74,11 +74,11 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 	}
 
 	private void processModel(Model model){
-		Set<Field<?>> targetFields = getTargetFields();
+		Set<Field<?>> nonActiveFields = getNonActiveFields();
 
 		MiningSchema miningSchema = model.getMiningSchema();
 		if(miningSchema != null && miningSchema.hasMiningFields()){
-			Set<FieldName> targetFieldNames = new LinkedHashSet<>();
+			Set<FieldName> names = new LinkedHashSet<>();
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
 			for(MiningField miningField : miningFields){
@@ -86,19 +86,18 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 
 				MiningField.UsageType usageType = miningField.getUsageType();
 				switch(usageType){
-					case PREDICTED:
-					case TARGET:
-						targetFieldNames.add(name);
+					case ACTIVE:
 						break;
 					default:
+						names.add(name);
 						break;
 				}
 			}
 
-			if(targetFieldNames.size() > 0){
+			if(names.size() > 0){
 				Collection<Field<?>> modelFields = getFields(model);
 
-				targetFields.addAll(FieldUtil.selectAll(modelFields, targetFieldNames));
+				nonActiveFields.addAll(FieldUtil.selectAll(modelFields, names));
 			}
 		}
 	}
@@ -108,25 +107,25 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 		if(dataDictionary.hasDataFields()){
 			List<DataField> dataFields = dataDictionary.getDataFields();
 
-			Set<DataField> activeDataFields = getActiveDataFields();
+			Set<DataField> referencedDataFields = getReferencedDataFields();
 
-			dataFields.retainAll(activeDataFields);
+			dataFields.retainAll(referencedDataFields);
 		}
 	}
 
-	private Set<DataField> getActiveDataFields(){
+	private Set<DataField> getReferencedDataFields(){
 		FieldDependencyResolver fieldDependencyResolver = getFieldDependencyResolver();
 
-		Set<Field<?>> activeFields = new HashSet<>(getActiveFields());
-		activeFields.addAll(getTargetFields());
+		Set<Field<?>> fields = new HashSet<>(getActiveFields());
+		fields.addAll(getNonActiveFields());
 
-		fieldDependencyResolver.expand(activeFields, fieldDependencyResolver.getLocalDerivedFields());
-		fieldDependencyResolver.expand(activeFields, fieldDependencyResolver.getGlobalDerivedFields());
+		fieldDependencyResolver.expand(fields, fieldDependencyResolver.getLocalDerivedFields());
+		fieldDependencyResolver.expand(fields, fieldDependencyResolver.getGlobalDerivedFields());
 
-		return (Set)activeFields;
+		return (Set)fields;
 	}
 
-	public Set<Field<?>> getTargetFields(){
-		return this.targetFields;
+	private Set<Field<?>> getNonActiveFields(){
+		return this.nonActiveFields;
 	}
 }
