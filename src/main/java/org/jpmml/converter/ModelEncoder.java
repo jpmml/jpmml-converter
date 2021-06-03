@@ -279,7 +279,7 @@ public class ModelEncoder extends PMMLEncoder {
 				nativeFeatureImportances.put("data:importance", importances);
 
 				Extension extension = new Extension()
-					.setName("X-FeatureImportances")
+					.setName(Extensions.FEATURE_IMPORTANCES)
 					.addContent(PMMLUtil.createInlineTable(nativeFeatureImportances));
 
 				miningSchema.addExtensions(extension);
