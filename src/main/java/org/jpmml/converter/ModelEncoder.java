@@ -51,7 +51,7 @@ public class ModelEncoder extends PMMLEncoder {
 
 	private Map<FieldName, List<Decorator>> decorators = new LinkedHashMap<>();
 
-	private Map<Model, ListMultimap<FieldName, Number>> featureImportances = new LinkedHashMap<>();
+	private Map<Model, List<FeatureImportance>> featureImportances = new LinkedHashMap<>();
 
 	private Map<FieldName, UnivariateStats> univariateStats = new LinkedHashMap<>();
 
@@ -140,20 +140,20 @@ public class ModelEncoder extends PMMLEncoder {
 		decorators.add(decorator);
 	}
 
-	public void addFeatureImportance(FieldName name, Number featureImportance){
-		addFeatureImportance(null, name, featureImportance);
+	public void addFeatureImportance(Feature feature, Number importance){
+		addFeatureImportance(null, feature, importance);
 	}
 
-	public void addFeatureImportance(Model model, FieldName name, Number featureImportance){
-		ListMultimap<FieldName, Number> featureImportances = this.featureImportances.get(model);
+	public void addFeatureImportance(Model model, Feature feature, Number importance){
+		List<FeatureImportance> featureImportances = this.featureImportances.get(model);
 
 		if(featureImportances == null){
-			featureImportances = ArrayListMultimap.create();
+			featureImportances = new ArrayList<>();
 
 			this.featureImportances.put(model, featureImportances);
 		}
 
-		featureImportances.put(name, featureImportance);
+		featureImportances.add(new FeatureImportance(feature, importance));
 	}
 
 	public void transferFeatureImportances(Model model){
@@ -161,14 +161,14 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	public void transferFeatureImportances(Model left, Model right){
-		ListMultimap<FieldName, Number> featureImportances = this.featureImportances.remove(left);
+		List<FeatureImportance> featureImportances = this.featureImportances.remove(left);
 
 		if(featureImportances != null && !featureImportances.isEmpty()){
 			this.featureImportances.put(right, featureImportances);
 		}
 	}
 
-	public Map<Model, ListMultimap<FieldName, Number>> getFeatureImportances(){
+	public Map<Model, List<FeatureImportance>> getFeatureImportances(){
 		return this.featureImportances;
 	}
 
@@ -185,26 +185,29 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	private void encodeFeatureImportances(PMML pmml){
-		Map<Model, ListMultimap<FieldName, Number>> importances = getFeatureImportances();
+		Map<Model, List<FeatureImportance>> modelFeatureImportances = getFeatureImportances();
 
-		if(importances.isEmpty()){
+		if(modelFeatureImportances.isEmpty()){
 			return;
 		} // End if
 
-		if(importances.containsKey(null)){
+		if(modelFeatureImportances.containsKey(null)){
 			throw new IllegalStateException();
 		}
 
-		Map<Model, Set<FieldName>> expandableFeatures = (importances.entrySet()).stream()
-			.collect(Collectors.toMap(entry -> entry.getKey(), entry -> (entry.getValue()).keySet()));
+		Map<Model, Set<FieldName>> expandableFeatures = (modelFeatureImportances.entrySet()).stream()
+			.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().stream()
+				.map(featureImportance -> (featureImportance.getFeature()).getName())
+				.collect(Collectors.toSet())
+			));
 
 		FeatureExpander featureExpander = new FeatureExpander(expandableFeatures);
 		featureExpander.applyTo(pmml);
 
-		Collection<? extends Map.Entry<Model, ListMultimap<FieldName, Number>>> entries = importances.entrySet();
-		for(Map.Entry<Model, ListMultimap<FieldName, Number>> entry : entries){
+		Collection<? extends Map.Entry<Model, List<FeatureImportance>>> entries = modelFeatureImportances.entrySet();
+		for(Map.Entry<Model, List<FeatureImportance>> entry : entries){
 			Model model = entry.getKey();
-			ListMultimap<FieldName, Number> featureImportances = entry.getValue();
+			List<FeatureImportance> featureImportances = entry.getValue();
 
 			Map<FieldName, Set<Field<?>>> featureFields = featureExpander.getExpandedFeatures(model);
 			if(featureFields == null){
@@ -213,24 +216,22 @@ public class ModelEncoder extends PMMLEncoder {
 
 			ListMultimap<FieldName, Number> fieldImportances = ArrayListMultimap.create();
 
-			Collection<Map.Entry<FieldName, Collection<Number>>> importanceEntries = (featureImportances.asMap()).entrySet();
-			for(Map.Entry<FieldName, Collection<Number>> importanceEntry : importanceEntries){
-				FieldName featureName = importanceEntry.getKey();
-				Double featureImportanceSum = (importanceEntry.getValue()).stream()
-					.collect(Collectors.summingDouble(Number::doubleValue));
+			for(FeatureImportance featureImportance : featureImportances){
+				FieldName name = (featureImportance.getFeature()).getName();
+				Number importance = featureImportance.getImportance();
 
-				if(ValueUtil.isZero(featureImportanceSum)){
+				if(ValueUtil.isZero(importance)){
 					continue;
 				}
 
-				Set<Field<?>> fields = featureFields.get(featureName);
+				Set<Field<?>> fields = featureFields.get(name);
 				if(fields == null){
-					logger.warn("Unused feature \'" + featureName.getValue() + "\' has non-zero importance");
+					logger.warn("Unused feature \'" + name.getValue() + "\' has non-zero importance");
 
 					continue;
 				}
 
-				Double fieldImportance = (featureImportanceSum.doubleValue() / fields.size());
+				Double fieldImportance = (importance.doubleValue() / fields.size());
 
 				for(Field<?> field : fields){
 					FieldName fieldName = field.getName();
@@ -268,4 +269,34 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(ModelEncoder.class);
+
+	static
+	private class FeatureImportance {
+
+		private Feature feature = null;
+
+		private Number importance = null;
+
+
+		private FeatureImportance(Feature feature, Number importance){
+			setFeature(feature);
+			setImportance(importance);
+		}
+
+		public Feature getFeature(){
+			return this.feature;
+		}
+
+		private void setFeature(Feature feature){
+			this.feature = feature;
+		}
+
+		public Number getImportance(){
+			return this.importance;
+		}
+
+		private void setImportance(Number importance){
+			this.importance = importance;
+		}
+	}
 }
