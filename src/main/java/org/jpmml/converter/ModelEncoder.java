@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.Extension;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
@@ -264,6 +265,24 @@ public class ModelEncoder extends PMMLEncoder {
 						miningField.setImportance(fieldImportanceSum);
 					}
 				}
+
+				List<FieldName> names = new ArrayList<>();
+				List<Number> importances = new ArrayList<>();
+
+				for(FeatureImportance featureImportance : featureImportances){
+					names.add(FeatureUtil.getName(featureImportance.getFeature()));
+					importances.add(featureImportance.getImportance());
+				}
+
+				Map<String, List<?>> nativeFeatureImportances = new LinkedHashMap<>();
+				nativeFeatureImportances.put("data:name", names);
+				nativeFeatureImportances.put("data:importance", importances);
+
+				Extension extension = new Extension()
+					.setName("X-FeatureImportances")
+					.addContent(PMMLUtil.createInlineTable(nativeFeatureImportances));
+
+				miningSchema.addExtensions(extension);
 			}
 		}
 	}
