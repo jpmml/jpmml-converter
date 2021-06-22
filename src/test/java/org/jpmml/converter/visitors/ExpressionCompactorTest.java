@@ -52,7 +52,22 @@ public class ExpressionCompactorTest {
 
 		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.OR, first, second, third));
 
+		assertEquals(PMMLFunctions.OR, apply.getFunction());
 		assertEquals(Arrays.asList(first, leftLeftChild, leftRightChild, rightChild, third), apply.getExpressions());
+	}
+
+	@Test
+	public void compactConcatExpression(){
+		FieldRef hours = new FieldRef(FieldName.create("hours"));
+		FieldRef minutes = new FieldRef(FieldName.create("minutes"));
+		FieldRef seconds = new FieldRef(FieldName.create("seconds"));
+
+		Constant separator = PMMLUtil.createConstant(":", DataType.STRING);
+
+		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.CONCAT, hours, PMMLUtil.createApply(PMMLFunctions.CONCAT, separator, minutes), PMMLUtil.createApply(PMMLFunctions.CONCAT, separator, seconds)));
+
+		assertEquals(PMMLFunctions.CONCAT, apply.getFunction());
+		assertEquals(Arrays.asList(hours, separator, minutes, separator, seconds), apply.getExpressions());
 	}
 
 	@Test

@@ -36,10 +36,13 @@ public class ExpressionCompactor extends AbstractVisitor {
 		switch(function){
 			case PMMLFunctions.AND:
 			case PMMLFunctions.OR:
-				inlineLogicalExpressions(apply);
+				inlineNestedExpressions(apply);
 				break;
 			case PMMLFunctions.NOT:
 				negateExpression(apply);
+				break;
+			case PMMLFunctions.CONCAT:
+				inlineNestedExpressions(apply);
 				break;
 			default:
 				break;
@@ -49,7 +52,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 	}
 
 	static
-	private void inlineLogicalExpressions(Apply apply){
+	private void inlineNestedExpressions(Apply apply){
 		String function = apply.getFunction();
 		List<Expression> expressions = apply.getExpressions();
 
@@ -67,7 +70,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 					expressionIt.remove();
 
 					// Depth first, breadth second
-					inlineLogicalExpressions(nestedApply);
+					inlineNestedExpressions(nestedApply);
 
 					List<Expression> nestedExpressions = nestedApply.getExpressions();
 					for(Expression nestedExpression : nestedExpressions){
