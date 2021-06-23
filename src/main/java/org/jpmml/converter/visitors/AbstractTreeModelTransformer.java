@@ -211,6 +211,18 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
+	protected void initDefaultChild(Node parentNode, Node node){
+		Object defaultChild = node.getDefaultChild();
+
+		Object parentDefaultChild = parentNode.getDefaultChild();
+		if(parentDefaultChild != null){
+			throw new IllegalArgumentException();
+		}
+
+		parentNode.setDefaultChild(defaultChild);
+	}
+
+	static
 	protected void replaceChildWithGrandchildren(Node parentNode, Node node){
 		List<Node> parentChildren = parentNode.getNodes();
 
