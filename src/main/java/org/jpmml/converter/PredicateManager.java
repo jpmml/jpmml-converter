@@ -23,6 +23,7 @@ import java.util.List;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import org.dmg.pmml.Array;
+import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
@@ -54,6 +55,13 @@ public class PredicateManager {
 		Array array = createArray(feature.getDataType(), values);
 
 		Predicate predicate = new InternableSimpleSetPredicate(feature.getName(), booleanOperator, array);
+
+		return intern(predicate);
+	}
+
+	public Predicate createCompoundPredicate(CompoundPredicate.BooleanOperator booleanOperator, Predicate... predicates){
+		Predicate predicate = new InternableCompoundPredicate(booleanOperator, null)
+			.addPredicates(predicates);
 
 		return intern(predicate);
 	}
