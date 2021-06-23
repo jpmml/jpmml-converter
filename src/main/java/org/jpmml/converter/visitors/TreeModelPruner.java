@@ -23,10 +23,15 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.False;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.tree.Node;
+import org.dmg.pmml.tree.TreeModel;
 
 public class TreeModelPruner extends AbstractTreeModelTransformer {
+
+	private MiningFunction miningFunction = null;
+
 
 	@Override
 	public void enterNode(Node node){
@@ -53,7 +58,9 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 
 	@Override
 	public void exitNode(Node node){
+		Object defaultChild = node.getDefaultChild();
 		Predicate predicate = node.getPredicate();
+		Number recordCount = node.getRecordCount();
 
 		if(node.hasNodes()){
 			List<Node> children = node.getNodes();
@@ -62,15 +69,40 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 				Node child = children.get(0);
 
 				Predicate childPredicate = child.getPredicate();
+				Number childRecordCount = child.getRecordCount();
 
-				if(Objects.equals(predicate, childPredicate)){
-					node.setDefaultChild(null);
+				if(Objects.equals(predicate, childPredicate) && Objects.equals(recordCount, childRecordCount)){
 
-					initScore(node, child);
+					if(defaultChild != null){
+						node.setDefaultChild(null);
+					} // End if
+
+					if((MiningFunction.REGRESSION).equals(this.miningFunction)){
+						initScore(node, child);
+					} else
+
+					if((MiningFunction.CLASSIFICATION).equals(this.miningFunction)){
+						initScoreDistribution(node, child);
+					} else
+
+					{
+						throw new IllegalArgumentException();
+					}
+
 					initDefaultChild(node, child);
 					replaceChildWithGrandchildren(node, child);
 				}
 			}
 		}
+	}
+
+	@Override
+	public void enterTreeModel(TreeModel treeModel){
+		this.miningFunction = treeModel.getMiningFunction();
+	}
+
+	@Override
+	public void exitTreeModel(TreeModel treeModel){
+		this.miningFunction = null;
 	}
 }
