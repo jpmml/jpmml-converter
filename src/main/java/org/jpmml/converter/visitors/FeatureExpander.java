@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter.visitors;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -37,7 +36,11 @@ import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMMLObject;
+import org.dmg.pmml.Visitor;
+import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
+import org.dmg.pmml.mining.Segmentation;
+import org.jpmml.model.visitors.AbstractVisitor;
 
 public class FeatureExpander extends DeepFieldResolver {
 
@@ -91,6 +94,15 @@ public class FeatureExpander extends DeepFieldResolver {
 
 		Collection<Field<?>> modelFields = getFields(model);
 
+		if((model instanceof MiningModel) || hasParent(MiningModel.class)){
+			Collection<DerivedField> extraLocalDerivedFields = fieldDependencyResolver.getLocalDerivedFields();
+
+			if(!extraLocalDerivedFields.isEmpty()){
+				modelFields = new HashSet<>(modelFields);
+				modelFields.addAll(extraLocalDerivedFields);
+			}
+		}
+
 		Collection<Field<?>> featureFields = FieldUtil.selectAll(modelFields, features, true);
 
 		Map<FieldName, DerivedField> localDerivedFields = Collections.emptyMap();
@@ -109,19 +121,7 @@ public class FeatureExpander extends DeepFieldResolver {
 			featureFields.retainAll(localDerivedFields.values());
 		}
 
-		Map<FieldName, DerivedField> globalDerivedFields;
-
-		try {
-			Method method = FieldDependencyResolver.class.getDeclaredMethod("getGlobalDerivedFields");
-
-			if(!method.isAccessible()){
-				method.setAccessible(true);
-			}
-
-			globalDerivedFields = FieldUtil.nameMap((Collection)method.invoke(fieldDependencyResolver));
-		} catch(ReflectiveOperationException roe){
-			throw new IllegalArgumentException(roe);
-		}
+		Map<FieldName, DerivedField> globalDerivedFields = FieldUtil.nameMap(fieldDependencyResolver.getGlobalDerivedFields());
 
 		Map<FieldName, Set<Field<?>>> expandedFields;
 
@@ -145,6 +145,30 @@ public class FeatureExpander extends DeepFieldResolver {
 
 				Set<Field<?>> expandedFeatureFields = new HashSet<>();
 				expandedFeatureFields.add(derivedField);
+
+				if(model instanceof MiningModel){
+					MiningModel miningModel = (MiningModel)model;
+
+					Segmentation segmentation = miningModel.getSegmentation();
+
+					Set<DerivedField> extraLocalDerivedFields = new HashSet<>();
+
+					Visitor visitor = new AbstractVisitor(){
+
+						@Override
+						public VisitorAction visit(LocalTransformations localTransformations){
+
+							if(localTransformations != null && localTransformations.hasDerivedFields()){
+								extraLocalDerivedFields.addAll(localTransformations.getDerivedFields());
+							}
+
+							return VisitorAction.CONTINUE;
+						}
+					};
+					visitor.applyTo(segmentation);
+
+					fieldDependencyResolver.expand(expandedFeatureFields, extraLocalDerivedFields);
+				}
 
 				fieldDependencyResolver.expand(expandedFeatureFields, new HashSet<>(localDerivedFields.values()));
 				fieldDependencyResolver.expand(expandedFeatureFields, new HashSet<>(globalDerivedFields.values()));
@@ -204,5 +228,18 @@ public class FeatureExpander extends DeepFieldResolver {
 
 	public Map<Model, Map<FieldName, Set<Field<?>>>> getExpandedFeatures(){
 		return this.expandedFeatures;
+	}
+
+	private boolean hasParent(Class<? extends PMMLObject> clazz){
+		Deque<PMMLObject> parents = getParents();
+
+		for(PMMLObject parent : parents){
+
+			if(clazz.isInstance(parent)){
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
