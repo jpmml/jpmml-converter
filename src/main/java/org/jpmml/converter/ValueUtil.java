@@ -20,6 +20,8 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -253,6 +255,49 @@ public class ValueUtil {
 			default:
 				throw new IllegalArgumentException();
 		}
+	}
+
+	static
+	public Number divide(MathContext mathContext, Number first, Number second){
+
+		if(mathContext == null){
+			mathContext = MathContext.DOUBLE;
+		}
+
+		switch(mathContext){
+			case FLOAT:
+				return (first.floatValue() / second.floatValue());
+			case DOUBLE:
+				return (first.doubleValue() / second.doubleValue());
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	static
+	public Number sum(MathContext mathContext, Collection<Number> values){
+		Iterator<Number> it = values.iterator();
+
+		Number result = it.next();
+
+		while(it.hasNext()){
+			result = add(mathContext, result, it.next());
+		}
+
+		return result;
+	}
+
+	static
+	public Number product(MathContext mathContext, Collection<Number> values){
+		Iterator<Number> it = values.iterator();
+
+		Number result = it.next();
+
+		while(it.hasNext()){
+			result = multiply(mathContext, result, it.next());
+		}
+
+		return result;
 	}
 
 	private static final Double ZERO = Double.valueOf(0d);

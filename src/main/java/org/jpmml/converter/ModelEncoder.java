@@ -20,6 +20,8 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.InlineTable;
+import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -210,6 +213,8 @@ public class ModelEncoder extends PMMLEncoder {
 			Model model = entry.getKey();
 			List<FeatureImportance> featureImportances = entry.getValue();
 
+			MathContext mathContext = model.getMathContext();
+
 			Map<FieldName, Set<Field<?>>> featureFields = featureExpander.getExpandedFeatures(model);
 			if(featureFields == null){
 				throw new IllegalArgumentException();
@@ -232,7 +237,7 @@ public class ModelEncoder extends PMMLEncoder {
 					continue;
 				}
 
-				Double fieldImportance = (importance.doubleValue() / fields.size());
+				Number fieldImportance = ValueUtil.divide(mathContext, importance, fields.size());
 
 				for(Field<?> field : fields){
 					FieldName fieldName = field.getName();
@@ -259,10 +264,7 @@ public class ModelEncoder extends PMMLEncoder {
 
 					List<Number> fieldImportance = fieldImportances.get(name);
 					if(fieldImportance != null){
-						Double fieldImportanceSum = fieldImportance.stream()
-							.collect(Collectors.summingDouble(Number::doubleValue));
-
-						miningField.setImportance(fieldImportanceSum);
+						miningField.setImportance(ValueUtil.sum(mathContext, fieldImportance));
 					}
 				}
 
@@ -278,7 +280,28 @@ public class ModelEncoder extends PMMLEncoder {
 				nativeFeatureImportances.put("data:name", names);
 				nativeFeatureImportances.put("data:importance", importances);
 
-				InlineTable inlineTable = PMMLUtil.createInlineTable(nativeFeatureImportances);
+				List<Number> nonZeroImportances = importances.stream()
+					.filter(importance -> !ValueUtil.isZero(importance))
+					.collect(Collectors.toList());
+
+				InlineTable inlineTable = PMMLUtil.createInlineTable(nativeFeatureImportances)
+					.addExtensions(PMMLUtil.createExtension("numberOfImportances", String.valueOf(importances.size())))
+					.addExtensions(PMMLUtil.createExtension("numberOfNonZeroImportances", String.valueOf(nonZeroImportances.size())))
+					.addExtensions(PMMLUtil.createExtension("sumOfImportances", String.valueOf(ValueUtil.sum(mathContext, importances))));
+
+				if(!nonZeroImportances.isEmpty()){
+					Comparator<Number> comparator = new Comparator<Number>(){
+
+						@Override
+						public int compare(Number left, Number right){
+							return Double.compare(left.doubleValue(), right.doubleValue());
+						}
+					};
+
+					inlineTable
+						.addExtensions(PMMLUtil.createExtension("minImportance", String.valueOf(Collections.min(nonZeroImportances, comparator))))
+						.addExtensions(PMMLUtil.createExtension("maxImportance", String.valueOf(Collections.max(nonZeroImportances, comparator))));
+				}
 
 				miningSchema.addExtensions(PMMLUtil.createExtension(Extensions.FEATURE_IMPORTANCES, inlineTable));
 			}
