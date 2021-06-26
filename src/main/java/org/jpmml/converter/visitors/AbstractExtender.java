@@ -18,11 +18,10 @@
  */
 package org.jpmml.converter.visitors;
 
-import java.util.List;
-
 import org.dmg.pmml.Extension;
 import org.dmg.pmml.HasExtensions;
 import org.dmg.pmml.PMMLObject;
+import org.jpmml.converter.PMMLUtil;
 import org.jpmml.model.visitors.AbstractVisitor;
 
 abstract
@@ -38,13 +37,9 @@ public class AbstractExtender extends AbstractVisitor {
 	public <E extends PMMLObject & HasExtensions<E>> void addExtension(E object, String value){
 		String name = getName();
 
-		Extension extension = new Extension()
-			.setName(name)
-			.setValue(value);
+		Extension extension = PMMLUtil.createExtension(name, value);
 
-		List<Extension> extensions = object.getExtensions();
-
-		extensions.add(extension);
+		object.addExtensions(extension);
 	}
 
 	public String getName(){

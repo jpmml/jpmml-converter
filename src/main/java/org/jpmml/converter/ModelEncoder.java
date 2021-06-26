@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.Extension;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -278,11 +278,9 @@ public class ModelEncoder extends PMMLEncoder {
 				nativeFeatureImportances.put("data:name", names);
 				nativeFeatureImportances.put("data:importance", importances);
 
-				Extension extension = new Extension()
-					.setName(Extensions.FEATURE_IMPORTANCES)
-					.addContent(PMMLUtil.createInlineTable(nativeFeatureImportances));
+				InlineTable inlineTable = PMMLUtil.createInlineTable(nativeFeatureImportances);
 
-				miningSchema.addExtensions(extension);
+				miningSchema.addExtensions(PMMLUtil.createExtension(Extensions.FEATURE_IMPORTANCES, inlineTable));
 			}
 		}
 	}

@@ -39,6 +39,7 @@ import org.dmg.pmml.ComplexArray;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.Extension;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldColumnPair;
 import org.dmg.pmml.FieldName;
@@ -58,6 +59,24 @@ import org.jpmml.model.inlinetable.OutputCell;
 public class PMMLUtil {
 
 	private PMMLUtil(){
+	}
+
+	static
+	public Extension createExtension(String name, String value){
+		Extension extension = new Extension()
+			.setName(name)
+			.setValue(value);
+
+		return extension;
+	}
+
+	static
+	public Extension createExtension(String name, Object... content){
+		Extension extension = new Extension()
+			.setName(name)
+			.addContent(content);
+
+		return extension;
 	}
 
 	static
