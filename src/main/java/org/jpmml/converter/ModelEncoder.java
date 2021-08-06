@@ -263,7 +263,7 @@ public class ModelEncoder extends PMMLEncoder {
 					}
 
 					List<Number> fieldImportance = fieldImportances.get(name);
-					if(fieldImportance != null){
+					if(fieldImportance != null && !fieldImportance.isEmpty()){
 						miningField.setImportance(ValueUtil.sum(mathContext, fieldImportance));
 					}
 				}
