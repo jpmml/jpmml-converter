@@ -21,9 +21,10 @@ package org.jpmml.converter;
 import java.util.List;
 import java.util.Objects;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.HasDiscreteDomain;
 import org.jpmml.model.ToStringHelper;
 
 public class CategoricalLabel extends Label {
@@ -31,8 +32,8 @@ public class CategoricalLabel extends Label {
 	private List<?> values = null;
 
 
-	public CategoricalLabel(DataField dataField){
-		this(dataField.getName(), dataField.getDataType(), PMMLUtil.getValues(dataField));
+	public <F extends Field<F> & HasDiscreteDomain<F>> CategoricalLabel(F field){
+		this(field.getName(), field.getDataType(), PMMLUtil.getValues(field));
 	}
 
 	public CategoricalLabel(FieldName name, DataType dataType, List<?> values){

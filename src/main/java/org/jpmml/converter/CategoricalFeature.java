@@ -21,10 +21,10 @@ package org.jpmml.converter;
 import java.util.List;
 import java.util.Objects;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.HasDiscreteDomain;
 import org.jpmml.model.ToStringHelper;
 
 public class CategoricalFeature extends Feature {
@@ -32,8 +32,8 @@ public class CategoricalFeature extends Feature {
 	private List<?> values = null;
 
 
-	public CategoricalFeature(PMMLEncoder encoder, DataField dataField){
-		this(encoder, dataField, PMMLUtil.getValues(dataField));
+	public <F extends Field<F> & HasDiscreteDomain<F>> CategoricalFeature(PMMLEncoder encoder, F field){
+		this(encoder, field, PMMLUtil.<F>getValues(field));
 	}
 
 	public CategoricalFeature(PMMLEncoder encoder, Field<?> field, List<?> values){
