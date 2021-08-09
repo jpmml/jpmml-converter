@@ -21,11 +21,19 @@ package org.jpmml.converter;
 import java.util.List;
 import java.util.Objects;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Expression;
+import org.dmg.pmml.Extension;
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Interval;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.Value;
+import org.dmg.pmml.Visitor;
+import org.dmg.pmml.VisitorAction;
 
 public class DerivedOutputField extends DerivedField {
 
@@ -37,11 +45,97 @@ public class DerivedOutputField extends DerivedField {
 
 
 	public DerivedOutputField(Model model, OutputField outputField, boolean required){
-		super(outputField.getName(), outputField.getOpType(), outputField.getDataType(), null);
-
 		setModel(model);
 		setOutputField(outputField);
 		setRequired(required);
+	}
+
+	@Override
+	public FieldName getName(){
+		OutputField outputField = getOutputField();
+
+		return outputField.getName();
+	}
+
+	@Override
+	public DerivedOutputField setName(FieldName name){
+		OutputField outputField = getOutputField();
+
+		outputField.setName(name);
+
+		return this;
+	}
+
+	@Override
+	public String getDisplayName(){
+		OutputField outputField = getOutputField();
+
+		return outputField.getDisplayName();
+	}
+
+	@Override
+	public DerivedOutputField setDisplayName(String displayName){
+		OutputField outputField = getOutputField();
+
+		outputField.setDisplayName(displayName);
+
+		return this;
+	}
+
+	@Override
+	public OpType getOpType(){
+		OutputField outputField = getOutputField();
+
+		return outputField.getOpType();
+	}
+
+	@Override
+	public DerivedOutputField setOpType(OpType opType){
+		OutputField outputField = getOutputField();
+
+		outputField.setOpType(opType);
+
+		return this;
+	}
+
+	@Override
+	public DataType getDataType(){
+		OutputField outputField = getOutputField();
+
+		return outputField.getDataType();
+	}
+
+	@Override
+	public DerivedOutputField setDataType(DataType dataType){
+		OutputField outputField = getOutputField();
+
+		outputField.setDataType(dataType);
+
+		return this;
+	}
+
+	@Override
+	public boolean hasExtensions(){
+		OutputField outputField = getOutputField();
+
+		return outputField.hasExtensions();
+	}
+
+	@Override
+	public List<Extension> getExtensions(){
+		OutputField outputField = getOutputField();
+
+		return outputField.getExtensions();
+	}
+
+	@Override
+	public Expression getExpression(){
+		return null;
+	}
+
+	@Override
+	public DerivedOutputField setExpression(Expression expression){
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -52,6 +146,20 @@ public class DerivedOutputField extends DerivedField {
 	@Override
 	public List<Interval> getIntervals(){
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean hasValues(){
+		OutputField outputField = getOutputField();
+
+		return outputField.hasValues();
+	}
+
+	@Override
+	public List<Value> getValues(){
+		OutputField outputField = getOutputField();
+
+		return outputField.getValues();
 	}
 
 	public void addOutputField(){
@@ -97,5 +205,10 @@ public class DerivedOutputField extends DerivedField {
 
 	private void setRequired(boolean required){
 		this.required = required;
+	}
+
+	@Override
+	public VisitorAction accept(Visitor visitor){
+		return super.accept(visitor);
 	}
 }
