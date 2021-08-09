@@ -139,11 +139,11 @@ public class PMMLUtil {
 
 	static
 	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, List<?> values){
-		addValues(field, values, null);
+		addValues(field, null, values);
 	}
 
 	static
-	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, List<?> values, Value.Property property){
+	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, Value.Property property, List<?> values){
 
 		if((Value.Property.VALID).equals(property)){
 			property = null;

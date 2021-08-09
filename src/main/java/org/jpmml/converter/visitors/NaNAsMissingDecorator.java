@@ -36,7 +36,7 @@ public class NaNAsMissingDecorator extends AbstractVisitor {
 		switch(dataType){
 			case FLOAT:
 			case DOUBLE:
-				PMMLUtil.addValues(dataField, Collections.singletonList("NaN"), Property.MISSING);
+				PMMLUtil.addValues(dataField, Property.MISSING, Collections.singletonList("NaN"));
 				break;
 			default:
 				break;
