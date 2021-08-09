@@ -146,6 +146,11 @@ public class ModelUtil {
 				.setFinalResult(transformation.isFinalResult())
 				.setExpression(transformation.createExpression(new FieldRef(outputField.getName())));
 
+			List<?> values = transformation.getValues();
+			if(values != null && !values.isEmpty()){
+				PMMLUtil.addValues(outputField, values);
+			}
+
 			output.addOutputFields(outputField);
 		}
 

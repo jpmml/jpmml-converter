@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.List;
+
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
@@ -36,6 +38,11 @@ public interface Transformation {
 	default
 	DataType getDataType(DataType dataType){
 		return dataType;
+	}
+
+	default
+	public List<?> getValues(){
+		return null;
 	}
 
 	default
