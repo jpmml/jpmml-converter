@@ -28,11 +28,20 @@ public interface Transformation {
 
 	FieldName getName(FieldName name);
 
-	OpType getOpType(OpType opType);
+	default
+	OpType getOpType(OpType opType){
+		return opType;
+	}
 
-	DataType getDataType(DataType dataType);
+	default
+	DataType getDataType(DataType dataType){
+		return dataType;
+	}
 
-	boolean isFinalResult();
+	default
+	boolean isFinalResult(){
+		return false;
+	}
 
 	Expression createExpression(FieldRef fieldRef);
 }

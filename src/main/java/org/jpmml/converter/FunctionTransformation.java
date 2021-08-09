@@ -24,7 +24,7 @@ import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 
-public class FunctionTransformation extends AbstractTransformation {
+public class FunctionTransformation implements Transformation {
 
 	private String function = null;
 
@@ -37,7 +37,7 @@ public class FunctionTransformation extends AbstractTransformation {
 	public FieldName getName(FieldName name){
 		String function = getFunction();
 
-		return withPrefix(name, function);
+		return FieldNameUtil.create(function, name);
 	}
 
 	@Override

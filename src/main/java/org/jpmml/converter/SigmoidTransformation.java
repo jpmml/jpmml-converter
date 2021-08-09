@@ -21,16 +21,22 @@ package org.jpmml.converter;
 import java.util.Objects;
 
 import org.dmg.pmml.Expression;
+import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.PMMLFunctions;
 
-public class SigmoidTransformation extends AbstractTransformation {
+public class SigmoidTransformation implements Transformation {
 
 	private Number multiplier = null;
 
 
 	public SigmoidTransformation(Number multiplier){
 		setMultiplier(multiplier);
+	}
+
+	@Override
+	public FieldName getName(FieldName name){
+		return FieldNameUtil.create("sigmoid", name);
 	}
 
 	@Override
