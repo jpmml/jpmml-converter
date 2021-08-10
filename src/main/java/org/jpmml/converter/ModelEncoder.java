@@ -128,13 +128,10 @@ public class ModelEncoder extends PMMLEncoder {
 		return this.decorators.get(name);
 	}
 
-	public void addDecorator(DataField dataField, Decorator decorator){
-		addDecorator(dataField.getName(), decorator);
-	}
+	public void addDecorator(Field<?> field, Decorator decorator){
+		FieldName name = field.getName();
 
-	public void addDecorator(FieldName name, Decorator decorator){
 		List<Decorator> decorators = this.decorators.get(name);
-
 		if(decorators == null){
 			decorators = new ArrayList<>();
 
