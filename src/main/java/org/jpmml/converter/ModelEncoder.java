@@ -41,6 +41,7 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
+import org.dmg.pmml.mining.MiningModel;
 import org.jpmml.converter.mining.MiningModelUtil;
 import org.jpmml.converter.visitors.FeatureExpander;
 import org.jpmml.converter.visitors.ModelCleanerBattery;
@@ -75,7 +76,11 @@ public class ModelEncoder extends PMMLEncoder {
 				models.add(model);
 			}
 
-			model = MiningModelUtil.createModelChain(models);
+			MiningModel miningModel = MiningModelUtil.createModelChain(models);
+
+			transferUnivariateStats(model, miningModel);
+
+			model = miningModel;
 		} // End if
 
 		if(model != null){
