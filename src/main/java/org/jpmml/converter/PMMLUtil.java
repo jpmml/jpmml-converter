@@ -47,7 +47,8 @@ import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MapValues;
-import org.dmg.pmml.Namespaces;
+import org.dmg.pmml.NamespacePrefixes;
+import org.dmg.pmml.NamespaceURIs;
 import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
@@ -201,8 +202,8 @@ public class PMMLUtil {
 
 	static
 	public MapValues createMapValues(FieldName name, List<?> inputValues, List<?> outputValues){
-		String inputColumn = "data:input";
-		String outputColumn = "data:output";
+		String inputColumn = NamespacePrefixes.JPMML_INLINETABLE + ":input";
+		String outputColumn = NamespacePrefixes.JPMML_INLINETABLE + ":output";
 
 		Map<String, List<?>> data = new LinkedHashMap<>();
 		data.put(inputColumn, inputValues);
@@ -341,8 +342,8 @@ public class PMMLUtil {
 				QName columnName;
 
 				String tagName = function.apply(column);
-				if(tagName.startsWith("data:")){
-					columnName = new QName(Namespaces.JPMML_INLINETABLE, tagName.substring("data:".length()), "data");
+				if(tagName.startsWith(NamespacePrefixes.JPMML_INLINETABLE + ":")){
+					columnName = new QName(NamespaceURIs.JPMML_INLINETABLE, tagName.substring((NamespacePrefixes.JPMML_INLINETABLE + ":").length()), NamespacePrefixes.JPMML_INLINETABLE);
 				} else
 
 				{

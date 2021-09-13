@@ -36,6 +36,7 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelStats;
 import org.dmg.pmml.ModelVerification;
+import org.dmg.pmml.NamespacePrefixes;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
@@ -261,7 +262,7 @@ public class ModelUtil {
 
 		VerificationField verificationField = new VerificationField()
 			.setField(name)
-			.setColumn("data:" + XMLUtil.createTagName(tagName));
+			.setColumn(NamespacePrefixes.JPMML_INLINETABLE + ":" + XMLUtil.createTagName(tagName));
 
 		return verificationField;
 	}

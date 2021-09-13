@@ -39,6 +39,7 @@ import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.ModelStats;
+import org.dmg.pmml.NamespacePrefixes;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
 import org.dmg.pmml.mining.MiningModel;
@@ -317,8 +318,8 @@ public class ModelEncoder extends PMMLEncoder {
 				}
 
 				Map<String, List<?>> nativeFeatureImportances = new LinkedHashMap<>();
-				nativeFeatureImportances.put("data:name", names);
-				nativeFeatureImportances.put("data:importance", importances);
+				nativeFeatureImportances.put(NamespacePrefixes.JPMML_INLINETABLE + ":name", names);
+				nativeFeatureImportances.put(NamespacePrefixes.JPMML_INLINETABLE + ":importance", importances);
 
 				List<Number> nonZeroImportances = importances.stream()
 					.filter(importance -> !ValueUtil.isZero(importance))

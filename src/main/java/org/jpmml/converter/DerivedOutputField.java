@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Decorable;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Extension;
@@ -35,7 +36,7 @@ import org.dmg.pmml.Value;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 
-public class DerivedOutputField extends DerivedField {
+public class DerivedOutputField extends DerivedField implements Decorable {
 
 	private Model model = null;
 
