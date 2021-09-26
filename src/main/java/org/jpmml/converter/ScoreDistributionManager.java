@@ -18,11 +18,12 @@
  */
 package org.jpmml.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import org.dmg.pmml.HasScoreDistributions;
+import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.ScoreDistribution;
 
 public class ScoreDistributionManager {
@@ -30,23 +31,25 @@ public class ScoreDistributionManager {
 	private Interner<ScoreDistribution> interner = Interners.newStrongInterner();
 
 
-	public List<ScoreDistribution> createScoreDistribution(CategoricalLabel categoricalLabel, double[] recordCounts){
-		List<ScoreDistribution> result = new ArrayList<>();
+	public <E extends PMMLObject & HasScoreDistributions<E>> void addScoreDistributions(E object, List<?> values, double[] recordCounts){
+		List<ScoreDistribution> scoreDistributions = object.getScoreDistributions();
 
-		for(int i = 0; i < categoricalLabel.size(); i++){
-			Object value = categoricalLabel.getValue(i);
+		for(int i = 0; i < values.size(); i++){
+			Object value = values.get(i);
 			double recordCount = recordCounts[i];
 
-			ScoreDistribution scoreDistribution = new InternableScoreDistribution()
-				.setValue(value)
-				.setRecordCount(ValueUtil.narrow(recordCount));
+			ScoreDistribution scoreDistribution = createScoreDistribution(value, recordCount);
 
-			scoreDistribution = intern(scoreDistribution);
-
-			result.add(scoreDistribution);
+			scoreDistributions.add(scoreDistribution);
 		}
+	}
 
-		return result;
+	public ScoreDistribution createScoreDistribution(Object value, double recordCount){
+		ScoreDistribution scoreDistribution = new InternableScoreDistribution()
+			.setValue(value)
+			.setRecordCount(ValueUtil.narrow(recordCount));
+
+		return intern(scoreDistribution);
 	}
 
 	public ScoreDistribution intern(ScoreDistribution scoreDistribution){
