@@ -35,6 +35,21 @@ import static org.junit.Assert.assertEquals;
 public class ExpressionCompactorTest {
 
 	@Test
+	public void compactComparisonExpression(){
+		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
+
+		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant(null, null)));
+
+		assertEquals(PMMLFunctions.ISMISSING, apply.getFunction());
+		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
+
+		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOTEQUAL, PMMLUtil.createConstant(null, null), fieldRef));
+
+		assertEquals(PMMLFunctions.ISNOTMISSING, apply.getFunction());
+		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
+	}
+
+	@Test
 	public void compactLogicalExpression(){
 		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
 

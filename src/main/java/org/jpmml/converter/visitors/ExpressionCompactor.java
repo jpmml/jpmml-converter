@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.dmg.pmml.Apply;
+import org.dmg.pmml.Constant;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.VisitorAction;
@@ -34,6 +35,10 @@ public class ExpressionCompactor extends AbstractVisitor {
 		String function = apply.getFunction();
 
 		switch(function){
+			case PMMLFunctions.EQUAL:
+			case PMMLFunctions.NOTEQUAL:
+				simplifyComparisonExpression(apply);
+				break;
 			case PMMLFunctions.AND:
 			case PMMLFunctions.OR:
 				inlineNestedExpressions(apply);
@@ -49,6 +54,44 @@ public class ExpressionCompactor extends AbstractVisitor {
 		}
 
 		return super.visit(apply);
+	}
+
+	static
+	public void simplifyComparisonExpression(Apply apply){
+		String function = apply.getFunction();
+		List<Expression> expressions = apply.getExpressions();
+
+		if(expressions.size() != 2){
+			throw new IllegalArgumentException();
+		}
+
+		ListIterator<Expression> expressionIt = expressions.listIterator();
+
+		while(expressionIt.hasNext()){
+			Expression expression = expressionIt.next();
+
+			if(isMissingConstant(expression)){
+				expressionIt.remove();
+			}
+		}
+
+		if(expressions.size() == 0){
+			throw new IllegalArgumentException();
+		} else
+
+		if(expressions.size() == 1){
+
+			switch(function){
+				case PMMLFunctions.EQUAL:
+					apply.setFunction(PMMLFunctions.ISMISSING);
+					break;
+				case PMMLFunctions.NOTEQUAL:
+					apply.setFunction(PMMLFunctions.ISNOTMISSING);
+					break;
+				default:
+					throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	static
@@ -108,6 +151,18 @@ public class ExpressionCompactor extends AbstractVisitor {
 				}
 			}
 		}
+	}
+
+	static
+	private boolean isMissingConstant(Expression expression){
+
+		if(expression instanceof Constant){
+			Constant constant = (Constant)expression;
+
+			return constant.isMissing();
+		}
+
+		return false;
 	}
 
 	static
