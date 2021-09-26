@@ -20,6 +20,7 @@ package org.jpmml.converter.clustering;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
@@ -74,8 +75,12 @@ public class ClusteringModelUtil {
 	public Output createOutput(FieldName name, DataType dataType, List<Cluster> clusters){
 		Output output = new Output();
 
+		List<String> ids = clusters.stream()
+			.map(cluster -> cluster.getId())
+			.collect(Collectors.toList());
+
 		List<OutputField> outputFields = output.getOutputFields();
-		outputFields.add(ModelUtil.createPredictedField(name, OpType.CATEGORICAL, DataType.STRING));
+		outputFields.add(ModelUtil.createPredictedField(name, OpType.CATEGORICAL, DataType.STRING, ids));
 		outputFields.addAll(ModelUtil.createAffinityFields(dataType, clusters));
 
 		return output;

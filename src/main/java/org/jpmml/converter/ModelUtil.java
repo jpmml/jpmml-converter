@@ -201,9 +201,20 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createEntityIdField(FieldName name){
-		OutputField outputField = new OutputField(name, OpType.CATEGORICAL, DataType.STRING)
+	public OutputField createEntityIdField(FieldName name, DataType dataType){
+		OutputField outputField = new OutputField(name, OpType.CATEGORICAL, dataType)
 			.setResultFeature(ResultFeature.ENTITY_ID);
+
+		return outputField;
+	}
+
+	static
+	public OutputField createEntityIdField(FieldName name, DataType dataType, List<?> values){
+		OutputField outputField = createEntityIdField(name, dataType);
+
+		if(values != null && !values.isEmpty()){
+			PMMLUtil.addValues(outputField, values);
+		}
 
 		return outputField;
 	}
@@ -212,6 +223,17 @@ public class ModelUtil {
 	public OutputField createPredictedField(FieldName name, OpType opType, DataType dataType){
 		OutputField outputField = new OutputField(name, opType, dataType)
 			.setResultFeature(ResultFeature.PREDICTED_VALUE);
+
+		return outputField;
+	}
+
+	static
+	public OutputField createPredictedField(FieldName name, OpType opType, DataType dataType, List<?> values){
+		OutputField outputField = createPredictedField(name, opType, dataType);
+
+		if(values != null && !values.isEmpty()){
+			PMMLUtil.addValues(outputField, values);
+		}
 
 		return outputField;
 	}
