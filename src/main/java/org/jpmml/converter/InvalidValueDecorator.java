@@ -30,8 +30,14 @@ public class InvalidValueDecorator implements Decorator {
 
 	public InvalidValueDecorator(InvalidValueTreatmentMethod invalidValueTreatment, Object invalidValueReplacement){
 
-		if(!(InvalidValueTreatmentMethod.AS_IS).equals(invalidValueTreatment)){
+		if((InvalidValueTreatmentMethod.AS_VALUE).equals(invalidValueTreatment)){
 
+			if(invalidValueReplacement == null){
+				throw new IllegalArgumentException();
+			}
+		} else
+
+		{
 			if(invalidValueReplacement != null){
 				throw new IllegalArgumentException();
 			}
