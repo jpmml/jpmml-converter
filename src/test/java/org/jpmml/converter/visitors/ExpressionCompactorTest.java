@@ -38,12 +38,12 @@ public class ExpressionCompactorTest {
 	public void compactComparisonExpression(){
 		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
 
-		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant(null, null)));
+		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createMissingConstant()));
 
 		assertEquals(PMMLFunctions.ISMISSING, apply.getFunction());
 		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
 
-		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOTEQUAL, PMMLUtil.createConstant(null, null), fieldRef));
+		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOTEQUAL, PMMLUtil.createMissingConstant(), fieldRef));
 
 		assertEquals(PMMLFunctions.ISNOTMISSING, apply.getFunction());
 		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());

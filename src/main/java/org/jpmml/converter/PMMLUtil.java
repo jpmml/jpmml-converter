@@ -168,10 +168,15 @@ public class PMMLUtil {
 	}
 
 	static
+	public Constant createMissingConstant(){
+		return createConstant(null, null);
+	}
+
+	static
 	public Constant createConstant(Number value){
 
 		if(value == null){
-			return createConstant(value, null);
+			throw new IllegalArgumentException();
 		}
 
 		return createConstant(value, TypeUtil.getDataType(value));
