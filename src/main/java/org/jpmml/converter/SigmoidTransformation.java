@@ -25,7 +25,7 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.PMMLFunctions;
 
-public class SigmoidTransformation implements Transformation {
+public class SigmoidTransformation extends AbstractTransformation {
 
 	private Number multiplier = null;
 

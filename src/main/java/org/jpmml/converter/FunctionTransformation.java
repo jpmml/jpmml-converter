@@ -24,7 +24,7 @@ import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 
-public class FunctionTransformation implements Transformation {
+public class FunctionTransformation extends AbstractTransformation {
 
 	private String function = null;
 

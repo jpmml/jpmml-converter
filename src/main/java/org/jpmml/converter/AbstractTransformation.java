@@ -18,30 +18,6 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
-import org.dmg.pmml.OpType;
-
 abstract
-public class OutlierTransformation extends AbstractTransformation {
-
-	@Override
-	public FieldName getName(FieldName name){
-		return FieldName.create("outlier");
-	}
-
-	@Override
-	public OpType getOpType(OpType opType){
-		return OpType.CATEGORICAL;
-	}
-
-	@Override
-	public DataType getDataType(DataType dataType){
-		return DataType.BOOLEAN;
-	}
-
-	@Override
-	public boolean isFinalResult(){
-		return true;
-	}
+public class AbstractTransformation implements Transformation {
 }
