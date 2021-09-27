@@ -18,13 +18,13 @@
  */
 package org.jpmml.converter;
 
-import java.util.List;
-
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
+import org.dmg.pmml.OutputField;
+import org.dmg.pmml.ResultFeature;
 
 public interface Transformation {
 
@@ -41,8 +41,8 @@ public interface Transformation {
 	}
 
 	default
-	public List<?> getValues(){
-		return null;
+	ResultFeature getResultFeature(){
+		return ResultFeature.TRANSFORMED_VALUE;
 	}
 
 	default
@@ -51,4 +51,12 @@ public interface Transformation {
 	}
 
 	Expression createExpression(FieldRef fieldRef);
+
+	default
+	OutputField createOutputField(OutputField outputField){
+		return new OutputField(getName(outputField.getName()), getOpType(outputField.getOpType()), getDataType(outputField.getDataType()))
+			.setResultFeature(getResultFeature())
+			.setFinalResult(isFinalResult())
+			.setExpression(createExpression(new FieldRef(outputField.getName())));
+	}
 }

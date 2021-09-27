@@ -28,7 +28,6 @@ import com.google.common.collect.Iterables;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
 import org.dmg.pmml.FieldName;
-import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
@@ -135,22 +134,13 @@ public class ModelUtil {
 	public Output createPredictedOutput(FieldName name, OpType opType, DataType dataType, Transformation... transformations){
 		Output output = new Output();
 
-		OutputField outputField = new OutputField(name, opType, dataType)
-			.setResultFeature(ResultFeature.PREDICTED_VALUE)
+		OutputField outputField = createPredictedField(name, opType, dataType)
 			.setFinalResult(false);
 
 		output.addOutputFields(outputField);
 
 		for(Transformation transformation : transformations){
-			outputField = new OutputField(transformation.getName(outputField.getName()), transformation.getOpType(outputField.getOpType()), transformation.getDataType(outputField.getDataType()))
-				.setResultFeature(ResultFeature.TRANSFORMED_VALUE)
-				.setFinalResult(transformation.isFinalResult())
-				.setExpression(transformation.createExpression(new FieldRef(outputField.getName())));
-
-			List<?> values = transformation.getValues();
-			if(values != null && !values.isEmpty()){
-				PMMLUtil.addValues(outputField, values);
-			}
+			outputField = transformation.createOutputField(outputField);
 
 			output.addOutputFields(outputField);
 		}
