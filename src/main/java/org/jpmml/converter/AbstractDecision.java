@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Villu Ruusmann
+ * Copyright (c) 2021 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,27 +18,25 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataType;
-import org.dmg.pmml.Expression;
-import org.dmg.pmml.FieldName;
-import org.dmg.pmml.FieldRef;
-import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
 
-public interface Transformation {
+abstract
+public class AbstractDecision extends AbstractTransformation implements Decision {
 
-	FieldName getName(FieldName name);
+	@Override
+	public ResultFeature getResultFeature(){
+		return ResultFeature.DECISION;
+	}
 
-	OpType getOpType(OpType opType);
+	@Override
+	public boolean isFinalResult(){
+		return true;
+	}
 
-	DataType getDataType(DataType dataType);
-
-	ResultFeature getResultFeature();
-
-	boolean isFinalResult();
-
-	Expression createExpression(FieldRef fieldRef);
-
-	OutputField createOutputField(OutputField outputField);
+	@Override
+	public OutputField createOutputField(OutputField outputField){
+		return super.createOutputField(outputField)
+			.setDecisions(createDecisions());
+	}
 }

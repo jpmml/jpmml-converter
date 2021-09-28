@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Villu Ruusmann
+ * Copyright (c) 2021 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -18,27 +18,9 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataType;
-import org.dmg.pmml.Expression;
-import org.dmg.pmml.FieldName;
-import org.dmg.pmml.FieldRef;
-import org.dmg.pmml.OpType;
-import org.dmg.pmml.OutputField;
-import org.dmg.pmml.ResultFeature;
+import org.dmg.pmml.Decisions;
 
-public interface Transformation {
+public interface Decision extends Transformation {
 
-	FieldName getName(FieldName name);
-
-	OpType getOpType(OpType opType);
-
-	DataType getDataType(DataType dataType);
-
-	ResultFeature getResultFeature();
-
-	boolean isFinalResult();
-
-	Expression createExpression(FieldRef fieldRef);
-
-	OutputField createOutputField(OutputField outputField);
+	Decisions createDecisions();
 }
