@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Villu Ruusmann
+ * Copyright (c) 2021 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -16,42 +16,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter;
+package org.jpmml.converter.transformations;
 
-import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldRef;
-import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
+import org.jpmml.converter.BusinessDecision;
 
 abstract
-public class AbstractTransformation implements Transformation {
-
-	@Override
-	public OpType getOpType(OpType opType){
-		return opType;
-	}
-
-	@Override
-	public DataType getDataType(DataType dataType){
-		return dataType;
-	}
+public class AbstractBusinessDecision extends AbstractTransformation implements BusinessDecision {
 
 	@Override
 	public ResultFeature getResultFeature(){
-		return ResultFeature.TRANSFORMED_VALUE;
+		return ResultFeature.DECISION;
 	}
 
 	@Override
-	public 	boolean isFinalResult(){
-		return false;
+	public boolean isFinalResult(){
+		return true;
 	}
 
 	@Override
 	public OutputField createOutputField(OutputField outputField){
-		return new OutputField(getName(outputField.getName()), getOpType(outputField.getOpType()), getDataType(outputField.getDataType()))
-			.setResultFeature(getResultFeature())
-			.setFinalResult(isFinalResult())
-			.setExpression(createExpression(new FieldRef(outputField.getName())));
+		return super.createOutputField(outputField)
+			.setDecisions(createDecisions());
 	}
 }

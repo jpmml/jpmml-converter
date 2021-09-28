@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter;
+package org.jpmml.converter.transformations;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;

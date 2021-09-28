@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Villu Ruusmann
+ * Copyright (c) 2017 Villu Ruusmann
  *
  * This file is part of JPMML-Converter
  *
@@ -16,27 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter;
+package org.jpmml.converter.transformations;
 
-import org.dmg.pmml.OutputField;
-import org.dmg.pmml.ResultFeature;
+import org.dmg.pmml.PMMLFunctions;
 
-abstract
-public class AbstractBusinessDecision extends AbstractTransformation implements BusinessDecision {
+public class ExpTransformation extends FunctionTransformation {
 
-	@Override
-	public ResultFeature getResultFeature(){
-		return ResultFeature.DECISION;
-	}
-
-	@Override
-	public boolean isFinalResult(){
-		return true;
-	}
-
-	@Override
-	public OutputField createOutputField(OutputField outputField){
-		return super.createOutputField(outputField)
-			.setDecisions(createDecisions());
+	public ExpTransformation(){
+		super(PMMLFunctions.EXP);
 	}
 }
