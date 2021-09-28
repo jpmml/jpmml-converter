@@ -20,7 +20,7 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.Decisions;
 
-public interface Decision extends Transformation {
+public interface BusinessDecision extends Transformation {
 
 	Decisions createDecisions();
 }

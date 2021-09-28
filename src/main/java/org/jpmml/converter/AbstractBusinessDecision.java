@@ -22,7 +22,7 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ResultFeature;
 
 abstract
-public class AbstractDecision extends AbstractTransformation implements Decision {
+public class AbstractBusinessDecision extends AbstractTransformation implements BusinessDecision {
 
 	@Override
 	public ResultFeature getResultFeature(){
