@@ -24,7 +24,6 @@ import java.util.List;
 
 import com.google.common.collect.Iterables;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
@@ -49,7 +48,7 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		assertState(regressionTable, 0d, false, false, false);
 
-		Feature feature = new BooleanFeature(encoder, FieldName.create("x"));
+		Feature feature = new BooleanFeature(encoder, "x");
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), null);
 
@@ -57,7 +56,7 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		CategoricalPredictor categoricalPredictor = Iterables.getOnlyElement(regressionTable.getCategoricalPredictors());
 
-		assertEquals(FieldName.create("x"), categoricalPredictor.getField());
+		assertEquals("x", categoricalPredictor.getField());
 		assertEquals(1d + 1d, categoricalPredictor.getCoefficient());
 
 		feature = createConstantFeature(encoder, 3d);
@@ -66,7 +65,7 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		assertState(regressionTable, 1d + (2d * 3d), false, false, false);
 
-		feature = createInteractionFeature(encoder, 3d, FieldName.create("x"), 7d);
+		feature = createInteractionFeature(encoder, 3d, "x", 7d);
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
@@ -74,10 +73,10 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		NumericPredictor numericPredictor = Iterables.getOnlyElement(regressionTable.getNumericPredictors());
 
-		assertEquals(FieldName.create("x"), numericPredictor.getName());
+		assertEquals("x", numericPredictor.getField());
 		assertEquals((Double)(2d * 3d * 7d), (Double)numericPredictor.getCoefficient());
 
-		feature = createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
+		feature = createInteractionFeature(encoder, "x1", 5d, "x2");
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
@@ -89,10 +88,10 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		List<FieldRef> fieldRefs = predictorTerm.getFieldRefs();
 
-		assertEquals(FieldName.create("x1"), (fieldRefs.get(0)).getField());
-		assertEquals(FieldName.create("x2"), (fieldRefs.get(1)).getField());
+		assertEquals("x1", (fieldRefs.get(0)).getField());
+		assertEquals("x2", (fieldRefs.get(1)).getField());
 
-		feature = new ContinuousFeature(encoder, FieldName.create("x"), DataType.DOUBLE);
+		feature = new ContinuousFeature(encoder, "x", DataType.DOUBLE);
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), 1d);
 
@@ -100,7 +99,7 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		numericPredictor = Iterables.getOnlyElement(regressionTable.getNumericPredictors());
 
-		assertEquals(FieldName.create("x"), numericPredictor.getField());
+		assertEquals("x", numericPredictor.getField());
 		assertEquals(1d + 1d, numericPredictor.getCoefficient());
 	}
 

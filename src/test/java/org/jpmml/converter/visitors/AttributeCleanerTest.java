@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter.visitors;
 
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
@@ -63,8 +62,8 @@ public class AttributeCleanerTest {
 
 		Node root = new BranchNode(null, True.INSTANCE);
 
-		SimplePredicate leftPredicate = new SimplePredicate(FieldName.create("x"), SimplePredicate.Operator.LESS_THAN, 0);
-		SimplePredicate rightPredicate = new SimplePredicate(FieldName.create("x"), SimplePredicate.Operator.GREATER_OR_EQUAL, 0);
+		SimplePredicate leftPredicate = new SimplePredicate("x", SimplePredicate.Operator.LESS_THAN, 0);
+		SimplePredicate rightPredicate = new SimplePredicate("x", SimplePredicate.Operator.GREATER_OR_EQUAL, 0);
 
 		assertEquals((Integer)0, ReflectionUtil.getFieldValue(PMMLAttributes.SIMPLEPREDICATE_VALUE, leftPredicate));
 		assertEquals((Integer)0, ReflectionUtil.getFieldValue(PMMLAttributes.SIMPLEPREDICATE_VALUE, rightPredicate));

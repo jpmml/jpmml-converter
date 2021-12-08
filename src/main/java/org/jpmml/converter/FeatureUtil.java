@@ -18,15 +18,13 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.FieldName;
-
 public class FeatureUtil {
 
 	private FeatureUtil(){
 	}
 
 	static
-	public FieldName getName(Feature feature){
+	public String getName(Feature feature){
 
 		if(feature instanceof HasDerivedName){
 			HasDerivedName hasDerivedName = (HasDerivedName)feature;

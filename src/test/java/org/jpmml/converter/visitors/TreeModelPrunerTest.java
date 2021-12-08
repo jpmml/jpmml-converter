@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.dmg.pmml.False;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
@@ -44,7 +43,7 @@ public class TreeModelPrunerTest {
 	public void pruneFalse(){
 		Node parent = new BranchNode()
 			.setId(0)
-			.setPredicate(new SimplePredicate(FieldName.create("x"), SimplePredicate.Operator.IS_NOT_MISSING, null));
+			.setPredicate(new SimplePredicate("x", SimplePredicate.Operator.IS_NOT_MISSING, null));
 
 		Node firstChild = new LeafNode()
 			.setId(1)
@@ -83,12 +82,12 @@ public class TreeModelPrunerTest {
 
 	@Test
 	public void pruneNoOp(){
-		SimplePredicate parentPredicate = new InternableSimplePredicate(FieldName.create("x"), SimplePredicate.Operator.NOT_EQUAL, 0);
+		SimplePredicate parentPredicate = new InternableSimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 0);
 
 		Node parent = new BranchNode()
 			.setPredicate(parentPredicate);
 
-		SimplePredicate childPredicate = new InternableSimplePredicate(FieldName.create("x"), SimplePredicate.Operator.NOT_EQUAL, 1);
+		SimplePredicate childPredicate = new InternableSimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 1);
 
 		Node child = new BranchNode()
 			.setPredicate(childPredicate);
@@ -96,10 +95,10 @@ public class TreeModelPrunerTest {
 		parent.addNodes(child);
 
 		Node firstGrandchild = new LeafNode()
-			.setPredicate(new SimplePredicate(FieldName.create("x"), SimplePredicate.Operator.EQUAL, 1));
+			.setPredicate(new SimplePredicate("x", SimplePredicate.Operator.EQUAL, 1));
 
 		Node secondGrandchild = new LeafNode()
-			.setPredicate(new SimplePredicate(FieldName.create("x"), SimplePredicate.Operator.EQUAL, 2));
+			.setPredicate(new SimplePredicate("x", SimplePredicate.Operator.EQUAL, 2));
 
 		child.addNodes(firstGrandchild, secondGrandchild);
 
@@ -122,7 +121,7 @@ public class TreeModelPrunerTest {
 			.addNodes(node);
 
 		MiningSchema miningSchema = new MiningSchema()
-			.addMiningFields(new MiningField(FieldName.create("x")));
+			.addMiningFields(new MiningField("x"));
 
 		TreeModel treeModel = new TreeModel(MiningFunction.REGRESSION, miningSchema, root);
 

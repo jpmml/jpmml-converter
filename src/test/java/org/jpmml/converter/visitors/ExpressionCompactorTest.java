@@ -24,7 +24,6 @@ import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.converter.PMMLUtil;
@@ -36,7 +35,7 @@ public class ExpressionCompactorTest {
 
 	@Test
 	public void compactComparisonExpression(){
-		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
+		FieldRef fieldRef = new FieldRef("x");
 
 		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createMissingConstant()));
 
@@ -51,7 +50,7 @@ public class ExpressionCompactorTest {
 
 	@Test
 	public void compactLogicalExpression(){
-		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
+		FieldRef fieldRef = new FieldRef("x");
 
 		Apply first = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("1", DataType.STRING));
 
@@ -73,9 +72,9 @@ public class ExpressionCompactorTest {
 
 	@Test
 	public void compactConcatExpression(){
-		FieldRef hours = new FieldRef(FieldName.create("hours"));
-		FieldRef minutes = new FieldRef(FieldName.create("minutes"));
-		FieldRef seconds = new FieldRef(FieldName.create("seconds"));
+		FieldRef hours = new FieldRef("hours");
+		FieldRef minutes = new FieldRef("minutes");
+		FieldRef seconds = new FieldRef("seconds");
 
 		Constant separator = PMMLUtil.createConstant(":", DataType.STRING);
 
@@ -87,7 +86,7 @@ public class ExpressionCompactorTest {
 
 	@Test
 	public void compactNegationExpression(){
-		FieldRef fieldRef = new FieldRef(FieldName.create("x"));
+		FieldRef fieldRef = new FieldRef("x");
 
 		checkNegation(PMMLFunctions.ISMISSING, PMMLFunctions.ISNOTMISSING, fieldRef);
 

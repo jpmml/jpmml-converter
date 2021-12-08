@@ -31,7 +31,6 @@ import java.util.Set;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.OutputField;
@@ -44,12 +43,12 @@ import org.jpmml.model.visitors.AbstractVisitor;
 
 public class FeatureExpander extends DeepFieldResolver {
 
-	private Map<Model, Set<FieldName>> features = null;
+	private Map<Model, Set<String>> features = null;
 
-	private Map<Model, Map<FieldName, Set<Field<?>>>> expandedFeatures = new IdentityHashMap<>();
+	private Map<Model, Map<String, Set<Field<?>>>> expandedFeatures = new IdentityHashMap<>();
 
 
-	public FeatureExpander(Map<Model, Set<FieldName>> features){
+	public FeatureExpander(Map<Model, Set<String>> features){
 		this.features = Objects.requireNonNull(features);
 	}
 
@@ -79,7 +78,7 @@ public class FeatureExpander extends DeepFieldResolver {
 
 		MiningModel parentMiningModel = null;
 
-		Set<FieldName> features = this.features.get(model);
+		Set<String> features = this.features.get(model);
 		if(features == null){
 			parentMiningModel = getParent(this.features.keySet());
 
@@ -105,7 +104,7 @@ public class FeatureExpander extends DeepFieldResolver {
 
 		Collection<Field<?>> featureFields = FieldUtil.selectAll(modelFields, features, true);
 
-		Map<FieldName, DerivedField> localDerivedFields = Collections.emptyMap();
+		Map<String, DerivedField> localDerivedFields = Collections.emptyMap();
 
 		LocalTransformations localTransformations = model.getLocalTransformations();
 		if(localTransformations != null && localTransformations.hasDerivedFields()){
@@ -121,9 +120,9 @@ public class FeatureExpander extends DeepFieldResolver {
 			featureFields.retainAll(localDerivedFields.values());
 		}
 
-		Map<FieldName, DerivedField> globalDerivedFields = FieldUtil.nameMap(fieldDependencyResolver.getGlobalDerivedFields());
+		Map<String, DerivedField> globalDerivedFields = FieldUtil.nameMap(fieldDependencyResolver.getGlobalDerivedFields());
 
-		Map<FieldName, Set<Field<?>>> expandedFields;
+		Map<String, Set<Field<?>>> expandedFields;
 
 		if(parentMiningModel != null){
 			expandedFields = ensureExpandedFeatures(parentMiningModel);
@@ -134,7 +133,7 @@ public class FeatureExpander extends DeepFieldResolver {
 		}
 
 		for(Field<?> featureField : featureFields){
-			FieldName name = featureField.getName();
+			String name = featureField.getName();
 
 			if(featureField instanceof DataField){
 				expandedFields.put(name, Collections.singleton(featureField));
@@ -203,10 +202,10 @@ public class FeatureExpander extends DeepFieldResolver {
 		return null;
 	}
 
-	private Map<FieldName, Set<Field<?>>> ensureExpandedFeatures(Model model){
-		Map<Model, Map<FieldName, Set<Field<?>>>> expandedFeatures = getExpandedFeatures();
+	private Map<String, Set<Field<?>>> ensureExpandedFeatures(Model model){
+		Map<Model, Map<String, Set<Field<?>>>> expandedFeatures = getExpandedFeatures();
 
-		Map<FieldName, Set<Field<?>>> result = expandedFeatures.get(model);
+		Map<String, Set<Field<?>>> result = expandedFeatures.get(model);
 		if(result == null){
 			result = new HashMap<>();
 
@@ -216,17 +215,17 @@ public class FeatureExpander extends DeepFieldResolver {
 		return result;
 	}
 
-	public Map<FieldName, Set<Field<?>>> getExpandedFeatures(Model model){
-		Map<Model, Map<FieldName, Set<Field<?>>>> expandedFeatures = getExpandedFeatures();
+	public Map<String, Set<Field<?>>> getExpandedFeatures(Model model){
+		Map<Model, Map<String, Set<Field<?>>>> expandedFeatures = getExpandedFeatures();
 
 		return expandedFeatures.get(model);
 	}
 
-	public Map<Model, Set<FieldName>> getFeatures(){
+	public Map<Model, Set<String>> getFeatures(){
 		return this.features;
 	}
 
-	public Map<Model, Map<FieldName, Set<Field<?>>>> getExpandedFeatures(){
+	public Map<Model, Map<String, Set<Field<?>>>> getExpandedFeatures(){
 		return this.expandedFeatures;
 	}
 

@@ -18,11 +18,14 @@
  */
 package org.jpmml.converter.visitors;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.PMML;
@@ -32,7 +35,6 @@ import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.regression.RegressionModel;
 import org.jpmml.model.ChainedSegmentationTest;
-import org.jpmml.model.FieldNameUtil;
 import org.jpmml.model.NestedSegmentationTest;
 import org.jpmml.model.ResourceUtil;
 import org.jpmml.model.visitors.AbstractVisitor;
@@ -55,7 +57,7 @@ public class MiningSchemaCleanerTest {
 			public VisitorAction visit(MiningModel miningModel){
 				MiningSchema miningSchema = miningModel.getMiningSchema();
 
-				checkMiningSchema(FieldNameUtil.create("y", "x1", "x2", "x3"), miningSchema);
+				checkMiningSchema(Arrays.asList("y", "x1", "x2", "x3"), miningSchema);
 
 				return super.visit(miningModel);
 			}
@@ -69,19 +71,19 @@ public class MiningSchemaCleanerTest {
 				String id = segment.getId();
 
 				if("first".equals(id)){
-					checkMiningSchema(FieldNameUtil.create("x1"), miningSchema);
+					checkMiningSchema(Collections.singletonList("x1"), miningSchema);
 				} else
 
 				if("second".equals(id)){
-					checkMiningSchema(FieldNameUtil.create("x2"), miningSchema);
+					checkMiningSchema(Collections.singletonList("x2"), miningSchema);
 				} else
 
 				if("third".equals(id)){
-					checkMiningSchema(FieldNameUtil.create("x3"), miningSchema);
+					checkMiningSchema(Collections.singletonList("x3"), miningSchema);
 				} else
 
 				if("sum".equals(id)){
-					checkMiningSchema(FieldNameUtil.create("y", "first_output", "second_output", "third_output"), miningSchema);
+					checkMiningSchema(Arrays.asList("y", "first_output", "second_output", "third_output"), miningSchema);
 				} else
 
 				{
@@ -119,15 +121,15 @@ public class MiningSchemaCleanerTest {
 				} // End try
 
 				if(id == null){
-					checkMiningSchema(FieldNameUtil.create("x1", "x2", "x3", "x4", "x5"), miningSchema);
+					checkMiningSchema(Arrays.asList("x1", "x2", "x3", "x4", "x5"), miningSchema);
 				} else
 
 				if("first".equals(id)){
-					checkMiningSchema(FieldNameUtil.create("x12", "x3", "x4", "x5"), miningSchema);
+					checkMiningSchema(Arrays.asList("x12", "x3", "x4", "x5"), miningSchema);
 				} else
 
 				if("second".equals(id)){
-					checkMiningSchema(FieldNameUtil.create("x123", "x12345"), miningSchema);
+					checkMiningSchema(Arrays.asList("x123", "x12345"), miningSchema);
 				} else
 
 				{
@@ -146,7 +148,7 @@ public class MiningSchemaCleanerTest {
 			public VisitorAction visit(RegressionModel regressionModel){
 				MiningSchema miningSchema = regressionModel.getMiningSchema();
 
-				checkMiningSchema(FieldNameUtil.create("x123"), miningSchema);
+				checkMiningSchema(Collections.singletonList("x123"), miningSchema);
 
 				return super.visit(regressionModel);
 			}
@@ -156,13 +158,13 @@ public class MiningSchemaCleanerTest {
 	}
 
 	static
-	private void checkMiningSchema(Set<FieldName> names, MiningSchema miningSchema){
-		assertEquals(names, getFieldNames(miningSchema));
+	private void checkMiningSchema(Collection<String> names, MiningSchema miningSchema){
+		assertEquals(new HashSet<>(names), getFieldNames(miningSchema));
 	}
 
 	static
-	private Set<FieldName> getFieldNames(MiningSchema miningSchema){
-		Set<FieldName> result = new LinkedHashSet<>();
+	private Set<String> getFieldNames(MiningSchema miningSchema){
+		Set<String> result = new LinkedHashSet<>();
 
 		List<MiningField> miningFields = miningSchema.getMiningFields();
 		for(MiningField miningField : miningFields){

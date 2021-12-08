@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
@@ -54,7 +53,7 @@ public class DeepFieldResolverUtil {
 			Predicate predicate = segment.getPredicate();
 
 			if(predicate != null){
-				Set<FieldName> names = ActiveFieldFinder.getFieldNames(predicate);
+				Set<String> names = ActiveFieldFinder.getFieldNames(predicate);
 
 				if(names.size() > 0){
 					Collection<Field<?>> segmentFields = resolver.getFields(miningModel, segmentation, segment);
@@ -66,7 +65,7 @@ public class DeepFieldResolverUtil {
 
 		Output output = miningModel.getOutput();
 		if(output != null){
-			Set<FieldName> names = ActiveFieldFinder.getFieldNames(output);
+			Set<String> names = ActiveFieldFinder.getFieldNames(output);
 
 			if(names.size() > 0){
 				activeFields.addAll(FieldUtil.selectAll(modelFields, names));
@@ -104,7 +103,7 @@ public class DeepFieldResolverUtil {
 			}
 		};
 
-		Set<FieldName> names = ActiveFieldFinder.getFieldNames(activeFieldFinder, model);
+		Set<String> names = ActiveFieldFinder.getFieldNames(activeFieldFinder, model);
 
 		activeFields.addAll(FieldUtil.selectAll(modelFields, names));
 

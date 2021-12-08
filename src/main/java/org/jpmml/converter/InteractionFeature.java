@@ -26,7 +26,6 @@ import java.util.function.Supplier;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.model.ToStringHelper;
 
@@ -39,7 +38,7 @@ public class InteractionFeature extends Feature {
 		this(encoder, field.getName(), field.getDataType(), features);
 	}
 
-	public InteractionFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<? extends Feature> features){
+	public InteractionFeature(PMMLEncoder encoder, String name, DataType dataType, List<? extends Feature> features){
 		super(encoder, name, dataType);
 
 		setFeatures(features);

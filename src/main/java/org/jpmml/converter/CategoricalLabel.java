@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.HasDiscreteDomain;
 import org.jpmml.model.ToStringHelper;
 
@@ -36,14 +35,14 @@ public class CategoricalLabel extends Label {
 		this(field.getName(), field.getDataType(), PMMLUtil.getValues(field));
 	}
 
-	public CategoricalLabel(FieldName name, DataType dataType, List<?> values){
+	public CategoricalLabel(String name, DataType dataType, List<?> values){
 		super(name, dataType);
 
 		setValues(values);
 	}
 
 	@Override
-	public CategoricalLabel toRenamedLabel(FieldName name){
+	public CategoricalLabel toRenamedLabel(String name){
 		return new CategoricalLabel(name, getDataType(), getValues());
 	}
 

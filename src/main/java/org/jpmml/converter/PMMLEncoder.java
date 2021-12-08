@@ -32,7 +32,6 @@ import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.Model;
@@ -44,9 +43,9 @@ import org.dmg.pmml.Version;
 
 public class PMMLEncoder {
 
-	private Map<FieldName, DataField> dataFields = new LinkedHashMap<>();
+	private Map<String, DataField> dataFields = new LinkedHashMap<>();
 
-	private Map<FieldName, DerivedField> derivedFields = new LinkedHashMap<>();
+	private Map<String, DerivedField> derivedFields = new LinkedHashMap<>();
 
 	private Map<String, DefineFunction> defineFunctions = new LinkedHashMap<>();
 
@@ -94,21 +93,21 @@ public class PMMLEncoder {
 		return PMMLUtil.createHeader(getClass());
 	}
 
-	public DataField getDataField(FieldName name){
+	public DataField getDataField(String name){
 		return this.dataFields.get(name);
 	}
 
 	public void addDataField(DataField dataField){
-		FieldName name = checkName(dataField);
+		String name = checkName(dataField);
 
 		this.dataFields.put(name, dataField);
 	}
 
-	public DataField createDataField(FieldName name, OpType opType, DataType dataType){
+	public DataField createDataField(String name, OpType opType, DataType dataType){
 		return createDataField(name, opType, dataType, null);
 	}
 
-	public DataField createDataField(FieldName name, OpType opType, DataType dataType, List<?> values){
+	public DataField createDataField(String name, OpType opType, DataType dataType, List<?> values){
 		DataField dataField = new DataField(name, opType, dataType);
 
 		if(values != null && !values.isEmpty()){
@@ -120,17 +119,17 @@ public class PMMLEncoder {
 		return dataField;
 	}
 
-	public DataField removeDataField(FieldName name){
+	public DataField removeDataField(String name){
 		DataField dataField = this.dataFields.remove(name);
 
 		if(dataField == null){
-			throw new IllegalArgumentException("Field " + name.getValue() + " is undefined");
+			throw new IllegalArgumentException("Field " + name + " is undefined");
 		}
 
 		return dataField;
 	}
 
-	public DerivedField ensureDerivedField(FieldName name, OpType opType, DataType dataType, Supplier<? extends Expression> expressionSupplier){
+	public DerivedField ensureDerivedField(String name, OpType opType, DataType dataType, Supplier<? extends Expression> expressionSupplier){
 		DerivedField derivedField = getDerivedField(name);
 
 		if(derivedField == null){
@@ -142,17 +141,17 @@ public class PMMLEncoder {
 		return derivedField;
 	}
 
-	public DerivedField getDerivedField(FieldName name){
+	public DerivedField getDerivedField(String name){
 		return this.derivedFields.get(name);
 	}
 
 	public void addDerivedField(DerivedField derivedField){
-		FieldName name = checkName(derivedField);
+		String name = checkName(derivedField);
 
 		this.derivedFields.put(name, derivedField);
 	}
 
-	public DerivedField createDerivedField(FieldName name, OpType opType, DataType dataType, Expression expression){
+	public DerivedField createDerivedField(String name, OpType opType, DataType dataType, Expression expression){
 		DerivedField derivedField = new DerivedField(name, opType, dataType, expression);
 
 		addDerivedField(derivedField);
@@ -168,17 +167,17 @@ public class PMMLEncoder {
 		return derivedField;
 	}
 
-	public DerivedField removeDerivedField(FieldName name){
+	public DerivedField removeDerivedField(String name){
 		DerivedField derivedField = this.derivedFields.remove(name);
 
 		if(derivedField == null){
-			throw new IllegalArgumentException("Field " + name.getValue() + " is undefined");
+			throw new IllegalArgumentException("Field " + name + " is undefined");
 		}
 
 		return derivedField;
 	}
 
-	public Field<?> getField(FieldName name){
+	public Field<?> getField(String name){
 		DataField dataField = getDataField(name);
 		DerivedField derivedField = getDerivedField(name);
 
@@ -194,10 +193,10 @@ public class PMMLEncoder {
 			return derivedField;
 		}
 
-		throw new IllegalArgumentException("Field " + name.getValue() + " is undefined");
+		throw new IllegalArgumentException("Field " + name + " is undefined");
 	}
 
-	public Field<?> toContinuous(FieldName name){
+	public Field<?> toContinuous(String name){
 		Field<?> field = getField(name);
 
 		DataType dataType = field.getDataType();
@@ -207,7 +206,7 @@ public class PMMLEncoder {
 			case DOUBLE:
 				break;
 			default:
-				throw new IllegalArgumentException("Field " + name.getValue() + " has data type " + dataType);
+				throw new IllegalArgumentException("Field " + name + " has data type " + dataType);
 		}
 
 		field.setOpType(OpType.CONTINUOUS);
@@ -215,11 +214,11 @@ public class PMMLEncoder {
 		return field;
 	}
 
-	public Field<?> toCategorical(FieldName name, List<?> values){
+	public Field<?> toCategorical(String name, List<?> values){
 		return toDiscrete(name, OpType.CATEGORICAL, values);
 	}
 
-	public Field<?> toOrdinal(FieldName name, List<?> values){
+	public Field<?> toOrdinal(String name, List<?> values){
 		return toDiscrete(name, OpType.ORDINAL, values);
 	}
 
@@ -241,11 +240,11 @@ public class PMMLEncoder {
 		this.defineFunctions.put(name, defineFunction);
 	}
 
-	public Map<FieldName, DataField> getDataFields(){
+	public Map<String, DataField> getDataFields(){
 		return this.dataFields;
 	}
 
-	public Map<FieldName, DerivedField> getDerivedFields(){
+	public Map<String, DerivedField> getDerivedFields(){
 		return this.derivedFields;
 	}
 
@@ -253,7 +252,7 @@ public class PMMLEncoder {
 		return this.defineFunctions;
 	}
 
-	private Field<?> toDiscrete(FieldName name, OpType opType, List<?> values){
+	private Field<?> toDiscrete(String name, OpType opType, List<?> values){
 		Field<?> field = getField(name);
 
 		values:
@@ -281,15 +280,15 @@ public class PMMLEncoder {
 		return field;
 	}
 
-	private FieldName checkName(Field<?> field){
-		FieldName name = field.getName();
+	private String checkName(Field<?> field){
+		String name = field.getName();
 
 		if(name == null){
 			throw new IllegalArgumentException();
 		} // End if
 
 		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new IllegalArgumentException("Field " + name.getValue() + " is already defined");
+			throw new IllegalArgumentException("Field " + name + " is already defined");
 		}
 
 		return name;

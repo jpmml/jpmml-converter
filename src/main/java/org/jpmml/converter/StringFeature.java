@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 
 public class StringFeature extends ObjectFeature {
 
@@ -32,7 +31,7 @@ public class StringFeature extends ObjectFeature {
 		this(encoder, feature.getName(), feature.getDataType());
 	}
 
-	public StringFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
+	public StringFeature(PMMLEncoder encoder, String name, DataType dataType){
 		super(encoder, name, dataType);
 	}
 }

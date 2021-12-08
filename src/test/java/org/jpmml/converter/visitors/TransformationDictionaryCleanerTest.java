@@ -18,12 +18,13 @@
  */
 package org.jpmml.converter.visitors;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
@@ -34,7 +35,6 @@ import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.regression.RegressionModel;
 import org.jpmml.model.ChainedSegmentationTest;
-import org.jpmml.model.FieldNameUtil;
 import org.jpmml.model.NestedSegmentationTest;
 import org.jpmml.model.ResourceUtil;
 import org.jpmml.model.visitors.AbstractVisitor;
@@ -69,7 +69,7 @@ public class TransformationDictionaryCleanerTest {
 				} else
 
 				if("second".equals(id)){
-					checkFields(FieldNameUtil.create("x2_squared"), localTransformations.getDerivedFields());
+					checkFields(Collections.singletonList("x2_squared"), localTransformations.getDerivedFields());
 				} else
 
 				if("third".equals(id)){
@@ -89,7 +89,7 @@ public class TransformationDictionaryCleanerTest {
 
 			@Override
 			public VisitorAction visit(TransformationDictionary transformationDictionary){
-				checkFields(FieldNameUtil.create("x1_squared"), transformationDictionary.getDerivedFields());
+				checkFields(Collections.singletonList("x1_squared"), transformationDictionary.getDerivedFields());
 
 				return super.visit(transformationDictionary);
 			}
@@ -141,11 +141,11 @@ public class TransformationDictionaryCleanerTest {
 				} // End try
 
 				if(id == null){
-					checkFields(FieldNameUtil.create("x12"), localTransformations.getDerivedFields());
+					checkFields(Collections.singletonList("x12"), localTransformations.getDerivedFields());
 				} else
 
 				if("first".equals(id)){
-					checkFields(FieldNameUtil.create("x123", "x1234", "x12345"), localTransformations.getDerivedFields());
+					checkFields(Arrays.asList("x123", "x1234", "x12345"), localTransformations.getDerivedFields());
 				} else
 
 				if("second".equals(id)){
@@ -178,7 +178,7 @@ public class TransformationDictionaryCleanerTest {
 	}
 
 	static
-	private void checkFields(Set<FieldName> names, Collection<DerivedField> derivedFields){
-		assertEquals(names, FieldUtil.nameSet(derivedFields));
+	private void checkFields(Collection<String> names, Collection<DerivedField> derivedFields){
+		assertEquals(new HashSet<>(names), FieldUtil.nameSet(derivedFields));
 	}
 }

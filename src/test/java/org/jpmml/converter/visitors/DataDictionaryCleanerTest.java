@@ -18,14 +18,14 @@
  */
 package org.jpmml.converter.visitors;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -35,7 +35,6 @@ import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.model.ChainedSegmentationTest;
-import org.jpmml.model.FieldNameUtil;
 import org.jpmml.model.NestedSegmentationTest;
 import org.jpmml.model.ResourceUtil;
 import org.jpmml.model.visitors.AbstractVisitor;
@@ -51,14 +50,14 @@ public class DataDictionaryCleanerTest {
 
 		DataDictionary dataDictionary = pmml.getDataDictionary();
 
-		checkFields(FieldNameUtil.create("y", "x1", "x2", "x3", "x4"), dataDictionary.getDataFields());
+		checkFields(Arrays.asList("y", "x1", "x2", "x3", "x4"), dataDictionary.getDataFields());
 
 		updateUsageType(pmml, MiningField.UsageType.SUPPLEMENTARY);
 
 		DataDictionaryCleaner cleaner = new DataDictionaryCleaner();
 		cleaner.applyTo(pmml);
 
-		checkFields(FieldNameUtil.create("y", "x1", "x2", "x3", "x4"), dataDictionary.getDataFields());
+		checkFields(Arrays.asList("y", "x1", "x2", "x3", "x4"), dataDictionary.getDataFields());
 
 		updateUsageType(pmml, MiningField.UsageType.ACTIVE);
 
@@ -66,7 +65,7 @@ public class DataDictionaryCleanerTest {
 
 		cleaner.applyTo(pmml);
 
-		checkFields(FieldNameUtil.create("y", "x1", "x2", "x3"), dataDictionary.getDataFields());
+		checkFields(Arrays.asList("y", "x1", "x2", "x3"), dataDictionary.getDataFields());
 
 		List<Model> models = pmml.getModels();
 		models.clear();
@@ -84,12 +83,12 @@ public class DataDictionaryCleanerTest {
 
 		DataDictionary dataDictionary = pmml.getDataDictionary();
 
-		checkFields(FieldNameUtil.create("y", "x1", "x2", "x3", "x4", "x5"), dataDictionary.getDataFields());
+		checkFields(Arrays.asList("y", "x1", "x2", "x3", "x4", "x5"), dataDictionary.getDataFields());
 
 		DataDictionaryCleaner cleaner = new DataDictionaryCleaner();
 		cleaner.applyTo(pmml);
 
-		checkFields(FieldNameUtil.create("x1", "x2", "x3", "x4", "x5"), dataDictionary.getDataFields());
+		checkFields(Arrays.asList("x1", "x2", "x3", "x4", "x5"), dataDictionary.getDataFields());
 
 		List<Model> models = pmml.getModels();
 		models.clear();
@@ -102,8 +101,8 @@ public class DataDictionaryCleanerTest {
 	}
 
 	static
-	private void checkFields(Set<FieldName> names, Collection<DataField> dataFields){
-		assertEquals(names, FieldUtil.nameSet(dataFields));
+	private void checkFields(Collection<String> names, Collection<DataField> dataFields){
+		assertEquals(new HashSet<>(names), FieldUtil.nameSet(dataFields));
 	}
 
 	static
@@ -124,7 +123,7 @@ public class DataDictionaryCleanerTest {
 						extraMiningFields.clear();
 					}
 
-					miningSchema.addMiningFields(ModelUtil.createMiningField(FieldName.create("x4"), usageType));
+					miningSchema.addMiningFields(ModelUtil.createMiningField("x4", usageType));
 				}
 
 				return super.visit(miningSchema);

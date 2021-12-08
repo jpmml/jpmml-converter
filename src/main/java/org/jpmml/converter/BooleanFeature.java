@@ -23,7 +23,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
 
 public class BooleanFeature extends CategoricalFeature implements HasDerivedName {
@@ -36,13 +35,13 @@ public class BooleanFeature extends CategoricalFeature implements HasDerivedName
 		this(encoder, feature.getName());
 	}
 
-	public BooleanFeature(PMMLEncoder encoder, FieldName name){
+	public BooleanFeature(PMMLEncoder encoder, String name){
 		super(encoder, name, DataType.BOOLEAN, BooleanFeature.VALUES);
 	}
 
 	@Override
-	public FieldName getDerivedName(){
-		return FieldName.create((getName()).getValue() + "=true");
+	public String getDerivedName(){
+		return getName() + "=true";
 	}
 
 	@Override

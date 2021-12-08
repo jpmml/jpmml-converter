@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 
 public class FieldUtil {
 
@@ -33,11 +32,11 @@ public class FieldUtil {
 	}
 
 	static
-	public <F extends Field<?>> Map<FieldName, F> nameMap(Collection<? extends F> fields){
-		Map<FieldName, F> fieldMap = new LinkedHashMap<>(2 * fields.size());
+	public <F extends Field<?>> Map<String, F> nameMap(Collection<? extends F> fields){
+		Map<String, F> fieldMap = new LinkedHashMap<>(2 * fields.size());
 
 		for(F field : fields){
-			FieldName name = field.getName();
+			String name = field.getName();
 
 			F previousField = fieldMap.put(name, field);
 			if(previousField != null){
@@ -49,23 +48,23 @@ public class FieldUtil {
 	}
 
 	static
-	public <F extends Field<?>> Set<FieldName> nameSet(Collection<? extends F> fields){
-		Map<FieldName, F> fieldMap = nameMap(fields);
+	public <F extends Field<?>> Set<String> nameSet(Collection<? extends F> fields){
+		Map<String, F> fieldMap = nameMap(fields);
 
 		return fieldMap.keySet();
 	}
 
 	static
-	public <F extends Field<?>> Collection<F> selectAll(Collection<? extends F> fields, Set<FieldName> names){
+	public <F extends Field<?>> Collection<F> selectAll(Collection<? extends F> fields, Set<String> names){
 		return selectAll(fields, names, false);
 	}
 
 	static
-	public <F extends Field<?>> Collection<F> selectAll(Collection<? extends F> fields, Set<FieldName> names, boolean allowPartialSelection){
-		Map<FieldName, F> fieldMap = new LinkedHashMap<>(2 * names.size());
+	public <F extends Field<?>> Collection<F> selectAll(Collection<? extends F> fields, Set<String> names, boolean allowPartialSelection){
+		Map<String, F> fieldMap = new LinkedHashMap<>(2 * names.size());
 
 		for(F field : fields){
-			FieldName name = field.getName();
+			String name = field.getName();
 
 			if(!names.contains(name)){
 				continue;
@@ -78,7 +77,7 @@ public class FieldUtil {
 		}
 
 		if(!(allowPartialSelection) && (fieldMap.size() < names.size())){
-			Set<FieldName> unmatchedNames = new LinkedHashSet<>(names);
+			Set<String> unmatchedNames = new LinkedHashSet<>(names);
 			unmatchedNames.removeAll(fieldMap.keySet());
 
 			throw new IllegalArgumentException("Name(s) " + unmatchedNames + " do not match any fields");

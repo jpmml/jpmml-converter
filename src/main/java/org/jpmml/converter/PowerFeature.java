@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.model.ToStringHelper;
 
@@ -37,15 +36,15 @@ public class PowerFeature extends Feature implements HasDerivedName {
 		this(encoder, feature.getName(), feature.getDataType(), power);
 	}
 
-	public PowerFeature(PMMLEncoder encoder, FieldName name, DataType dataType, int power){
+	public PowerFeature(PMMLEncoder encoder, String name, DataType dataType, int power){
 		super(encoder, name, dataType);
 
 		setPower(power);
 	}
 
 	@Override
-	public FieldName getDerivedName(){
-		return FieldName.create((getName()).getValue() + "^" + getPower());
+	public String getDerivedName(){
+		return getName() + "^" + getPower();
 	}
 
 	@Override

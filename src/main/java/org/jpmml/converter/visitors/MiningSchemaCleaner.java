@@ -30,7 +30,6 @@ import java.util.Set;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -74,7 +73,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 	private Set<Field<?>> processMiningModel(MiningModel miningModel){
 		Set<Field<?>> activeFields = DeepFieldResolverUtil.getActiveFields(this, miningModel);
 
-		Set<FieldName> activeFieldNames = new HashSet<>();
+		Set<String> activeFieldNames = new HashSet<>();
 
 		Segmentation segmentation = miningModel.getSegmentation();
 
@@ -90,7 +89,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
 			for(MiningField miningField : miningFields){
-				FieldName name = miningField.getName();
+				String name = miningField.getName();
 
 				MiningField.UsageType usageType = miningField.getUsageType();
 				switch(usageType){
@@ -136,12 +135,12 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 		List<MiningField> miningFields = miningSchema.getMiningFields();
 
-		Map<FieldName, Field<?>> activeFieldMap = FieldUtil.nameMap(activeFields);
+		Map<String, Field<?>> activeFieldMap = FieldUtil.nameMap(activeFields);
 
 		for(Iterator<MiningField> it = miningFields.iterator(); it.hasNext(); ){
 			MiningField miningField = it.next();
 
-			FieldName name = miningField.getName();
+			String name = miningField.getName();
 
 			MiningField.UsageType usageType = miningField.getUsageType();
 			switch(usageType){
@@ -160,7 +159,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		activeFields = new LinkedHashSet<>(activeFieldMap.values());
 
 		for(Field<?> activeField : activeFields){
-			FieldName name = activeField.getName();
+			String name = activeField.getName();
 
 			MiningField miningField = new MiningField(name);
 

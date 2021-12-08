@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.general_regression.GeneralRegressionModel;
 import org.dmg.pmml.general_regression.PCell;
 import org.dmg.pmml.general_regression.PPCell;
@@ -58,14 +57,14 @@ public class GeneralRegressionModelUtilTest extends ModelTest {
 
 		generalRegressionModel = new GeneralRegressionModel();
 
-		feature = createInteractionFeature(encoder, FieldName.create("x1"), 5d, FieldName.create("x2"));
+		feature = createInteractionFeature(encoder, "x1", 5d, "x2");
 
 		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), Collections.singletonList(2d), 1d, null);
 
 		assertState(generalRegressionModel, true, true, true);
 
 		assertParameter(generalRegressionModel, "p0", 1d, Collections.emptyList());
-		assertParameter(generalRegressionModel, "p1", (2d * 5d), Arrays.asList(FieldName.create("x1"), FieldName.create("x2")));
+		assertParameter(generalRegressionModel, "p1", (2d * 5d), Arrays.asList("x1", "x2"));
 	}
 
 	static
@@ -76,7 +75,7 @@ public class GeneralRegressionModelUtilTest extends ModelTest {
 	}
 
 	static
-	private void assertParameter(GeneralRegressionModel generalRegressionModel, String parameterName, double beta, List<FieldName> predictorNames){
+	private void assertParameter(GeneralRegressionModel generalRegressionModel, String parameterName, double beta, List<String> predictorNames){
 		List<PCell> pCells = getParameterCells((generalRegressionModel.getParamMatrix()).getPCells(), parameterName);
 		List<PPCell> ppCells = getParameterCells((generalRegressionModel.getPPMatrix()).getPPCells(), parameterName);
 

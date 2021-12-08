@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
 import org.jpmml.model.ToStringHelper;
 
@@ -39,15 +38,15 @@ public class BinaryFeature extends Feature implements HasDerivedName {
 		this(encoder, feature.getName(), feature.getDataType(), value);
 	}
 
-	public BinaryFeature(PMMLEncoder encoder, FieldName name, DataType dataType, Object value){
+	public BinaryFeature(PMMLEncoder encoder, String name, DataType dataType, Object value){
 		super(encoder, name, dataType);
 
 		setValue(value);
 	}
 
 	@Override
-	public FieldName getDerivedName(){
-		return FieldName.create((getName()).getValue() + "=" + getValue());
+	public String getDerivedName(){
+		return getName() + "=" + getValue();
 	}
 
 	@Override

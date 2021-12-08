@@ -18,11 +18,12 @@
  */
 package org.jpmml.converter.visitors;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
+import java.util.HashSet;
 
 import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
@@ -31,7 +32,6 @@ import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.Segment;
 import org.jpmml.model.ChainedSegmentationTest;
-import org.jpmml.model.FieldNameUtil;
 import org.jpmml.model.NestedSegmentationTest;
 import org.jpmml.model.ResourceUtil;
 import org.jpmml.model.visitors.AbstractVisitor;
@@ -62,11 +62,11 @@ public class DerivedFieldRelocatorTest {
 				LocalTransformations localTransformations = model.getLocalTransformations();
 
 				if(("first").equals(segment.getId())){
-					checkFields(FieldNameUtil.create("x1_squared"), localTransformations.getDerivedFields());
+					checkFields(Collections.singletonList("x1_squared"), localTransformations.getDerivedFields());
 				} else
 
 				if(("second").equals(segment.getId())){
-					checkFields(FieldNameUtil.create("x2_squared"), localTransformations.getDerivedFields());
+					checkFields(Collections.singletonList("x2_squared"), localTransformations.getDerivedFields());
 				} else
 
 				if(("third").equals(segment.getId())){
@@ -114,7 +114,7 @@ public class DerivedFieldRelocatorTest {
 				} else
 
 				if(("second").equals(segment.getId())){
-					checkFields(FieldNameUtil.create("x12", "x123", "x1234", "x12345"), localTransformations.getDerivedFields());
+					checkFields(Arrays.asList("x12", "x123", "x1234", "x12345"), localTransformations.getDerivedFields());
 				} else
 
 				if(("third").equals(segment.getId())){
@@ -132,7 +132,7 @@ public class DerivedFieldRelocatorTest {
 	}
 
 	static
-	private void checkFields(Set<FieldName> names, Collection<DerivedField> fields){
-		assertEquals(names, FieldUtil.nameSet(fields));
+	private void checkFields(Collection<String> names, Collection<DerivedField> fields){
+		assertEquals(new HashSet<>(names), FieldUtil.nameSet(fields));
 	}
 }

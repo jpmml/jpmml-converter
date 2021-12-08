@@ -21,20 +21,18 @@ package org.jpmml.converter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.dmg.pmml.FieldName;
-
 public class FlagManager extends ValueManager<Boolean> {
 
 	public FlagManager(){
 	}
 
-	public FlagManager(Map<FieldName, Boolean> valueMap){
+	public FlagManager(Map<String, Boolean> valueMap){
 		super(valueMap);
 	}
 
 	@Override
-	public FlagManager fork(FieldName name, Boolean value){
-		Map<FieldName, Boolean> valueMap = new LinkedHashMap<>(getValueMap());
+	public FlagManager fork(String name, Boolean value){
+		Map<String, Boolean> valueMap = new LinkedHashMap<>(getValueMap());
 
 		valueMap.put(name, value);
 

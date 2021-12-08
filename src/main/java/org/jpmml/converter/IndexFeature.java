@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 
@@ -37,7 +36,7 @@ public class IndexFeature extends CategoricalFeature {
 		this(encoder, feature.getName(), feature.getDataType(), values);
 	}
 
-	public IndexFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<? extends Number> values){
+	public IndexFeature(PMMLEncoder encoder, String name, DataType dataType, List<? extends Number> values){
 		super(encoder, name, dataType, values);
 	}
 

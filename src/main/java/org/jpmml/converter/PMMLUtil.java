@@ -29,9 +29,9 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.function.Function;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import jakarta.xml.bind.JAXBElement;
 import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
@@ -42,7 +42,6 @@ import org.dmg.pmml.Expression;
 import org.dmg.pmml.Extension;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldColumnPair;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
@@ -54,8 +53,8 @@ import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
 import org.dmg.pmml.Value;
-import org.jpmml.model.inlinetable.InputCell;
-import org.jpmml.model.inlinetable.OutputCell;
+import org.jpmml.model.cells.InputCell;
+import org.jpmml.model.cells.OutputCell;
 
 public class PMMLUtil {
 
@@ -192,7 +191,7 @@ public class PMMLUtil {
 	}
 
 	static
-	public MapValues createMapValues(FieldName name, Map<?, ?> mapping){
+	public MapValues createMapValues(String name, Map<?, ?> mapping){
 		List<Object> inputValues = new ArrayList<>();
 		List<Object> outputValues = new ArrayList<>();
 
@@ -206,7 +205,7 @@ public class PMMLUtil {
 	}
 
 	static
-	public MapValues createMapValues(FieldName name, List<?> inputValues, List<?> outputValues){
+	public MapValues createMapValues(String name, List<?> inputValues, List<?> outputValues){
 		String inputColumn = NamespacePrefixes.JPMML_INLINETABLE + ":input";
 		String outputColumn = NamespacePrefixes.JPMML_INLINETABLE + ":output";
 

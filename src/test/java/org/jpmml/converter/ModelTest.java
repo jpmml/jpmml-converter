@@ -22,13 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 
 abstract
 public class ModelTest {
 
 	static
-	public ContinuousFeature createContinuousFeature(ModelEncoder encoder, FieldName name){
+	public ContinuousFeature createContinuousFeature(ModelEncoder encoder, String name){
 		return new ContinuousFeature(encoder, name, DataType.DOUBLE);
 	}
 
@@ -52,8 +51,8 @@ public class ModelTest {
 
 			sb.append(object);
 
-			if(object instanceof FieldName){
-				FieldName name = (FieldName)object;
+			if(object instanceof String){
+				String name = (String)object;
 
 				features.add(createContinuousFeature(encoder, name));
 			} else
@@ -69,6 +68,6 @@ public class ModelTest {
 			}
 		}
 
-		return new InteractionFeature(encoder, FieldName.create(sb.toString()), DataType.DOUBLE, features);
+		return new InteractionFeature(encoder, sb.toString(), DataType.DOUBLE, features);
 	}
 }

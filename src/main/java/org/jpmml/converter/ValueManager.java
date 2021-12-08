@@ -22,35 +22,33 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-import org.dmg.pmml.FieldName;
-
 abstract
 public class ValueManager<V> {
 
-	private Map<FieldName, V> valueMap = Collections.emptyMap();
+	private Map<String, V> valueMap = Collections.emptyMap();
 
 
 	public ValueManager(){
 	}
 
-	public ValueManager(Map<FieldName, V> valueMap){
+	public ValueManager(Map<String, V> valueMap){
 		setValueMap(valueMap);
 	}
 
 	abstract
-	public ValueManager<V> fork(FieldName name, V value);
+	public ValueManager<V> fork(String name, V value);
 
-	public V getValue(FieldName name){
-		Map<FieldName, V> valueMap = getValueMap();
+	public V getValue(String name){
+		Map<String, V> valueMap = getValueMap();
 
 		return valueMap.get(name);
 	}
 
-	public Map<FieldName, V> getValueMap(){
+	public Map<String, V> getValueMap(){
 		return this.valueMap;
 	}
 
-	private void setValueMap(Map<FieldName, V> valueMap){
+	private void setValueMap(Map<String, V> valueMap){
 		this.valueMap = Objects.requireNonNull(valueMap);
 	}
 }

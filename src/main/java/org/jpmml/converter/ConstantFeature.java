@@ -21,7 +21,6 @@ package org.jpmml.converter;
 import java.util.Objects;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.jpmml.model.ToStringHelper;
 
 public class ConstantFeature extends Feature implements HasDerivedName {
@@ -30,17 +29,17 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 
 
 	public ConstantFeature(PMMLEncoder encoder, Number value){
-		this(encoder, FieldName.create(value.toString() + (value instanceof Float ? "f" : "")), TypeUtil.getDataType(value), value);
+		this(encoder, value.toString() + (value instanceof Float ? "f" : ""), TypeUtil.getDataType(value), value);
 	}
 
-	public ConstantFeature(PMMLEncoder encoder, FieldName name, DataType dataType, Number value){
+	public ConstantFeature(PMMLEncoder encoder, String name, DataType dataType, Number value){
 		super(encoder, name, dataType);
 
 		setValue(value);
 	}
 
 	@Override
-	public FieldName getDerivedName(){
+	public String getDerivedName(){
 		return FieldNameUtil.create("constant", getName());
 	}
 

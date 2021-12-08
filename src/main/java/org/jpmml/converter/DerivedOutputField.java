@@ -26,7 +26,6 @@ import org.dmg.pmml.Decorable;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Extension;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Interval;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
@@ -52,14 +51,14 @@ public class DerivedOutputField extends DerivedField implements Decorable {
 	}
 
 	@Override
-	public FieldName getName(){
+	public String getName(){
 		OutputField outputField = getOutputField();
 
 		return outputField.getName();
 	}
 
 	@Override
-	public DerivedOutputField setName(FieldName name){
+	public DerivedOutputField setName(String name){
 		OutputField outputField = getOutputField();
 
 		outputField.setName(name);

@@ -25,7 +25,6 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
 import org.jpmml.model.ToStringHelper;
@@ -35,12 +34,12 @@ public class Feature {
 
 	private PMMLEncoder encoder = null;
 
-	private FieldName name = null;
+	private String name = null;
 
 	private DataType dataType = null;
 
 
-	public Feature(PMMLEncoder encoder, FieldName name, DataType dataType){
+	public Feature(PMMLEncoder encoder, String name, DataType dataType){
 		setEncoder(encoder);
 		setName(name);
 		setDataType(dataType);
@@ -56,12 +55,12 @@ public class Feature {
 			return continuousFeature;
 		}
 
-		FieldName name = FieldNameUtil.create(dataType, continuousFeature);
+		String name = FieldNameUtil.create(dataType, continuousFeature);
 
 		return toContinuousFeature(name, dataType, continuousFeature::ref);
 	}
 
-	protected ContinuousFeature toContinuousFeature(FieldName name, DataType dataType, Supplier<? extends Expression> expressionSupplier){
+	protected ContinuousFeature toContinuousFeature(String name, DataType dataType, Supplier<? extends Expression> expressionSupplier){
 		PMMLEncoder encoder = getEncoder();
 
 		DerivedField derivedField = encoder.ensureDerivedField(name, OpType.CONTINUOUS, dataType, expressionSupplier);
@@ -123,11 +122,11 @@ public class Feature {
 		this.encoder = Objects.requireNonNull(encoder);
 	}
 
-	public FieldName getName(){
+	public String getName(){
 		return this.name;
 	}
 
-	private void setName(FieldName name){
+	private void setName(String name){
 		this.name = Objects.requireNonNull(name);
 	}
 

@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Iterables;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Entity;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
@@ -61,7 +60,7 @@ public class ModelUtil {
 		MiningSchema miningSchema = new MiningSchema();
 
 		if(label != null){
-			FieldName name = label.getName();
+			String name = label.getName();
 
 			if(name != null){
 				MiningField miningField = createMiningField(name, MiningField.UsageType.TARGET);
@@ -74,12 +73,12 @@ public class ModelUtil {
 	}
 
 	static
-	public MiningField createMiningField(FieldName name){
+	public MiningField createMiningField(String name){
 		return createMiningField(name, null);
 	}
 
 	static
-	public MiningField createMiningField(FieldName name, MiningField.UsageType usageType){
+	public MiningField createMiningField(String name, MiningField.UsageType usageType){
 		MiningField miningField = new MiningField(name)
 			.setUsageType(usageType);
 
@@ -88,7 +87,7 @@ public class ModelUtil {
 
 	static
 	public Targets createRescaleTargets(Number slope, Number intercept, ContinuousLabel continuousLabel){
-		FieldName name = continuousLabel.getName();
+		String name = continuousLabel.getName();
 
 		Target target = new Target()
 			.setField(name);
@@ -131,7 +130,7 @@ public class ModelUtil {
 	}
 
 	static
-	public Output createPredictedOutput(FieldName name, OpType opType, DataType dataType, Transformation... transformations){
+	public Output createPredictedOutput(String name, OpType opType, DataType dataType, Transformation... transformations){
 		Output output = new Output();
 
 		OutputField outputField = createPredictedField(name, opType, dataType)
@@ -175,7 +174,7 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createAffinityField(FieldName name, DataType dataType, Object value){
+	public OutputField createAffinityField(String name, DataType dataType, Object value){
 		OutputField outputField = new OutputField(name, OpType.CONTINUOUS, dataType)
 			.setResultFeature(ResultFeature.AFFINITY)
 			.setValue(value);
@@ -191,7 +190,7 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createEntityIdField(FieldName name, DataType dataType){
+	public OutputField createEntityIdField(String name, DataType dataType){
 		OutputField outputField = new OutputField(name, OpType.CATEGORICAL, dataType)
 			.setResultFeature(ResultFeature.ENTITY_ID);
 
@@ -199,7 +198,7 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createEntityIdField(FieldName name, DataType dataType, List<?> values){
+	public OutputField createEntityIdField(String name, DataType dataType, List<?> values){
 		OutputField outputField = createEntityIdField(name, dataType);
 
 		if(values != null && !values.isEmpty()){
@@ -210,7 +209,7 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createPredictedField(FieldName name, OpType opType, DataType dataType){
+	public OutputField createPredictedField(String name, OpType opType, DataType dataType){
 		OutputField outputField = new OutputField(name, opType, dataType)
 			.setResultFeature(ResultFeature.PREDICTED_VALUE);
 
@@ -218,7 +217,7 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createPredictedField(FieldName name, OpType opType, DataType dataType, List<?> values){
+	public OutputField createPredictedField(String name, OpType opType, DataType dataType, List<?> values){
 		OutputField outputField = createPredictedField(name, opType, dataType);
 
 		if(values != null && !values.isEmpty()){
@@ -234,7 +233,7 @@ public class ModelUtil {
 	}
 
 	static
-	public OutputField createProbabilityField(FieldName name, DataType dataType, Object value){
+	public OutputField createProbabilityField(String name, DataType dataType, Object value){
 		OutputField outputField = new OutputField(name, OpType.CONTINUOUS, dataType)
 			.setResultFeature(ResultFeature.PROBABILITY)
 			.setValue(value);
@@ -263,8 +262,8 @@ public class ModelUtil {
 	}
 
 	static
-	public VerificationField createVerificationField(FieldName name){
-		String tagName = name.getValue();
+	public VerificationField createVerificationField(String name){
+		String tagName = name;
 
 		// Replace "function(arg)" with "function_arg"
 		Matcher matcher = ModelUtil.FUNCTION_INVOCATION.matcher(tagName);

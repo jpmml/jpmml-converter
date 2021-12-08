@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.PMML;
@@ -62,10 +61,9 @@ public class FunctionDictionaryCleanerTest {
 
 			@Override
 			public VisitorAction visit(DerivedField derivedField){
-				FieldName name = FieldName.create("x2_squared");
 
-				if((derivedField.getName()).equals(name)){
-					FieldRef fieldRef = new FieldRef(FieldName.create("x2"));
+				if(("x2_squared").equals(derivedField.getName())){
+					FieldRef fieldRef = new FieldRef("x2");
 
 					Apply apply = new Apply(PMMLFunctions.ADD)
 						.addExpressions(fieldRef, fieldRef);
@@ -88,7 +86,6 @@ public class FunctionDictionaryCleanerTest {
 
 			@Override
 			public VisitorAction visit(LocalTransformations localTransformations){
-				FieldName name = FieldName.create("x2_cubed");
 
 				if(localTransformations.hasDerivedFields()){
 					List<DerivedField> derivedFields = localTransformations.getDerivedFields();
@@ -96,7 +93,7 @@ public class FunctionDictionaryCleanerTest {
 					for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
 						DerivedField derivedField = it.next();
 
-						if((derivedField.getName()).equals(name)){
+						if(("x2_cubed").equals(derivedField.getName())){
 							it.remove();
 						}
 					}

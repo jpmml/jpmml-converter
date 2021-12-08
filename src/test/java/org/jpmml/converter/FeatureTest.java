@@ -22,7 +22,6 @@ import java.util.Arrays;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Value;
 import org.junit.Test;
@@ -37,21 +36,21 @@ public class FeatureTest {
 	public void binaryFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
-		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.INTEGER)
+		DataField dataField = encoder.createDataField("x", OpType.CATEGORICAL, DataType.INTEGER)
 			.addValues(new Value("1"), new Value("2"), new Value("3"));
 
 		BinaryFeature binaryOne = new BinaryFeature(encoder, dataField, "1");
 
 		ContinuousFeature continuousOne = binaryOne.toContinuousFeature();
 
-		assertEquals(FieldName.create("x=1"), continuousOne.getName());
+		assertEquals("x=1", continuousOne.getName());
 		assertEquals(DataType.DOUBLE, continuousOne.getDataType());
 
 		assertNotNull(encoder.getDerivedField(continuousOne.getName()));
 
 		ContinuousFeature continuousFloatOne = binaryOne.toContinuousFeature(DataType.FLOAT);
 
-		assertEquals(FieldName.create("float(" + (continuousOne.getName()).getValue() + ")"), continuousFloatOne.getName());
+		assertEquals("float(" + continuousOne.getName() + ")", continuousFloatOne.getName());
 		assertEquals(DataType.FLOAT, continuousFloatOne.getDataType());
 	}
 
@@ -59,20 +58,20 @@ public class FeatureTest {
 	public void booleanFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
-		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.BOOLEAN);
+		DataField dataField = encoder.createDataField("x", OpType.CATEGORICAL, DataType.BOOLEAN);
 
 		BooleanFeature booleanFlag = new BooleanFeature(encoder, dataField);
 
 		ContinuousFeature continuousTrue = booleanFlag.toContinuousFeature();
 
-		assertEquals(FieldName.create("x=true"), continuousTrue.getName());
+		assertEquals("x=true", continuousTrue.getName());
 		assertEquals(DataType.DOUBLE, continuousTrue.getDataType());
 
 		assertNotNull(encoder.getDerivedField(continuousTrue.getName()));
 
 		ContinuousFeature continuousFloatTrue = booleanFlag.toContinuousFeature(DataType.FLOAT);
 
-		assertEquals(FieldName.create("float(" + (continuousTrue.getName()).getValue() + ")"), continuousFloatTrue.getName());
+		assertEquals("float(" + continuousTrue.getName() + ")", continuousFloatTrue.getName());
 		assertEquals(DataType.FLOAT, continuousFloatTrue.getDataType());
 	}
 
@@ -80,7 +79,7 @@ public class FeatureTest {
 	public void categoricalFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
-		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.INTEGER)
+		DataField dataField = encoder.createDataField("x", OpType.CATEGORICAL, DataType.INTEGER)
 			.addValues(new Value("1"), new Value("2"), new Value("3"));
 
 		CategoricalFeature categoricalInteger = new CategoricalFeature(encoder, dataField);
@@ -102,24 +101,24 @@ public class FeatureTest {
 
 		ConstantFeature integerOne = new ConstantFeature(encoder, 1);
 
-		assertEquals(FieldName.create("1"), integerOne.getName());
+		assertEquals("1", integerOne.getName());
 		assertEquals(DataType.INTEGER, integerOne.getDataType());
 
 		ContinuousFeature continuousIntegerOne = integerOne.toContinuousFeature();
 
-		assertEquals(FieldName.create("constant(1)"), continuousIntegerOne.getName());
+		assertEquals("constant(1)", continuousIntegerOne.getName());
 		assertEquals(DataType.INTEGER, continuousIntegerOne.getDataType());
 
 		assertNotNull(encoder.getDerivedField(continuousIntegerOne.getName()));
 
 		ConstantFeature floatOne = new ConstantFeature(encoder, 1f);
 
-		assertEquals(FieldName.create("1.0f"), floatOne.getName());
+		assertEquals("1.0f", floatOne.getName());
 		assertEquals(DataType.FLOAT, floatOne.getDataType());
 
 		ConstantFeature doubleOne = new ConstantFeature(encoder, 1d);
 
-		assertEquals(FieldName.create("1.0"), doubleOne.getName());
+		assertEquals("1.0", doubleOne.getName());
 		assertEquals(DataType.DOUBLE, doubleOne.getDataType());
 	}
 
@@ -127,14 +126,14 @@ public class FeatureTest {
 	public void interactionFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
-		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CATEGORICAL, DataType.INTEGER)
+		DataField dataField = encoder.createDataField("x", OpType.CATEGORICAL, DataType.INTEGER)
 			.addValues(new Value("1"), new Value("2"), new Value("3"));
 
 		BinaryFeature binaryOne = new BinaryFeature(encoder, dataField, "1");
 		BinaryFeature binaryTwo = new BinaryFeature(encoder, dataField, "2");
 		BinaryFeature binaryThree = new BinaryFeature(encoder, dataField, "3");
 
-		InteractionFeature interactionOneThree = new InteractionFeature(encoder, FieldName.create("x=1:x=3"), DataType.DOUBLE, Arrays.asList(binaryOne, binaryThree));
+		InteractionFeature interactionOneThree = new InteractionFeature(encoder, "x=1:x=3", DataType.DOUBLE, Arrays.asList(binaryOne, binaryThree));
 
 		assertEquals(Arrays.asList(binaryOne, binaryThree), interactionOneThree.getInputFeatures());
 
@@ -145,16 +144,16 @@ public class FeatureTest {
 
 		assertNotNull(encoder.getDerivedField(continuousOneThree.getName()));
 
-		assertNotNull(encoder.getDerivedField(FieldName.create("x=1")));
-		assertNull(encoder.getDerivedField(FieldName.create("x=2")));
-		assertNotNull(encoder.getDerivedField(FieldName.create("x=3")));
+		assertNotNull(encoder.getDerivedField("x=1"));
+		assertNull(encoder.getDerivedField("x=2"));
+		assertNotNull(encoder.getDerivedField("x=3"));
 
 		ContinuousFeature continuousFloatOneThree = interactionOneThree.toContinuousFeature(DataType.FLOAT);
 
-		assertEquals(FieldName.create("float(" + (continuousOneThree.getName()).getValue() + ")"), continuousFloatOneThree.getName());
+		assertEquals("float(" + continuousOneThree.getName() + ")", continuousFloatOneThree.getName());
 		assertEquals(DataType.FLOAT, continuousFloatOneThree.getDataType());
 
-		InteractionFeature interactionTwoOneThree = new InteractionFeature(encoder, FieldName.create("x=2:x=1:x=3"), DataType.DOUBLE, Arrays.asList(binaryTwo, interactionOneThree));
+		InteractionFeature interactionTwoOneThree = new InteractionFeature(encoder, "x=2:x=1:x=3", DataType.DOUBLE, Arrays.asList(binaryTwo, interactionOneThree));
 
 		assertEquals(Arrays.asList(binaryTwo, binaryOne, binaryThree), interactionTwoOneThree.getInputFeatures());
 
@@ -165,20 +164,20 @@ public class FeatureTest {
 
 		assertNotNull(encoder.getDerivedField(continuousFloatOneThree.getName()));
 
-		assertNotNull(encoder.getDerivedField(FieldName.create("x=2")));
+		assertNotNull(encoder.getDerivedField("x=2"));
 	}
 
 	@Test
 	public void powerFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
-		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CONTINUOUS, DataType.DOUBLE);
+		DataField dataField = encoder.createDataField("x", OpType.CONTINUOUS, DataType.DOUBLE);
 
 		PowerFeature square = new PowerFeature(encoder, dataField, 2);
 
 		ContinuousFeature continuousSquare = square.toContinuousFeature();
 
-		assertEquals(FieldName.create("x^2"), continuousSquare.getName());
+		assertEquals("x^2", continuousSquare.getName());
 		assertEquals(DataType.DOUBLE, continuousSquare.getDataType());
 
 		assertNotNull(encoder.getDerivedField(continuousSquare.getName()));
@@ -188,7 +187,7 @@ public class FeatureTest {
 	public void wildcardFeature(){
 		PMMLEncoder encoder = new PMMLEncoder();
 
-		DataField dataField = encoder.createDataField(FieldName.create("x"), OpType.CONTINUOUS, DataType.DOUBLE);
+		DataField dataField = encoder.createDataField("x", OpType.CONTINUOUS, DataType.DOUBLE);
 
 		WildcardFeature wildcard = new WildcardFeature(encoder, dataField);
 

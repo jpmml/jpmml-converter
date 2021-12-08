@@ -24,8 +24,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
+import jakarta.xml.bind.annotation.XmlAttribute;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.VisitorAction;
 import org.jpmml.model.ReflectionUtil;

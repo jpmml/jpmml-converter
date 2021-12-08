@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
@@ -72,7 +71,7 @@ public class ClusteringModelUtil {
 	}
 
 	static
-	public Output createOutput(FieldName name, DataType dataType, List<Cluster> clusters){
+	public Output createOutput(String name, DataType dataType, List<Cluster> clusters){
 		Output output = new Output();
 
 		List<String> ids = clusters.stream()

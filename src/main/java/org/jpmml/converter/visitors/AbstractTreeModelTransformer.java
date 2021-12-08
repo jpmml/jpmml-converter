@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.Array;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.HasFieldReference;
 import org.dmg.pmml.HasValue;
 import org.dmg.pmml.HasValueSet;
@@ -251,7 +250,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
-	protected boolean hasFieldReference(Predicate predicate, FieldName name){
+	protected boolean hasFieldReference(Predicate predicate, String name){
 
 		if(predicate instanceof HasFieldReference){
 			HasFieldReference<?> hasFieldReference = (HasFieldReference<?>)predicate;
@@ -305,8 +304,8 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void checkFieldReference(HasFieldReference<?> left, HasFieldReference<?> right){
-		FieldName leftName = left.getField();
-		FieldName rightName = right.getField();
+		String leftName = left.getField();
+		String rightName = right.getField();
 
 		if(!Objects.equals(leftName, rightName)){
 			throw new IllegalArgumentException("Field names " + leftName + " and " + rightName + " are not the same");

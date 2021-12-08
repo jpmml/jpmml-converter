@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.PMMLFunctions;
 
@@ -37,12 +36,12 @@ public class MissingValueFeature extends Feature implements HasDerivedName {
 		this(encoder, feature.getName(), feature.getDataType());
 	}
 
-	public MissingValueFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
+	public MissingValueFeature(PMMLEncoder encoder, String name, DataType dataType){
 		super(encoder, name, dataType);
 	}
 
 	@Override
-	public FieldName getDerivedName(){
+	public String getDerivedName(){
 		return FieldNameUtil.create("isMissing", getName());
 	}
 

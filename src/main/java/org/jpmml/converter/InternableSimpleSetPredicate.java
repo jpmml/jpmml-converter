@@ -21,7 +21,6 @@ package org.jpmml.converter;
 import java.util.Objects;
 
 import org.dmg.pmml.Array;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimpleSetPredicate;
 
 public class InternableSimpleSetPredicate extends SimpleSetPredicate {
@@ -29,7 +28,7 @@ public class InternableSimpleSetPredicate extends SimpleSetPredicate {
 	public InternableSimpleSetPredicate(){
 	}
 
-	public InternableSimpleSetPredicate(FieldName name, SimpleSetPredicate.BooleanOperator booleanOperator, Array array){
+	public InternableSimpleSetPredicate(String name, SimpleSetPredicate.BooleanOperator booleanOperator, Array array){
 		super(name, booleanOperator, array);
 	}
 

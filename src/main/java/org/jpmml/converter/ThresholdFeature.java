@@ -22,12 +22,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 
 abstract
 public class ThresholdFeature extends Feature implements HasDerivedName {
 
-	public ThresholdFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
+	public ThresholdFeature(PMMLEncoder encoder, String name, DataType dataType){
 		super(encoder, name, dataType);
 	}
 

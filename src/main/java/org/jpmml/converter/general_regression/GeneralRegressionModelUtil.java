@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.general_regression.CovariateList;
 import org.dmg.pmml.general_regression.FactorList;
@@ -99,9 +98,9 @@ public class GeneralRegressionModelUtil {
 			paramMatrix.addPCells(pCell);
 		}
 
-		Set<FieldName> covariates = new LinkedHashSet<>();
+		Set<String> covariates = new LinkedHashSet<>();
 
-		Set<FieldName> factors = new LinkedHashSet<>();
+		Set<String> factors = new LinkedHashSet<>();
 
 		for(int i = 0; i < features.size(); i++){
 			Feature feature = features.get(i);
@@ -163,7 +162,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	private Number createPPCells(MathContext mathContext, Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> covariates, Set<FieldName> factors){
+	private Number createPPCells(MathContext mathContext, Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<String> covariates, Set<String> factors){
 
 		if(feature instanceof BinaryFeature){
 			BinaryFeature binaryFeature = (BinaryFeature)feature;
@@ -212,7 +211,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	private Number createPPCell(Object value, FieldName name, Parameter parameter, PPMatrix ppMatrix, Set<FieldName> predictorNames){
+	private Number createPPCell(Object value, String name, Parameter parameter, PPMatrix ppMatrix, Set<String> predictorNames){
 		PPCell ppCell = new PPCell(value, name, parameter.getName());
 
 		ppMatrix.addPPCells(ppCell);
@@ -223,7 +222,7 @@ public class GeneralRegressionModelUtil {
 	}
 
 	static
-	private void createPredictors(PredictorList predictorList, Set<FieldName> names){
+	private void createPredictors(PredictorList predictorList, Set<String> names){
 		names = new LinkedHashSet<>(names);
 
 		List<Predictor> predictors = predictorList.getPredictors();
@@ -235,7 +234,7 @@ public class GeneralRegressionModelUtil {
 			return;
 		}
 
-		for(FieldName name : names){
+		for(String name : names){
 			Predictor predictor = new Predictor(name);
 
 			predictorList.addPredictors(predictor);

@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 
 public class FieldNameUtil {
@@ -33,42 +32,33 @@ public class FieldNameUtil {
 	}
 
 	static
-	public FieldName create(String function){
-		return FieldName.create(function);
-	}
-
-	static
-	public FieldName create(DataType dataType, Object... args){
+	public String create(DataType dataType, Object... args){
 		return create((dataType.name()).toLowerCase(), args);
 	}
 
 	static
-	public FieldName create(OpType opType, Object... args){
+	public String create(OpType opType, Object... args){
 		return create((opType.name()).toLowerCase(), args);
 	}
 
 	static
-	public FieldName create(String function, Object... args){
-		String name = format(function, Arrays.asList(args));
-
-		return FieldName.create(name);
+	public String create(String function, Object... args){
+		return format(function, Arrays.asList(args));
 	}
 
 	static
-	public FieldName create(String function, List<?> args){
-		String name = format(function, args);
-
-		return FieldName.create(name);
+	public String create(String function, List<?> args){
+		return format(function, args);
 	}
 
 	static
-	public FieldName select(FieldName name, int index){
+	public String select(String name, int index){
 
 		if(index < 0){
 			throw new IllegalArgumentException();
 		}
 
-		return FieldName.create(name.getValue() + "[" + index + "]");
+		return name + ("[" + index + "]");
 	}
 
 	static
@@ -106,12 +96,6 @@ public class FieldNameUtil {
 			Feature feature = (Feature)object;
 
 			object = FeatureUtil.getName(feature);
-		} // End if
-
-		if(object instanceof FieldName){
-			FieldName name = (FieldName)object;
-
-			return name.getValue();
 		}
 
 		return String.valueOf(object);

@@ -27,7 +27,6 @@ import java.util.Set;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -78,11 +77,11 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 
 		MiningSchema miningSchema = model.getMiningSchema();
 		if(miningSchema != null && miningSchema.hasMiningFields()){
-			Set<FieldName> names = new LinkedHashSet<>();
+			Set<String> names = new LinkedHashSet<>();
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
 			for(MiningField miningField : miningFields){
-				FieldName name = miningField.getName();
+				String name = miningField.getName();
 
 				MiningField.UsageType usageType = miningField.getUsageType();
 				switch(usageType){

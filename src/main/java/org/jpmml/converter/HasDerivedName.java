@@ -18,9 +18,7 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.FieldName;
-
 public interface HasDerivedName {
 
-	FieldName getDerivedName();
+	String getDerivedName();
 }

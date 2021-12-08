@@ -21,7 +21,6 @@ package org.jpmml.converter.transformations;
 import java.util.Objects;
 
 import org.dmg.pmml.Expression;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.converter.FieldNameUtil;
@@ -37,7 +36,7 @@ public class SigmoidTransformation extends AbstractTransformation {
 	}
 
 	@Override
-	public FieldName getName(FieldName name){
+	public String getName(String name){
 		return FieldNameUtil.create("sigmoid", name);
 	}
 

@@ -24,11 +24,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import jakarta.xml.bind.JAXBElement;
 import org.dmg.pmml.Cell;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -68,16 +67,16 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 		ModelVerification modelVerification = model.getModelVerification();
 
 		if(modelVerification != null){
-			Set<FieldName> activeFieldNames = new LinkedHashSet<>();
-			Set<FieldName> targetFieldNames = new LinkedHashSet<>();
-			Set<FieldName> outputFieldNames = new LinkedHashSet<>();
+			Set<String> activeFieldNames = new LinkedHashSet<>();
+			Set<String> targetFieldNames = new LinkedHashSet<>();
+			Set<String> outputFieldNames = new LinkedHashSet<>();
 
 			MiningSchema miningSchema = model.getMiningSchema();
 			if(miningSchema != null && miningSchema.hasMiningFields()){
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					FieldName name = miningField.getName();
+					String name = miningField.getName();
 
 					MiningField.UsageType usageType = miningField.getUsageType();
 					switch(usageType){
@@ -98,7 +97,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 
 				@Override
 				public VisitorAction visit(OutputField outputField){
-					FieldName name = outputField.getName();
+					String name = outputField.getName();
 
 					outputFieldNames.add(name);
 
@@ -111,7 +110,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 		}
 	}
 
-	private void clean(ModelVerification modelVerification, Set<FieldName> activeFieldNames, Set<FieldName> targetFieldNames, Set<FieldName> outputFieldNames){
+	private void clean(ModelVerification modelVerification, Set<String> activeFieldNames, Set<String> targetFieldNames, Set<String> outputFieldNames){
 		VerificationFields verificationFields = modelVerification.getVerificationFields();
 		InlineTable inlineTable = modelVerification.getInlineTable();
 
@@ -126,7 +125,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 		boolean hasOutput = false;
 
 		for(VerificationField verificationField : verificationFields){
-			FieldName name = verificationField.getField();
+			String name = verificationField.getField();
 
 			hasOutput |= outputFieldNames.contains(name);
 		}
@@ -135,7 +134,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 		// If some verification field refers to an output field,
 		// then assume that the end user intended to perform model verification in the output field mode,
 		// and get rid of all target field-related data.
-		Set<FieldName> names = new HashSet<>();
+		Set<String> names = new HashSet<>();
 		names.addAll(activeFieldNames);
 		names.addAll(hasOutput ? outputFieldNames : targetFieldNames);
 
@@ -144,7 +143,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 		for(Iterator<VerificationField> it = verificationFields.iterator(); it.hasNext(); ){
 			VerificationField verificationField = it.next();
 
-			FieldName name = verificationField.getField();
+			String name = verificationField.getField();
 			String column = verificationField.getColumn();
 
 			if(!names.contains(name)){

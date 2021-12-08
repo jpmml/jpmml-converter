@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.collect.Iterables;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningFunction;
@@ -173,7 +172,7 @@ public class RegressionModelUtil {
 				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(predictorKey);
 				if(categoricalPredictor == null){
 					categoricalPredictor = new CategoricalPredictor()
-						.setName(binaryFeature.getName())
+						.setField(binaryFeature.getName())
 						.setValue(binaryFeature.getValue())
 						.setCoefficient(coefficient);
 
@@ -195,7 +194,7 @@ public class RegressionModelUtil {
 				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(predictorKey);
 				if(categoricalPredictor == null){
 					categoricalPredictor = new CategoricalPredictor()
-						.setName(booleanFeature.getName())
+						.setField(booleanFeature.getName())
 						.setValue(BooleanFeature.VALUE_TRUE)
 						.setCoefficient(coefficient);
 
@@ -253,7 +252,7 @@ public class RegressionModelUtil {
 					FieldRef fieldRef = Iterables.getOnlyElement(fieldRefs);
 
 					NumericPredictor numericPredictor = new NumericPredictor()
-						.setName(fieldRef.getField())
+						.setField(fieldRef.getField())
 						.setCoefficient(predictorTerm.getCoefficient());
 
 					regressionTable.addNumericPredictors(numericPredictor);
@@ -268,7 +267,7 @@ public class RegressionModelUtil {
 				PowerFeature powerFeature = (PowerFeature)feature;
 
 				NumericPredictor numericPredictor = new NumericPredictor()
-					.setName(powerFeature.getName())
+					.setField(powerFeature.getName())
 					.setExponent(powerFeature.getPower())
 					.setCoefficient(coefficient);
 
@@ -283,7 +282,7 @@ public class RegressionModelUtil {
 				NumericPredictor numericPredictor = numericPredictors.get(predictorKey);
 				if(numericPredictor == null){
 					numericPredictor = new NumericPredictor()
-						.setName(continuousFeature.getName())
+						.setField(continuousFeature.getName())
 						.setCoefficient(coefficient);
 
 					numericPredictors.put(predictorKey, numericPredictor);
@@ -303,16 +302,16 @@ public class RegressionModelUtil {
 	static
 	private class PredictorKey {
 
-		private FieldName name = null;
+		private String name = null;
 
 		private Object value = null;
 
 
-		private PredictorKey(FieldName name){
+		private PredictorKey(String name){
 			this(name, null);
 		}
 
-		private PredictorKey(FieldName name, Object value){
+		private PredictorKey(String name, Object value){
 			this.name = name;
 			this.value = value;
 		}

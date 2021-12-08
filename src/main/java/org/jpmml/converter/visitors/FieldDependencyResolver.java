@@ -31,7 +31,6 @@ import org.dmg.pmml.DataField;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.HasExpression;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Output;
@@ -217,7 +216,7 @@ public class FieldDependencyResolver extends FieldResolver {
 
 			Expression expression = hasExpression.getExpression();
 			if(expression != null){
-				Set<FieldName> names = ActiveFieldFinder.getFieldNames(expression);
+				Set<String> names = ActiveFieldFinder.getFieldNames(expression);
 
 				if(names.size() > 0){
 					Collection<Field<?>> fields = getFields();

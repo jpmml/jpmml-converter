@@ -21,7 +21,6 @@ package org.jpmml.converter.transformations;
 import java.util.Objects;
 
 import org.dmg.pmml.Expression;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.jpmml.converter.FieldNameUtil;
 import org.jpmml.converter.PMMLUtil;
@@ -36,7 +35,7 @@ public class FunctionTransformation extends AbstractTransformation {
 	}
 
 	@Override
-	public FieldName getName(FieldName name){
+	public String getName(String name){
 		String function = getFunction();
 
 		return FieldNameUtil.create(function, name);

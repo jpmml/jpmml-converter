@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 
 public class ContinuousLabel extends Label {
 
@@ -28,12 +27,12 @@ public class ContinuousLabel extends Label {
 		this(dataField.getName(), dataField.getDataType());
 	}
 
-	public ContinuousLabel(FieldName name, DataType dataType){
+	public ContinuousLabel(String name, DataType dataType){
 		super(name, dataType);
 	}
 
 	@Override
-	public ContinuousLabel toRenamedLabel(FieldName name){
+	public ContinuousLabel toRenamedLabel(String name){
 		return new ContinuousLabel(name, getDataType());
 	}
 

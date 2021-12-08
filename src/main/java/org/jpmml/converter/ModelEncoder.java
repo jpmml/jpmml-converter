@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningField;
@@ -55,7 +54,7 @@ public class ModelEncoder extends PMMLEncoder {
 
 	private List<Model> transformers = new ArrayList<>();
 
-	private Map<Model, ListMultimap<FieldName, Decorator>> decorators = new LinkedHashMap<>();
+	private Map<Model, ListMultimap<String, Decorator>> decorators = new LinkedHashMap<>();
 
 	private Map<Model, ListMultimap<Feature, Number>> featureImportances = new LinkedHashMap<>();
 
@@ -109,7 +108,7 @@ public class ModelEncoder extends PMMLEncoder {
 		this.transformers.add(transformer);
 	}
 
-	public Map<Model, ListMultimap<FieldName, Decorator>> getDecorators(){
+	public Map<Model, ListMultimap<String, Decorator>> getDecorators(){
 		return this.decorators;
 	}
 
@@ -118,16 +117,16 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	public void addDecorator(Model model, Field<?> field, Decorator decorator){
-		Map<Model, ListMultimap<FieldName, Decorator>> modelDecorators = getDecorators();
+		Map<Model, ListMultimap<String, Decorator>> modelDecorators = getDecorators();
 
-		ListMultimap<FieldName, Decorator> decorators = modelDecorators.get(model);
+		ListMultimap<String, Decorator> decorators = modelDecorators.get(model);
 		if(decorators == null){
 			decorators = ArrayListMultimap.create();
 
 			modelDecorators.put(model, decorators);
 		}
 
-		FieldName name = field.getName();
+		String name = field.getName();
 
 		decorators.put(name, decorator);
 	}
@@ -193,7 +192,7 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	private void encodeDecorators(PMML pmml){
-		Map<Model, ListMultimap<FieldName, Decorator>> modelDecorators = getDecorators();
+		Map<Model, ListMultimap<String, Decorator>> modelDecorators = getDecorators();
 
 		if(modelDecorators.isEmpty()){
 			return;
@@ -203,10 +202,10 @@ public class ModelEncoder extends PMMLEncoder {
 			throw new IllegalStateException();
 		}
 
-		Collection<Map.Entry<Model, ListMultimap<FieldName, Decorator>>> entries = modelDecorators.entrySet();
-		for(Map.Entry<Model, ListMultimap<FieldName, Decorator>> entry : entries){
+		Collection<Map.Entry<Model, ListMultimap<String, Decorator>>> entries = modelDecorators.entrySet();
+		for(Map.Entry<Model, ListMultimap<String, Decorator>> entry : entries){
 			Model model = entry.getKey();
-			ListMultimap<FieldName, Decorator> decorators = entry.getValue();
+			ListMultimap<String, Decorator> decorators = entry.getValue();
 
 			MiningSchema miningSchema = model.getMiningSchema();
 
@@ -214,7 +213,7 @@ public class ModelEncoder extends PMMLEncoder {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					FieldName name = miningField.getName();
+					String name = miningField.getName();
 
 					List<Decorator> fieldDecorators = decorators.get(name);
 					if(fieldDecorators != null && !fieldDecorators.isEmpty()){
@@ -239,7 +238,7 @@ public class ModelEncoder extends PMMLEncoder {
 			throw new IllegalStateException();
 		}
 
-		Map<Model, Set<FieldName>> expandableFeatures = (modelFeatureImportances.entrySet()).stream()
+		Map<Model, Set<String>> expandableFeatures = (modelFeatureImportances.entrySet()).stream()
 			.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().keySet().stream()
 				.map(feature -> feature.getName())
 				.collect(Collectors.toSet())
@@ -256,15 +255,15 @@ public class ModelEncoder extends PMMLEncoder {
 			MathContext mathContext = model.getMathContext();
 			Collection<Map.Entry<Feature, Number>> featureImportanceEntries = featureImportances.entries();
 
-			Map<FieldName, Set<Field<?>>> featureFields = featureExpander.getExpandedFeatures(model);
+			Map<String, Set<Field<?>>> featureFields = featureExpander.getExpandedFeatures(model);
 			if(featureFields == null){
 				throw new IllegalArgumentException();
 			}
 
-			ListMultimap<FieldName, Number> fieldImportances = ArrayListMultimap.create();
+			ListMultimap<String, Number> fieldImportances = ArrayListMultimap.create();
 
 			for(Map.Entry<Feature, Number> featureImportanceEntry : featureImportanceEntries){
-				FieldName name = (featureImportanceEntry.getKey()).getName();
+				String name = (featureImportanceEntry.getKey()).getName();
 				Number importance = featureImportanceEntry.getValue();
 
 				if(ValueUtil.isZero(importance)){
@@ -273,7 +272,7 @@ public class ModelEncoder extends PMMLEncoder {
 
 				Set<Field<?>> fields = featureFields.get(name);
 				if(fields == null){
-					logger.warn("Unused feature \'" + name.getValue() + "\' has non-zero importance");
+					logger.warn("Unused feature \'" + name + "\' has non-zero importance");
 
 					continue;
 				}
@@ -281,7 +280,7 @@ public class ModelEncoder extends PMMLEncoder {
 				Number fieldImportance = ValueUtil.divide(mathContext, importance, fields.size());
 
 				for(Field<?> field : fields){
-					FieldName fieldName = field.getName();
+					String fieldName = field.getName();
 
 					fieldImportances.put(fieldName, fieldImportance);
 				}
@@ -293,7 +292,7 @@ public class ModelEncoder extends PMMLEncoder {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					FieldName name = miningField.getName();
+					String name = miningField.getName();
 					MiningField.UsageType usageType = miningField.getUsageType();
 
 					switch(usageType){
@@ -309,7 +308,7 @@ public class ModelEncoder extends PMMLEncoder {
 					}
 				}
 
-				List<FieldName> names = new ArrayList<>();
+				List<String> names = new ArrayList<>();
 				List<Number> importances = new ArrayList<>();
 
 				for(Map.Entry<Feature, Number> featureImportanceEntry : featureImportanceEntries){
@@ -365,7 +364,7 @@ public class ModelEncoder extends PMMLEncoder {
 			Model model = entry.getKey();
 			List<UnivariateStats> univariateStats = entry.getValue();
 
-			Map<FieldName, UnivariateStats> fieldUnivariateStats = univariateStats.stream()
+			Map<String, UnivariateStats> fieldUnivariateStats = univariateStats.stream()
 				.collect(Collectors.toMap(UnivariateStats::getField, Function.identity()));
 
 			MiningSchema miningSchema = model.getMiningSchema();
@@ -374,7 +373,7 @@ public class ModelEncoder extends PMMLEncoder {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					FieldName name = miningField.getName();
+					String name = miningField.getName();
 
 					UnivariateStats pmmlUnivariateStats = fieldUnivariateStats.get(name);
 					if(pmmlUnivariateStats != null){

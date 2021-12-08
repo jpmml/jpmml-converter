@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 
 public class ContinuousFeature extends Feature {
 
@@ -32,7 +31,7 @@ public class ContinuousFeature extends Feature {
 		this(encoder, feature.getName(), feature.getDataType());
 	}
 
-	public ContinuousFeature(PMMLEncoder encoder, FieldName name, DataType dataType){
+	public ContinuousFeature(PMMLEncoder encoder, String name, DataType dataType){
 		super(encoder, name, dataType);
 	}
 

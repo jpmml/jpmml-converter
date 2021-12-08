@@ -21,15 +21,14 @@ package org.jpmml.converter.transformations;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Decision;
 import org.dmg.pmml.Decisions;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.OpType;
 
 abstract
 public class OutlierTransformation extends AbstractBusinessDecision {
 
 	@Override
-	public FieldName getName(FieldName name){
-		return FieldName.create("outlier");
+	public String getName(String name){
+		return "outlier";
 	}
 
 	@Override
@@ -47,9 +46,9 @@ public class OutlierTransformation extends AbstractBusinessDecision {
 		Decisions decisions = new Decisions()
 			.setBusinessProblem("Is this sample an outlier?")
 			.addDecisions(
-				new Decision(String.valueOf(true))
+				new Decision(true)
 					.setDescription("Outlier"),
-				new Decision(String.valueOf(false))
+				new Decision(false)
 					.setDescription("Not outlier")
 			);
 

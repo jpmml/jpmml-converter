@@ -21,24 +21,23 @@ package org.jpmml.converter;
 import java.util.Objects;
 
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
 import org.jpmml.model.ToStringHelper;
 
 abstract
 public class Label {
 
-	private FieldName name = null;
+	private String name = null;
 
 	private DataType dataType = null;
 
 
-	public Label(FieldName name, DataType dataType){
+	public Label(String name, DataType dataType){
 		setName(name);
 		setDataType(dataType);
 	}
 
 	abstract
-	public Label toRenamedLabel(FieldName name);
+	public Label toRenamedLabel(String name);
 
 	public Label toAnonymousLabel(){
 		return toRenamedLabel(null);
@@ -79,11 +78,11 @@ public class Label {
 			.add("dataType", getDataType());
 	}
 
-	public FieldName getName(){
+	public String getName(){
 		return this.name;
 	}
 
-	private void setName(FieldName name){
+	private void setName(String name){
 		this.name = name;
 	}
 

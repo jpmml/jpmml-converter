@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldName;
 import org.dmg.pmml.HasDiscreteDomain;
 import org.jpmml.model.ToStringHelper;
 
@@ -44,7 +43,7 @@ public class CategoricalFeature extends Feature {
 		this(encoder, feature.getName(), feature.getDataType(), values);
 	}
 
-	public CategoricalFeature(PMMLEncoder encoder, FieldName name, DataType dataType, List<?> values){
+	public CategoricalFeature(PMMLEncoder encoder, String name, DataType dataType, List<?> values){
 		super(encoder, name, dataType);
 
 		setValues(values);
