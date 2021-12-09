@@ -11,6 +11,7 @@
 	<groupId>org.jpmml</groupId>
 	<artifactId>jpmml-converter</artifactId>
 	<version>1.5-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
 	<name>JPMML-Converter</name>
 	<description>Java library for authoring PMML</description>
@@ -31,6 +32,11 @@
 		</developer>
 	</developers>
 
+	<modules>
+		<module>pmml-converter</module>
+		<module>pmml-converter-testing</module>
+	</modules>
+
 	<scm>
 		<connection>scm:git:git@github.com:jpmml/jpmml-converter.git</connection>
 		<developerConnection>scm:git:git@github.com:jpmml/jpmml-converter.git</developerConnection>
@@ -42,64 +48,77 @@
 		<url>https://github.com/jpmml/jpmml-converter/issues</url>
 	</issueManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>21.0</version>
-		</dependency>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-converter</artifactId>
+				<version>1.5-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-converter-testing</artifactId>
+				<version>1.5-SNAPSHOT</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.jpmml</groupId>
-			<artifactId>pmml-model</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jpmml</groupId>
-			<artifactId>pmml-model-metro</artifactId>
-			<version>1.6.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.sun.xml.fastinfoset</groupId>
-					<artifactId>FastInfoset</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.glassfish.jaxb</groupId>
-					<artifactId>txw2</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.jvnet.staxex</groupId>
-					<artifactId>stax-ex</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model</artifactId>
+				<version>1.6.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model-metro</artifactId>
+				<version>1.6.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.sun.xml.fastinfoset</groupId>
+						<artifactId>FastInfoset</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.glassfish.jaxb</groupId>
+						<artifactId>txw2</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.jvnet.staxex</groupId>
+						<artifactId>stax-ex</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.32</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.7.32</version>
-		</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>21.0</version>
+			</dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-			<scope>test</scope>
-		</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.32</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-jdk14</artifactId>
+				<version>1.7.32</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.jpmml</groupId>
-			<artifactId>pmml-model</artifactId>
-			<version>1.6.0</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.13.2</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model</artifactId>
+				<version>1.6.0</version>
+				<classifier>tests</classifier>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	
 	<build>
 		<plugins>
@@ -114,14 +133,10 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.0</version>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.3.1</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
+					<javadocVersion>1.8</javadocVersion>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -142,6 +157,38 @@
 						<id>attach-sources</id>
 						<goals>
 							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<configuration>
+					<argLine>${jacoco.agent}</argLine>
+					<trimStackTrace>false</trimStackTrace>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<executions>
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<propertyName>jacoco.agent</propertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>

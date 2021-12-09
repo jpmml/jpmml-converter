@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jpmml</groupId>
+		<artifactId>jpmml-converter</artifactId>
+		<version>1.5-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.jpmml</groupId>
+	<artifactId>pmml-converter</artifactId>
+	<version>1.5-SNAPSHOT</version>
+
+	<name>JPMML converter</name>
+	<description>JPMML class model converters</description>
+
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License (AGPL) version 3.0</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jpmml</groupId>
+			<artifactId>pmml-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jpmml</groupId>
+			<artifactId>pmml-model-metro</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jpmml</groupId>
+			<artifactId>pmml-model</artifactId>
+			<classifier>tests</classifier>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
