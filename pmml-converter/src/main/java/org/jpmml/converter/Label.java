@@ -43,6 +43,12 @@ public class Label {
 		return toRenamedLabel(null);
 	}
 
+	public boolean isAnonymous(){
+		String name = getName();
+
+		return (name == null);
+	}
+
 	@Override
 	public int hashCode(){
 		int result = 0;

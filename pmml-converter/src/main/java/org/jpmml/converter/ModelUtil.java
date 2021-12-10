@@ -59,14 +59,10 @@ public class ModelUtil {
 	public MiningSchema createMiningSchema(Label label){
 		MiningSchema miningSchema = new MiningSchema();
 
-		if(label != null){
-			String name = label.getName();
+		if(label != null && !label.isAnonymous()){
+			MiningField miningField = createMiningField(label.getName(), MiningField.UsageType.TARGET);
 
-			if(name != null){
-				MiningField miningField = createMiningField(name, MiningField.UsageType.TARGET);
-
-				miningSchema.addMiningFields(miningField);
-			}
+			miningSchema.addMiningFields(miningField);
 		}
 
 		return miningSchema;

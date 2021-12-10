@@ -23,8 +23,8 @@ import java.util.Arrays;
 import org.dmg.pmml.DataType;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class LabelTest {
 
@@ -32,21 +32,21 @@ public class LabelTest {
 	public void categoricalLabel(){
 		Label label = new CategoricalLabel("y", DataType.INTEGER, Arrays.asList("1", "2", "3"));
 
-		assertNotNull(label.getName());
+		assertFalse(label.isAnonymous());
 
 		label = label.toAnonymousLabel();
 
-		assertNull(label.getName());
+		assertTrue(label.isAnonymous());
 	}
 
 	@Test
 	public void continuousLabel(){
 		Label label = new ContinuousLabel("y", DataType.DOUBLE);
 
-		assertNotNull(label.getName());
+		assertFalse(label.isAnonymous());
 
 		label = label.toAnonymousLabel();
 
-		assertNull(label.getName());
+		assertTrue(label.isAnonymous());
 	}
 }
