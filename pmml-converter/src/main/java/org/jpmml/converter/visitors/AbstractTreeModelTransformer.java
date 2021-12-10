@@ -201,7 +201,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 			List<ScoreDistribution> scoreDistributions = node.getScoreDistributions();
 
 			List<ScoreDistribution> parentScoreDistributions = parentNode.getScoreDistributions();
-			if(parentScoreDistributions.size() != 0){
+			if(!parentScoreDistributions.isEmpty()){
 				throw new IllegalArgumentException();
 			}
 

@@ -35,7 +35,7 @@ public class ThresholdFeatureUtil {
 	public Predicate createPredicate(ThresholdFeature thresholdFeature, List<?> values, Object missingValue, PredicateManager predicateManager){
 		boolean checkMissing = values.remove(missingValue);
 
-		Predicate valuesPredicate = (values.size() > 0 ? predicateManager.createPredicate(thresholdFeature, values) : null);
+		Predicate valuesPredicate = (!values.isEmpty() ? predicateManager.createPredicate(thresholdFeature, values) : null);
 		Predicate missingValuePredicate = (checkMissing ? predicateManager.createSimplePredicate(thresholdFeature, SimplePredicate.Operator.IS_MISSING, null) : null);
 
 		if(valuesPredicate != null){

@@ -69,7 +69,7 @@ public class ModelEncoder extends PMMLEncoder {
 		}
 
 		List<Model> transformers = getTransformers();
-		if(transformers.size() > 0){
+		if(!transformers.isEmpty()){
 			List<Model> models = new ArrayList<>(transformers);
 
 			if(model != null){

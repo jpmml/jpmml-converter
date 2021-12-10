@@ -55,7 +55,7 @@ public class FunctionDictionaryCleanerTest {
 		FunctionDictionaryCleaner cleaner = new FunctionDictionaryCleaner();
 		cleaner.applyTo(pmml);
 
-		checkFunctions(new HashSet<>(Arrays.asList("square", "cube")), transformationDictionary.getDefineFunctions());
+		checkFunctions(Arrays.asList("square", "cube"), transformationDictionary.getDefineFunctions());
 
 		Visitor fieldModifier = new AbstractVisitor(){
 
@@ -80,7 +80,7 @@ public class FunctionDictionaryCleanerTest {
 
 		cleaner.applyTo(pmml);
 
-		checkFunctions(Collections.singleton("cube"), transformationDictionary.getDefineFunctions());
+		checkFunctions(Collections.singletonList("cube"), transformationDictionary.getDefineFunctions());
 
 		Visitor fieldRemover = new AbstractVisitor(){
 
@@ -108,12 +108,12 @@ public class FunctionDictionaryCleanerTest {
 
 		cleaner.applyTo(pmml);
 
-		checkFunctions(Collections.emptySet(), transformationDictionary.getDefineFunctions());
+		checkFunctions(Collections.emptyList(), transformationDictionary.getDefineFunctions());
 	}
 
 	static
-	private void checkFunctions(Set<String> names, Collection<DefineFunction> defineFunctions){
-		assertEquals(names, nameSet(defineFunctions));
+	private void checkFunctions(Collection<String> names, Collection<DefineFunction> defineFunctions){
+		assertEquals(new HashSet<>(names), nameSet(defineFunctions));
 	}
 
 	static

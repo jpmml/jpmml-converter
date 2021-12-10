@@ -122,7 +122,7 @@ public class DerivedFieldRelocator extends DeepFieldResolver {
 				continue;
 			} // End if
 
-			if(models.size() > 0){
+			if(!models.isEmpty()){
 				Model model = (models.iterator()).next();
 
 				derivedFieldScopes.put(derivedField, model);

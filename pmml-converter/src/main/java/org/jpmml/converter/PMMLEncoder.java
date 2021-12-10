@@ -60,7 +60,7 @@ public class PMMLEncoder {
 
 		DataDictionary dataDictionary = new DataDictionary();
 
-		if(dataFields.size() > 0){
+		if(!dataFields.isEmpty()){
 			(dataDictionary.getDataFields()).addAll(dataFields);
 		}
 
@@ -69,14 +69,14 @@ public class PMMLEncoder {
 
 		TransformationDictionary transformationDictionary = null;
 
-		if(derivedFields.size() > 0 || defineFunctions.size() > 0){
+		if(!derivedFields.isEmpty() || !defineFunctions.isEmpty()){
 			transformationDictionary = new TransformationDictionary();
 
-			if(derivedFields.size() > 0){
+			if(!derivedFields.isEmpty()){
 				(transformationDictionary.getDerivedFields()).addAll(derivedFields);
 			} // End if
 
-			if(defineFunctions.size() > 0){
+			if(!defineFunctions.isEmpty()){
 				(transformationDictionary.getDefineFunctions()).addAll(defineFunctions);
 			}
 		}

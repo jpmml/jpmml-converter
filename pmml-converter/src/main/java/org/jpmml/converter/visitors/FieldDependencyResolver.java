@@ -218,7 +218,7 @@ public class FieldDependencyResolver extends FieldResolver {
 			if(expression != null){
 				Set<String> names = ActiveFieldFinder.getFieldNames(expression);
 
-				if(names.size() > 0){
+				if(!names.isEmpty()){
 					Collection<Field<?>> fields = getFields();
 
 					activeFields = new LinkedHashSet<>(2 * names.size());

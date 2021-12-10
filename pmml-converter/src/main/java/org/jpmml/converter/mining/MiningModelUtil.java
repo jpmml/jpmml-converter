@@ -152,7 +152,7 @@ public class MiningModelUtil {
 	static
 	public MiningModel createModelChain(List<? extends Model> models, Segmentation.MissingPredictionTreatment missingPredictionTreatment){
 
-		if(models.size() < 1){
+		if(models.isEmpty()){
 			throw new IllegalArgumentException();
 		}
 

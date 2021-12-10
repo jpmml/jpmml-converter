@@ -55,7 +55,7 @@ public class DeepFieldResolverUtil {
 			if(predicate != null){
 				Set<String> names = ActiveFieldFinder.getFieldNames(predicate);
 
-				if(names.size() > 0){
+				if(!names.isEmpty()){
 					Collection<Field<?>> segmentFields = resolver.getFields(miningModel, segmentation, segment);
 
 					activeFields.addAll(FieldUtil.selectAll(segmentFields, names));
@@ -67,7 +67,7 @@ public class DeepFieldResolverUtil {
 		if(output != null){
 			Set<String> names = ActiveFieldFinder.getFieldNames(output);
 
-			if(names.size() > 0){
+			if(!names.isEmpty()){
 				activeFields.addAll(FieldUtil.selectAll(modelFields, names));
 			}
 

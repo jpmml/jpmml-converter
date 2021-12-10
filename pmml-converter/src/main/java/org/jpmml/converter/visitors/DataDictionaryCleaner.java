@@ -93,7 +93,7 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 				}
 			}
 
-			if(fieldNames.size() > 0){
+			if(!fieldNames.isEmpty()){
 				Collection<Field<?>> modelFields = getFields(model);
 
 				nonActiveFields.addAll(FieldUtil.selectAll(modelFields, fieldNames));

@@ -55,7 +55,7 @@ public class FieldDependencyResolverTest {
 
 			@Override
 			public VisitorAction visit(DataField dataField){
-				checkFields(Collections.emptySet(), dependencies.get(dataField));
+				checkFields(Collections.emptyList(), dependencies.get(dataField));
 
 				return super.visit(dataField);
 			}

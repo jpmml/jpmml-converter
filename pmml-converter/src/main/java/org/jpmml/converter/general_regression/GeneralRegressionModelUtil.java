@@ -133,7 +133,7 @@ public class GeneralRegressionModelUtil {
 			paramMatrix.addPCells(pCell);
 		}
 
-		if(covariateFieldNames.size() > 0){
+		if(!covariateFieldNames.isEmpty()){
 			CovariateList covariateList = generalRegressionModel.getCovariateList();
 
 			if(covariateList == null){
@@ -145,7 +145,7 @@ public class GeneralRegressionModelUtil {
 			createPredictors(covariateList, covariateFieldNames);
 		} // End if
 
-		if(factorFieldNames.size() > 0){
+		if(!factorFieldNames.isEmpty()){
 			FactorList factorList = generalRegressionModel.getFactorList();
 
 			if(factorList == null){

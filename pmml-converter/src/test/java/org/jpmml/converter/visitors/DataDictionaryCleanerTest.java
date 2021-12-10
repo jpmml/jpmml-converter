@@ -74,7 +74,7 @@ public class DataDictionaryCleanerTest {
 
 		cleaner.applyTo(pmml);
 
-		checkFields(Collections.emptySet(), dataDictionary.getDataFields());
+		checkFields(Collections.emptyList(), dataDictionary.getDataFields());
 	}
 
 	@Test
@@ -97,7 +97,7 @@ public class DataDictionaryCleanerTest {
 
 		cleaner.applyTo(pmml);
 
-		checkFields(Collections.emptySet(), dataDictionary.getDataFields());
+		checkFields(Collections.emptyList(), dataDictionary.getDataFields());
 	}
 
 	static
