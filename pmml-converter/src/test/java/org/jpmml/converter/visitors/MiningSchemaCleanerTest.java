@@ -22,9 +22,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -164,13 +164,10 @@ public class MiningSchemaCleanerTest {
 
 	static
 	private Set<String> getFieldNames(MiningSchema miningSchema){
-		Set<String> result = new LinkedHashSet<>();
-
 		List<MiningField> miningFields = miningSchema.getMiningFields();
-		for(MiningField miningField : miningFields){
-			result.add(miningField.getName());
-		}
 
-		return result;
+		return miningFields.stream()
+			.map(MiningField::getName)
+			.collect(Collectors.toSet());
 	}
 }

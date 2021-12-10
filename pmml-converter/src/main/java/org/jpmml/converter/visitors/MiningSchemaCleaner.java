@@ -89,12 +89,12 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
 			for(MiningField miningField : miningFields){
-				String name = miningField.getName();
+				String fieldName = miningField.getName();
 
 				MiningField.UsageType usageType = miningField.getUsageType();
 				switch(usageType){
 					case ACTIVE:
-						activeFieldNames.add(name);
+						activeFieldNames.add(fieldName);
 						break;
 					default:
 						break;
@@ -140,12 +140,12 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		for(Iterator<MiningField> it = miningFields.iterator(); it.hasNext(); ){
 			MiningField miningField = it.next();
 
-			String name = miningField.getName();
+			String fieldName = miningField.getName();
 
 			MiningField.UsageType usageType = miningField.getUsageType();
 			switch(usageType){
 				case ACTIVE:
-					if(!(activeFieldMap).containsKey(name)){
+					if(!(activeFieldMap).containsKey(fieldName)){
 						it.remove();
 					}
 					break;
@@ -153,15 +153,13 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 					break;
 			}
 
-			activeFieldMap.remove(name);
+			activeFieldMap.remove(fieldName);
 		}
 
 		activeFields = new LinkedHashSet<>(activeFieldMap.values());
 
 		for(Field<?> activeField : activeFields){
-			String name = activeField.getName();
-
-			MiningField miningField = new MiningField(name);
+			MiningField miningField = new MiningField(activeField.getName());
 
 			miningSchema.addMiningFields(miningField);
 		}
@@ -200,7 +198,9 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 			}
 
 			private int getFieldType(MiningField miningField){
-				Field<?> field = activeFieldMap.get(miningField.getName());
+				String fieldName = miningField.getName();
+
+				Field<?> field = activeFieldMap.get(fieldName);
 
 				if(field instanceof DataField){
 					return 0;

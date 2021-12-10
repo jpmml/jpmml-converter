@@ -76,16 +76,16 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					String name = miningField.getName();
+					String fieldName = miningField.getName();
 
 					MiningField.UsageType usageType = miningField.getUsageType();
 					switch(usageType){
 						case ACTIVE:
-							activeFieldNames.add(name);
+							activeFieldNames.add(fieldName);
 							break;
 						case PREDICTED:
 						case TARGET:
-							targetFieldNames.add(name);
+							targetFieldNames.add(fieldName);
 							break;
 						default:
 							break;
@@ -125,28 +125,28 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 		boolean hasOutput = false;
 
 		for(VerificationField verificationField : verificationFields){
-			String name = verificationField.getField();
+			String fieldName = verificationField.getField();
 
-			hasOutput |= outputFieldNames.contains(name);
+			hasOutput |= outputFieldNames.contains(fieldName);
 		}
 
 		// Model verification supports two modes - the target field mode (single field) and the output field mode (preferred, multiple fields).
 		// If some verification field refers to an output field,
 		// then assume that the end user intended to perform model verification in the output field mode,
 		// and get rid of all target field-related data.
-		Set<String> names = new HashSet<>();
-		names.addAll(activeFieldNames);
-		names.addAll(hasOutput ? outputFieldNames : targetFieldNames);
+		Set<String> fieldNames = new HashSet<>();
+		fieldNames.addAll(activeFieldNames);
+		fieldNames.addAll(hasOutput ? outputFieldNames : targetFieldNames);
 
 		Set<String> retainedColumns = new LinkedHashSet<>();
 
 		for(Iterator<VerificationField> it = verificationFields.iterator(); it.hasNext(); ){
 			VerificationField verificationField = it.next();
 
-			String name = verificationField.getField();
+			String fieldName = verificationField.getField();
 			String column = verificationField.getColumn();
 
-			if(!names.contains(name)){
+			if(!fieldNames.contains(fieldName)){
 				it.remove();
 
 				continue;

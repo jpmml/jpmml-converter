@@ -126,9 +126,7 @@ public class ModelEncoder extends PMMLEncoder {
 			modelDecorators.put(model, decorators);
 		}
 
-		String name = field.getName();
-
-		decorators.put(name, decorator);
+		decorators.put(field.getName(), decorator);
 	}
 
 	public Map<Model, ListMultimap<Feature, Number>> getFeatureImportances(){
@@ -213,9 +211,9 @@ public class ModelEncoder extends PMMLEncoder {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					String name = miningField.getName();
+					String fieldName = miningField.getName();
 
-					List<Decorator> fieldDecorators = decorators.get(name);
+					List<Decorator> fieldDecorators = decorators.get(fieldName);
 					if(fieldDecorators != null && !fieldDecorators.isEmpty()){
 
 						for(Decorator fieldDecorator : fieldDecorators){
@@ -280,9 +278,7 @@ public class ModelEncoder extends PMMLEncoder {
 				Number fieldImportance = ValueUtil.divide(mathContext, importance, fields.size());
 
 				for(Field<?> field : fields){
-					String fieldName = field.getName();
-
-					fieldImportances.put(fieldName, fieldImportance);
+					fieldImportances.put(field.getName(), fieldImportance);
 				}
 			}
 
@@ -292,9 +288,9 @@ public class ModelEncoder extends PMMLEncoder {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					String name = miningField.getName();
-					MiningField.UsageType usageType = miningField.getUsageType();
+					String fieldName = miningField.getName();
 
+					MiningField.UsageType usageType = miningField.getUsageType();
 					switch(usageType){
 						case ACTIVE:
 							break;
@@ -302,7 +298,7 @@ public class ModelEncoder extends PMMLEncoder {
 							continue;
 					}
 
-					List<Number> fieldImportance = fieldImportances.get(name);
+					List<Number> fieldImportance = fieldImportances.get(fieldName);
 					if(fieldImportance != null && !fieldImportance.isEmpty()){
 						miningField.setImportance(ValueUtil.sum(mathContext, fieldImportance));
 					}
@@ -373,9 +369,9 @@ public class ModelEncoder extends PMMLEncoder {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					String name = miningField.getName();
+					String fieldName = miningField.getName();
 
-					UnivariateStats pmmlUnivariateStats = fieldUnivariateStats.get(name);
+					UnivariateStats pmmlUnivariateStats = fieldUnivariateStats.get(fieldName);
 					if(pmmlUnivariateStats != null){
 						ModelStats modelStats = ModelUtil.ensureModelStats(model);
 

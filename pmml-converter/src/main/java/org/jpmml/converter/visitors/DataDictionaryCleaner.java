@@ -77,26 +77,26 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 
 		MiningSchema miningSchema = model.getMiningSchema();
 		if(miningSchema != null && miningSchema.hasMiningFields()){
-			Set<String> names = new LinkedHashSet<>();
+			Set<String> fieldNames = new LinkedHashSet<>();
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
 			for(MiningField miningField : miningFields){
-				String name = miningField.getName();
+				String fieldName = miningField.getName();
 
 				MiningField.UsageType usageType = miningField.getUsageType();
 				switch(usageType){
 					case ACTIVE:
 						break;
 					default:
-						names.add(name);
+						fieldNames.add(fieldName);
 						break;
 				}
 			}
 
-			if(names.size() > 0){
+			if(fieldNames.size() > 0){
 				Collection<Field<?>> modelFields = getFields(model);
 
-				nonActiveFields.addAll(FieldUtil.selectAll(modelFields, names));
+				nonActiveFields.addAll(FieldUtil.selectAll(modelFields, fieldNames));
 			}
 		}
 	}

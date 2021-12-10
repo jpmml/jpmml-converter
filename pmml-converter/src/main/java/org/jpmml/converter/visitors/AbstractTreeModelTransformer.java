@@ -250,12 +250,12 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
-	protected boolean hasFieldReference(Predicate predicate, String name){
+	protected boolean hasFieldReference(Predicate predicate, String fieldName){
 
 		if(predicate instanceof HasFieldReference){
 			HasFieldReference<?> hasFieldReference = (HasFieldReference<?>)predicate;
 
-			return Objects.equals(hasFieldReference.getField(), name);
+			return Objects.equals(hasFieldReference.getField(), fieldName);
 		}
 
 		return false;
@@ -304,11 +304,11 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void checkFieldReference(HasFieldReference<?> left, HasFieldReference<?> right){
-		String leftName = left.getField();
-		String rightName = right.getField();
+		String leftFieldName = left.getField();
+		String rightFieldName = right.getField();
 
-		if(!Objects.equals(leftName, rightName)){
-			throw new IllegalArgumentException("Field names " + leftName + " and " + rightName + " are not the same");
+		if(!Objects.equals(leftFieldName, rightFieldName)){
+			throw new IllegalArgumentException("Field names " + leftFieldName + " and " + rightFieldName + " are not the same");
 		}
 	}
 

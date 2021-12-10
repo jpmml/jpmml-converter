@@ -98,9 +98,8 @@ public class GeneralRegressionModelUtil {
 			paramMatrix.addPCells(pCell);
 		}
 
-		Set<String> covariates = new LinkedHashSet<>();
-
-		Set<String> factors = new LinkedHashSet<>();
+		Set<String> covariateFieldNames = new LinkedHashSet<>();
+		Set<String> factorFieldNames = new LinkedHashSet<>();
 
 		for(int i = 0; i < features.size(); i++){
 			Feature feature = features.get(i);
@@ -123,7 +122,7 @@ public class GeneralRegressionModelUtil {
 
 			p++;
 
-			Number multiplier = createPPCells(mathContext, feature, parameter, ppMatrix, covariates, factors);
+			Number multiplier = createPPCells(mathContext, feature, parameter, ppMatrix, covariateFieldNames, factorFieldNames);
 			if(!ValueUtil.isOne(multiplier)){
 				coefficient = ValueUtil.multiply(mathContext, coefficient, multiplier);
 			}
@@ -134,7 +133,7 @@ public class GeneralRegressionModelUtil {
 			paramMatrix.addPCells(pCell);
 		}
 
-		if(covariates.size() > 0){
+		if(covariateFieldNames.size() > 0){
 			CovariateList covariateList = generalRegressionModel.getCovariateList();
 
 			if(covariateList == null){
@@ -143,10 +142,10 @@ public class GeneralRegressionModelUtil {
 				generalRegressionModel.setCovariateList(covariateList);
 			}
 
-			createPredictors(covariateList, covariates);
+			createPredictors(covariateList, covariateFieldNames);
 		} // End if
 
-		if(factors.size() > 0){
+		if(factorFieldNames.size() > 0){
 			FactorList factorList = generalRegressionModel.getFactorList();
 
 			if(factorList == null){
@@ -155,25 +154,25 @@ public class GeneralRegressionModelUtil {
 				generalRegressionModel.setFactorList(factorList);
 			}
 
-			createPredictors(factorList, factors);
+			createPredictors(factorList, factorFieldNames);
 		}
 
 		return generalRegressionModel;
 	}
 
 	static
-	private Number createPPCells(MathContext mathContext, Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<String> covariates, Set<String> factors){
+	private Number createPPCells(MathContext mathContext, Feature feature, Parameter parameter, PPMatrix ppMatrix, Set<String> covariateFieldNames, Set<String> factorFieldNames){
 
 		if(feature instanceof BinaryFeature){
 			BinaryFeature binaryFeature = (BinaryFeature)feature;
 
-			return createPPCell(binaryFeature.getValue(), binaryFeature.getName(), parameter, ppMatrix, factors);
+			return createPPCell(binaryFeature.getValue(), binaryFeature.getName(), parameter, ppMatrix, factorFieldNames);
 		} else
 
 		if(feature instanceof BooleanFeature){
 			BooleanFeature booleanFeature = (BooleanFeature)feature;
 
-			return createPPCell(BooleanFeature.VALUE_TRUE, booleanFeature.getName(), parameter, ppMatrix, factors);
+			return createPPCell(BooleanFeature.VALUE_TRUE, booleanFeature.getName(), parameter, ppMatrix, factorFieldNames);
 		} else
 
 		if(feature instanceof ConstantFeature){
@@ -189,7 +188,7 @@ public class GeneralRegressionModelUtil {
 
 			List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
 			for(Feature inputFeature : inputFeatures){
-				Number value = createPPCells(mathContext, inputFeature, parameter, ppMatrix, covariates, factors);
+				Number value = createPPCells(mathContext, inputFeature, parameter, ppMatrix, covariateFieldNames, factorFieldNames);
 
 				result = ValueUtil.multiply(mathContext, result, value);
 			}
@@ -200,42 +199,42 @@ public class GeneralRegressionModelUtil {
 		if(feature instanceof PowerFeature){
 			PowerFeature powerFeature = (PowerFeature)feature;
 
-			return createPPCell(String.valueOf(powerFeature.getPower()), powerFeature.getName(), parameter, ppMatrix, covariates);
+			return createPPCell(String.valueOf(powerFeature.getPower()), powerFeature.getName(), parameter, ppMatrix, covariateFieldNames);
 		} else
 
 		{
 			ContinuousFeature continuousFeature = feature.toContinuousFeature();
 
-			return createPPCell("1", continuousFeature.getName(), parameter, ppMatrix, covariates);
+			return createPPCell("1", continuousFeature.getName(), parameter, ppMatrix, covariateFieldNames);
 		}
 	}
 
 	static
-	private Number createPPCell(Object value, String name, Parameter parameter, PPMatrix ppMatrix, Set<String> predictorNames){
-		PPCell ppCell = new PPCell(value, name, parameter.getName());
+	private Number createPPCell(Object value, String fieldName, Parameter parameter, PPMatrix ppMatrix, Set<String> fieldNames){
+		PPCell ppCell = new PPCell(value, fieldName, parameter.getName());
 
 		ppMatrix.addPPCells(ppCell);
 
-		predictorNames.add(ppCell.getField());
+		fieldNames.add(ppCell.getField());
 
 		return 1d;
 	}
 
 	static
-	private void createPredictors(PredictorList predictorList, Set<String> names){
-		names = new LinkedHashSet<>(names);
+	private void createPredictors(PredictorList predictorList, Set<String> fieldNames){
+		fieldNames = new LinkedHashSet<>(fieldNames);
 
 		List<Predictor> predictors = predictorList.getPredictors();
 		for(Predictor predictor : predictors){
-			names.remove(predictor.getField());
+			fieldNames.remove(predictor.getField());
 		}
 
-		if(names.isEmpty()){
+		if(fieldNames.isEmpty()){
 			return;
 		}
 
-		for(String name : names){
-			Predictor predictor = new Predictor(name);
+		for(String fieldName : fieldNames){
+			Predictor predictor = new Predictor(fieldName);
 
 			predictorList.addPredictors(predictor);
 		}

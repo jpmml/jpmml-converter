@@ -87,10 +87,8 @@ public class ModelUtil {
 
 	static
 	public Targets createRescaleTargets(Number slope, Number intercept, ContinuousLabel continuousLabel){
-		String name = continuousLabel.getName();
-
 		Target target = new Target()
-			.setField(name);
+			.setField(continuousLabel.getName());
 
 		boolean rescaled = false;
 
