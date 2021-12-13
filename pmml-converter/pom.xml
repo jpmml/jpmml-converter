@@ -10,7 +10,7 @@
 
 	<groupId>org.jpmml</groupId>
 	<artifactId>pmml-converter</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
 	<name>JPMML converter</name>
 	<description>JPMML class model converters</description>
