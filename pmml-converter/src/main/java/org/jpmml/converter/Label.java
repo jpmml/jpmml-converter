@@ -65,7 +65,9 @@ public class Label {
 		if(object instanceof Label){
 			Label that = (Label)object;
 
-			return (this.getClass()).equals(that.getClass()) && Objects.equals(this.getName(), that.getName()) && Objects.equals(this.getDataType(), that.getDataType());
+			if(Objects.equals(this.getClass(), that.getClass())){
+				return Objects.equals(this.getName(), that.getName()) && Objects.equals(this.getDataType(), that.getDataType());
+			}
 		}
 
 		return false;

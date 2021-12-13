@@ -95,7 +95,9 @@ public class Feature {
 		if(object instanceof Feature){
 			Feature that = (Feature)object;
 
-			return (this.getClass()).equals(that.getClass()) && Objects.equals(this.getEncoder(), that.getEncoder()) && Objects.equals(this.getName(), that.getName()) && Objects.equals(this.getDataType(), that.getDataType());
+			if(Objects.equals(this.getClass(), that.getClass())){
+				return Objects.equals(this.getEncoder(), that.getEncoder()) && Objects.equals(this.getName(), that.getName()) && Objects.equals(this.getDataType(), that.getDataType());
+			}
 		}
 
 		return false;
