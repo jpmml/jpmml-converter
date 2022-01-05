@@ -255,7 +255,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		if(predicate instanceof HasFieldReference){
 			HasFieldReference<?> hasFieldReference = (HasFieldReference<?>)predicate;
 
-			return Objects.equals(hasFieldReference.getField(), fieldName);
+			return Objects.equals(hasFieldReference.requireField(), fieldName);
 		}
 
 		return false;
@@ -279,7 +279,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		if(predicate instanceof SimplePredicate){
 			SimplePredicate simplePredicate = (SimplePredicate)predicate;
 
-			return (simplePredicate.getOperator()).equals(operator);
+			return (simplePredicate.requireOperator()).equals(operator);
 		}
 
 		return false;
@@ -291,7 +291,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		if(predicate instanceof SimpleSetPredicate){
 			SimpleSetPredicate simpleSetPredicate = (SimpleSetPredicate)predicate;
 
-			return (simpleSetPredicate.getBooleanOperator()).equals(booleanOperator);
+			return (simpleSetPredicate.requireBooleanOperator()).equals(booleanOperator);
 		}
 
 		return false;
@@ -304,8 +304,8 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void checkFieldReference(HasFieldReference<?> left, HasFieldReference<?> right){
-		String leftFieldName = left.getField();
-		String rightFieldName = right.getField();
+		String leftFieldName = left.requireField();
+		String rightFieldName = right.requireField();
 
 		if(!Objects.equals(leftFieldName, rightFieldName)){
 			throw new IllegalArgumentException("Field names " + leftFieldName + " and " + rightFieldName + " are not the same");
@@ -334,8 +334,8 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 	static
 	protected void checkValueSet(HasValueSet<?> left, HasValueSet<?> right){
-		Array leftArray = left.getArray();
-		Array rightArray = right.getArray();
+		Array leftArray = left.requireArray();
+		Array rightArray = right.requireArray();
 
 		if(!Objects.equals(leftArray.getValue(), rightArray.getValue())){
 			throw new IllegalArgumentException("Field value sets " + leftArray.getValue() + " and " + rightArray.getValue() + " are not the same");

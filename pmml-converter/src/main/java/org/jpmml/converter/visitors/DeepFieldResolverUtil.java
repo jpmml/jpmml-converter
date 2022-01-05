@@ -46,7 +46,7 @@ public class DeepFieldResolverUtil {
 
 		Set<Field<?>> activeFields = new LinkedHashSet<>();
 
-		Segmentation segmentation = miningModel.getSegmentation();
+		Segmentation segmentation = miningModel.requireSegmentation();
 
 		List<Segment> segments = segmentation.getSegments();
 		for(Segment segment : segments){
@@ -74,7 +74,7 @@ public class DeepFieldResolverUtil {
 			activeFields.removeAll(output.getOutputFields());
 		}
 
-		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.getMultipleModelMethod();
+		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.requireMultipleModelMethod();
 		switch(multipleModelMethod){
 			case MODEL_CHAIN:
 				Collection<Field<?>> segmentationFields = resolver.getFields(miningModel, segmentation);

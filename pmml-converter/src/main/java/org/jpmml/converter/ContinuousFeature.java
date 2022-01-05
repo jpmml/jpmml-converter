@@ -24,7 +24,7 @@ import org.dmg.pmml.Field;
 public class ContinuousFeature extends Feature {
 
 	public ContinuousFeature(PMMLEncoder encoder, Field<?> field){
-		this(encoder, field.getName(), field.getDataType());
+		this(encoder, field.requireName(), field.getDataType());
 	}
 
 	public ContinuousFeature(PMMLEncoder encoder, Feature feature){

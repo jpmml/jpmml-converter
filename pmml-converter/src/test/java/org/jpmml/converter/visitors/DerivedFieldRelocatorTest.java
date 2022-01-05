@@ -57,7 +57,7 @@ public class DerivedFieldRelocatorTest {
 
 			@Override
 			public VisitorAction visit(Segment segment){
-				Model model = segment.getModel();
+				Model model = segment.requireModel();
 
 				LocalTransformations localTransformations = model.getLocalTransformations();
 
@@ -105,7 +105,7 @@ public class DerivedFieldRelocatorTest {
 
 			@Override
 			public VisitorAction visit(Segment segment){
-				Model model = segment.getModel();
+				Model model = segment.requireModel();
 
 				LocalTransformations localTransformations = model.getLocalTransformations();
 

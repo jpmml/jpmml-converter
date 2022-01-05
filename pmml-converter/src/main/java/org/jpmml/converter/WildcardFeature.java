@@ -27,7 +27,7 @@ import org.dmg.pmml.Field;
 public class WildcardFeature extends Feature {
 
 	public WildcardFeature(PMMLEncoder encoder, DataField dataField){
-		super(encoder, dataField.getName(), dataField.getDataType());
+		super(encoder, dataField.requireName(), dataField.requireDataType());
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class WildcardFeature extends Feature {
 
 		DataField dataField = (DataField)encoder.toCategorical(getName(), values);
 
-		if((DataType.BOOLEAN).equals(dataField.getDataType()) && (BooleanFeature.VALUES).equals(values)){
+		if((DataType.BOOLEAN).equals(dataField.requireDataType()) && (BooleanFeature.VALUES).equals(values)){
 			return new BooleanFeature(encoder, dataField);
 		}
 

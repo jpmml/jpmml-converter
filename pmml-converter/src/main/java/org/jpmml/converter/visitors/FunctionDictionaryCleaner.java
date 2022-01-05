@@ -78,7 +78,7 @@ public class FunctionDictionaryCleaner extends AbstractVisitor implements Resett
 			for(Iterator<DefineFunction> it = defineFunctions.iterator(); it.hasNext(); ){
 				DefineFunction defineFunction = it.next();
 
-				boolean retain = this.functions.contains(defineFunction.getName());
+				boolean retain = this.functions.contains(defineFunction.requireName());
 				if(!retain){
 					it.remove();
 				}
@@ -87,7 +87,7 @@ public class FunctionDictionaryCleaner extends AbstractVisitor implements Resett
 	}
 
 	private void processApply(Apply apply){
-		String function = apply.getFunction();
+		String function = apply.requireFunction();
 
 		this.functions.add(function);
 	}

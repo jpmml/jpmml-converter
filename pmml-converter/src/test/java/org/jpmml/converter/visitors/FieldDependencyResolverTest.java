@@ -64,7 +64,7 @@ public class FieldDependencyResolverTest {
 			public VisitorAction visit(DerivedField derivedField){
 				Set<Field<?>> fields = dependencies.get(derivedField);
 
-				String name = derivedField.getName();
+				String name = derivedField.requireName();
 
 				if("x1_squared".equals(name)){
 					checkFields(Collections.singletonList("x1"), fields);
@@ -111,7 +111,7 @@ public class FieldDependencyResolverTest {
 			public VisitorAction visit(DerivedField derivedField){
 				Set<Field<?>> fields = dependencies.get(derivedField);
 
-				String name = derivedField.getName();
+				String name = derivedField.requireName();
 
 				if("x12".equals(name)){
 					checkFields(Arrays.asList("x1", "x2"), fields);

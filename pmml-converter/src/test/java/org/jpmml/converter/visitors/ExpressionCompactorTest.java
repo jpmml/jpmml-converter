@@ -39,12 +39,12 @@ public class ExpressionCompactorTest {
 
 		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createMissingConstant()));
 
-		assertEquals(PMMLFunctions.ISMISSING, apply.getFunction());
+		assertEquals(PMMLFunctions.ISMISSING, apply.requireFunction());
 		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
 
 		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOTEQUAL, PMMLUtil.createMissingConstant(), fieldRef));
 
-		assertEquals(PMMLFunctions.ISNOTMISSING, apply.getFunction());
+		assertEquals(PMMLFunctions.ISNOTMISSING, apply.requireFunction());
 		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
 	}
 
@@ -66,7 +66,7 @@ public class ExpressionCompactorTest {
 
 		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.OR, first, second, third));
 
-		assertEquals(PMMLFunctions.OR, apply.getFunction());
+		assertEquals(PMMLFunctions.OR, apply.requireFunction());
 		assertEquals(Arrays.asList(first, leftLeftChild, leftRightChild, rightChild, third), apply.getExpressions());
 	}
 
@@ -80,7 +80,7 @@ public class ExpressionCompactorTest {
 
 		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.CONCAT, hours, PMMLUtil.createApply(PMMLFunctions.CONCAT, separator, minutes), PMMLUtil.createApply(PMMLFunctions.CONCAT, separator, seconds)));
 
-		assertEquals(PMMLFunctions.CONCAT, apply.getFunction());
+		assertEquals(PMMLFunctions.CONCAT, apply.requireFunction());
 		assertEquals(Arrays.asList(hours, separator, minutes, separator, seconds), apply.getExpressions());
 	}
 
@@ -103,12 +103,12 @@ public class ExpressionCompactorTest {
 
 		Apply negatedApply = compact(PMMLUtil.createApply(PMMLFunctions.NOT, apply));
 
-		assertEquals(negatedFunction, negatedApply.getFunction());
+		assertEquals(negatedFunction, negatedApply.requireFunction());
 		assertEquals(Arrays.asList(expressions), negatedApply.getExpressions());
 
 		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOT, negatedApply));
 
-		assertEquals(function, apply.getFunction());
+		assertEquals(function, apply.requireFunction());
 		assertEquals(Arrays.asList(expressions), apply.getExpressions());
 	}
 

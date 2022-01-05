@@ -31,9 +31,13 @@ import org.dmg.pmml.Model;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.PMMLAttributes;
+import org.dmg.pmml.PMMLElements;
 import org.dmg.pmml.Value;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
+import org.jpmml.model.MissingAttributeException;
+import org.jpmml.model.MissingElementException;
 
 public class DerivedOutputField extends DerivedField implements Decorable {
 
@@ -48,6 +52,13 @@ public class DerivedOutputField extends DerivedField implements Decorable {
 		setModel(model);
 		setOutputField(outputField);
 		setRequired(required);
+	}
+
+	@Override
+	public String requireName(){
+		OutputField outputField = getOutputField();
+
+		return outputField.requireName();
 	}
 
 	@Override
@@ -83,6 +94,17 @@ public class DerivedOutputField extends DerivedField implements Decorable {
 	}
 
 	@Override
+	public OpType requireOpType(){
+		OpType opType = getOpType();
+
+		if(opType == null){
+			throw new MissingAttributeException(this, PMMLAttributes.DERIVEDFIELD_OPTYPE);
+		}
+
+		return opType;
+	}
+
+	@Override
 	public OpType getOpType(){
 		OutputField outputField = getOutputField();
 
@@ -96,6 +118,13 @@ public class DerivedOutputField extends DerivedField implements Decorable {
 		outputField.setOpType(opType);
 
 		return this;
+	}
+
+	@Override
+	public DataType requireDataType(){
+		OutputField outputField = getOutputField();
+
+		return outputField.requireDataType();
 	}
 
 	@Override
@@ -126,6 +155,11 @@ public class DerivedOutputField extends DerivedField implements Decorable {
 		OutputField outputField = getOutputField();
 
 		return outputField.getExtensions();
+	}
+
+	@Override
+	public Expression requireExpression(){
+		throw new MissingElementException(this, PMMLElements.DERIVEDFIELD_EXPRESSION);
 	}
 
 	@Override

@@ -182,7 +182,7 @@ public class RegressionModelUtil {
 				} else
 
 				{
-					categoricalPredictor.setCoefficient(ValueUtil.add(mathContext, categoricalPredictor.getCoefficient(), coefficient));
+					categoricalPredictor.setCoefficient(ValueUtil.add(mathContext, categoricalPredictor.requireCoefficient(), coefficient));
 				}
 			} else
 
@@ -204,14 +204,14 @@ public class RegressionModelUtil {
 				} else
 
 				{
-					categoricalPredictor.setCoefficient(ValueUtil.add(mathContext, categoricalPredictor.getCoefficient(), coefficient));
+					categoricalPredictor.setCoefficient(ValueUtil.add(mathContext, categoricalPredictor.requireCoefficient(), coefficient));
 				}
 			} else
 
 			if(feature instanceof ConstantFeature){
 				ConstantFeature constantFeature = (ConstantFeature)feature;
 
-				Number value = ValueUtil.add(mathContext, regressionTable.getIntercept(), ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue()));
+				Number value = ValueUtil.add(mathContext, regressionTable.requireIntercept(), ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue()));
 
 				regressionTable.setIntercept(value);
 			} else
@@ -229,7 +229,7 @@ public class RegressionModelUtil {
 					if(inputFeature instanceof ConstantFeature){
 						ConstantFeature constantFeature = (ConstantFeature)inputFeature;
 
-						Number value = ValueUtil.multiply(mathContext, predictorTerm.getCoefficient(), constantFeature.getValue());
+						Number value = ValueUtil.multiply(mathContext, predictorTerm.requireCoefficient(), constantFeature.getValue());
 
 						predictorTerm.setCoefficient(value);
 					} else
@@ -243,7 +243,7 @@ public class RegressionModelUtil {
 
 				List<FieldRef> fieldRefs = predictorTerm.getFieldRefs();
 				if(fieldRefs.size() == 0){
-					Number value = ValueUtil.add(mathContext, regressionTable.getIntercept(), predictorTerm.getCoefficient());
+					Number value = ValueUtil.add(mathContext, regressionTable.getIntercept(), predictorTerm.requireCoefficient());
 
 					regressionTable.setIntercept(value);
 				} else
@@ -252,8 +252,8 @@ public class RegressionModelUtil {
 					FieldRef fieldRef = Iterables.getOnlyElement(fieldRefs);
 
 					NumericPredictor numericPredictor = new NumericPredictor()
-						.setField(fieldRef.getField())
-						.setCoefficient(predictorTerm.getCoefficient());
+						.setField(fieldRef.requireField())
+						.setCoefficient(predictorTerm.requireCoefficient());
 
 					regressionTable.addNumericPredictors(numericPredictor);
 				} else
@@ -291,7 +291,7 @@ public class RegressionModelUtil {
 				} else
 
 				{
-					numericPredictor.setCoefficient(ValueUtil.add(mathContext, numericPredictor.getCoefficient(), coefficient));
+					numericPredictor.setCoefficient(ValueUtil.add(mathContext, numericPredictor.requireCoefficient(), coefficient));
 				}
 			}
 		}

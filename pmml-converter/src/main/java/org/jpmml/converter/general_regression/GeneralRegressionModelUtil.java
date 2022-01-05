@@ -92,7 +92,7 @@ public class GeneralRegressionModelUtil {
 
 			p++;
 
-			PCell pCell = new PCell(parameter.getName(), intercept)
+			PCell pCell = new PCell(parameter.requireName(), intercept)
 				.setTargetCategory(targetCategory);
 
 			paramMatrix.addPCells(pCell);
@@ -127,7 +127,7 @@ public class GeneralRegressionModelUtil {
 				coefficient = ValueUtil.multiply(mathContext, coefficient, multiplier);
 			}
 
-			PCell pCell = new PCell(parameter.getName(), coefficient)
+			PCell pCell = new PCell(parameter.requireName(), coefficient)
 				.setTargetCategory(targetCategory);
 
 			paramMatrix.addPCells(pCell);
@@ -211,11 +211,11 @@ public class GeneralRegressionModelUtil {
 
 	static
 	private Number createPPCell(Object value, String fieldName, Parameter parameter, PPMatrix ppMatrix, Set<String> fieldNames){
-		PPCell ppCell = new PPCell(value, fieldName, parameter.getName());
+		PPCell ppCell = new PPCell(value, fieldName, parameter.requireName());
 
 		ppMatrix.addPPCells(ppCell);
 
-		fieldNames.add(ppCell.getField());
+		fieldNames.add(ppCell.requireField());
 
 		return 1d;
 	}
@@ -226,7 +226,7 @@ public class GeneralRegressionModelUtil {
 
 		List<Predictor> predictors = predictorList.getPredictors();
 		for(Predictor predictor : predictors){
-			fieldNames.remove(predictor.getField());
+			fieldNames.remove(predictor.requireField());
 		}
 
 		if(fieldNames.isEmpty()){

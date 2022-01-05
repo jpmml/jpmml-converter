@@ -47,7 +47,7 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 					continue;
 				}
 
-				Predicate predicate = child.getPredicate();
+				Predicate predicate = child.requirePredicate();
 
 				if(predicate instanceof False){
 					it.remove();
@@ -59,7 +59,7 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 	@Override
 	public void exitNode(Node node){
 		Object defaultChild = node.getDefaultChild();
-		Predicate predicate = node.getPredicate();
+		Predicate predicate = node.requirePredicate();
 		Number recordCount = node.getRecordCount();
 
 		if(node.hasNodes()){
@@ -68,7 +68,7 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 			if(children.size() == 1){
 				Node child = children.get(0);
 
-				Predicate childPredicate = child.getPredicate();
+				Predicate childPredicate = child.requirePredicate();
 				Number childRecordCount = child.getRecordCount();
 
 				if(Objects.equals(predicate, childPredicate) && Objects.equals(recordCount, childRecordCount)){
@@ -98,7 +98,7 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 
 	@Override
 	public void enterTreeModel(TreeModel treeModel){
-		this.miningFunction = treeModel.getMiningFunction();
+		this.miningFunction = treeModel.requireMiningFunction();
 	}
 
 	@Override

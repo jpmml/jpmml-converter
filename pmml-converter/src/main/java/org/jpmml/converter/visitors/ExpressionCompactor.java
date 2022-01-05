@@ -32,7 +32,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 
 	@Override
 	public VisitorAction visit(Apply apply){
-		String function = apply.getFunction();
+		String function = apply.requireFunction();
 
 		switch(function){
 			case PMMLFunctions.EQUAL:
@@ -58,7 +58,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 
 	static
 	public void simplifyComparisonExpression(Apply apply){
-		String function = apply.getFunction();
+		String function = apply.requireFunction();
 		List<Expression> expressions = apply.getExpressions();
 
 		if(expressions.size() != 2){
@@ -96,7 +96,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 
 	static
 	private void inlineNestedExpressions(Apply apply){
-		String function = apply.getFunction();
+		String function = apply.requireFunction();
 		List<Expression> expressions = apply.getExpressions();
 
 		if(expressions.size() < 2){
@@ -109,7 +109,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 			if(expression instanceof Apply){
 				Apply nestedApply = (Apply)expression;
 
-				if((function).equals(nestedApply.getFunction())){
+				if((function).equals(nestedApply.requireFunction())){
 					expressionIt.remove();
 
 					// Depth first, breadth second
@@ -139,7 +139,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 		if(expression instanceof Apply){
 			Apply nestedApply = (Apply)expression;
 
-			String negatedFunction = negate(nestedApply.getFunction());
+			String negatedFunction = negate(nestedApply.requireFunction());
 			if(negatedFunction != null){
 				expressionIt.remove();
 

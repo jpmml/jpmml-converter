@@ -60,7 +60,7 @@ public class ThresholdFeatureUtil {
 		if(predicate instanceof SimplePredicate){
 			SimplePredicate simplePredicate = (SimplePredicate)predicate;
 
-			SimplePredicate.Operator operator = simplePredicate.getOperator();
+			SimplePredicate.Operator operator = simplePredicate.requireOperator();
 			switch(operator){
 				case IS_MISSING:
 					return true;
@@ -80,7 +80,7 @@ public class ThresholdFeatureUtil {
 		if(predicate instanceof CompoundPredicate){
 			CompoundPredicate compoundPredicate = (CompoundPredicate)predicate;
 
-			CompoundPredicate.BooleanOperator booleanOperator = compoundPredicate.getBooleanOperator();
+			CompoundPredicate.BooleanOperator booleanOperator = compoundPredicate.requireBooleanOperator();
 			switch(booleanOperator){
 				case SURROGATE:
 					return true;

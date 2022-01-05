@@ -75,17 +75,13 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 		Set<String> activeFieldNames = new HashSet<>();
 
-		Segmentation segmentation = miningModel.getSegmentation();
+		Segmentation segmentation = miningModel.requireSegmentation();
 
 		List<Segment> segments = segmentation.getSegments();
 		for(Segment segment : segments){
-			Model model = segment.getModel();
+			Model model = segment.requireModel();
 
-			if(model == null){
-				continue;
-			}
-
-			MiningSchema miningSchema = model.getMiningSchema();
+			MiningSchema miningSchema = model.requireMiningSchema();
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
 			for(MiningField miningField : miningFields){
@@ -131,7 +127,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 	}
 
 	private void clean(Model model, Set<Field<?>> activeFields){
-		MiningSchema miningSchema = model.getMiningSchema();
+		MiningSchema miningSchema = model.requireMiningSchema();
 
 		List<MiningField> miningFields = miningSchema.getMiningFields();
 
@@ -159,7 +155,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		activeFields = new LinkedHashSet<>(activeFieldMap.values());
 
 		for(Field<?> activeField : activeFields){
-			MiningField miningField = new MiningField(activeField.getName());
+			MiningField miningField = new MiningField(activeField);
 
 			miningSchema.addMiningFields(miningField);
 		}

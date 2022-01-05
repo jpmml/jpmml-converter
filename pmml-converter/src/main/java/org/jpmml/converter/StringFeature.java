@@ -24,7 +24,7 @@ import org.dmg.pmml.Field;
 public class StringFeature extends ObjectFeature {
 
 	public StringFeature(PMMLEncoder encoder, Field<?> field){
-		this(encoder, field.getName(), field.getDataType());
+		this(encoder, field.requireName(), field.getDataType());
 	}
 
 	public StringFeature(PMMLEncoder encoder, Feature feature){

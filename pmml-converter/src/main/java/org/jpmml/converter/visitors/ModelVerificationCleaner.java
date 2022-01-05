@@ -71,8 +71,8 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 			Set<String> targetFieldNames = new LinkedHashSet<>();
 			Set<String> outputFieldNames = new LinkedHashSet<>();
 
-			MiningSchema miningSchema = model.getMiningSchema();
-			if(miningSchema != null && miningSchema.hasMiningFields()){
+			MiningSchema miningSchema = model.requireMiningSchema();
+			if(miningSchema.hasMiningFields()){
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
@@ -97,7 +97,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 
 				@Override
 				public VisitorAction visit(OutputField outputField){
-					String name = outputField.getName();
+					String name = outputField.requireName();
 
 					outputFieldNames.add(name);
 
@@ -111,21 +111,13 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 	}
 
 	private void clean(ModelVerification modelVerification, Set<String> activeFieldNames, Set<String> targetFieldNames, Set<String> outputFieldNames){
-		VerificationFields verificationFields = modelVerification.getVerificationFields();
-		InlineTable inlineTable = modelVerification.getInlineTable();
-
-		if(verificationFields == null || !verificationFields.hasVerificationFields()){
-			return;
-		} // End if
-
-		if(inlineTable == null || !inlineTable.hasRows()){
-			return;
-		}
+		VerificationFields verificationFields = modelVerification.requireVerificationFields();
+		InlineTable inlineTable = modelVerification.requireInlineTable();
 
 		boolean hasOutput = false;
 
 		for(VerificationField verificationField : verificationFields){
-			String fieldName = verificationField.getField();
+			String fieldName = verificationField.requireField();
 
 			hasOutput |= outputFieldNames.contains(fieldName);
 		}
@@ -143,7 +135,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 		for(Iterator<VerificationField> it = verificationFields.iterator(); it.hasNext(); ){
 			VerificationField verificationField = it.next();
 
-			String fieldName = verificationField.getField();
+			String fieldName = verificationField.requireField();
 			String column = verificationField.getColumn();
 
 			if(!fieldNames.contains(fieldName)){

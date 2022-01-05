@@ -130,7 +130,7 @@ public class PMMLUtil {
 		for(Value pmmlValue : pmmlValues){
 
 			if((property).equals(pmmlValue.getProperty())){
-				result.add(pmmlValue.getValue());
+				result.add(pmmlValue.requireValue());
 			}
 		}
 
@@ -213,7 +213,7 @@ public class PMMLUtil {
 		data.put(inputColumn, inputValues);
 		data.put(outputColumn, outputValues);
 
-		MapValues mapValues = new MapValues(outputColumn, null, PMMLUtil.createInlineTable(data))
+		MapValues mapValues = new MapValues(outputColumn, PMMLUtil.createInlineTable(data))
 			.addFieldColumnPairs(new FieldColumnPair(name, inputColumn));
 
 		return mapValues;

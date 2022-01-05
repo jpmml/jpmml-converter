@@ -48,7 +48,7 @@ public class DataDictionaryCleanerTest {
 	public void cleanChained() throws Exception {
 		PMML pmml = ResourceUtil.unmarshal(ChainedSegmentationTest.class);
 
-		DataDictionary dataDictionary = pmml.getDataDictionary();
+		DataDictionary dataDictionary = pmml.requireDataDictionary();
 
 		checkFields(Arrays.asList("y", "x1", "x2", "x3", "x4"), dataDictionary.getDataFields());
 
@@ -81,7 +81,7 @@ public class DataDictionaryCleanerTest {
 	public void cleanNested() throws Exception {
 		PMML pmml = ResourceUtil.unmarshal(NestedSegmentationTest.class);
 
-		DataDictionary dataDictionary = pmml.getDataDictionary();
+		DataDictionary dataDictionary = pmml.requireDataDictionary();
 
 		checkFields(Arrays.asList("y", "x1", "x2", "x3", "x4", "x5"), dataDictionary.getDataFields());
 

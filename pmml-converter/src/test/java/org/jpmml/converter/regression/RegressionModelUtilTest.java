@@ -56,8 +56,8 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		CategoricalPredictor categoricalPredictor = Iterables.getOnlyElement(regressionTable.getCategoricalPredictors());
 
-		assertEquals("x", categoricalPredictor.getField());
-		assertEquals(1d + 1d, categoricalPredictor.getCoefficient());
+		assertEquals("x", categoricalPredictor.requireField());
+		assertEquals(1d + 1d, categoricalPredictor.requireCoefficient());
 
 		feature = createConstantFeature(encoder, 3d);
 
@@ -73,8 +73,8 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		NumericPredictor numericPredictor = Iterables.getOnlyElement(regressionTable.getNumericPredictors());
 
-		assertEquals("x", numericPredictor.getField());
-		assertEquals((Double)(2d * 3d * 7d), (Double)numericPredictor.getCoefficient());
+		assertEquals("x", numericPredictor.requireField());
+		assertEquals((Double)(2d * 3d * 7d), (Double)numericPredictor.requireCoefficient());
 
 		feature = createInteractionFeature(encoder, "x1", 5d, "x2");
 
@@ -84,12 +84,12 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		PredictorTerm predictorTerm = Iterables.getOnlyElement(regressionTable.getPredictorTerms());
 
-		assertEquals((Double)(2d * 5d), (Double)predictorTerm.getCoefficient());
+		assertEquals((Double)(2d * 5d), (Double)predictorTerm.requireCoefficient());
 
-		List<FieldRef> fieldRefs = predictorTerm.getFieldRefs();
+		List<FieldRef> fieldRefs = predictorTerm.requireFieldRefs();
 
-		assertEquals("x1", (fieldRefs.get(0)).getField());
-		assertEquals("x2", (fieldRefs.get(1)).getField());
+		assertEquals("x1", (fieldRefs.get(0)).requireField());
+		assertEquals("x2", (fieldRefs.get(1)).requireField());
 
 		feature = new ContinuousFeature(encoder, "x", DataType.DOUBLE);
 
@@ -99,13 +99,13 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		numericPredictor = Iterables.getOnlyElement(regressionTable.getNumericPredictors());
 
-		assertEquals("x", numericPredictor.getField());
-		assertEquals(1d + 1d, numericPredictor.getCoefficient());
+		assertEquals("x", numericPredictor.requireField());
+		assertEquals(1d + 1d, numericPredictor.requireCoefficient());
 	}
 
 	static
 	private void assertState(RegressionTable regressionTable, double intercept, boolean hasNumericTerms, boolean hasCategoricalTerms, boolean hasInteractionTerms){
-		assertEquals((Double)intercept, (Double)regressionTable.getIntercept());
+		assertEquals((Double)intercept, (Double)regressionTable.requireIntercept());
 
 		assertEquals(hasNumericTerms, regressionTable.hasNumericPredictors());
 		assertEquals(hasCategoricalTerms, regressionTable.hasCategoricalPredictors());

@@ -35,7 +35,7 @@ public class InteractionFeature extends Feature {
 
 
 	public InteractionFeature(PMMLEncoder encoder, Field<?> field, List<? extends Feature> features){
-		this(encoder, field.getName(), field.getDataType(), features);
+		this(encoder, field.requireName(), field.getDataType(), features);
 	}
 
 	public InteractionFeature(PMMLEncoder encoder, String name, DataType dataType, List<? extends Feature> features){

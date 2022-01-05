@@ -32,7 +32,7 @@ public class CategoricalLabel extends Label {
 
 
 	public <F extends Field<F> & HasDiscreteDomain<F>> CategoricalLabel(F field){
-		this(field.getName(), field.getDataType(), PMMLUtil.getValues(field));
+		this(field.requireName(), field.getDataType(), PMMLUtil.getValues(field));
 	}
 
 	public CategoricalLabel(String name, DataType dataType, List<?> values){

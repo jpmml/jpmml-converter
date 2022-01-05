@@ -36,7 +36,7 @@ public class FieldUtil {
 		Map<String, F> fieldMap = new LinkedHashMap<>(2 * fields.size());
 
 		for(F field : fields){
-			String name = field.getName();
+			String name = field.requireName();
 
 			F previousField = fieldMap.put(name, field);
 			if(previousField != null){
@@ -64,7 +64,7 @@ public class FieldUtil {
 		Map<String, F> fieldMap = new LinkedHashMap<>(2 * names.size());
 
 		for(F field : fields){
-			String name = field.getName();
+			String name = field.requireName();
 
 			if(!names.contains(name)){
 				continue;

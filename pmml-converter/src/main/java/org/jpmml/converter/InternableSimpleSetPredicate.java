@@ -57,13 +57,13 @@ public class InternableSimpleSetPredicate extends SimpleSetPredicate {
 	}
 
 	private Array.Type getArrayType(){
-		Array array = getArray();
+		Array array = requireArray();
 
 		return array.getType();
 	}
 
 	private Object getArrayValue(){
-		Array array = getArray();
+		Array array = requireArray();
 
 		return array.getValue();
 	}

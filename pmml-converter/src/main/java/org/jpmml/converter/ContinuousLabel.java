@@ -24,7 +24,7 @@ import org.dmg.pmml.DataType;
 public class ContinuousLabel extends Label {
 
 	public ContinuousLabel(DataField dataField){
-		this(dataField.getName(), dataField.getDataType());
+		this(dataField.requireName(), dataField.getDataType());
 	}
 
 	public ContinuousLabel(String name, DataType dataType){

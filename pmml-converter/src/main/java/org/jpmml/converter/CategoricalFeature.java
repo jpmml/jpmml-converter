@@ -36,7 +36,7 @@ public class CategoricalFeature extends Feature {
 	}
 
 	public CategoricalFeature(PMMLEncoder encoder, Field<?> field, List<?> values){
-		this(encoder, field.getName(), field.getDataType(), values);
+		this(encoder, field.requireName(), field.getDataType(), values);
 	}
 
 	public CategoricalFeature(PMMLEncoder encoder, Feature feature, List<?> values){

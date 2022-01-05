@@ -63,10 +63,9 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 		if(parent instanceof PMML){
 			PMML pmml = (PMML)parent;
 
-			DataDictionary dataDictionary = pmml.getDataDictionary();
-			if(dataDictionary != null){
-				processDataDictionary(dataDictionary);
-			}
+			DataDictionary dataDictionary = pmml.requireDataDictionary();
+
+			processDataDictionary(dataDictionary);
 		}
 
 		return parent;
@@ -75,8 +74,8 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 	private void processModel(Model model){
 		Set<Field<?>> nonActiveFields = getNonActiveFields();
 
-		MiningSchema miningSchema = model.getMiningSchema();
-		if(miningSchema != null && miningSchema.hasMiningFields()){
+		MiningSchema miningSchema = model.requireMiningSchema();
+		if(miningSchema.hasMiningFields()){
 			Set<String> fieldNames = new LinkedHashSet<>();
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();

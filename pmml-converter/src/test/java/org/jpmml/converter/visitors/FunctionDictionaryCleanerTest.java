@@ -62,7 +62,7 @@ public class FunctionDictionaryCleanerTest {
 			@Override
 			public VisitorAction visit(DerivedField derivedField){
 
-				if(("x2_squared").equals(derivedField.getName())){
+				if(("x2_squared").equals(derivedField.requireName())){
 					FieldRef fieldRef = new FieldRef("x2");
 
 					Apply apply = new Apply(PMMLFunctions.ADD)
@@ -93,7 +93,7 @@ public class FunctionDictionaryCleanerTest {
 					for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
 						DerivedField derivedField = it.next();
 
-						if(("x2_cubed").equals(derivedField.getName())){
+						if(("x2_cubed").equals(derivedField.requireName())){
 							it.remove();
 						}
 					}
@@ -119,7 +119,7 @@ public class FunctionDictionaryCleanerTest {
 	static
 	private Set<String> nameSet(Collection<DefineFunction> defineFunctions){
 		return defineFunctions.stream()
-			.map(DefineFunction::getName)
+			.map(DefineFunction::requireName)
 			.collect(Collectors.toSet());
 	}
 }

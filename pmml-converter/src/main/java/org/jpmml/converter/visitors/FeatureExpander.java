@@ -133,7 +133,7 @@ public class FeatureExpander extends DeepFieldResolver {
 		}
 
 		for(Field<?> featureField : featureFields){
-			String name = featureField.getName();
+			String name = featureField.requireName();
 
 			if(featureField instanceof DataField){
 				expandedFields.put(name, Collections.singleton(featureField));
@@ -148,7 +148,7 @@ public class FeatureExpander extends DeepFieldResolver {
 				if(model instanceof MiningModel){
 					MiningModel miningModel = (MiningModel)model;
 
-					Segmentation segmentation = miningModel.getSegmentation();
+					Segmentation segmentation = miningModel.requireSegmentation();
 
 					Set<DerivedField> extraLocalDerivedFields = new HashSet<>();
 

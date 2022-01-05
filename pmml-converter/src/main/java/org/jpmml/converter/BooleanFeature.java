@@ -28,7 +28,7 @@ import org.dmg.pmml.NormDiscrete;
 public class BooleanFeature extends CategoricalFeature implements HasDerivedName {
 
 	public BooleanFeature(PMMLEncoder encoder, Field<?> field){
-		this(encoder, field.getName());
+		this(encoder, field.requireName());
 	}
 
 	public BooleanFeature(PMMLEncoder encoder, Feature feature){

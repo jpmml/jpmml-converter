@@ -159,7 +159,7 @@ public class MiningModelUtil {
 		MiningSchema miningSchema = new MiningSchema();
 
 		models.stream()
-			.map(Model::getMiningSchema)
+			.map(Model::requireMiningSchema)
 			.map(MiningSchema::getMiningFields)
 			.flatMap(List::stream)
 			.filter(miningField -> {
@@ -183,7 +183,7 @@ public class MiningModelUtil {
 
 		Model lastModel = Iterables.getLast(models);
 
-		MiningModel miningModel = new MiningModel(lastModel.getMiningFunction(), miningSchema)
+		MiningModel miningModel = new MiningModel(lastModel.requireMiningFunction(), miningSchema)
 			.setMathContext(ModelUtil.simplifyMathContext(lastModel.getMathContext()))
 			.setSegmentation(segmentation);
 
@@ -235,28 +235,25 @@ public class MiningModelUtil {
 
 	static
 	public Model getFinalModel(MiningModel miningModel){
-		Segmentation segmentation = miningModel.getSegmentation();
+		Segmentation segmentation = miningModel.requireSegmentation();
 
-		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.getMultipleModelMethod();
+		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.requireMultipleModelMethod();
 		switch(multipleModelMethod){
 			case SELECT_FIRST:
 			case SELECT_ALL:
 				throw new IllegalArgumentException();
 			case MODEL_CHAIN:
 				{
-					List<Segment> segments = segmentation.getSegments();
-					if(segments.isEmpty()){
-						throw new IllegalArgumentException();
-					}
+					List<Segment> segments = segmentation.requireSegments();
 
 					Segment finalSegment = segments.get(segments.size() - 1);
 
-					Predicate predicate = finalSegment.getPredicate();
+					Predicate predicate = finalSegment.requirePredicate();
 					if(!(predicate instanceof True)){
 						throw new IllegalArgumentException();
 					}
 
-					Model model = finalSegment.getModel();
+					Model model = finalSegment.requireModel();
 
 					return getFinalModel(model);
 				}

@@ -31,7 +31,7 @@ public class NaNAsMissingDecorator extends AbstractVisitor {
 
 	@Override
 	public VisitorAction visit(DataField dataField){
-		DataType dataType = dataField.getDataType();
+		DataType dataType = dataField.requireDataType();
 
 		switch(dataType){
 			case FLOAT:

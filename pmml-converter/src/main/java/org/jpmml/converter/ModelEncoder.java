@@ -126,7 +126,7 @@ public class ModelEncoder extends PMMLEncoder {
 			modelDecorators.put(model, decorators);
 		}
 
-		decorators.put(field.getName(), decorator);
+		decorators.put(field.requireName(), decorator);
 	}
 
 	public Map<Model, ListMultimap<Feature, Number>> getFeatureImportances(){
@@ -205,9 +205,8 @@ public class ModelEncoder extends PMMLEncoder {
 			Model model = entry.getKey();
 			ListMultimap<String, Decorator> decorators = entry.getValue();
 
-			MiningSchema miningSchema = model.getMiningSchema();
-
-			if(miningSchema != null && miningSchema.hasMiningFields()){
+			MiningSchema miningSchema = model.requireMiningSchema();
+			if(miningSchema.hasMiningFields()){
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
@@ -278,13 +277,12 @@ public class ModelEncoder extends PMMLEncoder {
 				Number fieldImportance = ValueUtil.divide(mathContext, importance, fields.size());
 
 				for(Field<?> field : fields){
-					fieldImportances.put(field.getName(), fieldImportance);
+					fieldImportances.put(field.requireName(), fieldImportance);
 				}
 			}
 
-			MiningSchema miningSchema = model.getMiningSchema();
-
-			if(miningSchema != null && miningSchema.hasMiningFields()){
+			MiningSchema miningSchema = model.requireMiningSchema();
+			if(miningSchema.hasMiningFields()){
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
@@ -361,11 +359,11 @@ public class ModelEncoder extends PMMLEncoder {
 			List<UnivariateStats> univariateStats = entry.getValue();
 
 			Map<String, UnivariateStats> fieldUnivariateStats = univariateStats.stream()
+				// XXX: UnivariateStats::requireField
 				.collect(Collectors.toMap(UnivariateStats::getField, Function.identity()));
 
-			MiningSchema miningSchema = model.getMiningSchema();
-
-			if(miningSchema != null && miningSchema.hasMiningFields()){
+			MiningSchema miningSchema = model.requireMiningSchema();
+			if(miningSchema.hasMiningFields()){
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){

@@ -55,7 +55,7 @@ public class MiningSchemaCleanerTest {
 
 			@Override
 			public VisitorAction visit(MiningModel miningModel){
-				MiningSchema miningSchema = miningModel.getMiningSchema();
+				MiningSchema miningSchema = miningModel.requireMiningSchema();
 
 				checkMiningSchema(Arrays.asList("y", "x1", "x2", "x3"), miningSchema);
 
@@ -64,7 +64,7 @@ public class MiningSchemaCleanerTest {
 
 			@Override
 			public VisitorAction visit(RegressionModel regressionModel){
-				MiningSchema miningSchema = regressionModel.getMiningSchema();
+				MiningSchema miningSchema = regressionModel.requireMiningSchema();
 
 				Segment segment = (Segment)getParent();
 
@@ -108,7 +108,7 @@ public class MiningSchemaCleanerTest {
 
 			@Override
 			public VisitorAction visit(MiningModel miningModel){
-				MiningSchema miningSchema = miningModel.getMiningSchema();
+				MiningSchema miningSchema = miningModel.requireMiningSchema();
 
 				String id;
 
@@ -146,7 +146,7 @@ public class MiningSchemaCleanerTest {
 
 			@Override
 			public VisitorAction visit(RegressionModel regressionModel){
-				MiningSchema miningSchema = regressionModel.getMiningSchema();
+				MiningSchema miningSchema = regressionModel.requireMiningSchema();
 
 				checkMiningSchema(Collections.singletonList("x123"), miningSchema);
 
