@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -240,6 +241,26 @@ public class ModelUtil {
 		return values.stream()
 			.map(value -> createProbabilityField(dataType, value))
 			.collect(Collectors.toList());
+	}
+
+	static
+	public OutputField createNeighborField(DataType dataType, int rank){
+		OutputField outputField = new OutputField(FieldNameUtil.create(FieldNamePrefixes.NEIGHBOR, rank), OpType.CATEGORICAL, dataType)
+			.setResultFeature(ResultFeature.ENTITY_ID)
+			.setRank(rank);
+
+		return outputField;
+	}
+
+	static
+	public List<OutputField> createNeighborFields(int count){
+		List<OutputField> result = new ArrayList<>();
+
+		for(int i = 0; i < count; i++){
+			result.add(createNeighborField(DataType.STRING, (i + 1)));
+		}
+
+		return result;
 	}
 
 	static
