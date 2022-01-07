@@ -24,12 +24,21 @@ public interface Datasets {
 	String AUDIT_NA = AUDIT + "NA";
 	String AUTO = "Auto";
 	String AUTO_NA = AUTO + "NA";
+	String HOUSING = "Housing";
+	String HOUSING_NA = HOUSING + "NA";
 	String IRIS = "Iris";
 	String IRIS_NA = IRIS + "NA";
 	String SENTIMENT = "Sentiment";
 	String SENTIMENT_NA = SENTIMENT + "NA";
+	String SHOPPING = "Shopping";
 	String VERSICOLOR = "Versicolor";
 	String VERSICOLOR_NA = VERSICOLOR + "NA";
 	String VISIT = "Visit";
 	String VISIT_NA = VISIT + "NA";
+	String WHEAT = "Wheat";
+	String WHEAT_NA = WHEAT + "NA";
+	String WINE_QUALITY = "WineQuality";
+	String WINE_QUALITY_NA = WINE_QUALITY + "NA";
+	String WINE_COLOR = "WineColor";
+	String WINE_COLOR_NA = WINE_COLOR + "NA";
 }
