@@ -18,13 +18,17 @@
  */
 package org.jpmml.converter;
 
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 
 public class ContinuousLabel extends Label {
 
-	public ContinuousLabel(DataField dataField){
-		this(dataField.requireName(), dataField.getDataType());
+	public ContinuousLabel(Field<?> field){
+		this(field.requireName(), field.getDataType());
+	}
+
+	public ContinuousLabel(DataType dataType){
+		this(null, dataType);
 	}
 
 	public ContinuousLabel(String name, DataType dataType){

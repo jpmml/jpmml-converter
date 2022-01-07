@@ -35,6 +35,14 @@ public class CategoricalLabel extends Label {
 		this(field.requireName(), field.getDataType(), PMMLUtil.getValues(field));
 	}
 
+	public CategoricalLabel(CategoricalFeature categoricalFeature){
+		this(categoricalFeature.getName(), categoricalFeature.getDataType(), categoricalFeature.getValues());
+	}
+
+	public CategoricalLabel(DataType dataType, List<?> values){
+		this(null, dataType, values);
+	}
+
 	public CategoricalLabel(String name, DataType dataType, List<?> values){
 		super(name, dataType);
 

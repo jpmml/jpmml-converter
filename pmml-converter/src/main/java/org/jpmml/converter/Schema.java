@@ -66,7 +66,7 @@ public class Schema {
 				throw new IllegalArgumentException();
 		}
 
-		Label label = new ContinuousLabel(null, dataType);
+		Label label = new ContinuousLabel(dataType);
 
 		return toRelabeledSchema(label);
 	}
