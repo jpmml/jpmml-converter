@@ -32,7 +32,7 @@ public class OutlierDecorator implements Decorator {
 
 	public OutlierDecorator(OutlierTreatmentMethod outlierTreatment, Number lowValue, Number highValue){
 
-		if(outlierTreatment == null || (OutlierTreatmentMethod.AS_IS).equals(outlierTreatment)){
+		if((outlierTreatment == null) || (outlierTreatment == OutlierTreatmentMethod.AS_IS)){
 
 			if(lowValue != null || highValue != null){
 				throw new IllegalArgumentException();

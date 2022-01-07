@@ -77,11 +77,11 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 						node.setDefaultChild(null);
 					} // End if
 
-					if((MiningFunction.REGRESSION).equals(this.miningFunction)){
+					if(this.miningFunction == MiningFunction.REGRESSION){
 						initScore(node, child);
 					} else
 
-					if((MiningFunction.CLASSIFICATION).equals(this.miningFunction)){
+					if(this.miningFunction == MiningFunction.CLASSIFICATION){
 						initScoreDistribution(node, child);
 					} else
 

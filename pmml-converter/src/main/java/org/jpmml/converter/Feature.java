@@ -51,7 +51,7 @@ public class Feature {
 	public ContinuousFeature toContinuousFeature(DataType dataType){
 		ContinuousFeature continuousFeature = toContinuousFeature();
 
-		if((dataType).equals(continuousFeature.getDataType())){
+		if(dataType == continuousFeature.getDataType()){
 			return continuousFeature;
 		}
 

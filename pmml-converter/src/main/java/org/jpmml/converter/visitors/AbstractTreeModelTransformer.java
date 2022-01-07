@@ -279,7 +279,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		if(predicate instanceof SimplePredicate){
 			SimplePredicate simplePredicate = (SimplePredicate)predicate;
 
-			return (simplePredicate.requireOperator()).equals(operator);
+			return (operator == simplePredicate.requireOperator());
 		}
 
 		return false;
@@ -291,7 +291,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		if(predicate instanceof SimpleSetPredicate){
 			SimpleSetPredicate simpleSetPredicate = (SimpleSetPredicate)predicate;
 
-			return (simpleSetPredicate.requireBooleanOperator()).equals(booleanOperator);
+			return (booleanOperator == simpleSetPredicate.requireBooleanOperator());
 		}
 
 		return false;

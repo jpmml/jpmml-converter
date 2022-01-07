@@ -30,7 +30,7 @@ public class MissingValueDecorator implements Decorator {
 
 	public MissingValueDecorator(MissingValueTreatmentMethod missingValueTreatment, Object missingValueReplacement){
 
-		if((MissingValueTreatmentMethod.RETURN_INVALID).equals(missingValueTreatment)){
+		if(missingValueTreatment == MissingValueTreatmentMethod.RETURN_INVALID){
 
 			if(missingValueReplacement != null){
 				throw new IllegalArgumentException();

@@ -130,7 +130,7 @@ public class PMMLUtil {
 		List<Value> pmmlValues = field.getValues();
 		for(Value pmmlValue : pmmlValues){
 
-			if((property).equals(pmmlValue.getProperty())){
+			if(property == pmmlValue.getProperty()){
 				result.add(pmmlValue.requireValue());
 			}
 		}
@@ -146,7 +146,7 @@ public class PMMLUtil {
 	static
 	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, Value.Property property, List<?> values){
 
-		if((Value.Property.VALID).equals(property)){
+		if(property == Value.Property.VALID){
 			property = null;
 		}
 

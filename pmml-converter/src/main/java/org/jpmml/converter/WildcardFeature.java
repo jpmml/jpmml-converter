@@ -54,7 +54,7 @@ public class WildcardFeature extends Feature {
 
 		DataField dataField = (DataField)encoder.toCategorical(getName(), values);
 
-		if((DataType.BOOLEAN).equals(dataField.requireDataType()) && (BooleanFeature.VALUES).equals(values)){
+		if((dataField.requireDataType() == DataType.BOOLEAN) && (BooleanFeature.VALUES).equals(values)){
 			return new BooleanFeature(encoder, dataField);
 		}
 

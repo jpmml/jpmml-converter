@@ -53,7 +53,7 @@ public class ModelUtil {
 
 	static
 	public MathContext simplifyMathContext(MathContext mathContext){
-		return (MathContext.DOUBLE).equals(mathContext) ? null : mathContext;
+		return (mathContext == MathContext.DOUBLE) ? null : mathContext;
 	}
 
 	static
@@ -146,7 +146,7 @@ public class ModelUtil {
 	public Output createProbabilityOutput(MathContext mathContext, CategoricalLabel categoricalLabel){
 		DataType dataType = DataType.DOUBLE;
 
-		if((MathContext.FLOAT).equals(mathContext)){
+		if(mathContext == MathContext.FLOAT){
 			dataType = DataType.FLOAT;
 		}
 

@@ -30,7 +30,7 @@ public class InvalidValueDecorator implements Decorator {
 
 	public InvalidValueDecorator(InvalidValueTreatmentMethod invalidValueTreatment, Object invalidValueReplacement){
 
-		if((InvalidValueTreatmentMethod.AS_VALUE).equals(invalidValueTreatment)){
+		if(invalidValueTreatment == InvalidValueTreatmentMethod.AS_VALUE){
 
 			if(invalidValueReplacement == null){
 				throw new IllegalArgumentException();
