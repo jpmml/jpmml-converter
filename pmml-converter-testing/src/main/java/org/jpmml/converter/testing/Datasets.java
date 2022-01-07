@@ -18,7 +18,7 @@
  */
 package org.jpmml.converter.testing;
 
-interface Datasets {
+public interface Datasets {
 
 	String AUDIT = "Audit";
 	String AUDIT_NA = AUDIT + "NA";
