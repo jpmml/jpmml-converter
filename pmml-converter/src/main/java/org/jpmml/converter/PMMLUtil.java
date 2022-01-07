@@ -38,6 +38,7 @@ import org.dmg.pmml.Array;
 import org.dmg.pmml.ComplexArray;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.Extension;
 import org.dmg.pmml.Field;
@@ -156,6 +157,11 @@ public class PMMLUtil {
 
 			pmmlValues.add(pmmlValue);
 		}
+	}
+
+	static
+	public Apply createApply(DefineFunction defineFunction, Expression... expressions){
+		return createApply(defineFunction.requireName(), expressions);
 	}
 
 	static
