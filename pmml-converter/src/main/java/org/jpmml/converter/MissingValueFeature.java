@@ -41,7 +41,7 @@ public class MissingValueFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public String getDerivedName(){
-		return FieldNameUtil.create("isMissing", getName());
+		return FieldNameUtil.create(PMMLFunctions.ISMISSING, getName());
 	}
 
 	@Override
