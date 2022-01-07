@@ -67,9 +67,10 @@
 				<version>3.2.0</version>
 				<configuration>
 					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
+						<manifestEntries>
+							<Implementation-Title>JPMML-Converter library</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
