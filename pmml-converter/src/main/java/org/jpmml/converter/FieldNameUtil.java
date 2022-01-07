@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.OpType;
 
 public class FieldNameUtil {
@@ -39,6 +40,11 @@ public class FieldNameUtil {
 	static
 	public String create(OpType opType, Object... args){
 		return create((opType.name()).toLowerCase(), args);
+	}
+
+	static
+	public String create(DefineFunction defineFunction, Object... args){
+		return create(defineFunction.requireName(), args);
 	}
 
 	static
