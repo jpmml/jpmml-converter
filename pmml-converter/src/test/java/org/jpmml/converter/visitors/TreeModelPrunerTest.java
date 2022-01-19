@@ -32,7 +32,6 @@ import org.dmg.pmml.tree.ComplexNode;
 import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
-import org.jpmml.converter.InternableSimplePredicate;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -82,12 +81,12 @@ public class TreeModelPrunerTest {
 
 	@Test
 	public void pruneNoOp(){
-		SimplePredicate parentPredicate = new InternableSimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 0);
+		SimplePredicate parentPredicate = new SimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 0);
 
 		Node parent = new BranchNode()
 			.setPredicate(parentPredicate);
 
-		SimplePredicate childPredicate = new InternableSimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 1);
+		SimplePredicate childPredicate = new SimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 1);
 
 		Node child = new BranchNode()
 			.setPredicate(childPredicate);

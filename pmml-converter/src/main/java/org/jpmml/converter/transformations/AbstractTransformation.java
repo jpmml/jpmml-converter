@@ -50,7 +50,7 @@ public class AbstractTransformation implements Transformation {
 
 	@Override
 	public OutputField createOutputField(OutputField outputField){
-		return new OutputField(getName(outputField.requireName()), getOpType(outputField.getOpType()), getDataType(outputField.requireDataType()))
+		return new OutputField(getName(outputField.requireName()), getOpType(outputField.requireOpType()), getDataType(outputField.requireDataType()))
 			.setResultFeature(getResultFeature())
 			.setFinalResult(isFinalResult())
 			.setExpression(createExpression(new FieldRef(outputField)));

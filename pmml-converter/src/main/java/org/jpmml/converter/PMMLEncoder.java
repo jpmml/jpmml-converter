@@ -199,7 +199,7 @@ public class PMMLEncoder {
 	public Field<?> toContinuous(String name){
 		Field<?> field = getField(name);
 
-		DataType dataType = field.getDataType();
+		DataType dataType = field.requireDataType();
 		switch(dataType){
 			case INTEGER:
 			case FLOAT:

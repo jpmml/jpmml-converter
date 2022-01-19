@@ -27,6 +27,7 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
+import org.jpmml.model.ReflectionUtil;
 
 public class TreeModelPruner extends AbstractTreeModelTransformer {
 
@@ -71,7 +72,7 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 				Predicate childPredicate = child.requirePredicate();
 				Number childRecordCount = child.getRecordCount();
 
-				if(Objects.equals(predicate, childPredicate) && Objects.equals(recordCount, childRecordCount)){
+				if(ReflectionUtil.equals(predicate, childPredicate) && Objects.equals(recordCount, childRecordCount)){
 
 					if(defaultChild != null){
 						node.setDefaultChild(null);

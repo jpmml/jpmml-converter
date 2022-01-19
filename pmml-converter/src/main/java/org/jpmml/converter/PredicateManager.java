@@ -20,18 +20,17 @@ package org.jpmml.converter;
 
 import java.util.List;
 
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
+import org.jpmml.model.PMMLObjectCache;
 
 public class PredicateManager {
 
-	private Interner<Predicate> interner = Interners.newStrongInterner();
+	private PMMLObjectCache<Predicate> cache = new PMMLObjectCache<>();
 
 
 	public Predicate createPredicate(Feature feature, List<?> values){
@@ -46,7 +45,7 @@ public class PredicateManager {
 	}
 
 	public Predicate createSimplePredicate(Feature feature, SimplePredicate.Operator operator, Object value){
-		Predicate predicate = new InternableSimplePredicate(feature.getName(), operator, value);
+		Predicate predicate = new SimplePredicate(feature.getName(), operator, value);
 
 		return intern(predicate);
 	}
@@ -54,20 +53,20 @@ public class PredicateManager {
 	public Predicate createSimpleSetPredicate(Feature feature, SimpleSetPredicate.BooleanOperator booleanOperator, List<?> values){
 		Array array = createArray(feature.getDataType(), values);
 
-		Predicate predicate = new InternableSimpleSetPredicate(feature.getName(), booleanOperator, array);
+		Predicate predicate = new SimpleSetPredicate(feature.getName(), booleanOperator, array);
 
 		return intern(predicate);
 	}
 
 	public Predicate createCompoundPredicate(CompoundPredicate.BooleanOperator booleanOperator, Predicate... predicates){
-		Predicate predicate = new InternableCompoundPredicate(booleanOperator, null)
+		Predicate predicate = new CompoundPredicate(booleanOperator, null)
 			.addPredicates(predicates);
 
 		return intern(predicate);
 	}
 
 	public Predicate intern(Predicate predicate){
-		return this.interner.intern(predicate);
+		return this.cache.intern(predicate);
 	}
 
 	static

@@ -108,7 +108,7 @@ public class NeuralNetworkUtil {
 			}
 
 			Connection connection = new Connection()
-				.setFrom(entity.getId())
+				.setFrom(entity.requireId())
 				.setWeight(weight);
 
 			neuron.addConnections(connection);
@@ -129,7 +129,7 @@ public class NeuralNetworkUtil {
 		Neuron logisticNeuron = new Neuron()
 			.setId("logistic/1")
 			.setBias(null)
-			.addConnections(new Connection(entity.getId(), 1d));
+			.addConnections(new Connection(entity.requireId(), 1d));
 
 		inputLayer.addNeurons(logisticNeuron);
 
@@ -141,12 +141,12 @@ public class NeuralNetworkUtil {
 		Neuron noEventNeuron = new Neuron()
 			.setId("event/false")
 			.setBias(1d)
-			.addConnections(new Connection(entity.getId(), -1d));
+			.addConnections(new Connection(entity.requireId(), -1d));
 
 		Neuron eventNeuron = new Neuron()
 			.setId("event/true")
 			.setBias(null)
-			.addConnections(new Connection(entity.getId(), 1d));
+			.addConnections(new Connection(entity.requireId(), 1d));
 
 		outputLayer.addNeurons(noEventNeuron, eventNeuron);
 
@@ -165,7 +165,7 @@ public class NeuralNetworkUtil {
 		DerivedField derivedField = new DerivedField(null, OpType.CONTINUOUS, continuousLabel.getDataType(), new FieldRef(continuousLabel.getName()));
 
 		NeuralOutput neuralOutput = new NeuralOutput()
-			.setOutputNeuron(entity.getId())
+			.setOutputNeuron(entity.requireId())
 			.setDerivedField(derivedField);
 
 		NeuralOutputs neuralOutputs = new NeuralOutputs()
@@ -186,7 +186,7 @@ public class NeuralNetworkUtil {
 			DerivedField derivedField = new DerivedField(null, OpType.CATEGORICAL, categoricalLabel.getDataType(), new NormDiscrete(categoricalLabel.getName(), categoricalLabel.getValue(i)));
 
 			NeuralOutput neuralOutput = new NeuralOutput()
-				.setOutputNeuron(entity.getId())
+				.setOutputNeuron(entity.requireId())
 				.setDerivedField(derivedField);
 
 			neuralOutputs.addNeuralOutputs(neuralOutput);

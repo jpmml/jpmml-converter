@@ -28,7 +28,7 @@ import org.dmg.pmml.PMMLFunctions;
 public class MissingValueFeature extends Feature implements HasDerivedName {
 
 	public MissingValueFeature(PMMLEncoder encoder, Field<?> field){
-		this(encoder, field.requireName(), field.getDataType());
+		this(encoder, field.requireName(), field.requireDataType());
 	}
 
 	public MissingValueFeature(PMMLEncoder encoder, Feature feature){

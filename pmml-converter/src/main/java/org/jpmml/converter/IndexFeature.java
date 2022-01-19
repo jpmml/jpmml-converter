@@ -29,7 +29,7 @@ import org.dmg.pmml.OpType;
 public class IndexFeature extends CategoricalFeature {
 
 	public IndexFeature(PMMLEncoder encoder, Field<?> field, List<? extends Number> values){
-		this(encoder, field.requireName(), field.getDataType(), values);
+		this(encoder, field.requireName(), field.requireDataType(), values);
 	}
 
 	public IndexFeature(PMMLEncoder encoder, Feature feature, List<? extends Number> values){

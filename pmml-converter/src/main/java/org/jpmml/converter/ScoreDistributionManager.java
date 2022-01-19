@@ -20,15 +20,14 @@ package org.jpmml.converter;
 
 import java.util.List;
 
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import org.dmg.pmml.HasScoreDistributions;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.ScoreDistribution;
+import org.jpmml.model.PMMLObjectCache;
 
 public class ScoreDistributionManager {
 
-	private Interner<ScoreDistribution> interner = Interners.newStrongInterner();
+	private PMMLObjectCache<ScoreDistribution> cache = new PMMLObjectCache<>();
 
 
 	public <E extends PMMLObject & HasScoreDistributions<E>> void addScoreDistributions(E object, List<?> values, double[] recordCounts){
@@ -45,7 +44,7 @@ public class ScoreDistributionManager {
 	}
 
 	public ScoreDistribution createScoreDistribution(Object value, double recordCount){
-		ScoreDistribution scoreDistribution = new InternableScoreDistribution()
+		ScoreDistribution scoreDistribution = new ScoreDistribution()
 			.setValue(value)
 			.setRecordCount(ValueUtil.narrow(recordCount));
 
@@ -53,6 +52,6 @@ public class ScoreDistributionManager {
 	}
 
 	public ScoreDistribution intern(ScoreDistribution scoreDistribution){
-		return this.interner.intern(scoreDistribution);
+		return this.cache.intern(scoreDistribution);
 	}
 }

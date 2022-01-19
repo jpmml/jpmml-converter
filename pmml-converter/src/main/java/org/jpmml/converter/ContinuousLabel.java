@@ -24,7 +24,7 @@ import org.dmg.pmml.Field;
 public class ContinuousLabel extends Label {
 
 	public ContinuousLabel(Field<?> field){
-		this(field.requireName(), field.getDataType());
+		this(field.requireName(), field.requireDataType());
 	}
 
 	public ContinuousLabel(DataType dataType){
