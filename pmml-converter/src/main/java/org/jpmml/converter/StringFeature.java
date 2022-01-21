@@ -24,14 +24,14 @@ import org.dmg.pmml.Field;
 public class StringFeature extends ObjectFeature {
 
 	public StringFeature(PMMLEncoder encoder, Field<?> field){
-		this(encoder, field.requireName(), field.requireDataType());
+		this(encoder, field.requireName());
 	}
 
 	public StringFeature(PMMLEncoder encoder, Feature feature){
-		this(encoder, feature.getName(), feature.getDataType());
+		this(encoder, feature.getName());
 	}
 
-	public StringFeature(PMMLEncoder encoder, String name, DataType dataType){
-		super(encoder, name, dataType);
+	public StringFeature(PMMLEncoder encoder, String name){
+		super(encoder, name, DataType.STRING);
 	}
 }
