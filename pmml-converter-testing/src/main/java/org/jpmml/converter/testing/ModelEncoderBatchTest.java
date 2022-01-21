@@ -18,13 +18,38 @@
  */
 package org.jpmml.converter.testing;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.base.Equivalence;
 import org.jpmml.evaluator.testing.ArchiveBatchTest;
+import org.jpmml.evaluator.testing.Batch;
 
 abstract
 public class ModelEncoderBatchTest extends ArchiveBatchTest {
 
 	public ModelEncoderBatchTest(Equivalence<Object> equivalence){
 		super(equivalence);
+	}
+
+	@Override
+	public void evaluate(Batch batch) throws Exception {
+		evaluate((ModelEncoderBatch)batch);
+	}
+
+	public void evaluate(ModelEncoderBatch modelEncoderBatch) throws Exception {
+		List<Map<String, Object>> optionsMatrix = modelEncoderBatch.getOptionsMatrix();
+
+		if(optionsMatrix.isEmpty()){
+			throw new IllegalArgumentException();
+		}
+
+		for(int i = 0; i < optionsMatrix.size(); i++){
+			Map<String, Object> options = optionsMatrix.get(i);
+
+			modelEncoderBatch.setOptions(options);
+
+			super.evaluate(modelEncoderBatch);
+		}
 	}
 }

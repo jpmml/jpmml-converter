@@ -21,6 +21,7 @@ package org.jpmml.converter.testing;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,13 @@ public class ModelEncoderBatch extends ArchiveBatch {
 		}
 
 		return result;
+	}
+
+	/**
+	 * @see #setOptions(Map)
+	 */
+	public List<Map<String, Object>> getOptionsMatrix(){
+		return Collections.singletonList(Collections.emptyMap());
 	}
 
 	@Override
