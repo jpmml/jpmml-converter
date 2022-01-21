@@ -241,6 +241,23 @@ public class ValueUtil {
 	}
 
 	static
+	public Number subtract(MathContext mathContext, Number first, Number second){
+
+		if(mathContext == null){
+			mathContext = MathContext.DOUBLE;
+		}
+
+		switch(mathContext){
+			case FLOAT:
+				return (first.floatValue() - second.floatValue());
+			case DOUBLE:
+				return (first.doubleValue() - second.doubleValue());
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	static
 	public Number multiply(MathContext mathContext, Number first, Number second){
 
 		if(mathContext == null){
