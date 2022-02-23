@@ -32,7 +32,6 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
-import org.dmg.pmml.Predicate;
 import org.dmg.pmml.True;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
@@ -248,11 +247,8 @@ public class MiningModelUtil {
 
 					Segment finalSegment = segments.get(segments.size() - 1);
 
-					Predicate predicate = finalSegment.requirePredicate();
-					if(!(predicate instanceof True)){
-						throw new IllegalArgumentException();
-					}
-
+					@SuppressWarnings("unused")
+					True _true = finalSegment.requirePredicate(True.class);
 					Model model = finalSegment.requireModel();
 
 					return getFinalModel(model);
