@@ -26,6 +26,7 @@ import org.dmg.pmml.Constant;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.VisitorAction;
+import org.jpmml.model.InvalidElementException;
 import org.jpmml.model.visitors.AbstractVisitor;
 
 public class ExpressionCompactor extends AbstractVisitor {
@@ -57,16 +58,15 @@ public class ExpressionCompactor extends AbstractVisitor {
 	}
 
 	static
-	public void simplifyComparisonExpression(Apply apply){
+	private void simplifyComparisonExpression(Apply apply){
 		String function = apply.requireFunction();
 		List<Expression> expressions = apply.getExpressions();
 
 		if(expressions.size() != 2){
-			throw new IllegalArgumentException();
+			throw new InvalidElementException(apply);
 		}
 
 		ListIterator<Expression> expressionIt = expressions.listIterator();
-
 		while(expressionIt.hasNext()){
 			Expression expression = expressionIt.next();
 
@@ -76,7 +76,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 		}
 
 		if(expressions.size() == 0){
-			throw new IllegalArgumentException();
+			throw new InvalidElementException(apply);
 		} else
 
 		if(expressions.size() == 1){
@@ -89,7 +89,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 					apply.setFunction(PMMLFunctions.ISNOTMISSING);
 					break;
 				default:
-					throw new IllegalArgumentException();
+					throw new InvalidElementException(apply);
 			}
 		}
 	}
@@ -100,10 +100,11 @@ public class ExpressionCompactor extends AbstractVisitor {
 		List<Expression> expressions = apply.getExpressions();
 
 		if(expressions.size() < 2){
-			throw new IllegalArgumentException();
+			throw new InvalidElementException(apply);
 		}
 
-		for(ListIterator<Expression> expressionIt = expressions.listIterator(); expressionIt.hasNext(); ){
+		ListIterator<Expression> expressionIt = expressions.listIterator();
+		while(expressionIt.hasNext()){
 			Expression expression = expressionIt.next();
 
 			if(expression instanceof Apply){
@@ -129,7 +130,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 		List<Expression> expressions = apply.getExpressions();
 
 		if(expressions.size() != 1){
-			throw new IllegalArgumentException();
+			throw new InvalidElementException(apply);
 		}
 
 		ListIterator<Expression> expressionIt = expressions.listIterator();

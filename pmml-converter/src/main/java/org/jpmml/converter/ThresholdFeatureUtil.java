@@ -25,6 +25,7 @@ import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
+import org.jpmml.model.UnsupportedElementException;
 
 public class ThresholdFeatureUtil {
 
@@ -93,6 +94,6 @@ public class ThresholdFeatureUtil {
 			return false;
 		}
 
-		throw new IllegalArgumentException();
+		throw new UnsupportedElementException(predicate);
 	}
 }

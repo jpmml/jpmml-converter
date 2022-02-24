@@ -47,6 +47,8 @@ import org.jpmml.converter.Schema;
 import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 import org.jpmml.converter.regression.RegressionModelUtil;
+import org.jpmml.model.InvalidElementException;
+import org.jpmml.model.UnsupportedAttributeException;
 
 public class MiningModelUtil {
 
@@ -240,7 +242,7 @@ public class MiningModelUtil {
 		switch(multipleModelMethod){
 			case SELECT_FIRST:
 			case SELECT_ALL:
-				throw new IllegalArgumentException();
+				throw new UnsupportedAttributeException(segmentation, multipleModelMethod);
 			case MODEL_CHAIN:
 				{
 					List<Segment> segments = segmentation.requireSegments();
@@ -265,7 +267,7 @@ public class MiningModelUtil {
 		Output output = model.getOutput();
 
 		if(output == null || !output.hasOutputFields()){
-			throw new IllegalArgumentException();
+			throw new InvalidElementException(model);
 		}
 
 		OutputField outputField = Iterables.getLast(output.getOutputFields());

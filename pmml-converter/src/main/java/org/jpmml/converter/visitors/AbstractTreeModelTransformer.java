@@ -34,6 +34,7 @@ import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
+import org.jpmml.model.UnsupportedElementException;
 import org.jpmml.model.visitors.AbstractVisitor;
 
 abstract
@@ -154,7 +155,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		List<Node> children = node.getNodes();
 
 		if(children.size() != 2){
-			throw new IllegalArgumentException();
+			throw new UnsupportedElementException(node);
 		}
 
 		Node firstChild = children.remove(0);
@@ -169,7 +170,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		Object score = node.getScore();
 
 		if(parentNode.hasScore()){
-			throw new IllegalArgumentException();
+			throw new UnsupportedElementException(parentNode);
 		}
 
 		parentNode.setScore(score);
@@ -181,29 +182,26 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 		Number recordCount = node.getRecordCount();
 
 		if(parentNode.hasScore()){
-			throw new IllegalArgumentException();
-		}
-
-		parentNode.setScore(score);
+			throw new UnsupportedElementException(parentNode);
+		} // End if
 
 		Number parentRecordCount = parentNode.getRecordCount();
 		if(parentRecordCount != null){
-			throw new IllegalArgumentException();
-		}
-
-		parentNode.setRecordCount(recordCount);
+			throw new UnsupportedElementException(parentNode);
+		} // End if
 
 		if(parentNode.hasScoreDistributions()){
-			throw new IllegalArgumentException();
-		} // End if
+			throw new UnsupportedElementException(parentNode);
+		}
+
+		parentNode
+			.setScore(score)
+			.setRecordCount(recordCount);
 
 		if(node.hasScoreDistributions()){
 			List<ScoreDistribution> scoreDistributions = node.getScoreDistributions();
 
 			List<ScoreDistribution> parentScoreDistributions = parentNode.getScoreDistributions();
-			if(!parentScoreDistributions.isEmpty()){
-				throw new IllegalArgumentException();
-			}
 
 			parentScoreDistributions.addAll(scoreDistributions);
 		}
@@ -215,7 +213,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 		Object parentDefaultChild = parentNode.getDefaultChild();
 		if(parentDefaultChild != null){
-			throw new IllegalArgumentException();
+			throw new UnsupportedElementException(parentNode);
 		}
 
 		parentNode.setDefaultChild(defaultChild);
@@ -227,7 +225,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 		int index = parentChildren.indexOf(node);
 		if(index < 0 || index != (parentChildren.size() - 1)){
-			throw new IllegalArgumentException();
+			throw new UnsupportedElementException(parentNode);
 		}
 
 		parentChildren.remove(index);

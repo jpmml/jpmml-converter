@@ -28,6 +28,7 @@ import org.dmg.pmml.Predicate;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.jpmml.model.ReflectionUtil;
+import org.jpmml.model.UnsupportedAttributeException;
 
 public class TreeModelPruner extends AbstractTreeModelTransformer {
 
@@ -84,10 +85,6 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 
 					if(this.miningFunction == MiningFunction.CLASSIFICATION){
 						initScoreDistribution(node, child);
-					} else
-
-					{
-						throw new IllegalArgumentException();
 					}
 
 					initDefaultChild(node, child);
@@ -99,11 +96,24 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 
 	@Override
 	public void enterTreeModel(TreeModel treeModel){
-		this.miningFunction = treeModel.requireMiningFunction();
+		super.enterTreeModel(treeModel);
+
+		MiningFunction miningFunction = treeModel.requireMiningFunction();
+		switch(miningFunction){
+			case REGRESSION:
+			case CLASSIFICATION:
+				break;
+			default:
+				throw new UnsupportedAttributeException(treeModel, miningFunction);
+		}
+
+		this.miningFunction = miningFunction;
 	}
 
 	@Override
 	public void exitTreeModel(TreeModel treeModel){
+		super.exitTreeModel(treeModel);
+
 		this.miningFunction = null;
 	}
 }

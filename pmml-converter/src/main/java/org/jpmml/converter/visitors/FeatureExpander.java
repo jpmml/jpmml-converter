@@ -39,6 +39,7 @@ import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segmentation;
+import org.jpmml.model.UnsupportedElementException;
 import org.jpmml.model.visitors.AbstractVisitor;
 
 public class FeatureExpander extends DeepFieldResolver {
@@ -180,7 +181,7 @@ public class FeatureExpander extends DeepFieldResolver {
 			} else
 
 			{
-				throw new IllegalArgumentException();
+				throw new UnsupportedElementException(featureField);
 			}
 		}
 	}
