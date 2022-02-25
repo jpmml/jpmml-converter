@@ -19,11 +19,20 @@
 package org.jpmml.converter;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import org.dmg.pmml.Apply;
+import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Expression;
+import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.PMMLFunctions;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TypeUtilTest {
 
@@ -41,5 +50,61 @@ public class TypeUtilTest {
 		assertEquals(DataType.INTEGER, TypeUtil.getDataType(Arrays.asList("1", "2.0", "3")));
 		assertEquals(DataType.STRING, TypeUtil.getDataType(Arrays.asList("1", "2.1", "3")));
 		assertEquals(DataType.STRING, TypeUtil.getDataType(Arrays.asList("1", "two", "3")));
+	}
+
+	@Test
+	public void isString(){
+		FeatureResolver featureResolver = new FeatureResolver(){
+
+			@Override
+			public Feature resolveFeature(String name){
+				return TypeUtilTest.stringFeatures.get(name);
+			}
+		};
+
+		assertFalse(TypeUtil.isString(createConstant("Hello World!", null), featureResolver));
+		assertTrue(TypeUtil.isString(createConstant("Hello World!", DataType.STRING), featureResolver));
+
+		assertFalse(TypeUtil.isString(new FieldRef("x"), featureResolver));
+
+		assertTrue(TypeUtil.isString(new FieldRef("a"), featureResolver));
+		assertTrue(TypeUtil.isString(new FieldRef("b"), featureResolver));
+
+		Expression expression = PMMLUtil.createApply(PMMLFunctions.CONCAT, PMMLUtil.createConstant("Hello World!", null), new FieldRef("x"));
+
+		assertTrue(TypeUtil.isString(expression, featureResolver));
+
+		assertFalse(TypeUtil.isString(createIfApply("x", null), featureResolver));
+		assertTrue(TypeUtil.isString(createIfApply("a", null), featureResolver));
+		assertFalse(TypeUtil.isString(createIfApply("a", "x"), featureResolver));
+		assertTrue(TypeUtil.isString(createIfApply("a", "b"), featureResolver));
+	}
+
+	static
+	private Constant createConstant(Object value, DataType dataType){
+		return PMMLUtil.createConstant(value, dataType);
+	}
+
+	static
+	private Apply createIfApply(String trueName, String falseName){
+		Apply apply = PMMLUtil.createApply(PMMLFunctions.IF,
+			createConstant(Boolean.TRUE, null),
+			new FieldRef(trueName)
+		);
+
+		if(falseName != null){
+			apply.addExpressions(new FieldRef(falseName));
+		}
+
+		return apply;
+	}
+
+	private static final Map<String, Feature> stringFeatures = new LinkedHashMap<>();
+
+	static {
+		PMMLEncoder encoder = new PMMLEncoder();
+
+		stringFeatures.put("a", new ObjectFeature(encoder, "a", DataType.STRING));
+		stringFeatures.put("b", new ObjectFeature(encoder, "b", DataType.STRING));
 	}
 }
