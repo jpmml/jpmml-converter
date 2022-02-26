@@ -21,7 +21,7 @@ package org.jpmml.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeatureList extends ArrayList<Feature> {
+public class FeatureList extends ArrayList<Feature> implements FeatureResolver {
 
 	private List<String> names = null;
 
@@ -36,7 +36,8 @@ public class FeatureList extends ArrayList<Feature> {
 		setNames(names);
 	}
 
-	public Feature getFeature(String name){
+	@Override
+	public Feature resolveFeature(String name){
 		List<String> names = getNames();
 
 		int index = names.indexOf(name);
