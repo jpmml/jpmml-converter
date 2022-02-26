@@ -89,6 +89,11 @@ public class PMMLUtil {
 
 	static
 	public Header createHeader(String name, String version){
+
+		if(name == null){
+			name = "JPMML-Converter";
+		}
+
 		Application application = new Application()
 			.setName(name)
 			.setVersion(version);

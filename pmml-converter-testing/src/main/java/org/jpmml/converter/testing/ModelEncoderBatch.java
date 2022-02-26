@@ -20,7 +20,6 @@ package org.jpmml.converter.testing;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,10 +27,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import com.google.common.base.Equivalence;
-import org.dmg.pmml.Application;
 import org.dmg.pmml.PMML;
-import org.dmg.pmml.Visitor;
-import org.dmg.pmml.VisitorAction;
 import org.jpmml.evaluator.Evaluator;
 import org.jpmml.evaluator.EvaluatorBuilder;
 import org.jpmml.evaluator.FieldNameSet;
@@ -42,6 +38,7 @@ import org.jpmml.evaluator.testing.ArchiveBatch;
 import org.jpmml.evaluator.visitors.UnsupportedMarkupInspector;
 import org.jpmml.model.visitors.InvalidMarkupInspector;
 import org.jpmml.model.visitors.MissingMarkupInspector;
+import org.jpmml.model.visitors.VisitorBattery;
 
 abstract
 public class ModelEncoderBatch extends ArchiveBatch {
@@ -97,34 +94,31 @@ public class ModelEncoderBatch extends ArchiveBatch {
 		ModelEvaluatorBuilder evaluatorBuilder = new ModelEvaluatorBuilder(pmml);
 
 		// XXX
-		evaluatorBuilder.setDerivedFieldGuard(new FieldNameSet(8));
-		evaluatorBuilder.setFunctionGuard(new FunctionNameStack(4));
+		evaluatorBuilder
+			.setDerivedFieldGuard(new FieldNameSet(8))
+			.setFunctionGuard(new FunctionNameStack(4));
 
 		return evaluatorBuilder;
 	}
 
-	protected void validatePMML(PMML pmml) throws Exception {
-		List<Visitor> visitors = Arrays.<Visitor>asList(
-			new MissingMarkupInspector(){
+	public void validatePMML(PMML pmml) throws Exception {
+		VisitorBattery visitorBattery = getValidators();
 
-				@Override
-				public VisitorAction visit(Application application){
-					String name = application.getName();
-
-					if(name == null){
-						return VisitorAction.SKIP;
-					}
-
-					return super.visit(application);
-				}
-			},
-			new InvalidMarkupInspector(),
-			new UnsupportedMarkupInspector()
-		);
-
-		for(Visitor visitor : visitors){
-			visitor.applyTo(pmml);
+		if(visitorBattery != null && !visitorBattery.isEmpty()){
+			visitorBattery.applyTo(pmml);
 		}
+	}
+
+	public VisitorBattery getValidators(){
+		VisitorBattery visitorBattery = new VisitorBattery();
+
+		visitorBattery.add(MissingMarkupInspector.class);
+		visitorBattery.add(InvalidMarkupInspector.class);
+
+		// XXX
+		visitorBattery.add(UnsupportedMarkupInspector.class);
+
+		return visitorBattery;
 	}
 
 	public Map<String, Object> getOptions(){
