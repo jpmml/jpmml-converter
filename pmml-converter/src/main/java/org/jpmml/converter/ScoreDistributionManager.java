@@ -23,6 +23,7 @@ import java.util.List;
 import org.dmg.pmml.HasScoreDistributions;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.ScoreDistribution;
+import org.dmg.pmml.ScoreFrequency;
 import org.jpmml.model.PMMLObjectCache;
 
 public class ScoreDistributionManager {
@@ -44,7 +45,7 @@ public class ScoreDistributionManager {
 	}
 
 	public ScoreDistribution createScoreDistribution(Object value, double recordCount){
-		ScoreDistribution scoreDistribution = new ScoreDistribution()
+		ScoreDistribution scoreDistribution = new ScoreFrequency()
 			.setValue(value)
 			.setRecordCount(ValueUtil.narrow(recordCount));
 
