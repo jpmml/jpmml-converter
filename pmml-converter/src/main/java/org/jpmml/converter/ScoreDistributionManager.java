@@ -24,6 +24,7 @@ import org.dmg.pmml.HasScoreDistributions;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.ScoreFrequency;
+import org.dmg.pmml.ScoreProbability;
 import org.jpmml.model.PMMLObjectCache;
 
 public class ScoreDistributionManager {
@@ -31,23 +32,37 @@ public class ScoreDistributionManager {
 	private PMMLObjectCache<ScoreDistribution> cache = new PMMLObjectCache<>();
 
 
-	public <E extends PMMLObject & HasScoreDistributions<E>> void addScoreDistributions(E object, List<?> values, double[] recordCounts){
+	public <E extends PMMLObject & HasScoreDistributions<E>> void addScoreDistributions(E object, List<?> values, List<? extends Number> recordCounts, List<? extends Number> probabilities){
 		List<ScoreDistribution> scoreDistributions = object.getScoreDistributions();
 
 		for(int i = 0; i < values.size(); i++){
 			Object value = values.get(i);
-			double recordCount = recordCounts[i];
+			Number recordCount = (recordCounts != null ? recordCounts.get(i) : null);
 
-			ScoreDistribution scoreDistribution = createScoreDistribution(value, recordCount);
+			ScoreDistribution scoreDistribution;
+
+			if(probabilities != null){
+				Number probability = probabilities.get(i);
+
+				scoreDistribution = createScoreProbability(value, recordCount, probability);
+			} else
+
+			{
+				scoreDistribution = createScoreFrequency(value, recordCount);
+			}
 
 			scoreDistributions.add(scoreDistribution);
 		}
 	}
 
-	public ScoreDistribution createScoreDistribution(Object value, double recordCount){
-		ScoreDistribution scoreDistribution = new ScoreFrequency()
-			.setValue(value)
-			.setRecordCount(ValueUtil.narrow(recordCount));
+	public ScoreDistribution createScoreFrequency(Object value, Number recordCount){
+		ScoreDistribution scoreDistribution = new ScoreFrequency(value, recordCount);
+
+		return intern(scoreDistribution);
+	}
+
+	public ScoreDistribution createScoreProbability(Object value, Number recordCount, Number probability){
+		ScoreDistribution scoreDistribution = new ScoreProbability(value, recordCount, probability);
 
 		return intern(scoreDistribution);
 	}
