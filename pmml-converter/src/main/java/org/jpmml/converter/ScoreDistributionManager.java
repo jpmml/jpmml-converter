@@ -70,4 +70,23 @@ public class ScoreDistributionManager {
 	public ScoreDistribution intern(ScoreDistribution scoreDistribution){
 		return this.cache.intern(scoreDistribution);
 	}
+
+	static
+	public <E extends Comparable<E>> int indexOfMax(List<E> values){
+		int result = -1;
+
+		E maxValue = null;
+
+		for(int i = 0; i < values.size(); i++){
+			E value = values.get(i);
+
+			if(maxValue == null || value.compareTo(maxValue) > 0){
+				result = i;
+
+				maxValue = value;
+			}
+		}
+
+		return result;
+	}
 }

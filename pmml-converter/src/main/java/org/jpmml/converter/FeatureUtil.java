@@ -18,9 +18,46 @@
  */
 package org.jpmml.converter;
 
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
+import org.dmg.pmml.OpType;
+
 public class FeatureUtil {
 
 	private FeatureUtil(){
+	}
+
+	static
+	public Feature createFeature(Field<?> field, PMMLEncoder encoder){
+		DataType dataType = field.requireDataType();
+		OpType opType = field.requireOpType();
+
+		switch(dataType){
+			case STRING:
+				return new StringFeature(encoder, field);
+			case INTEGER:
+			case FLOAT:
+			case DOUBLE:
+				switch(opType){
+					case CONTINUOUS:
+						return new ContinuousFeature(encoder, field);
+					default:
+						return new ObjectFeature(encoder, field){
+
+							@Override
+							public ContinuousFeature toContinuousFeature(){
+								PMMLEncoder encoder = getEncoder();
+
+								DerivedField derivedField = (DerivedField)encoder.toContinuous(getName());
+
+								return new ContinuousFeature(encoder, derivedField);
+							}
+						};
+				}
+			default:
+				return new ObjectFeature(encoder, field);
+		}
 	}
 
 	static

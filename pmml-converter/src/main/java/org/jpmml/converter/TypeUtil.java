@@ -31,6 +31,7 @@ import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMMLFunctions;
 
 public class TypeUtil {
@@ -239,5 +240,25 @@ public class TypeUtil {
 		}
 
 		return null;
+	}
+
+	static
+	public OpType getOpType(DataType dataType){
+
+		switch(dataType){
+			case STRING:
+				return OpType.CATEGORICAL;
+			case INTEGER:
+			case FLOAT:
+			case DOUBLE:
+				return OpType.CONTINUOUS;
+			case BOOLEAN:
+				return OpType.CATEGORICAL;
+			case DATE:
+			case DATE_TIME:
+				return OpType.ORDINAL;
+			default:
+				throw new IllegalArgumentException();
+		}
 	}
 }
