@@ -21,7 +21,7 @@ package org.jpmml.converter;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 
-public class ContinuousLabel extends Label {
+public class ContinuousLabel extends ScalarLabel {
 
 	public ContinuousLabel(Field<?> field){
 		this(field.requireName(), field.requireDataType());

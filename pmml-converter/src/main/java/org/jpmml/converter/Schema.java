@@ -51,9 +51,9 @@ public class Schema {
 	}
 
 	public Schema toAnonymousSchema(){
-		Label label = getLabel();
+		ScalarLabel scalarLabel = (ScalarLabel)getLabel();
 
-		return toRelabeledSchema(label != null ? label.toAnonymousLabel() : null);
+		return toRelabeledSchema(scalarLabel != null ? scalarLabel.toAnonymousLabel() : null);
 	}
 
 	public Schema toAnonymousRegressorSchema(DataType dataType){

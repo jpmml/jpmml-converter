@@ -26,27 +26,27 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class LabelTest {
+public class ScalarLabelTest {
 
 	@Test
 	public void categoricalLabel(){
-		Label label = new CategoricalLabel("y", DataType.INTEGER, Arrays.asList("1", "2", "3"));
+		ScalarLabel scalarLabel = new CategoricalLabel("y", DataType.INTEGER, Arrays.asList("1", "2", "3"));
 
-		assertFalse(label.isAnonymous());
+		assertFalse(scalarLabel.isAnonymous());
 
-		label = label.toAnonymousLabel();
+		scalarLabel = scalarLabel.toAnonymousLabel();
 
-		assertTrue(label.isAnonymous());
+		assertTrue(scalarLabel.isAnonymous());
 	}
 
 	@Test
 	public void continuousLabel(){
-		Label label = new ContinuousLabel("y", DataType.DOUBLE);
+		ScalarLabel scalarLabel = new ContinuousLabel("y", DataType.DOUBLE);
 
-		assertFalse(label.isAnonymous());
+		assertFalse(scalarLabel.isAnonymous());
 
-		label = label.toAnonymousLabel();
+		scalarLabel = scalarLabel.toAnonymousLabel();
 
-		assertTrue(label.isAnonymous());
+		assertTrue(scalarLabel.isAnonymous());
 	}
 }

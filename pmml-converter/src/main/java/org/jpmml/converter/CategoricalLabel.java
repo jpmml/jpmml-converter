@@ -26,7 +26,7 @@ import org.dmg.pmml.Field;
 import org.dmg.pmml.HasDiscreteDomain;
 import org.jpmml.model.ToStringHelper;
 
-public class CategoricalLabel extends Label {
+public class CategoricalLabel extends ScalarLabel {
 
 	private List<?> values = null;
 

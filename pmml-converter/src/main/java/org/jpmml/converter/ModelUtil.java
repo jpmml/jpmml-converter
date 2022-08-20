@@ -60,10 +60,14 @@ public class ModelUtil {
 	public MiningSchema createMiningSchema(Label label){
 		MiningSchema miningSchema = new MiningSchema();
 
-		if(label != null && !label.isAnonymous()){
-			MiningField miningField = createMiningField(label.getName(), MiningField.UsageType.TARGET);
+		if(label instanceof ScalarLabel){
+			ScalarLabel scalarLabel = (ScalarLabel)label;
 
-			miningSchema.addMiningFields(miningField);
+			if(!scalarLabel.isAnonymous()){
+				MiningField miningField = createMiningField(scalarLabel.getName(), MiningField.UsageType.TARGET);
+
+				miningSchema.addMiningFields(miningField);
+			}
 		}
 
 		return miningSchema;
