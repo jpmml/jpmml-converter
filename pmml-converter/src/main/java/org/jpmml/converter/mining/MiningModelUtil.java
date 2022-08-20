@@ -175,11 +175,8 @@ public class MiningModelUtil {
 
 		MiningFunction miningFunction = lastModel.requireMiningFunction();
 
-		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models)
-			.setMissingPredictionTreatment(missingPredictionTreatment);
-
 		MiningModel miningModel = new MiningModel(miningFunction, createMiningSchema(models))
-			.setSegmentation(segmentation);
+			.setSegmentation(createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, missingPredictionTreatment, models));
 
 		return miningModel;
 	}
@@ -211,11 +208,8 @@ public class MiningModelUtil {
 			}
 		}
 
-		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MULTI_MODEL_CHAIN, models)
-			.setMissingPredictionTreatment(missingPredictionTreatment);
-
 		MiningModel miningModel = new MiningModel(miningFunction, createMiningSchema(models))
-			.setSegmentation(segmentation);
+			.setSegmentation(createSegmentation(Segmentation.MultipleModelMethod.MULTI_MODEL_CHAIN, missingPredictionTreatment, models));
 
 		return miningModel;
 	}
@@ -248,12 +242,12 @@ public class MiningModelUtil {
 	}
 
 	static
-	public Segmentation createSegmentation(Segmentation.MultipleModelMethod multipleModelMethod, List<? extends Model> models){
-		return createSegmentation(multipleModelMethod, models, null);
+	public Segmentation createSegmentation(Segmentation.MultipleModelMethod multipleModelMethod, Segmentation.MissingPredictionTreatment missingPredictionTreatment, List<? extends Model> models){
+		return createSegmentation(multipleModelMethod, missingPredictionTreatment, models, null);
 	}
 
 	static
-	public Segmentation createSegmentation(Segmentation.MultipleModelMethod multipleModelMethod, List<? extends Model> models, List<? extends Number> weights){
+	public Segmentation createSegmentation(Segmentation.MultipleModelMethod multipleModelMethod, Segmentation.MissingPredictionTreatment missingPredictionTreatment, List<? extends Model> models, List<? extends Number> weights){
 
 		if((weights != null) && (models.size() != weights.size())){
 			throw new IllegalArgumentException();
@@ -275,7 +269,10 @@ public class MiningModelUtil {
 			segments.add(segment);
 		}
 
-		return new Segmentation(multipleModelMethod, segments);
+		Segmentation segmentation = new Segmentation(multipleModelMethod, segments)
+			.setMissingPredictionTreatment(missingPredictionTreatment);
+
+		return segmentation;
 	}
 
 	static
