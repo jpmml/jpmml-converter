@@ -65,18 +65,28 @@ public class MiningModelUtil {
 	public MiningModel createRegression(Model model, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
 		Feature feature = getPrediction(model, schema);
 
-		RegressionModel regressionModel = RegressionModelUtil.createRegression(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
+		MathContext mathContext = model.getMathContext();
 
-		return createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING);
+		RegressionModel regressionModel = RegressionModelUtil.createRegression(mathContext, Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
+
+		MiningModel miningModel = createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
+
+		return miningModel;
 	}
 
 	static
 	public MiningModel createBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		Feature feature = getPrediction(model, schema);
 
-		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
+		MathContext mathContext = model.getMathContext();
 
-		return createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING);
+		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(mathContext, Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
+
+		MiningModel miningModel = createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
+
+		return miningModel;
 	}
 
 	static
@@ -148,7 +158,10 @@ public class MiningModelUtil {
 		List<Model> segmentationModels = new ArrayList<>(models);
 		segmentationModels.add(regressionModel);
 
-		return createModelChain(segmentationModels, Segmentation.MissingPredictionTreatment.RETURN_MISSING);
+		MiningModel miningModel = createModelChain(segmentationModels, Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
+
+		return miningModel;
 	}
 
 	static
@@ -158,6 +171,57 @@ public class MiningModelUtil {
 			throw new IllegalArgumentException();
 		}
 
+		Model lastModel = Iterables.getLast(models);
+
+		MiningFunction miningFunction = lastModel.requireMiningFunction();
+
+		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models)
+			.setMissingPredictionTreatment(missingPredictionTreatment);
+
+		MiningModel miningModel = new MiningModel(miningFunction, createMiningSchema(models))
+			.setSegmentation(segmentation);
+
+		return miningModel;
+	}
+
+	static
+	public MiningModel createMultiModelChain(List<? extends Model> models, Segmentation.MissingPredictionTreatment missingPredictionTreatment){
+
+		if(models.isEmpty()){
+			throw new IllegalArgumentException();
+		}
+
+		MiningFunction miningFunction = null;
+
+		for(Model model : models){
+			MiningFunction modelMiningFunction = model.requireMiningFunction();
+
+			if(miningFunction == null){
+				miningFunction = modelMiningFunction;
+			} else
+
+			if(miningFunction == MiningFunction.MIXED){
+				// Ignored
+			} else
+
+			{
+				if(!Objects.equals(miningFunction, modelMiningFunction)){
+					miningFunction = MiningFunction.MIXED;
+				}
+			}
+		}
+
+		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MULTI_MODEL_CHAIN, models)
+			.setMissingPredictionTreatment(missingPredictionTreatment);
+
+		MiningModel miningModel = new MiningModel(miningFunction, createMiningSchema(models))
+			.setSegmentation(segmentation);
+
+		return miningModel;
+	}
+
+	static
+	public MiningSchema createMiningSchema(List<? extends Model> models){
 		MiningSchema miningSchema = new MiningSchema();
 
 		models.stream()
@@ -180,16 +244,7 @@ public class MiningModelUtil {
 			.map(name -> ModelUtil.createMiningField(name, MiningField.UsageType.TARGET))
 			.forEach(miningSchema::addMiningFields);
 
-		Segmentation segmentation = createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, models)
-			.setMissingPredictionTreatment(missingPredictionTreatment);
-
-		Model lastModel = Iterables.getLast(models);
-
-		MiningModel miningModel = new MiningModel(lastModel.requireMiningFunction(), miningSchema)
-			.setMathContext(ModelUtil.simplifyMathContext(lastModel.getMathContext()))
-			.setSegmentation(segmentation);
-
-		return miningModel;
+		return miningSchema;
 	}
 
 	static
