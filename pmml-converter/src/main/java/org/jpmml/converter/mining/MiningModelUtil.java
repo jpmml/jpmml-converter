@@ -67,7 +67,7 @@ public class MiningModelUtil {
 
 		RegressionModel regressionModel = RegressionModelUtil.createRegression(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(1d), null, normalizationMethod, schema);
 
-		return createModelChain(Arrays.asList(model, regressionModel));
+		return createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING);
 	}
 
 	static
@@ -76,7 +76,7 @@ public class MiningModelUtil {
 
 		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(model.getMathContext(), Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
 
-		return createModelChain(Arrays.asList(model, regressionModel));
+		return createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING);
 	}
 
 	static
@@ -148,12 +148,7 @@ public class MiningModelUtil {
 		List<Model> segmentationModels = new ArrayList<>(models);
 		segmentationModels.add(regressionModel);
 
-		return createModelChain(segmentationModels);
-	}
-
-	static
-	public MiningModel createModelChain(List<? extends Model> models){
-		return createModelChain(models, Segmentation.MissingPredictionTreatment.RETURN_MISSING);
+		return createModelChain(segmentationModels, Segmentation.MissingPredictionTreatment.RETURN_MISSING);
 	}
 
 	static

@@ -42,6 +42,7 @@ import org.dmg.pmml.NamespacePrefixes;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.UnivariateStats;
 import org.dmg.pmml.mining.MiningModel;
+import org.dmg.pmml.mining.Segmentation;
 import org.jpmml.converter.mining.MiningModelUtil;
 import org.jpmml.converter.visitors.FeatureExpander;
 import org.jpmml.converter.visitors.ModelCleanerBattery;
@@ -76,7 +77,7 @@ public class ModelEncoder extends PMMLEncoder {
 				models.add(model);
 			}
 
-			MiningModel miningModel = MiningModelUtil.createModelChain(models);
+			MiningModel miningModel = MiningModelUtil.createModelChain(models, Segmentation.MissingPredictionTreatment.CONTINUE);
 
 			transferUnivariateStats(model, miningModel);
 
