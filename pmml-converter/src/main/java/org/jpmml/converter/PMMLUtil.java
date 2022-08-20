@@ -32,7 +32,6 @@ import java.util.function.Function;
 import javax.xml.namespace.QName;
 
 import jakarta.xml.bind.JAXBElement;
-import org.dmg.pmml.Application;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.ComplexArray;
@@ -81,7 +80,14 @@ public class PMMLUtil {
 	}
 
 	static
-	public Header createHeader(Class<?> clazz){
+	public Header createHeader(PMMLEncoder encoder){
+		Class<?> clazz = encoder.getClass();
+
+		Application application = Application.getInstance();
+		if(application != null){
+			clazz = application.getClass();
+		}
+
 		Package _package = clazz.getPackage();
 
 		return createHeader(_package.getImplementationTitle(), _package.getImplementationVersion());
@@ -94,15 +100,15 @@ public class PMMLUtil {
 			name = "JPMML-Converter";
 		}
 
-		Application application = new Application()
+		org.dmg.pmml.Application pmmlApplication = new org.dmg.pmml.Application()
 			.setName(name)
 			.setVersion(version);
 
-		return createHeader(application);
+		return createHeader(pmmlApplication);
 	}
 
 	static
-	public Header createHeader(Application application){
+	public Header createHeader(org.dmg.pmml.Application pmmlApplication){
 		Date now = new Date();
 
 		// XML Schema "dateTime" data format (corresponds roughly to ISO 8601)
@@ -113,7 +119,7 @@ public class PMMLUtil {
 			.addContent(dateFormat.format(now));
 
 		Header header = new Header()
-			.setApplication(application)
+			.setApplication(pmmlApplication)
 			.setTimestamp(timestamp);
 
 		return header;

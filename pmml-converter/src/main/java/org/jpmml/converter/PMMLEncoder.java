@@ -90,7 +90,7 @@ public class PMMLEncoder {
 	}
 
 	public Header encodeHeader(){
-		return PMMLUtil.createHeader(getClass());
+		return PMMLUtil.createHeader(this);
 	}
 
 	public DataField getDataField(String name){
