@@ -77,6 +77,7 @@ public class DeepFieldResolverUtil {
 		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.requireMultipleModelMethod();
 		switch(multipleModelMethod){
 			case MODEL_CHAIN:
+			case MULTI_MODEL_CHAIN:
 				Collection<Field<?>> segmentationFields = resolver.getFields(miningModel, segmentation);
 				segmentationFields.removeAll(modelFields);
 
