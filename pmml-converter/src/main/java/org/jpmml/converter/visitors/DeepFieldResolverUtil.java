@@ -48,18 +48,16 @@ public class DeepFieldResolverUtil {
 
 		Segmentation segmentation = miningModel.requireSegmentation();
 
-		List<Segment> segments = segmentation.getSegments();
+		List<Segment> segments = segmentation.requireSegments();
 		for(Segment segment : segments){
-			Predicate predicate = segment.getPredicate();
+			Predicate predicate = segment.requirePredicate();
 
-			if(predicate != null){
-				Set<String> names = ActiveFieldFinder.getFieldNames(predicate);
+			Set<String> names = ActiveFieldFinder.getFieldNames(predicate);
 
-				if(!names.isEmpty()){
-					Collection<Field<?>> segmentFields = resolver.getFields(miningModel, segmentation, segment);
+			if(!names.isEmpty()){
+				Collection<Field<?>> segmentFields = resolver.getFields(miningModel, segmentation, segment);
 
-					activeFields.addAll(FieldUtil.selectAll(segmentFields, names));
-				}
+				activeFields.addAll(FieldUtil.selectAll(segmentFields, names));
 			}
 		}
 
