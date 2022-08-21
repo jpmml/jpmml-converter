@@ -36,6 +36,7 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
+import org.dmg.pmml.Predicate;
 import org.dmg.pmml.ResultFeature;
 import org.dmg.pmml.True;
 import org.dmg.pmml.mining.MiningModel;
@@ -293,11 +294,10 @@ public class MiningModelUtil {
 
 		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.requireMultipleModelMethod();
 		switch(multipleModelMethod){
-			case SELECT_FIRST:
 			case SELECT_ALL:
 				throw new UnsupportedAttributeException(segmentation, multipleModelMethod);
 			case MODEL_CHAIN:
-				{
+				if(isChain(segmentation)){
 					List<Segment> segments = segmentation.requireSegments();
 
 					Segment finalSegment = segments.get(segments.size() - 1);
@@ -308,11 +308,27 @@ public class MiningModelUtil {
 
 					return getFinalModel(model);
 				}
+				// Falls through
 			default:
 				break;
 		}
 
 		return miningModel;
+	}
+
+	static
+	public boolean isChain(Segmentation segmentation){
+		List<Segment> segments = segmentation.requireSegments();
+
+		for(Segment segment : segments){
+			Predicate predicate = segment.requirePredicate();
+
+			if(!(predicate instanceof True)){
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	static
