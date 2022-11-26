@@ -265,7 +265,7 @@ public class PMMLEncoder {
 					break values;
 				}
 
-				throw new IllegalArgumentException("Expected " + existingValues + "as valid values, got " + values);
+				throw new IllegalArgumentException("Expected " + existingValues + " as valid values, got " + values);
 			}
 
 			PMMLUtil.addValues((Field & HasDiscreteDomain)field, values);
