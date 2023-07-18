@@ -23,6 +23,7 @@ import java.util.List;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.HasDiscreteDomain;
+import org.dmg.pmml.OpType;
 
 public class CategoricalLabel extends DiscreteLabel {
 
@@ -40,6 +41,11 @@ public class CategoricalLabel extends DiscreteLabel {
 
 	public CategoricalLabel(String name, DataType dataType, List<?> values){
 		super(name, dataType, values);
+	}
+
+	@Override
+	public OpType getOpType(){
+		return OpType.CATEGORICAL;
 	}
 
 	@Override

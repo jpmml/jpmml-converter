@@ -21,6 +21,7 @@ package org.jpmml.converter;
 import java.util.Objects;
 
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.OpType;
 import org.jpmml.model.ToStringHelper;
 
 abstract
@@ -35,6 +36,9 @@ public class ScalarLabel extends Label {
 		setName(name);
 		setDataType(dataType);
 	}
+
+	abstract
+	public OpType getOpType();
 
 	abstract
 	public ScalarLabel toRenamedLabel(String name);

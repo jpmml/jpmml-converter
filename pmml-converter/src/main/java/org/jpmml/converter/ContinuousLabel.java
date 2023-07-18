@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
+import org.dmg.pmml.OpType;
 
 public class ContinuousLabel extends ScalarLabel {
 
@@ -33,6 +34,11 @@ public class ContinuousLabel extends ScalarLabel {
 
 	public ContinuousLabel(String name, DataType dataType){
 		super(name, dataType);
+	}
+
+	@Override
+	public OpType getOpType(){
+		return OpType.CONTINUOUS;
 	}
 
 	@Override

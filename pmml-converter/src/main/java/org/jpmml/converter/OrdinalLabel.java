@@ -23,6 +23,7 @@ import java.util.List;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.HasDiscreteDomain;
+import org.dmg.pmml.OpType;
 
 public class OrdinalLabel extends DiscreteLabel {
 
@@ -36,6 +37,11 @@ public class OrdinalLabel extends DiscreteLabel {
 
 	public OrdinalLabel(String name, DataType dataType, List<?> values){
 		super(name, dataType, values);
+	}
+
+	@Override
+	public OpType getOpType(){
+		return OpType.ORDINAL;
 	}
 
 	@Override

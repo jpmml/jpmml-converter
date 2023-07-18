@@ -22,31 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.dmg.pmml.OpType;
 
 public class ScalarLabelUtil {
 
 	private ScalarLabelUtil(){
-	}
-
-	static
-	public OpType getOpType(ScalarLabel scalarLabel){
-
-		if(scalarLabel instanceof CategoricalLabel){
-			CategoricalLabel categoricalLabel = (CategoricalLabel)scalarLabel;
-
-			return OpType.CATEGORICAL;
-		} else
-
-		if(scalarLabel instanceof ContinuousLabel){
-			ContinuousLabel continuousLabel = (ContinuousLabel)scalarLabel;
-
-			return OpType.CONTINUOUS;
-		} else
-
-		{
-			throw new IllegalArgumentException();
-		}
 	}
 
 	static
