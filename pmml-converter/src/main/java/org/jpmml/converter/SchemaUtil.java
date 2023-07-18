@@ -26,18 +26,18 @@ public class SchemaUtil {
 	}
 
 	static
-	public void checkSize(int size, CategoricalLabel categoricalLabel, List<? extends Feature> features){
+	public void checkSize(int size, DiscreteLabel discreteLabel, List<? extends Feature> features){
 
-		if((categoricalLabel.size() * features.size()) != size){
-			throw new IllegalArgumentException("Expected " + size + " elements, got " + (categoricalLabel.size() * features.size()) + " elements");
+		if((discreteLabel.size() * features.size()) != size){
+			throw new IllegalArgumentException("Expected " + size + " elements, got " + (discreteLabel.size() * features.size()) + " elements");
 		}
 	}
 
 	static
-	public void checkSize(int size, CategoricalLabel categoricalLabel){
+	public void checkSize(int size, DiscreteLabel discreteLabel){
 
-		if(categoricalLabel.size() != size){
-			throw new IllegalArgumentException("Expected " + size + " target categories, got " + categoricalLabel.size() + " target categories");
+		if(discreteLabel.size() != size){
+			throw new IllegalArgumentException("Expected " + size + " target categories, got " + discreteLabel.size() + " target categories");
 		}
 	}
 

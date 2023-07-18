@@ -19,17 +19,12 @@
 package org.jpmml.converter;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.HasDiscreteDomain;
-import org.jpmml.model.ToStringHelper;
 
-public class CategoricalLabel extends ScalarLabel {
-
-	private List<?> values = null;
-
+public class CategoricalLabel extends DiscreteLabel {
 
 	public <F extends Field<F> & HasDiscreteDomain<F>> CategoricalLabel(F field){
 		this(field.requireName(), field.requireDataType(), PMMLUtil.getValues(field));
@@ -40,13 +35,11 @@ public class CategoricalLabel extends ScalarLabel {
 	}
 
 	public CategoricalLabel(DataType dataType, List<?> values){
-		this(null, dataType, values);
+		super(dataType, values);
 	}
 
 	public CategoricalLabel(String name, DataType dataType, List<?> values){
-		super(name, dataType);
-
-		setValues(values);
+		super(name, dataType, values);
 	}
 
 	@Override
@@ -61,7 +54,7 @@ public class CategoricalLabel extends ScalarLabel {
 
 	@Override
 	public int hashCode(){
-		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());
+		return super.hashCode();
 	}
 
 	@Override
@@ -70,41 +63,9 @@ public class CategoricalLabel extends ScalarLabel {
 		if(object instanceof CategoricalLabel){
 			CategoricalLabel that = (CategoricalLabel)object;
 
-			return super.equals(object) && Objects.equals(this.getValues(), that.getValues());
+			return super.equals(object);
 		}
 
 		return false;
-	}
-
-	@Override
-	protected ToStringHelper toStringHelper(){
-		return super.toStringHelper()
-			.add("values", getValues());
-	}
-
-	public int size(){
-		List<?> values = getValues();
-
-		return values.size();
-	}
-
-	public Object getValue(int index){
-		List<?> values = getValues();
-
-		return values.get(index);
-	}
-
-	public List<?> getValues(){
-		return this.values;
-	}
-
-	private void setValues(List<?> values){
-		values = Objects.requireNonNull(values);
-
-		if(values.isEmpty()){
-			throw new IllegalArgumentException();
-		}
-
-		this.values = values;
 	}
 }

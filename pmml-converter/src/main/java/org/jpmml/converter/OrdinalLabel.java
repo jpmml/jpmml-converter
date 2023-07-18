@@ -19,30 +19,23 @@
 package org.jpmml.converter;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.HasDiscreteDomain;
-import org.jpmml.model.ToStringHelper;
 
-public class OrdinalLabel extends ScalarLabel {
-
-	private List<?> values = null;
-
+public class OrdinalLabel extends DiscreteLabel {
 
 	public <F extends Field<F> & HasDiscreteDomain<F>> OrdinalLabel(F field){
 		this(field.getName(), field.getDataType(), PMMLUtil.getValues(field));
 	}
 
 	public OrdinalLabel(DataType dataType, List<?> values){
-		this(null, dataType, values);
+		super(dataType, values);
 	}
 
 	public OrdinalLabel(String name, DataType dataType, List<?> values){
-		super(name, dataType);
-
-		setValues(values);
+		super(name, dataType, values);
 	}
 
 	@Override
@@ -55,13 +48,9 @@ public class OrdinalLabel extends ScalarLabel {
 		return (OrdinalLabel)super.toAnonymousLabel();
 	}
 
-	public CategoricalLabel toCategoricalLabel(){
-		return new CategoricalLabel(getName(), getDataType(), getValues());
-	}
-
 	@Override
 	public int hashCode(){
-		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());
+		return super.hashCode();
 	}
 
 	@Override
@@ -70,41 +59,9 @@ public class OrdinalLabel extends ScalarLabel {
 		if(object instanceof OrdinalLabel){
 			OrdinalLabel that = (OrdinalLabel)object;
 
-			return super.equals(object) && Objects.equals(this.getValues(), that.getValues());
+			return super.equals(object);
 		}
 
 		return false;
-	}
-
-	@Override
-	protected ToStringHelper toStringHelper(){
-		return super.toStringHelper()
-			.add("values", getValues());
-	}
-
-	public int size(){
-		List<?> values = getValues();
-
-		return values.size();
-	}
-
-	public Object getValue(int index){
-		List<?> values = getValues();
-
-		return values.get(index);
-	}
-
-	public List<?> getValues(){
-		return this.values;
-	}
-
-	private void setValues(List<?> values){
-		values = Objects.requireNonNull(values);
-
-		if(values.isEmpty()){
-			throw new IllegalArgumentException();
-		}
-
-		this.values = values;
 	}
 }

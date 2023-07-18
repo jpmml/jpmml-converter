@@ -170,22 +170,22 @@ public class ModelUtil {
 	}
 
 	static
-	public Output createProbabilityOutput(MathContext mathContext, CategoricalLabel categoricalLabel){
+	public Output createProbabilityOutput(MathContext mathContext, DiscreteLabel discreteLabel){
 		DataType dataType = DataType.DOUBLE;
 
 		if(mathContext == MathContext.FLOAT){
 			dataType = DataType.FLOAT;
 		}
 
-		return createProbabilityOutput(dataType, categoricalLabel);
+		return createProbabilityOutput(dataType, discreteLabel);
 	}
 
 	static
-	public Output createProbabilityOutput(DataType dataType, CategoricalLabel categoricalLabel){
+	public Output createProbabilityOutput(DataType dataType, DiscreteLabel discreteLabel){
 		Output output = new Output();
 
 		List<OutputField> outputFields = output.getOutputFields();
-		outputFields.addAll(createProbabilityFields(dataType, categoricalLabel.getValues()));
+		outputFields.addAll(createProbabilityFields(dataType, discreteLabel.getValues()));
 
 		return output;
 	}
