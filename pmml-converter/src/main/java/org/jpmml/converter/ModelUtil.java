@@ -19,7 +19,6 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -61,25 +60,8 @@ public class ModelUtil {
 	public MiningSchema createMiningSchema(Label label){
 		MiningSchema miningSchema = new MiningSchema();
 
-		List<ScalarLabel> scalarLabels = null;
-
-		if(label instanceof ScalarLabel){
-			ScalarLabel scalarLabel = (ScalarLabel)label;
-
-			scalarLabels = Collections.singletonList(scalarLabel);
-		} else
-
-		if(label instanceof MultiLabel){
-			MultiLabel multiLabel = (MultiLabel)label;
-
-			List<? extends Label> labels = multiLabel.getLabels();
-
-			scalarLabels = labels.stream()
-				.map(ScalarLabel.class::cast)
-				.collect(Collectors.toList());
-		} // End if
-
-		if(scalarLabels != null && !scalarLabels.isEmpty()){
+		if(label != null){
+			List<ScalarLabel> scalarLabels = ScalarLabelUtil.toScalarLabels(label);
 
 			for(ScalarLabel scalarLabel : scalarLabels){
 

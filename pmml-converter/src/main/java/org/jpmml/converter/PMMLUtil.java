@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,6 +168,23 @@ public class PMMLUtil {
 				.setProperty(property);
 
 			pmmlValues.add(pmmlValue);
+		}
+	}
+
+	static
+	public <F extends Field<F> & HasDiscreteDomain<F>> void clearValues(F field, Value.Property property){
+
+		if(property == null){
+			property = Value.Property.VALID;
+		}
+
+		List<Value> pmmlValues = field.getValues();
+		for(Iterator<Value> it = pmmlValues.iterator(); it.hasNext(); ){
+			Value pmmlValue = it.next();
+
+			if(pmmlValue.getProperty() == property){
+				it.remove();
+			}
 		}
 	}
 

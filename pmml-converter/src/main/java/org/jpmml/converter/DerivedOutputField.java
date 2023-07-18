@@ -211,6 +211,38 @@ public class DerivedOutputField extends DerivedField implements Decorable {
 		}
 	}
 
+	public Feature toFeature(PMMLEncoder encoder){
+		OpType opType = requireOpType();
+
+		switch(opType){
+			case CONTINUOUS:
+				return new ContinuousFeature(encoder, this);
+			case CATEGORICAL:
+				if(hasValues()){
+					return new CategoricalFeature(encoder, this);
+				} else
+
+				{
+					return new ObjectFeature(encoder, this){
+
+						/**
+						 * @see CategoricalFeature#toContinuousFeature()
+						 */
+						@Override
+						public ContinuousFeature toContinuousFeature(){
+							PMMLEncoder encoder = getEncoder();
+
+							org.dmg.pmml.Field<?> field = encoder.toContinuous(getName());
+
+							return new ContinuousFeature(encoder, field);
+						}
+					};
+				}
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
 	public Model getModel(){
 		return this.model;
 	}

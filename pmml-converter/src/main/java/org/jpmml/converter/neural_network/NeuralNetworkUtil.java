@@ -21,7 +21,6 @@ package org.jpmml.converter.neural_network;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Iterables;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
@@ -43,6 +42,8 @@ import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
+import org.jpmml.converter.Label;
+import org.jpmml.converter.ScalarLabelUtil;
 import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 
@@ -154,22 +155,27 @@ public class NeuralNetworkUtil {
 	}
 
 	static
-	public NeuralOutputs createRegressionNeuralOutputs(List<? extends NeuralEntity> entities, ContinuousLabel continuousLabel){
+	public NeuralOutputs createRegressionNeuralOutputs(List<? extends NeuralEntity> entities, Label label){
+		List<ContinuousLabel> continuousLabels = ScalarLabelUtil.toScalarLabels(ContinuousLabel.class, label);
 
-		if(entities.size() != 1){
+		if(entities.size() != continuousLabels.size()){
 			throw new IllegalArgumentException();
 		}
 
-		NeuralEntity entity = Iterables.getOnlyElement(entities);
+		NeuralOutputs neuralOutputs = new NeuralOutputs();
 
-		DerivedField derivedField = new DerivedField(null, OpType.CONTINUOUS, continuousLabel.getDataType(), new FieldRef(continuousLabel.getName()));
+		for(int i = 0; i < entities.size(); i++){
+			NeuralEntity entity = entities.get(i);
+			ContinuousLabel continuousLabel = continuousLabels.get(i);
 
-		NeuralOutput neuralOutput = new NeuralOutput()
-			.setOutputNeuron(entity.requireId())
-			.setDerivedField(derivedField);
+			DerivedField derivedField = new DerivedField(null, OpType.CONTINUOUS, continuousLabel.getDataType(), new FieldRef(continuousLabel.getName()));
 
-		NeuralOutputs neuralOutputs = new NeuralOutputs()
-			.addNeuralOutputs(neuralOutput);
+			NeuralOutput neuralOutput = new NeuralOutput()
+				.setOutputNeuron(entity.requireId())
+				.setDerivedField(derivedField);
+
+			neuralOutputs.addNeuralOutputs(neuralOutput);
+		}
 
 		return neuralOutputs;
 	}
@@ -180,7 +186,7 @@ public class NeuralNetworkUtil {
 
 		NeuralOutputs neuralOutputs = new NeuralOutputs();
 
-		for(int i = 0; i < categoricalLabel.size(); i++){
+		for(int i = 0; i < entities.size(); i++){
 			NeuralEntity entity = entities.get(i);
 
 			DerivedField derivedField = new DerivedField(null, OpType.CATEGORICAL, categoricalLabel.getDataType(), new NormDiscrete(categoricalLabel.getName(), categoricalLabel.getValue(i)));

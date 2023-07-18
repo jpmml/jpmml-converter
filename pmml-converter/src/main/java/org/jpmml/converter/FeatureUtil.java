@@ -55,6 +55,8 @@ public class FeatureUtil {
 							}
 						};
 				}
+			case BOOLEAN:
+				return new BooleanFeature(encoder, field);
 			default:
 				return new ObjectFeature(encoder, field);
 		}
