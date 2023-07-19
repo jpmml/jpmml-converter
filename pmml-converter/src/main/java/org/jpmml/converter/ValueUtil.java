@@ -165,6 +165,50 @@ public class ValueUtil {
 	}
 
 	static
+	public Object toNegative(Object object){
+
+		// XXX
+		if(object instanceof String){
+			String string = (String)object;
+
+			// Check that the value is numeric
+			Double.parseDouble(string);
+
+			if(string.startsWith("-")){
+				return string.substring(1);
+			} else
+
+			{
+				return "-" + string;
+			}
+		} else
+
+		if(object instanceof Integer){
+			return -((Integer)object).intValue();
+		} else
+
+		if(object instanceof Long){
+			return -((Long)object).longValue();
+		} else
+
+		if(object instanceof Float){
+			 return -((Float)object).floatValue();
+		} else
+
+		if(object instanceof Double){
+			return -((Double)object).doubleValue();
+		} else
+
+		if(object instanceof Boolean){
+			return !((Boolean)object).booleanValue();
+		} else
+
+		{
+			throw new IllegalArgumentException();
+		}
+	}
+
+	static
 	public BitSet getIndices(List<? extends Number> values, Number targetValue){
 		BitSet result = new BitSet(values.size());
 

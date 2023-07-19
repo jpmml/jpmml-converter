@@ -260,39 +260,7 @@ public class PMMLUtil {
 		if(expression instanceof Constant){
 			Constant constant = (Constant)expression;
 
-			Object value = constant.getValue();
-
-			if(value instanceof Long){
-				value = -((Long)value).longValue();
-			} else
-
-			if(value instanceof Integer){
-				value = -((Integer)value).intValue();
-			} else
-
-			if(value instanceof Float){
-				value = -((Float)value).floatValue();
-			} else
-
-			if(value instanceof Double){
-				value = -((Double)value).doubleValue();
-			} else
-
-			{
-				String string = ValueUtil.asString(value);
-
-				if(string.startsWith("-")){
-					string = string.substring(1);
-				} else
-
-				{
-					string = ("-" + string);
-				}
-
-				value = string;
-			}
-
-			constant.setValue(value);
+			constant.setValue(ValueUtil.toNegative(constant.getValue()));
 
 			return constant;
 		}
