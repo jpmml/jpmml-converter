@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.DataType;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
@@ -51,7 +50,7 @@ public class PredicateManager {
 	}
 
 	public Predicate createSimpleSetPredicate(Feature feature, SimpleSetPredicate.BooleanOperator booleanOperator, List<?> values){
-		Array array = createArray(feature.getDataType(), values);
+		Array array = PMMLUtil.createArray(feature.getDataType(), values);
 
 		Predicate predicate = new SimpleSetPredicate(feature.getName(), booleanOperator, array);
 
@@ -67,23 +66,5 @@ public class PredicateManager {
 
 	public Predicate intern(Predicate predicate){
 		return this.cache.intern(predicate);
-	}
-
-	static
-	private Array createArray(DataType dataType, List<?> values){
-
-		switch(dataType){
-			case STRING:
-				return PMMLUtil.createStringArray(values);
-			case INTEGER:
-				// XXX
-				return PMMLUtil.createIntArray((List)values);
-			case DOUBLE:
-			case FLOAT:
-				// XXX
-				return PMMLUtil.createRealArray((List)values);
-			default:
-				throw new IllegalArgumentException();
-		}
 	}
 }

@@ -301,6 +301,22 @@ public class PMMLUtil {
 	}
 
 	static
+	public Array createArray(DataType dataType, List<?> values){
+
+		switch(dataType){
+			case STRING:
+				return PMMLUtil.createStringArray(values);
+			case INTEGER:
+				return PMMLUtil.createIntArray((List)values);
+			case FLOAT:
+			case DOUBLE:
+				return PMMLUtil.createRealArray((List)values);
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	static
 	public Array createStringArray(List<?> values){
 		Array array = new ComplexArray()
 			.setType(Array.Type.STRING)
