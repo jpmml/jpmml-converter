@@ -22,9 +22,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.OpType;
+
 public class ScalarLabelUtil {
 
 	private ScalarLabelUtil(){
+	}
+
+	static
+	public ScalarLabel createScalarLabel(DataField dataField){
+		DataType dataType = dataField.requireDataType();
+		OpType opType = dataField.requireOpType();
+
+		switch(opType){
+			case CONTINUOUS:
+				return new ContinuousLabel(dataField);
+			case CATEGORICAL:
+				return new CategoricalLabel(dataField);
+			case ORDINAL:
+				return new OrdinalLabel(dataField);
+			default:
+				throw new IllegalArgumentException();
+		}
 	}
 
 	static
