@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ScalarLabelUtil {
@@ -55,19 +54,5 @@ public class ScalarLabelUtil {
 		{
 			throw new IllegalArgumentException();
 		}
-	}
-
-	static
-	public Feature findLabelFeature(ScalarLabel scalarLabel, List<? extends Feature> features){
-		String name = scalarLabel.getName();
-
-		for(Feature feature : features){
-
-			if(Objects.equals(feature.getName(), name)){
-				return feature;
-			}
-		}
-
-		return null;
 	}
 }

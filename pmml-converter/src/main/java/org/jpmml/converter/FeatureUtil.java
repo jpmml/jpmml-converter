@@ -18,6 +18,10 @@
  */
 package org.jpmml.converter;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
@@ -72,5 +76,37 @@ public class FeatureUtil {
 		}
 
 		return feature.getName();
+	}
+
+	static
+	public Feature findLabelFeature(List<? extends Feature> features, ScalarLabel scalarLabel){
+
+		if(scalarLabel.isAnonymous()){
+			throw new IllegalArgumentException();
+		}
+
+		return findFeature(features, scalarLabel.getName());
+	}
+
+	static
+	public Feature findFeature(List<? extends Feature> features, String name){
+
+		for(Feature feature : features){
+
+			if(Objects.equals(feature.getName(), name)){
+				return feature;
+			}
+		}
+
+		return null;
+	}
+
+	static
+	public List<String> formatNames(List<? extends Feature> features, char quoteChar){
+		String quoteString = Character.toString(quoteChar);
+
+		return features.stream()
+			.map(feature -> (quoteString + feature.getName() + quoteString))
+			.collect(Collectors.toList());
 	}
 }
