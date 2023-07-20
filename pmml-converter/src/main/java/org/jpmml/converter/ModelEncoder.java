@@ -65,24 +65,7 @@ public class ModelEncoder extends PMMLEncoder {
 	public PMML encodePMML(Model model){
 		PMML pmml = encodePMML();
 
-		if(model != null){
-			transferContent(null, model);
-		}
-
-		List<Model> transformers = getTransformers();
-		if(!transformers.isEmpty()){
-			List<Model> models = new ArrayList<>(transformers);
-
-			if(model != null){
-				models.add(model);
-			}
-
-			MiningModel miningModel = MiningModelUtil.createModelChain(models, Segmentation.MissingPredictionTreatment.CONTINUE);
-
-			transferUnivariateStats(model, miningModel);
-
-			model = miningModel;
-		} // End if
+		model = encodeModel(model);
 
 		if(model != null){
 			pmml.addModels(model);
@@ -99,6 +82,30 @@ public class ModelEncoder extends PMMLEncoder {
 		pmmlCleanerBattery.applyTo(pmml);
 
 		return pmml;
+	}
+
+	public Model encodeModel(Model model){
+		List<Model> transformers = getTransformers();
+
+		if(model != null){
+			transferContent(null, model);
+		} // End if
+
+		if(!transformers.isEmpty()){
+			List<Model> models = new ArrayList<>(transformers);
+
+			if(model != null){
+				models.add(model);
+			}
+
+			MiningModel miningModel = MiningModelUtil.createModelChain(models, Segmentation.MissingPredictionTreatment.CONTINUE);
+
+			transferUnivariateStats(model, miningModel);
+
+			return miningModel;
+		}
+
+		return model;
 	}
 
 	public List<Model> getTransformers(){
