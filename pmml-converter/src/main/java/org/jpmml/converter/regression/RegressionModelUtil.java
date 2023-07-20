@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter.regression;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
 import org.jpmml.converter.ModelUtil;
+import org.jpmml.converter.OrdinalLabel;
 import org.jpmml.converter.PowerFeature;
 import org.jpmml.converter.ProductFeature;
 import org.jpmml.converter.Schema;
@@ -124,6 +126,54 @@ public class RegressionModelUtil {
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
 			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(mathContext, categoricalLabel) : null);
+
+		return regressionModel;
+	}
+
+	static
+	public RegressionModel createOrdinalClassification(Feature feature, List<? extends Number> thresholds, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		return createOrdinalClassification(null, feature, thresholds, normalizationMethod, hasProbabilityDistribution, schema);
+	}
+
+	static
+	public RegressionModel createOrdinalClassification(MathContext mathContext, Feature feature, List<? extends Number> thresholds, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		OrdinalLabel ordinalLabel = (OrdinalLabel)schema.getLabel();
+
+		SchemaUtil.checkSize(thresholds.size() + 1, ordinalLabel);
+
+		switch(normalizationMethod){
+			case NONE:
+			case LOGIT:
+			case PROBIT:
+			case CLOGLOG:
+			case LOGLOG:
+			case CAUCHIT:
+				break;
+			default:
+				throw new IllegalArgumentException();
+		}
+
+		List<RegressionTable> regressionTables = new ArrayList<>();
+
+		for(int i = 0; i < thresholds.size(); i++){
+			Number threshold = thresholds.get(i);
+
+			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.singletonList(feature), Collections.singletonList(-1d), threshold)
+				.setTargetCategory(ordinalLabel.getValue(i));
+
+			regressionTables.add(regressionTable);
+		}
+
+		{
+			RegressionTable trivialRegressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.emptyList(), Collections.emptyList(), 1000d)
+				.setTargetCategory(ordinalLabel.getValue(ordinalLabel.size() - 1));
+
+			regressionTables.add(trivialRegressionTable);
+		}
+
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(ordinalLabel), regressionTables)
+			.setNormalizationMethod(normalizationMethod)
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(mathContext, ordinalLabel) : null);
 
 		return regressionModel;
 	}
