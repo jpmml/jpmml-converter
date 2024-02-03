@@ -158,7 +158,7 @@ public class RegressionModelUtil {
 		for(int i = 0; i < thresholds.size(); i++){
 			Number threshold = thresholds.get(i);
 
-			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.singletonList(feature), Collections.singletonList(-1d), threshold)
+			RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.singletonList(feature), Collections.singletonList(1d), threshold)
 				.setTargetCategory(ordinalLabel.getValue(i));
 
 			regressionTables.add(regressionTable);
