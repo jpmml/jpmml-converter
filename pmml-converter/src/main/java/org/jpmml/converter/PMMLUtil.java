@@ -33,23 +33,16 @@ import java.util.function.Function;
 import javax.xml.namespace.QName;
 
 import jakarta.xml.bind.JAXBElement;
-import org.dmg.pmml.Apply;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.ComplexArray;
-import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.DefineFunction;
-import org.dmg.pmml.Expression;
 import org.dmg.pmml.Extension;
 import org.dmg.pmml.Field;
-import org.dmg.pmml.FieldColumnPair;
 import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
-import org.dmg.pmml.MapValues;
 import org.dmg.pmml.NamespacePrefixes;
 import org.dmg.pmml.NamespaceURIs;
-import org.dmg.pmml.PMMLFunctions;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
@@ -186,86 +179,6 @@ public class PMMLUtil {
 				it.remove();
 			}
 		}
-	}
-
-	static
-	public Apply createApply(DefineFunction defineFunction, Expression... expressions){
-		return createApply(defineFunction.requireName(), expressions);
-	}
-
-	static
-	public Apply createApply(String function, Expression... expressions){
-		Apply apply = new Apply(function)
-			.addExpressions(expressions);
-
-		return apply;
-	}
-
-	static
-	public Constant createMissingConstant(){
-		return createConstant(null, null);
-	}
-
-	static
-	public Constant createConstant(Number value){
-
-		if(value == null){
-			throw new IllegalArgumentException();
-		}
-
-		return createConstant(value, TypeUtil.getDataType(value));
-	}
-
-	static
-	public Constant createConstant(Object value, DataType dataType){
-		Constant constant = new Constant(value)
-			.setDataType(dataType)
-			.setMissing(value == null);
-
-		return constant;
-	}
-
-	static
-	public MapValues createMapValues(String name, Map<?, ?> mapping){
-		List<Object> inputValues = new ArrayList<>();
-		List<Object> outputValues = new ArrayList<>();
-
-		Collection<? extends Map.Entry<?, ?>> entries = mapping.entrySet();
-		for(Map.Entry<?, ?> entry : entries){
-			inputValues.add(entry.getKey());
-			outputValues.add(entry.getValue());
-		}
-
-		return createMapValues(name, inputValues, outputValues);
-	}
-
-	static
-	public MapValues createMapValues(String name, List<?> inputValues, List<?> outputValues){
-		String inputColumn = NamespacePrefixes.JPMML_INLINETABLE + ":input";
-		String outputColumn = NamespacePrefixes.JPMML_INLINETABLE + ":output";
-
-		Map<String, List<?>> data = new LinkedHashMap<>();
-		data.put(inputColumn, inputValues);
-		data.put(outputColumn, outputValues);
-
-		MapValues mapValues = new MapValues(outputColumn, PMMLUtil.createInlineTable(data))
-			.addFieldColumnPairs(new FieldColumnPair(name, inputColumn));
-
-		return mapValues;
-	}
-
-	static
-	public Expression toNegative(Expression expression){
-
-		if(expression instanceof Constant){
-			Constant constant = (Constant)expression;
-
-			constant.setValue(ValueUtil.toNegative(constant.getValue()));
-
-			return constant;
-		}
-
-		return createApply(PMMLFunctions.MULTIPLY, createConstant(-1), expression);
 	}
 
 	static

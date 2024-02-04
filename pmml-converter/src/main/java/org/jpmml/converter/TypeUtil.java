@@ -20,19 +20,12 @@ package org.jpmml.converter;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.Iterables;
 import com.google.common.math.DoubleMath;
-import org.dmg.pmml.Apply;
-import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.Expression;
-import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.OpType;
-import org.dmg.pmml.PMMLFunctions;
 
 public class TypeUtil {
 
@@ -136,110 +129,6 @@ public class TypeUtil {
 
 			throw new IllegalArgumentException("Expected all values to be of the same data type, got " + dataTypes.size() + " different data types (" + dataTypes + ")");
 		}
-	}
-
-	static
-	public boolean isString(Expression expression, FeatureResolver featureResolver){
-		DataType dataType = getDataType(expression, featureResolver);
-
-		return (dataType == DataType.STRING);
-	}
-
-	static
-	public DataType getDataType(Expression expression, FeatureResolver featureResolver){
-
-		if(expression instanceof Constant){
-			Constant constant = (Constant)expression;
-
-			return constant.getDataType();
-		} else
-
-		if(expression instanceof FieldRef){
-			FieldRef fieldRef = (FieldRef)expression;
-
-			Feature feature = (featureResolver != null ? featureResolver.resolveFeature(fieldRef.requireField()) : null);
-			if(feature == null){
-				return null;
-			}
-
-			return feature.getDataType();
-		} else
-
-		if(expression instanceof Apply){
-			Apply apply = (Apply)expression;
-
-			String function = apply.requireFunction();
-			switch(function){
-				case PMMLFunctions.CEIL:
-				case PMMLFunctions.FLOOR:
-				case PMMLFunctions.ROUND:
-					return DataType.INTEGER;
-				case PMMLFunctions.ISMISSING:
-				case PMMLFunctions.ISNOTMISSING:
-				case PMMLFunctions.ISVALID:
-				case PMMLFunctions.ISNOTVALID:
-					return DataType.BOOLEAN;
-				case PMMLFunctions.EQUAL:
-				case PMMLFunctions.NOTEQUAL:
-				case PMMLFunctions.LESSTHAN:
-				case PMMLFunctions.LESSOREQUAL:
-				case PMMLFunctions.GREATERTHAN:
-				case PMMLFunctions.GREATEROREQUAL:
-					return DataType.BOOLEAN;
-				case PMMLFunctions.AND:
-				case PMMLFunctions.OR:
-					return DataType.BOOLEAN;
-				case PMMLFunctions.NOT:
-					return DataType.BOOLEAN;
-				case PMMLFunctions.ISIN:
-				case PMMLFunctions.ISNOTIN:
-					return DataType.BOOLEAN;
-				case PMMLFunctions.IF:
-					{
-						List<Expression> expressions = apply.getExpressions();
-
-						if(expressions.size() > 1){
-							DataType trueDataType = getDataType(expressions.get(1), featureResolver);
-
-							if(expressions.size() > 2){
-								DataType falseDataType = getDataType(expressions.get(2), featureResolver);
-
-								if(Objects.equals(trueDataType, falseDataType)){
-									return trueDataType;
-								}
-
-								return null;
-							}
-
-							return trueDataType;
-						}
-					}
-					return null;
-				case PMMLFunctions.CONCAT:
-				case PMMLFunctions.LOWERCASE:
-				case PMMLFunctions.SUBSTRING:
-				case PMMLFunctions.TRIMBLANKS:
-				case PMMLFunctions.UPPERCASE:
-					return DataType.STRING;
-				case PMMLFunctions.STRINGLENGTH:
-					return DataType.INTEGER;
-				case PMMLFunctions.REPLACE:
-					return DataType.STRING;
-				case PMMLFunctions.MATCHES:
-					return DataType.BOOLEAN;
-				case PMMLFunctions.FORMATDATETIME:
-				case PMMLFunctions.FORMATNUMBER:
-					return DataType.STRING;
-				case PMMLFunctions.DATEDAYSSINCEYEAR:
-				case PMMLFunctions.DATESECONDSSINCEMIDNIGHT:
-				case PMMLFunctions.DATESECONDSSINCEYEAR:
-					return DataType.INTEGER;
-				default:
-					return null;
-			}
-		}
-
-		return null;
 	}
 
 	static

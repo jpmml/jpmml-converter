@@ -22,8 +22,8 @@ import java.util.Objects;
 
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
+import org.jpmml.converter.ExpressionUtil;
 import org.jpmml.converter.FieldNameUtil;
-import org.jpmml.converter.PMMLUtil;
 
 public class FunctionTransformation extends AbstractTransformation {
 
@@ -45,7 +45,7 @@ public class FunctionTransformation extends AbstractTransformation {
 	public Expression createExpression(FieldRef fieldRef){
 		String function = getFunction();
 
-		return PMMLUtil.createApply(function, fieldRef);
+		return ExpressionUtil.createApply(function, fieldRef);
 	}
 
 	public String getFunction(){

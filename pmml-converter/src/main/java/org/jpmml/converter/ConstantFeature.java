@@ -45,7 +45,7 @@ public class ConstantFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		return toContinuousFeature(getDerivedName(), getDataType(), () -> PMMLUtil.createConstant(getValue(), getDataType()));
+		return toContinuousFeature(getDerivedName(), getDataType(), () -> ExpressionUtil.createConstant(getValue(), getDataType()));
 	}
 
 	@Override

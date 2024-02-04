@@ -46,6 +46,6 @@ public class MissingValueFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> PMMLUtil.createApply(PMMLFunctions.ISMISSING, ref()));
+		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> ExpressionUtil.createApply(PMMLFunctions.ISMISSING, ref()));
 	}
 }

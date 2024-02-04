@@ -49,7 +49,7 @@ public class PowerFeature extends Feature implements HasDerivedName {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> PMMLUtil.createApply(PMMLFunctions.POW, ref(), PMMLUtil.createConstant(getPower())));
+		return toContinuousFeature(getDerivedName(), DataType.DOUBLE, () -> ExpressionUtil.createApply(PMMLFunctions.POW, ref(), ExpressionUtil.createConstant(getPower())));
 	}
 
 	@Override

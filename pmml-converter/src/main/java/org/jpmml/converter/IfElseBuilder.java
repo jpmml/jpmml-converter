@@ -35,7 +35,7 @@ public class IfElseBuilder {
 	}
 
 	public IfElseBuilder add(Expression condition, Expression result){
-		Apply ifApply = PMMLUtil.createApply(PMMLFunctions.IF, condition, result);
+		Apply ifApply = ExpressionUtil.createApply(PMMLFunctions.IF, condition, result);
 
 		if(this.apply == null){
 			this.apply = ifApply;

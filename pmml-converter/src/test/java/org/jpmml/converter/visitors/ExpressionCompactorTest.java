@@ -26,7 +26,7 @@ import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.PMMLFunctions;
-import org.jpmml.converter.PMMLUtil;
+import org.jpmml.converter.ExpressionUtil;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,12 +37,12 @@ public class ExpressionCompactorTest {
 	public void compactComparisonExpression(){
 		FieldRef fieldRef = new FieldRef("x");
 
-		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createMissingConstant()));
+		Apply apply = compact(ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createMissingConstant()));
 
 		assertEquals(PMMLFunctions.ISMISSING, apply.requireFunction());
 		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
 
-		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOTEQUAL, PMMLUtil.createMissingConstant(), fieldRef));
+		apply = compact(ExpressionUtil.createApply(PMMLFunctions.NOTEQUAL, ExpressionUtil.createMissingConstant(), fieldRef));
 
 		assertEquals(PMMLFunctions.ISNOTMISSING, apply.requireFunction());
 		assertEquals(Arrays.asList(fieldRef), apply.getExpressions());
@@ -52,19 +52,19 @@ public class ExpressionCompactorTest {
 	public void compactLogicalExpression(){
 		FieldRef fieldRef = new FieldRef("x");
 
-		Apply first = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("1", DataType.STRING));
+		Apply first = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("1", DataType.STRING));
 
-		Apply leftLeftChild = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("2/L/L", DataType.STRING));
-		Apply leftRightChild = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("2/L/R", DataType.STRING));
+		Apply leftLeftChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("2/L/L", DataType.STRING));
+		Apply leftRightChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("2/L/R", DataType.STRING));
 
-		Apply leftChild = PMMLUtil.createApply(PMMLFunctions.OR, leftLeftChild, leftRightChild);
-		Apply rightChild = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("2/R", DataType.STRING));
+		Apply leftChild = ExpressionUtil.createApply(PMMLFunctions.OR, leftLeftChild, leftRightChild);
+		Apply rightChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("2/R", DataType.STRING));
 
-		Apply second = PMMLUtil.createApply(PMMLFunctions.OR, leftChild, rightChild);
+		Apply second = ExpressionUtil.createApply(PMMLFunctions.OR, leftChild, rightChild);
 
-		Apply third = PMMLUtil.createApply(PMMLFunctions.EQUAL, fieldRef, PMMLUtil.createConstant("3", DataType.STRING));
+		Apply third = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("3", DataType.STRING));
 
-		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.OR, first, second, third));
+		Apply apply = compact(ExpressionUtil.createApply(PMMLFunctions.OR, first, second, third));
 
 		assertEquals(PMMLFunctions.OR, apply.requireFunction());
 		assertEquals(Arrays.asList(first, leftLeftChild, leftRightChild, rightChild, third), apply.getExpressions());
@@ -76,9 +76,9 @@ public class ExpressionCompactorTest {
 		FieldRef minutes = new FieldRef("minutes");
 		FieldRef seconds = new FieldRef("seconds");
 
-		Constant separator = PMMLUtil.createConstant(":", DataType.STRING);
+		Constant separator = ExpressionUtil.createConstant(":", DataType.STRING);
 
-		Apply apply = compact(PMMLUtil.createApply(PMMLFunctions.CONCAT, hours, PMMLUtil.createApply(PMMLFunctions.CONCAT, separator, minutes), PMMLUtil.createApply(PMMLFunctions.CONCAT, separator, seconds)));
+		Apply apply = compact(ExpressionUtil.createApply(PMMLFunctions.CONCAT, hours, ExpressionUtil.createApply(PMMLFunctions.CONCAT, separator, minutes), ExpressionUtil.createApply(PMMLFunctions.CONCAT, separator, seconds)));
 
 		assertEquals(PMMLFunctions.CONCAT, apply.requireFunction());
 		assertEquals(Arrays.asList(hours, separator, minutes, separator, seconds), apply.getExpressions());
@@ -90,7 +90,7 @@ public class ExpressionCompactorTest {
 
 		checkNegation(PMMLFunctions.ISMISSING, PMMLFunctions.ISNOTMISSING, fieldRef);
 
-		Constant constant = PMMLUtil.createConstant(0);
+		Constant constant = ExpressionUtil.createConstant(0);
 
 		checkNegation(PMMLFunctions.EQUAL, PMMLFunctions.NOTEQUAL, fieldRef, constant);
 		checkNegation(PMMLFunctions.LESSTHAN, PMMLFunctions.GREATEROREQUAL, fieldRef, constant);
@@ -99,14 +99,14 @@ public class ExpressionCompactorTest {
 
 	static
 	private void checkNegation(String function, String negatedFunction, Expression... expressions){
-		Apply apply = PMMLUtil.createApply(function, expressions);
+		Apply apply = ExpressionUtil.createApply(function, expressions);
 
-		Apply negatedApply = compact(PMMLUtil.createApply(PMMLFunctions.NOT, apply));
+		Apply negatedApply = compact(ExpressionUtil.createApply(PMMLFunctions.NOT, apply));
 
 		assertEquals(negatedFunction, negatedApply.requireFunction());
 		assertEquals(Arrays.asList(expressions), negatedApply.getExpressions());
 
-		apply = compact(PMMLUtil.createApply(PMMLFunctions.NOT, negatedApply));
+		apply = compact(ExpressionUtil.createApply(PMMLFunctions.NOT, negatedApply));
 
 		assertEquals(function, apply.requireFunction());
 		assertEquals(Arrays.asList(expressions), apply.getExpressions());
