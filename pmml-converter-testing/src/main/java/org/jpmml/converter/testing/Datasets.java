@@ -37,6 +37,8 @@ public interface Datasets {
 	String VISIT_NA = VISIT + "NA";
 	String WHEAT = "Wheat";
 	String WHEAT_NA = WHEAT + "NA";
+	String WINE = "Wine";
+	String WINE_NA = WINE + "NA";
 	String WINE_QUALITY = "WineQuality";
 	String WINE_QUALITY_NA = WINE_QUALITY + "NA";
 	String WINE_COLOR = "WineColor";
