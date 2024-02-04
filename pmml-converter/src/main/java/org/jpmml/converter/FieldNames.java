@@ -20,5 +20,8 @@ package org.jpmml.converter;
 
 public interface FieldNames {
 
+	String AFFINITY = "affinity";
+	String NEIGHBOR = "neighbor";
 	String NODE_ID = "nodeId";
+	String PROBABILITY = "probability";
 }

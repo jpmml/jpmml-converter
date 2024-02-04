@@ -174,7 +174,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createAffinityField(DataType dataType, Object value){
-		return createAffinityField(FieldNameUtil.create(FieldNamePrefixes.AFFINITY, value), dataType, value);
+		return createAffinityField(FieldNameUtil.create(FieldNames.AFFINITY, value), dataType, value);
 	}
 
 	static
@@ -233,7 +233,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createProbabilityField(DataType dataType, Object value){
-		return createProbabilityField(FieldNameUtil.create(FieldNamePrefixes.PROBABILITY, value), dataType, value);
+		return createProbabilityField(FieldNameUtil.create(FieldNames.PROBABILITY, value), dataType, value);
 	}
 
 	static
@@ -254,7 +254,7 @@ public class ModelUtil {
 
 	static
 	public OutputField createNeighborField(DataType dataType, int rank){
-		OutputField outputField = new OutputField(FieldNameUtil.create(FieldNamePrefixes.NEIGHBOR, rank), OpType.CATEGORICAL, dataType)
+		OutputField outputField = new OutputField(FieldNameUtil.create(FieldNames.NEIGHBOR, rank), OpType.CATEGORICAL, dataType)
 			.setResultFeature(ResultFeature.ENTITY_ID)
 			.setRank(rank);
 

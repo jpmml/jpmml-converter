@@ -18,19 +18,19 @@
  */
 package org.jpmml.converter.testing;
 
-import org.jpmml.converter.FieldNamePrefixes;
 import org.jpmml.converter.FieldNameUtil;
+import org.jpmml.converter.FieldNames;
 
 public interface Fields {
 
 	String AUDIT_ADJUSTED = "Adjusted";
-	String AUDIT_PROBABILITY_TRUE = FieldNameUtil.create(FieldNamePrefixes.PROBABILITY, 1);
-	String AUDIT_PROBABILITY_FALSE = FieldNameUtil.create(FieldNamePrefixes.PROBABILITY, 0);
+	String AUDIT_PROBABILITY_TRUE = FieldNameUtil.create(FieldNames.PROBABILITY, 1);
+	String AUDIT_PROBABILITY_FALSE = FieldNameUtil.create(FieldNames.PROBABILITY, 0);
 
 	String AUTO_MPG = "mpg";
 
 	String IRIS_SPECIES = "Species";
-	String IRIS_PROBABILITY_SETOSA = FieldNameUtil.create(FieldNamePrefixes.PROBABILITY, "setosa");
-	String IRIS_PROBABILITY_VERSICOLOR = FieldNameUtil.create(FieldNamePrefixes.PROBABILITY, "versicolor");
-	String IRIS_PROBABILITY_VIRGINICA = FieldNameUtil.create(FieldNamePrefixes.PROBABILITY, "virginica");
+	String IRIS_PROBABILITY_SETOSA = FieldNameUtil.create(FieldNames.PROBABILITY, "setosa");
+	String IRIS_PROBABILITY_VERSICOLOR = FieldNameUtil.create(FieldNames.PROBABILITY, "versicolor");
+	String IRIS_PROBABILITY_VIRGINICA = FieldNameUtil.create(FieldNames.PROBABILITY, "virginica");
 }
