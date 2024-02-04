@@ -32,7 +32,7 @@ public class CategoricalFeature extends Feature {
 
 
 	public <F extends Field<F> & HasDiscreteDomain<F>> CategoricalFeature(PMMLEncoder encoder, F field){
-		this(encoder, field, PMMLUtil.<F>getValues(field));
+		this(encoder, field, FieldUtil.<F>getValues(field));
 	}
 
 	public CategoricalFeature(PMMLEncoder encoder, Field<?> field, List<?> values){

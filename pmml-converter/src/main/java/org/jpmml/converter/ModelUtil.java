@@ -206,7 +206,7 @@ public class ModelUtil {
 		OutputField outputField = createEntityIdField(name, dataType);
 
 		if(values != null && !values.isEmpty()){
-			PMMLUtil.addValues(outputField, values);
+			FieldUtil.addValues(outputField, values);
 		}
 
 		return outputField;
@@ -225,7 +225,7 @@ public class ModelUtil {
 		OutputField outputField = createPredictedField(name, opType, dataType);
 
 		if(values != null && !values.isEmpty()){
-			PMMLUtil.addValues(outputField, values);
+			FieldUtil.addValues(outputField, values);
 		}
 
 		return outputField;

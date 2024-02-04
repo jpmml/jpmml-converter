@@ -28,7 +28,7 @@ import org.dmg.pmml.OpType;
 public class OrdinalLabel extends DiscreteLabel {
 
 	public <F extends Field<F> & HasDiscreteDomain<F>> OrdinalLabel(F field){
-		this(field.getName(), field.getDataType(), PMMLUtil.getValues(field));
+		this(field.getName(), field.getDataType(), FieldUtil.getValues(field));
 	}
 
 	public OrdinalLabel(DataType dataType, List<?> values){

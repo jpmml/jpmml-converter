@@ -92,7 +92,7 @@ public class FeatureTest {
 
 		assertEquals(OpType.CONTINUOUS, dataField.requireOpType());
 		assertEquals(DataType.INTEGER, dataField.requireDataType());
-		assertEquals(Arrays.asList("1", "2", "3"), PMMLUtil.getValues(dataField));
+		assertEquals(Arrays.asList("1", "2", "3"), FieldUtil.getValues(dataField));
 	}
 
 	@Test
@@ -198,6 +198,6 @@ public class FeatureTest {
 
 		assertEquals(OpType.CATEGORICAL, dataField.requireOpType());
 		assertEquals(DataType.DOUBLE, dataField.requireDataType());
-		assertEquals(Arrays.asList("1", "2", "3"), PMMLUtil.getValues(dataField));
+		assertEquals(Arrays.asList("1", "2", "3"), FieldUtil.getValues(dataField));
 	}
 }

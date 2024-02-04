@@ -20,10 +20,8 @@ package org.jpmml.converter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +35,6 @@ import org.dmg.pmml.Array;
 import org.dmg.pmml.ComplexArray;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Extension;
-import org.dmg.pmml.Field;
-import org.dmg.pmml.HasDiscreteDomain;
 import org.dmg.pmml.Header;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.NamespacePrefixes;
@@ -46,7 +42,6 @@ import org.dmg.pmml.NamespaceURIs;
 import org.dmg.pmml.RealSparseArray;
 import org.dmg.pmml.Row;
 import org.dmg.pmml.Timestamp;
-import org.dmg.pmml.Value;
 import org.jpmml.model.cells.InputCell;
 import org.jpmml.model.cells.OutputCell;
 
@@ -117,68 +112,6 @@ public class PMMLUtil {
 			.setTimestamp(timestamp);
 
 		return header;
-	}
-
-	static
-	public <F extends Field<F> & HasDiscreteDomain<F>> List<?> getValues(F field){
-		return getValues(field, null);
-	}
-
-	static
-	public <F extends Field<F> & HasDiscreteDomain<F>> List<?> getValues(F field, Value.Property property){
-		List<Object> result = new ArrayList<>();
-
-		if(property == null){
-			property = Value.Property.VALID;
-		}
-
-		List<Value> pmmlValues = field.getValues();
-		for(Value pmmlValue : pmmlValues){
-
-			if(property == pmmlValue.getProperty()){
-				result.add(pmmlValue.requireValue());
-			}
-		}
-
-		return result;
-	}
-
-	static
-	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, List<?> values){
-		addValues(field, null, values);
-	}
-
-	static
-	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, Value.Property property, List<?> values){
-
-		if(property == Value.Property.VALID){
-			property = null;
-		}
-
-		List<Value> pmmlValues = field.getValues();
-		for(Object value : values){
-			Value pmmlValue = new Value(value)
-				.setProperty(property);
-
-			pmmlValues.add(pmmlValue);
-		}
-	}
-
-	static
-	public <F extends Field<F> & HasDiscreteDomain<F>> void clearValues(F field, Value.Property property){
-
-		if(property == null){
-			property = Value.Property.VALID;
-		}
-
-		List<Value> pmmlValues = field.getValues();
-		for(Iterator<Value> it = pmmlValues.iterator(); it.hasNext(); ){
-			Value pmmlValue = it.next();
-
-			if(pmmlValue.getProperty() == property){
-				it.remove();
-			}
-		}
 	}
 
 	static

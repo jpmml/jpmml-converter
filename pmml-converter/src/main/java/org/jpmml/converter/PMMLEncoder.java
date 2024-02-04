@@ -111,7 +111,7 @@ public class PMMLEncoder {
 		DataField dataField = new DataField(name, opType, dataType);
 
 		if(values != null && !values.isEmpty()){
-			PMMLUtil.addValues(dataField, values);
+			FieldUtil.addValues(dataField, values);
 		}
 
 		addDataField(dataField);
@@ -258,7 +258,7 @@ public class PMMLEncoder {
 				break values;
 			}
 
-			List<?> existingValues = PMMLUtil.getValues((Field & HasDiscreteDomain)field);
+			List<?> existingValues = FieldUtil.getValues((Field & HasDiscreteDomain)field);
 			if(existingValues != null && !existingValues.isEmpty()){
 
 				if((existingValues).equals(values)){
@@ -268,7 +268,7 @@ public class PMMLEncoder {
 				throw new IllegalArgumentException("Expected " + existingValues + " as valid values, got " + values);
 			}
 
-			PMMLUtil.addValues((Field & HasDiscreteDomain)field, values);
+			FieldUtil.addValues((Field & HasDiscreteDomain)field, values);
 		}
 
 		field.setOpType(opType);

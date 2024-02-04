@@ -28,7 +28,7 @@ import org.dmg.pmml.OpType;
 public class CategoricalLabel extends DiscreteLabel {
 
 	public <F extends Field<F> & HasDiscreteDomain<F>> CategoricalLabel(F field){
-		this(field.requireName(), field.requireDataType(), PMMLUtil.getValues(field));
+		this(field.requireName(), field.requireDataType(), FieldUtil.getValues(field));
 	}
 
 	public CategoricalLabel(CategoricalFeature categoricalFeature){
