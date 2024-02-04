@@ -66,11 +66,11 @@ public class ExpressionUtil {
 			throw new IllegalArgumentException();
 		}
 
-		return createConstant(value, TypeUtil.getDataType(value));
+		return createConstant(TypeUtil.getDataType(value), value);
 	}
 
 	static
-	public Constant createConstant(Object value, DataType dataType){
+	public Constant createConstant(DataType dataType, Object value){
 		Constant constant = new Constant(value)
 			.setDataType(dataType)
 			.setMissing(value == null);
