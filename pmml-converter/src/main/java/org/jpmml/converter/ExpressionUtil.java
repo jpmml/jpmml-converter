@@ -42,6 +42,22 @@ public class ExpressionUtil {
 	}
 
 	static
+	public Apply createValueApply(Expression expression, Collection<?> values){
+		return createValueApply(expression, null, values);
+	}
+
+	static
+	public Apply createValueApply(Expression expression, DataType dataType, Collection<?> values){
+		Apply apply = createApply(values.size() == 1 ? PMMLFunctions.EQUAL : PMMLFunctions.ISIN, expression);
+
+		for(Object value : values){
+			apply.addExpressions(createConstant(dataType, value));
+		}
+
+		return apply;
+	}
+
+	static
 	public Apply createApply(DefineFunction defineFunction, Expression... expressions){
 		return createApply(defineFunction.requireName(), expressions);
 	}
