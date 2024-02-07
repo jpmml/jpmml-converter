@@ -40,6 +40,12 @@ public class DiscreteLabel extends ScalarLabel {
 		setValues(values);
 	}
 
+	abstract
+	public CategoricalLabel toCategoricalLabel();
+
+	abstract
+	public OrdinalLabel toOrdinalLabel();
+
 	@Override
 	public int hashCode(){
 		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());

@@ -59,6 +59,16 @@ public class CategoricalLabel extends DiscreteLabel {
 	}
 
 	@Override
+	public CategoricalLabel toCategoricalLabel(){
+		return this;
+	}
+
+	@Override
+	public OrdinalLabel toOrdinalLabel(){
+		return new OrdinalLabel(getName(), getDataType(), getValues());
+	}
+
+	@Override
 	public int hashCode(){
 		return super.hashCode();
 	}
