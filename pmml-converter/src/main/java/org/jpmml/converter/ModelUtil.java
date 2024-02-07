@@ -173,6 +173,16 @@ public class ModelUtil {
 	}
 
 	static
+	public Output createNeighborOutput(int count){
+		Output output = new Output();
+
+		List<OutputField> outputFields = output.getOutputFields();
+		outputFields.addAll(createNeighborFields(count));
+
+		return output;
+	}
+
+	static
 	public OutputField createAffinityField(DataType dataType, Object value){
 		return createAffinityField(FieldNameUtil.create(FieldNames.AFFINITY, value), dataType, value);
 	}
