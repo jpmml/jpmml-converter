@@ -68,18 +68,18 @@
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-evaluator-testing</artifactId>
-				<version>1.6.4</version>
+				<version>1.6.5</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-model</artifactId>
-				<version>1.6.4</version>
+				<version>1.6.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-model-metro</artifactId>
-				<version>1.6.4</version>
+				<version>1.6.5</version>
 				<exclusions>
 					<exclusion>
 						<groupId>com.sun.xml.fastinfoset</groupId>
@@ -122,7 +122,7 @@
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-model</artifactId>
-				<version>1.6.4</version>
+				<version>1.6.5</version>
 				<classifier>tests</classifier>
 				<scope>test</scope>
 			</dependency>
