@@ -47,8 +47,8 @@ import org.dmg.pmml.regression.RegressionTable;
 import org.jpmml.converter.CategoricalLabel;
 import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
+import org.jpmml.converter.ModelEncoder;
 import org.jpmml.converter.ModelUtil;
-import org.jpmml.converter.PMMLEncoder;
 import org.jpmml.converter.Schema;
 import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
@@ -441,7 +441,7 @@ public class MiningModelUtil {
 
 		OutputField outputField = Iterables.getLast(output.getOutputFields());
 
-		PMMLEncoder encoder = schema.getEncoder();
+		ModelEncoder encoder = schema.getEncoder();
 
 		return new ContinuousFeature(encoder, outputField);
 	}
