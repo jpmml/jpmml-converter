@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import com.google.common.base.Equivalence;
@@ -36,7 +35,6 @@ import org.jpmml.evaluator.FunctionNameStack;
 import org.jpmml.evaluator.ModelEvaluatorBuilder;
 import org.jpmml.evaluator.ResultField;
 import org.jpmml.evaluator.testing.ArchiveBatch;
-import org.jpmml.evaluator.testing.CsvUtil;
 import org.jpmml.evaluator.visitors.UnsupportedMarkupInspector;
 import org.jpmml.model.visitors.InvalidMarkupInspector;
 import org.jpmml.model.visitors.MissingMarkupInspector;
@@ -70,36 +68,6 @@ public class ModelEncoderBatch extends ArchiveBatch {
 		}
 
 		return result;
-	}
-
-	@Override
-	protected List<Map<String, String>> loadRecords(String path) throws IOException {
-		String separator = getSeparator();
-
-		CsvUtil.Table table;
-
-		try(InputStream is = open(path)){
-			table = CsvUtil.readTable(is, separator);
-		}
-
-		Function<String, String> function = new Function<String, String>(){
-
-			@Override
-			public String apply(String string){
-
-				if(("N/A").equals(string) || ("NA").equals(string)){
-					return null;
-				}
-
-				return string;
-			}
-		};
-
-		return CsvUtil.toRecords(table, function);
-	}
-
-	protected String getSeparator(){
-		return ",";
 	}
 
 	/**
