@@ -74,12 +74,12 @@
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-model</artifactId>
-				<version>1.6.9</version>
+				<version>1.6.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-model-metro</artifactId>
-				<version>1.6.9</version>
+				<version>1.6.10</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.glassfish.jaxb</groupId>
@@ -127,7 +127,7 @@
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-model</artifactId>
-				<version>1.6.9</version>
+				<version>1.6.10</version>
 				<classifier>tests</classifier>
 				<scope>test</scope>
 			</dependency>
