@@ -52,10 +52,10 @@ public class AttributeCleanerTest {
 
 		OutputField outputField = new OutputField()
 			.setFinalResult(Boolean.TRUE)
-			.setIsMultiValued("0");
+			.setMultiValued(OutputField.MultiValued.ZERO);
 
 		assertEquals(Boolean.TRUE, ReflectionUtil.getFieldValue(PMMLAttributes.OUTPUTFIELD_FINALRESULT, outputField));
-		assertEquals("0", ReflectionUtil.getFieldValue(PMMLAttributes.OUTPUTFIELD_ISMULTIVALUED, outputField));
+		assertEquals(OutputField.MultiValued.ZERO, ReflectionUtil.getFieldValue(PMMLAttributes.OUTPUTFIELD_MULTIVALUED, outputField));
 
 		Output output = new Output()
 			.addOutputFields(outputField);
@@ -89,10 +89,10 @@ public class AttributeCleanerTest {
 		assertEquals(OutlierTreatmentMethod.AS_MISSING_VALUES, miningField.getOutlierTreatment());
 
 		assertEquals((Boolean)null, ReflectionUtil.getFieldValue(PMMLAttributes.OUTPUTFIELD_FINALRESULT, outputField));
-		assertEquals((String)null, ReflectionUtil.getFieldValue(PMMLAttributes.OUTPUTFIELD_ISMULTIVALUED, outputField));
+		assertEquals((String)null, ReflectionUtil.getFieldValue(PMMLAttributes.OUTPUTFIELD_MULTIVALUED, outputField));
 
 		assertEquals(Boolean.TRUE, outputField.isFinalResult());
-		assertEquals("0", outputField.getIsMultiValued());
+		assertEquals(OutputField.MultiValued.ZERO, outputField.getMultiValued());
 
 		assertEquals(Boolean.FALSE, ReflectionUtil.getFieldValue(org.dmg.pmml.tree.PMMLAttributes.TREEMODEL_SCORABLE, treeModel));
 
