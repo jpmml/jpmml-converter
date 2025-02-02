@@ -30,9 +30,9 @@ import org.dmg.pmml.general_regression.ParameterCell;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelEncoder;
 import org.jpmml.converter.ModelTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GeneralRegressionModelUtilTest extends ModelTest {
 
