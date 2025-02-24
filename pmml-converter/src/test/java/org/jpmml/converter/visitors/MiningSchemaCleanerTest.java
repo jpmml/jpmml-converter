@@ -34,9 +34,9 @@ import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.regression.RegressionModel;
-import org.jpmml.model.ChainedSegmentationTest;
-import org.jpmml.model.NestedSegmentationTest;
-import org.jpmml.model.ResourceUtil;
+import org.jpmml.model.resources.ChainedSegmentationTest;
+import org.jpmml.model.resources.NestedSegmentationTest;
+import org.jpmml.model.resources.ResourceUtil;
 import org.jpmml.model.visitors.AbstractVisitor;
 import org.junit.jupiter.api.Test;
 

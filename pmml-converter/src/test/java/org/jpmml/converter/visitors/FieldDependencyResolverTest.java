@@ -32,9 +32,9 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
-import org.jpmml.model.ChainedSegmentationTest;
-import org.jpmml.model.NestedSegmentationTest;
-import org.jpmml.model.ResourceUtil;
+import org.jpmml.model.resources.ChainedSegmentationTest;
+import org.jpmml.model.resources.NestedSegmentationTest;
+import org.jpmml.model.resources.ResourceUtil;
 import org.jpmml.model.visitors.AbstractVisitor;
 import org.junit.jupiter.api.Test;
 
