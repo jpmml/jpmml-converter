@@ -58,11 +58,6 @@
 			<artifactId>pmml-model</artifactId>
 			<classifier>tests</classifier>
 		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-		</dependency>
 	</dependencies>
 	
 	<build>
@@ -70,7 +65,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.4.2</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
