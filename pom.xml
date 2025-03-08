@@ -10,7 +10,7 @@
 
 	<groupId>org.jpmml</groupId>
 	<artifactId>jpmml-converter</artifactId>
-	<version>1.6-SNAPSHOT</version>
+	<version>1.6.1</version>
 	<packaging>pom</packaging>
 
 	<name>JPMML-Converter</name>
@@ -41,7 +41,7 @@
 		<connection>scm:git:git@github.com:jpmml/jpmml-converter.git</connection>
 		<developerConnection>scm:git:git@github.com:jpmml/jpmml-converter.git</developerConnection>
 		<url>git://github.com/jpmml/jpmml-converter.git</url>
-		<tag>HEAD</tag>
+		<tag>1.6.1</tag>
 	</scm>
 	<issueManagement>
 		<system>GitHub</system>
@@ -51,7 +51,7 @@
 	<properties>
 		<jpmml-model.version>1.7.2</jpmml-model.version>
 		<jpmml-evaluator.version>1.7.2</jpmml-evaluator.version>
-		<project.build.outputTimestamp>2025-02-02T11:20:33Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2025-03-08T16:15:05Z</project.build.outputTimestamp>
 	</properties>
 
 	<dependencyManagement>
@@ -59,12 +59,12 @@
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-converter</artifactId>
-				<version>1.6-SNAPSHOT</version>
+				<version>1.6.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-converter-testing</artifactId>
-				<version>1.6-SNAPSHOT</version>
+				<version>1.6.1</version>
 			</dependency>
 
 			<dependency>
