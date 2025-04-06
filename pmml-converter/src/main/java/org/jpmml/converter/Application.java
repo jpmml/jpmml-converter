@@ -18,10 +18,38 @@
  */
 package org.jpmml.converter;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.jar.Manifest;
+
 abstract
 public class Application {
 
+	private Manifest manifest = null;
+
+
 	protected Application(){
+	}
+
+	public Manifest getManifest(){
+
+		if(this.manifest == null){
+			this.manifest = loadManifest();
+		}
+
+		return this.manifest;
+	}
+
+	protected Manifest loadManifest(){
+		Class<?> clazz = getClass();
+
+		ClassLoader clazzLoader = clazz.getClassLoader();
+
+		try(InputStream is = clazzLoader.getResourceAsStream("META-INF/MANIFEST.MF")){
+			return new Manifest(is);
+		} catch(IOException ioe){
+			throw new RuntimeException(ioe);
+		}
 	}
 
 	static
