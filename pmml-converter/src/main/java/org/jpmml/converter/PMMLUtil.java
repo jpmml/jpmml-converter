@@ -52,17 +52,14 @@ public class PMMLUtil {
 
 	static
 	public Extension createExtension(String name, String value){
-		Extension extension = new Extension()
-			.setName(name)
-			.setValue(value);
+		Extension extension = new Extension(name, value);
 
 		return extension;
 	}
 
 	static
 	public Extension createExtension(String name, Object... content){
-		Extension extension = new Extension()
-			.setName(name)
+		Extension extension = new Extension(name, null)
 			.addContent(content);
 
 		return extension;
