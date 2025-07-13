@@ -77,7 +77,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 		Segmentation segmentation = miningModel.requireSegmentation();
 
-		List<Segment> segments = segmentation.requireSegments();
+		List<Segment> segments = segmentation.getSegments();
 		for(Segment segment : segments){
 			Model model = segment.requireModel();
 

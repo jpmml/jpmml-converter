@@ -48,7 +48,7 @@ public class DeepFieldResolverUtil {
 
 		Segmentation segmentation = miningModel.requireSegmentation();
 
-		List<Segment> segments = segmentation.requireSegments();
+		List<Segment> segments = segmentation.getSegments();
 		for(Segment segment : segments){
 			Predicate predicate = segment.requirePredicate();
 
