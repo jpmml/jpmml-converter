@@ -51,6 +51,9 @@
 	<properties>
 		<jpmml-model.version>1.7.4</jpmml-model.version>
 		<jpmml-evaluator.version>1.7.4</jpmml-evaluator.version>
+		<guava.version>33.4.8-jre</guava.version>
+		<jcommander.version>1.82</jcommander.version>
+		<slf4j.version>2.0.17</slf4j.version>
 		<project.build.outputTimestamp>2025-04-06T07:43:52Z</project.build.outputTimestamp>
 	</properties>
 
@@ -93,13 +96,13 @@
 			<dependency>
 				<groupId>com.beust</groupId>
 				<artifactId>jcommander</artifactId>
-				<version>1.82</version>
+				<version>${jcommander.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>33.4.8-jre</version>
+				<version>${guava.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>*</groupId>
@@ -118,12 +121,12 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>2.0.17</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-jdk14</artifactId>
-				<version>2.0.17</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 
 			<dependency>
