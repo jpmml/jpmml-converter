@@ -49,7 +49,7 @@
 	</issueManagement>
 
 	<properties>
-		<jpmml-model.version>1.7.3</jpmml-model.version>
+		<jpmml-model.version>1.7.4</jpmml-model.version>
 		<jpmml-evaluator.version>1.7.3</jpmml-evaluator.version>
 		<project.build.outputTimestamp>2025-04-06T07:43:52Z</project.build.outputTimestamp>
 	</properties>
