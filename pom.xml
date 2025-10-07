@@ -49,7 +49,7 @@
 	</issueManagement>
 
 	<properties>
-		<jpmml-model.version>1.7.4</jpmml-model.version>
+		<jpmml-model.version>1.7.5</jpmml-model.version>
 		<jpmml-evaluator.version>1.7.4</jpmml-evaluator.version>
 		<guava.version>33.4.8-jre</guava.version>
 		<jcommander.version>1.82</jcommander.version>

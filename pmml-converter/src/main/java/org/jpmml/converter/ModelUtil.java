@@ -305,9 +305,9 @@ public class ModelUtil {
 			tagName = (matcher.group(1) + "_" + matcher.group(2));
 		}
 
-		VerificationField verificationField = new VerificationField()
-			.setField(name)
-			.setColumn(NamespacePrefixes.JPMML_INLINETABLE + ":" + XMLUtil.createTagName(tagName));
+		String column = NamespacePrefixes.JPMML_INLINETABLE + ":" + XMLUtil.createTagName(tagName);
+
+		VerificationField verificationField = new VerificationField(name, column);
 
 		return verificationField;
 	}
