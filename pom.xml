@@ -51,7 +51,7 @@
 	<properties>
 		<jpmml-model.version>1.7.5</jpmml-model.version>
 		<jpmml-evaluator.version>1.7.5</jpmml-evaluator.version>
-		<guava.version>33.4.8-jre</guava.version>
+		<guava.version>33.5.0-jre</guava.version>
 		<jcommander.version>1.82</jcommander.version>
 		<slf4j.version>2.0.17</slf4j.version>
 		<project.build.outputTimestamp>2025-07-13T18:16:25Z</project.build.outputTimestamp>
