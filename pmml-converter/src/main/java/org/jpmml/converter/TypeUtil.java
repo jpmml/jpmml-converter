@@ -55,7 +55,7 @@ public class TypeUtil {
 			return DataType.BOOLEAN;
 		}
 
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Expected Java primitive value, got " + (value != null ? (value.getClass()).getName() : null) + " value");
 	}
 
 	static
