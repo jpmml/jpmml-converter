@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ValueUtilTest {
 
@@ -79,21 +79,8 @@ public class ValueUtilTest {
 		assertEquals((Integer)0, ValueUtil.asInteger((Float)0f));
 		assertEquals((Integer)0, ValueUtil.asInteger((Double)0d));
 
-		try {
-			ValueUtil.asInteger((Double)0.5d);
-
-			fail();
-		} catch(IllegalArgumentException iae){
-			// Ignored
-		}
-
-		try {
-			ValueUtil.asInteger((Double)(Integer.MAX_VALUE + 0.5d));
-
-			fail();
-		} catch(IllegalArgumentException iae){
-			// Ignored
-		}
+		assertThrows(IllegalArgumentException.class, () -> ValueUtil.asInteger((Double)0.5d));
+		assertThrows(IllegalArgumentException.class, () -> ValueUtil.asInteger((Double)(Integer.MAX_VALUE + 0.5d)));
 	}
 
 	@Test
