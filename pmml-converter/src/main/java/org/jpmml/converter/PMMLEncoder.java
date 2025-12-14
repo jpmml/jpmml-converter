@@ -123,7 +123,7 @@ public class PMMLEncoder {
 		DataField dataField = this.dataFields.remove(name);
 
 		if(dataField == null){
-			throw new IllegalArgumentException("Field " + name + " is undefined");
+			throw new IllegalArgumentException("Field \'" + name + "\' is undefined");
 		}
 
 		return dataField;
@@ -171,7 +171,7 @@ public class PMMLEncoder {
 		DerivedField derivedField = this.derivedFields.remove(name);
 
 		if(derivedField == null){
-			throw new IllegalArgumentException("Field " + name + " is undefined");
+			throw new IllegalArgumentException("Field \'" + name + "\' is undefined");
 		}
 
 		return derivedField;
@@ -193,7 +193,7 @@ public class PMMLEncoder {
 			return derivedField;
 		}
 
-		throw new IllegalArgumentException("Field " + name + " is undefined");
+		throw new IllegalArgumentException("Field \'" + name + "\' is undefined");
 	}
 
 	public Field<?> toContinuous(String name){
@@ -206,7 +206,7 @@ public class PMMLEncoder {
 			case DOUBLE:
 				break;
 			default:
-				throw new IllegalArgumentException("Field " + name + " has data type " + dataType);
+				throw new IllegalArgumentException("Field \'" + name + "\' has non-numeric data type " + dataType);
 		}
 
 		field.setOpType(OpType.CONTINUOUS);
@@ -280,7 +280,7 @@ public class PMMLEncoder {
 		String name = field.requireName();
 
 		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new IllegalArgumentException("Field " + name + " is already defined");
+			throw new IllegalArgumentException("Field \'" + name + "\' is already defined");
 		}
 
 		return name;
