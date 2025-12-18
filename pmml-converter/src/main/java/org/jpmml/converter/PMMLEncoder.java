@@ -230,7 +230,7 @@ public class PMMLEncoder {
 		String name = defineFunction.requireName();
 
 		if(this.defineFunctions.containsKey(name)){
-			throw new IllegalArgumentException(name);
+			throw new NamingException("Function \'" + name + "\' is already defined");
 		}
 
 		this.defineFunctions.put(name, defineFunction);
@@ -280,7 +280,7 @@ public class PMMLEncoder {
 		String name = field.requireName();
 
 		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new IllegalArgumentException("Field \'" + name + "\' is already defined");
+			throw new NamingException("Field \'" + name + "\' is already defined");
 		}
 
 		return name;
