@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -135,6 +137,34 @@ public class ModelEncoder extends PMMLEncoder {
 		}
 
 		decorators.put(field.requireName(), decorator);
+	}
+
+	public Decorator removeDecorator(Field<?> field, Class<? extends Decorator> clazz){
+		return removeDecorator(null, field, clazz);
+	}
+
+	public Decorator removeDecorator(Model model, Field<?> field, Class<? extends Decorator> clazz){
+		Map<Model, ListMultimap<String, Decorator>> modelDecorators = getDecorators();
+
+		ListMultimap<String, Decorator> decorators = modelDecorators.get(model);
+		if(decorators != null){
+			List<Decorator> fieldDecorators = decorators.get(field.requireName());
+
+			if(fieldDecorators != null && !fieldDecorators.isEmpty()){
+
+				for(Iterator<Decorator> it = fieldDecorators.iterator(); it.hasNext(); ){
+					Decorator fieldDecorator = it.next();
+
+					if(Objects.equals(fieldDecorator.getClass(), clazz)){
+						it.remove();
+
+						return fieldDecorator;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public Map<Model, ListMultimap<Feature, Number>> getFeatureImportances(){
