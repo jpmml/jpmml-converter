@@ -37,7 +37,7 @@ public class SchemaUtil {
 	public void checkSize(int size, DiscreteLabel discreteLabel){
 
 		if(discreteLabel.size() != size){
-			throw new IllegalArgumentException("Expected " + size + " target categories, got " + discreteLabel.size() + " target categories");
+			throw new SchemaException("Expected a discrete label with " + size + " target categories, got " + discreteLabel.size() + " target categories (" + discreteLabel.getValues() + ")");
 		}
 	}
 
@@ -45,7 +45,7 @@ public class SchemaUtil {
 	public void checkSize(int size, List<? extends Feature> features){
 
 		if(features.size() != size){
-			throw new IllegalArgumentException("Expected " + size + " feature(s), got " + features.size() + " feature(s)");
+			throw new SchemaException("Expected " + size + " feature(s), got " + features.size() + " feature(s)");
 		}
 	}
 
@@ -53,7 +53,7 @@ public class SchemaUtil {
 	public void checkSize(int size, CategoricalFeature categoricalFeature){
 
 		if(categoricalFeature.size() != size){
-			throw new IllegalArgumentException("Expected " + size + " categories, got " + categoricalFeature.size() + " categories");
+			throw new SchemaException("Expected a categorical feature with " + size + " categories, got " + categoricalFeature.size() + " categories (" + categoricalFeature.getValues() + ")");
 		}
 	}
 }

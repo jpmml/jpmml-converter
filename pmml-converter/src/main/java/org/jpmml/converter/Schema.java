@@ -107,27 +107,53 @@ public class Schema {
 	}
 
 	public ContinuousLabel requireContinuousLabel(){
-		return (ContinuousLabel)requireScalarLabel();
+		Label label = getLabel();
+
+		try {
+			return (ContinuousLabel)label;
+		} catch(ClassCastException cce){
+			throw new SchemaException("Expected a continuos label, got " + label, cce);
+		}
 	}
 
 	public CategoricalLabel requireCategoricalLabel(){
-		return (CategoricalLabel)requireScalarLabel();
+		Label label = getLabel();
+
+		try {
+			return (CategoricalLabel)label;
+		} catch(ClassCastException cce){
+			throw new SchemaException("Expected a categorical label, got " + label, cce);
+		}
 	}
 
 	public OrdinalLabel requireOrdinalLabel(){
-		return (OrdinalLabel)requireScalarLabel();
+		Label label = getLabel();
+
+		try {
+			return (OrdinalLabel)label;
+		} catch(ClassCastException cce){
+			throw new SchemaException("Expected an ordinal label, got " + label, cce);
+		}
 	}
 
 	public ScalarLabel requireScalarLabel(){
 		Label label = getLabel();
 
-		return (ScalarLabel)label;
+		try {
+			return (ScalarLabel)label;
+		} catch(ClassCastException cce){
+			throw new SchemaException("Expected a scalar label, got " + label, cce);
+		}
 	}
 
 	public MultiLabel requireMultiLabel(){
 		Label label = getLabel();
 
-		return (MultiLabel)label;
+		try {
+			return (MultiLabel)label;
+		} catch(ClassCastException cce){
+			throw new SchemaException("Expected multiple labels, got " + label, cce);
+		}
 	}
 
 	@Override
