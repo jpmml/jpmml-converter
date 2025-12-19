@@ -54,7 +54,7 @@ public class LibSVMUtil {
 
 	static
 	public SupportVectorMachineModel createRegression(Kernel kernel, Matrix<? extends Number> sv, List<String> ids, Number rho, List<? extends Number> coefs, Schema schema){
-		ContinuousLabel continuousLabel = (ContinuousLabel)schema.getLabel();
+		ContinuousLabel continuousLabel = schema.requireContinuousLabel();
 
 		VectorDictionary vectorDictionary = LibSVMUtil.createVectorDictionary(sv, ids, schema);
 
@@ -70,7 +70,7 @@ public class LibSVMUtil {
 
 	static
 	public SupportVectorMachineModel createClassification(Kernel kernel, Matrix<? extends Number> sv, List<Integer> nSv, List<String> ids, List<? extends Number> rho, List<? extends Number> coefs, Schema schema){
-		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
+		CategoricalLabel categoricalLabel = schema.requireCategoricalLabel();
 
 		int numberOfVectors = sv.getRows();
 		int numberOfFeatures = sv.getColumns();

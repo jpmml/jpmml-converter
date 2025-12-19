@@ -51,7 +51,7 @@ public class Schema {
 	}
 
 	public Schema toAnonymousSchema(){
-		ScalarLabel scalarLabel = (ScalarLabel)getLabel();
+		ScalarLabel scalarLabel = requireScalarLabel();
 
 		return toRelabeledSchema(scalarLabel != null ? scalarLabel.toAnonymousLabel() : null);
 	}
@@ -104,6 +104,30 @@ public class Schema {
 			.collect(Collectors.toList());
 
 		return new Schema(encoder, label, transformedFeatures);
+	}
+
+	public ContinuousLabel requireContinuousLabel(){
+		return (ContinuousLabel)requireScalarLabel();
+	}
+
+	public CategoricalLabel requireCategoricalLabel(){
+		return (CategoricalLabel)requireScalarLabel();
+	}
+
+	public OrdinalLabel requireOrdinalLabel(){
+		return (OrdinalLabel)requireScalarLabel();
+	}
+
+	public ScalarLabel requireScalarLabel(){
+		Label label = getLabel();
+
+		return (ScalarLabel)label;
+	}
+
+	public MultiLabel requireMultiLabel(){
+		Label label = getLabel();
+
+		return (MultiLabel)label;
 	}
 
 	@Override

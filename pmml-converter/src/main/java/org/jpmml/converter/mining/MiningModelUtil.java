@@ -92,7 +92,7 @@ public class MiningModelUtil {
 
 	static
 	public MiningModel createClassification(List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
-		CategoricalLabel categoricalLabel = (CategoricalLabel)schema.getLabel();
+		CategoricalLabel categoricalLabel = schema.requireCategoricalLabel();
 
 		SchemaUtil.checkSize(models.size(), categoricalLabel);
 
