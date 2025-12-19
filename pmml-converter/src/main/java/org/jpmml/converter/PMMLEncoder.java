@@ -123,7 +123,7 @@ public class PMMLEncoder {
 		DataField dataField = this.dataFields.remove(name);
 
 		if(dataField == null){
-			throw new ResolutionException("Field \'" + name + "\' is undefined");
+			throw new ResolutionException("Field \'" + name + "\' is not defined");
 		}
 
 		return dataField;
@@ -171,7 +171,7 @@ public class PMMLEncoder {
 		DerivedField derivedField = this.derivedFields.remove(name);
 
 		if(derivedField == null){
-			throw new ResolutionException("Field \'" + name + "\' is undefined");
+			throw new ResolutionException("Field \'" + name + "\' is not defined");
 		}
 
 		return derivedField;
@@ -193,7 +193,7 @@ public class PMMLEncoder {
 			return derivedField;
 		}
 
-		throw new ResolutionException("Field \'" + name + "\' is undefined");
+		throw new ResolutionException("Field \'" + name + "\' is not defined");
 	}
 
 	public Field<?> toContinuous(String name){
