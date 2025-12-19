@@ -98,7 +98,7 @@ public class RegressionModelUtil {
 	public RegressionModel createBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		CategoricalLabel categoricalLabel = schema.requireCategoricalLabel();
 
-		SchemaUtil.checkSize(2, categoricalLabel);
+		SchemaUtil.checkCardinality(2, categoricalLabel);
 
 		if(normalizationMethod != null){
 
@@ -139,7 +139,7 @@ public class RegressionModelUtil {
 	public RegressionModel createOrdinalClassification(MathContext mathContext, Feature feature, List<? extends Number> thresholds, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		OrdinalLabel ordinalLabel = schema.requireOrdinalLabel();
 
-		SchemaUtil.checkSize(thresholds.size() + 1, ordinalLabel);
+		SchemaUtil.checkCardinality(thresholds.size() + 1, ordinalLabel);
 
 		switch(normalizationMethod){
 			case NONE:

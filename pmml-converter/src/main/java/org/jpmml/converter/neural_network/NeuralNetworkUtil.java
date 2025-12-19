@@ -182,7 +182,7 @@ public class NeuralNetworkUtil {
 
 	static
 	public NeuralOutputs createClassificationNeuralOutputs(List<? extends NeuralEntity> entities, CategoricalLabel categoricalLabel){
-		SchemaUtil.checkSize(entities.size(), categoricalLabel);
+		SchemaUtil.checkCardinality(entities.size(), categoricalLabel);
 
 		NeuralOutputs neuralOutputs = new NeuralOutputs();
 

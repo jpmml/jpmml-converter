@@ -34,14 +34,6 @@ public class SchemaUtil {
 	}
 
 	static
-	public void checkSize(int size, DiscreteLabel discreteLabel){
-
-		if(discreteLabel.size() != size){
-			throw new SchemaException("Expected a discrete label with " + size + " target categories, got " + discreteLabel.size() + " target categories (" + discreteLabel.getValues() + ")");
-		}
-	}
-
-	static
 	public void checkSize(int size, List<? extends Feature> features){
 
 		if(features.size() != size){
@@ -50,7 +42,15 @@ public class SchemaUtil {
 	}
 
 	static
-	public void checkSize(int size, CategoricalFeature categoricalFeature){
+	public void checkCardinality(int size, DiscreteLabel discreteLabel){
+
+		if(discreteLabel.size() != size){
+			throw new SchemaException("Expected a discrete label with " + size + " target categories, got " + discreteLabel.size() + " target categories (" + discreteLabel.getValues() + ")");
+		}
+	}
+
+	static
+	public void checkCardinality(int size, CategoricalFeature categoricalFeature){
 
 		if(categoricalFeature.size() != size){
 			throw new SchemaException("Expected a categorical feature with " + size + " categories, got " + categoricalFeature.size() + " categories (" + categoricalFeature.getValues() + ")");
