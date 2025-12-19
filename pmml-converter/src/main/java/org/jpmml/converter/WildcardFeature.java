@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.Field;
 
 public class WildcardFeature extends Feature {
 
@@ -32,12 +31,7 @@ public class WildcardFeature extends Feature {
 
 	@Override
 	public DataField getField(){
-		Field<?> field = super.getField();
-		if(field == null){
-			throw new IllegalArgumentException();
-		}
-
-		return (DataField)field;
+		return (DataField)super.getField();
 	}
 
 	@Override
