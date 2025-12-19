@@ -22,7 +22,6 @@ import java.util.Arrays;
 
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
-import org.dmg.pmml.DataType;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.PMMLFunctions;
@@ -52,17 +51,17 @@ public class ExpressionCompactorTest {
 	public void compactLogicalExpression(){
 		FieldRef fieldRef = new FieldRef("x");
 
-		Apply first = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant(DataType.STRING, "1"));
+		Apply first = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("1"));
 
-		Apply leftLeftChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant(DataType.STRING, "2/L/L"));
-		Apply leftRightChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant(DataType.STRING, "2/L/R"));
+		Apply leftLeftChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("2/L/L"));
+		Apply leftRightChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("2/L/R"));
 
 		Apply leftChild = ExpressionUtil.createApply(PMMLFunctions.OR, leftLeftChild, leftRightChild);
-		Apply rightChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant(DataType.STRING, "2/R"));
+		Apply rightChild = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("2/R"));
 
 		Apply second = ExpressionUtil.createApply(PMMLFunctions.OR, leftChild, rightChild);
 
-		Apply third = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant(DataType.STRING, "3"));
+		Apply third = ExpressionUtil.createApply(PMMLFunctions.EQUAL, fieldRef, ExpressionUtil.createConstant("3"));
 
 		Apply apply = compact(ExpressionUtil.createApply(PMMLFunctions.OR, first, second, third));
 
@@ -76,7 +75,7 @@ public class ExpressionCompactorTest {
 		FieldRef minutes = new FieldRef("minutes");
 		FieldRef seconds = new FieldRef("seconds");
 
-		Constant separator = ExpressionUtil.createConstant(DataType.STRING, ":");
+		Constant separator = ExpressionUtil.createConstant(":");
 
 		Apply apply = compact(ExpressionUtil.createApply(PMMLFunctions.CONCAT, hours, ExpressionUtil.createApply(PMMLFunctions.CONCAT, separator, minutes), ExpressionUtil.createApply(PMMLFunctions.CONCAT, separator, seconds)));
 

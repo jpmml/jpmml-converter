@@ -76,6 +76,16 @@ public class ExpressionUtil {
 	}
 
 	static
+	public Constant createConstant(String value){
+
+		if(value == null){
+			throw new IllegalArgumentException();
+		}
+
+		return createConstant(DataType.STRING, value);
+	}
+
+	static
 	public Constant createConstant(Number value){
 
 		if(value == null){
@@ -83,6 +93,16 @@ public class ExpressionUtil {
 		}
 
 		return createConstant(TypeUtil.getDataType(value), value);
+	}
+
+	static
+	public Constant createConstant(Boolean value){
+
+		if(value == null){
+			throw new IllegalArgumentException();
+		}
+
+		return createConstant(DataType.BOOLEAN, value);
 	}
 
 	static

@@ -52,7 +52,7 @@ public class ExpressionUtilTest {
 		assertTrue(ExpressionUtil.isString(new FieldRef("a"), featureResolver));
 		assertTrue(ExpressionUtil.isString(new FieldRef("b"), featureResolver));
 
-		Expression expression = ExpressionUtil.createApply(PMMLFunctions.CONCAT, ExpressionUtil.createConstant(null, "Hello World!"), new FieldRef("x"));
+		Expression expression = ExpressionUtil.createApply(PMMLFunctions.CONCAT, ExpressionUtil.createConstant("Hello World!"), new FieldRef("x"));
 
 		assertTrue(ExpressionUtil.isString(expression, featureResolver));
 
