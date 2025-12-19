@@ -85,7 +85,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
 			for(MiningField miningField : miningFields){
-				String fieldName = miningField.getName();
+				String fieldName = miningField.requireName();
 
 				MiningField.UsageType usageType = miningField.getUsageType();
 				switch(usageType){
@@ -136,7 +136,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		for(Iterator<MiningField> it = miningFields.iterator(); it.hasNext(); ){
 			MiningField miningField = it.next();
 
-			String fieldName = miningField.getName();
+			String fieldName = miningField.requireName();
 
 			MiningField.UsageType usageType = miningField.getUsageType();
 			switch(usageType){
@@ -194,7 +194,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 			}
 
 			private int getFieldType(MiningField miningField){
-				String fieldName = miningField.getName();
+				String fieldName = miningField.requireName();
 
 				Field<?> field = activeFieldMap.get(fieldName);
 

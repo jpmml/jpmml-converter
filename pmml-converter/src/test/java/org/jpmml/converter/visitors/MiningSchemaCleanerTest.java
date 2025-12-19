@@ -167,7 +167,7 @@ public class MiningSchemaCleanerTest {
 		List<MiningField> miningFields = miningSchema.getMiningFields();
 
 		return miningFields.stream()
-			.map(MiningField::getName)
+			.map(MiningField::requireName)
 			.collect(Collectors.toSet());
 	}
 }

@@ -76,7 +76,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 				List<MiningField> miningFields = miningSchema.getMiningFields();
 
 				for(MiningField miningField : miningFields){
-					String fieldName = miningField.getName();
+					String fieldName = miningField.requireName();
 
 					MiningField.UsageType usageType = miningField.getUsageType();
 					switch(usageType){
