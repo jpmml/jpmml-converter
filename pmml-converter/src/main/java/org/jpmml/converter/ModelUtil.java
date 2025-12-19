@@ -57,6 +57,13 @@ public class ModelUtil {
 	}
 
 	static
+	public MiningSchema createMiningSchema(Schema schema){
+		Label label = schema.getLabel();
+
+		return createMiningSchema(label);
+	}
+
+	static
 	public MiningSchema createMiningSchema(Label label){
 		MiningSchema miningSchema = new MiningSchema();
 
