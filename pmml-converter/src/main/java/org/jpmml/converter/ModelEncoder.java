@@ -127,16 +127,16 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	public void addDecorator(Model model, Field<?> field, Decorator decorator){
-		Map<Model, ListMultimap<String, Decorator>> modelDecorators = getDecorators();
+		Map<Model, ListMultimap<String, Decorator>> decorators = getDecorators();
 
-		ListMultimap<String, Decorator> decorators = modelDecorators.get(model);
-		if(decorators == null){
-			decorators = ArrayListMultimap.create();
+		ListMultimap<String, Decorator> modelDecorators = decorators.get(model);
+		if(modelDecorators == null){
+			modelDecorators = ArrayListMultimap.create();
 
-			modelDecorators.put(model, decorators);
+			decorators.put(model, modelDecorators);
 		}
 
-		decorators.put(field.requireName(), decorator);
+		modelDecorators.put(field.requireName(), decorator);
 	}
 
 	public Decorator removeDecorator(Field<?> field, Class<? extends Decorator> clazz){
@@ -144,11 +144,11 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	public Decorator removeDecorator(Model model, Field<?> field, Class<? extends Decorator> clazz){
-		Map<Model, ListMultimap<String, Decorator>> modelDecorators = getDecorators();
+		Map<Model, ListMultimap<String, Decorator>> decorators = getDecorators();
 
-		ListMultimap<String, Decorator> decorators = modelDecorators.get(model);
-		if(decorators != null){
-			List<Decorator> fieldDecorators = decorators.get(field.requireName());
+		ListMultimap<String, Decorator> modelDecorators = decorators.get(model);
+		if(modelDecorators != null){
+			List<Decorator> fieldDecorators = modelDecorators.get(field.requireName());
 
 			if(fieldDecorators != null && !fieldDecorators.isEmpty()){
 
@@ -176,16 +176,16 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	public void addFeatureImportance(Model model, Feature feature, Number importance){
-		Map<Model, ListMultimap<Feature, Number>> modelFeatureImportances = getFeatureImportances();
+		Map<Model, ListMultimap<Feature, Number>> featureImportances = getFeatureImportances();
 
-		ListMultimap<Feature, Number> featureImportances = modelFeatureImportances.get(model);
-		if(featureImportances == null){
-			featureImportances = ArrayListMultimap.create();
+		ListMultimap<Feature, Number> modelFeatureImportances = featureImportances.get(model);
+		if(modelFeatureImportances == null){
+			modelFeatureImportances = ArrayListMultimap.create();
 
-			modelFeatureImportances.put(model, featureImportances);
+			featureImportances.put(model, modelFeatureImportances);
 		}
 
-		featureImportances.put(feature, importance);
+		modelFeatureImportances.put(feature, importance);
 	}
 
 	public Map<Model, List<UnivariateStats>> getUnivariateStats(){
@@ -197,16 +197,16 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	public void addUnivariateStats(Model model, UnivariateStats pmmlUnivariateStats){
-		Map<Model, List<UnivariateStats>> modelUnivariateStats = getUnivariateStats();
+		Map<Model, List<UnivariateStats>> univariateStats = getUnivariateStats();
 
-		List<UnivariateStats> univariateStats = modelUnivariateStats.get(model);
-		if(univariateStats == null){
-			univariateStats = new ArrayList<>();
+		List<UnivariateStats> modelUnivariateStats = univariateStats.get(model);
+		if(modelUnivariateStats == null){
+			modelUnivariateStats = new ArrayList<>();
 
-			modelUnivariateStats.put(model, univariateStats);
+			univariateStats.put(model, modelUnivariateStats);
 		}
 
-		univariateStats.add(pmmlUnivariateStats);
+		modelUnivariateStats.add(pmmlUnivariateStats);
 	}
 
 	public void transferContent(Model left, Model right){
@@ -228,20 +228,20 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	private void encodeDecorators(PMML pmml){
-		Map<Model, ListMultimap<String, Decorator>> modelDecorators = getDecorators();
+		Map<Model, ListMultimap<String, Decorator>> decorators = getDecorators();
 
-		if(modelDecorators.isEmpty()){
+		if(decorators.isEmpty()){
 			return;
 		} // End if
 
-		if(modelDecorators.containsKey(null)){
+		if(decorators.containsKey(null)){
 			throw new IllegalStateException();
 		}
 
-		Collection<Map.Entry<Model, ListMultimap<String, Decorator>>> entries = modelDecorators.entrySet();
+		Collection<Map.Entry<Model, ListMultimap<String, Decorator>>> entries = decorators.entrySet();
 		for(Map.Entry<Model, ListMultimap<String, Decorator>> entry : entries){
 			Model model = entry.getKey();
-			ListMultimap<String, Decorator> decorators = entry.getValue();
+			ListMultimap<String, Decorator> modelDecorators = entry.getValue();
 
 			MiningSchema miningSchema = model.requireMiningSchema();
 			if(miningSchema.hasMiningFields()){
@@ -250,7 +250,7 @@ public class ModelEncoder extends PMMLEncoder {
 				for(MiningField miningField : miningFields){
 					String fieldName = miningField.getName();
 
-					List<Decorator> fieldDecorators = decorators.get(fieldName);
+					List<Decorator> fieldDecorators = modelDecorators.get(fieldName);
 					if(fieldDecorators != null && !fieldDecorators.isEmpty()){
 
 						for(Decorator fieldDecorator : fieldDecorators){
@@ -263,17 +263,17 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	private void encodeFeatureImportances(PMML pmml){
-		Map<Model, ListMultimap<Feature, Number>> modelFeatureImportances = getFeatureImportances();
+		Map<Model, ListMultimap<Feature, Number>> featureImportances = getFeatureImportances();
 
-		if(modelFeatureImportances.isEmpty()){
+		if(featureImportances.isEmpty()){
 			return;
 		} // End if
 
-		if(modelFeatureImportances.containsKey(null)){
+		if(featureImportances.containsKey(null)){
 			throw new IllegalStateException();
 		}
 
-		Map<Model, Set<String>> expandableFeatures = (modelFeatureImportances.entrySet()).stream()
+		Map<Model, Set<String>> expandableFeatures = (featureImportances.entrySet()).stream()
 			.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().keySet().stream()
 				.map(feature -> feature.getName())
 				.collect(Collectors.toSet())
@@ -282,13 +282,13 @@ public class ModelEncoder extends PMMLEncoder {
 		FeatureExpander featureExpander = new FeatureExpander(expandableFeatures);
 		featureExpander.applyTo(pmml);
 
-		Collection<? extends Map.Entry<Model, ListMultimap<Feature, Number>>> entries = modelFeatureImportances.entrySet();
+		Collection<? extends Map.Entry<Model, ListMultimap<Feature, Number>>> entries = featureImportances.entrySet();
 		for(Map.Entry<Model, ListMultimap<Feature, Number>> entry : entries){
 			Model model = entry.getKey();
-			ListMultimap<Feature, Number> featureImportances = entry.getValue();
+			ListMultimap<Feature, Number> modelFeatureImportances = entry.getValue();
 
 			MathContext mathContext = model.getMathContext();
-			Collection<Map.Entry<Feature, Number>> featureImportanceEntries = featureImportances.entries();
+			Collection<Map.Entry<Feature, Number>> featureImportanceEntries = modelFeatureImportances.entries();
 
 			Map<String, Set<Field<?>>> featureFields = featureExpander.getExpandedFeatures(model);
 			if(featureFields == null){
@@ -381,22 +381,22 @@ public class ModelEncoder extends PMMLEncoder {
 	}
 
 	private void encodeUnivariateStats(PMML pmml){
-		Map<Model, List<UnivariateStats>> modelUnivariateStats = getUnivariateStats();
+		Map<Model, List<UnivariateStats>> univariateStats = getUnivariateStats();
 
-		if(modelUnivariateStats.isEmpty()){
+		if(univariateStats.isEmpty()){
 			return;
 		} // End if
 
-		if(modelUnivariateStats.containsKey(null)){
+		if(univariateStats.containsKey(null)){
 			throw new IllegalStateException();
 		}
 
-		Collection<Map.Entry<Model, List<UnivariateStats>>> entries = modelUnivariateStats.entrySet();
+		Collection<Map.Entry<Model, List<UnivariateStats>>> entries = univariateStats.entrySet();
 		for(Map.Entry<Model, List<UnivariateStats>> entry : entries){
 			Model model = entry.getKey();
-			List<UnivariateStats> univariateStats = entry.getValue();
+			List<UnivariateStats> modelUnivariateStats = entry.getValue();
 
-			Map<String, UnivariateStats> fieldUnivariateStats = univariateStats.stream()
+			Map<String, UnivariateStats> fieldUnivariateStats = modelUnivariateStats.stream()
 				// XXX: UnivariateStats::requireField
 				.collect(Collectors.toMap(UnivariateStats::getField, Function.identity()));
 
