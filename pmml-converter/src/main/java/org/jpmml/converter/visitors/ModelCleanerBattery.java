@@ -27,15 +27,20 @@ public class ModelCleanerBattery extends VisitorBattery {
 		add(TransformationDictionaryCleaner.class);
 		add(DerivedFieldRelocator.class);
 		add(DataDictionaryCleaner.class);
-		add(FunctionDictionaryCleaner.class);
 
-		// OutputField elements
+		// OutputField elements.
+		// Important: a {@link DerivedOutputField} object may contain non-visitable state.
 		add(DerivedOutputFieldTransformer.class);
 
-		// Most "aggressive", should be applied last,
-		// when all surviving fields are on their final locations
-		add(MiningSchemaCleaner.class);
+		/*
+		 * At this point, all "surviving" field elements
+		 * are in their final locations, in their final visitable state.
+		 */
 
+		// DefineFunction elements
+		add(FunctionDictionaryCleaner.class);
+
+		add(MiningSchemaCleaner.class);
 		add(ModelVerificationCleaner.class);
 
 		// Field container elements
