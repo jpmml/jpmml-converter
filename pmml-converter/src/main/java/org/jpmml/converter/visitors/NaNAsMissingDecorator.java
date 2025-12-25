@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.PMMLConstants;
 import org.dmg.pmml.Value.Property;
 import org.dmg.pmml.VisitorAction;
 import org.jpmml.converter.FieldUtil;
@@ -36,7 +37,7 @@ public class NaNAsMissingDecorator extends AbstractVisitor {
 		switch(dataType){
 			case FLOAT:
 			case DOUBLE:
-				FieldUtil.addValues(dataField, Property.MISSING, Collections.singletonList("NaN"));
+				FieldUtil.addValues(dataField, Property.MISSING, Collections.singletonList(PMMLConstants.NOT_A_NUMBER));
 				break;
 			default:
 				break;

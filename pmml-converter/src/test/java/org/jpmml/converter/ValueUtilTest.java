@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import org.dmg.pmml.PMMLConstants;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +30,7 @@ public class ValueUtilTest {
 
 	@Test
 	public void isNaN(){
-		assertFalse(ValueUtil.isNaN("NaN"));
+		assertFalse(ValueUtil.isNaN(PMMLConstants.NOT_A_NUMBER));
 
 		assertTrue(ValueUtil.isNaN(Float.NaN));
 		assertTrue(ValueUtil.isNaN(Double.NaN));
