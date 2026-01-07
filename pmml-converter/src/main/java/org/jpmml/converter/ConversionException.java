@@ -18,6 +18,9 @@
  */
 package org.jpmml.converter;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ConversionException extends RuntimeException {
 
 	private Object context = null;
@@ -45,36 +48,54 @@ public class ConversionException extends RuntimeException {
 		if(context != null){
 			sb.append(System.lineSeparator());
 
-			sb.append("Context: ").append(getLocalizedContext());
+			sb.append(formatContext(context));
 		}
 
 		String solution = getSolution();
 		if(solution != null){
 			sb.append(System.lineSeparator());
 
-			sb.append("Solution: ").append(solution);
+			sb.append(formatSolution(solution));
 		}
 
 		String[] references = getReferences();
 		if(references != null && references.length > 0){
 			sb.append(System.lineSeparator());
 
-			sb.append("References:");
-
-			for(String reference : references){
-				sb.append(System.lineSeparator());
-
-				sb.append(reference);
-			}
+			sb.append(formatReferences(references));
 		}
 
 		return sb.toString();
 	}
 
-	protected String getLocalizedContext(){
-		Object context = getContext();
+	protected String formatContext(Object context){
+		return formatSection("Context", context);
+	}
 
-		return String.valueOf(context);
+	protected String formatSolution(String solution){
+		return formatSection("Solution", solution);
+	}
+
+	protected String formatReferences(String[] references){
+		return formatSection("References", Arrays.asList(references));
+	}
+
+	protected String formatSection(String name, Object value){
+		return name + ": " + value;
+	}
+
+	protected String formatSection(String name, List<?> values){
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(name).append(':');
+
+		for(Object value : values){
+			sb.append(System.lineSeparator());
+
+			sb.append(value);
+		}
+
+		return sb.toString();
 	}
 
 	public Object getContext(){
