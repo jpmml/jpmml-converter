@@ -19,13 +19,15 @@
 package org.jpmml.converter;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 public class ConversionException extends RuntimeException {
 
 	private Object context = null;
 
 	private String solution = null;
+
+	private String example = null;
 
 	private String[] references = null;
 
@@ -58,6 +60,13 @@ public class ConversionException extends RuntimeException {
 			sb.append(formatSolution(solution));
 		}
 
+		String example = getExample();
+		if(example != null){
+			sb.append(System.lineSeparator());
+
+			sb.append(formatExample(example));
+		}
+
 		String[] references = getReferences();
 		if(references != null && references.length > 0){
 			sb.append(System.lineSeparator());
@@ -76,6 +85,10 @@ public class ConversionException extends RuntimeException {
 		return formatSection("Solution", solution);
 	}
 
+	protected String formatExample(String example){
+		return formatSection("Example", example);
+	}
+
 	protected String formatReferences(String[] references){
 		return formatSection("References", Arrays.asList(references));
 	}
@@ -84,18 +97,28 @@ public class ConversionException extends RuntimeException {
 		return name + ": " + value;
 	}
 
-	protected String formatSection(String name, List<?> values){
-		StringBuilder sb = new StringBuilder();
+	protected String formatSection(String name, String value){
 
-		sb.append(name).append(':');
+		// Single-line
+		if(value.indexOf('\n') < 0){
+			return name + ": " + value;
+		} else
 
-		for(Object value : values){
-			sb.append(System.lineSeparator());
+		// Multi-line
+		{
+			StringBuilder sb = new StringBuilder();
 
-			sb.append(value);
+			sb.append(name).append(':');
+
+			Stream<String> lines = value.lines();
+			lines.forEach(line -> {
+				sb.append(System.lineSeparator());
+
+				sb.append(line);
+			});
+
+			return sb.toString();
 		}
-
-		return sb.toString();
 	}
 
 	public Object getContext(){
@@ -114,6 +137,17 @@ public class ConversionException extends RuntimeException {
 
 	public ConversionException setSolution(String solution){
 		this.solution = solution;
+
+		return this;
+	}
+
+	public String getExample(){
+		return this.example;
+	}
+
+
+	public ConversionException setExample(String example){
+		this.example = example;
 
 		return this;
 	}
