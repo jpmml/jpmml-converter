@@ -18,7 +18,6 @@
  */
 package org.jpmml.converter;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class ConversionException extends RuntimeException {
@@ -29,7 +28,7 @@ public class ConversionException extends RuntimeException {
 
 	private String example = null;
 
-	private String[] references = null;
+	private String documentation = null;
 
 
 	public ConversionException(String message){
@@ -67,11 +66,11 @@ public class ConversionException extends RuntimeException {
 			sb.append(formatExample(example));
 		}
 
-		String[] references = getReferences();
-		if(references != null && references.length > 0){
+		String documentation = getDocumentation();
+		if(documentation != null){
 			sb.append(System.lineSeparator());
 
-			sb.append(formatReferences(references));
+			sb.append(formatDocumentation(documentation));
 		}
 
 		return sb.toString();
@@ -89,8 +88,8 @@ public class ConversionException extends RuntimeException {
 		return formatSection("Example", example);
 	}
 
-	protected String formatReferences(String[] references){
-		return formatSection("References", Arrays.asList(references));
+	protected String formatDocumentation(String documentation){
+		return formatSection("Documentation", documentation);
 	}
 
 	protected String formatSection(String name, Object value){
@@ -152,12 +151,12 @@ public class ConversionException extends RuntimeException {
 		return this;
 	}
 
-	public String[] getReferences(){
-		return this.references;
+	public String getDocumentation(){
+		return this.documentation;
 	}
 
-	public ConversionException setReferences(String... references){
-		this.references = references;
+	public ConversionException setDocumentation(String documentation){
+		this.documentation = documentation;
 
 		return this;
 	}
