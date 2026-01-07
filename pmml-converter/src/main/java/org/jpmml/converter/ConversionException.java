@@ -18,6 +18,10 @@
  */
 package org.jpmml.converter;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class ConversionException extends RuntimeException {
@@ -45,32 +49,45 @@ public class ConversionException extends RuntimeException {
 
 		sb.append(super.getLocalizedMessage());
 
+		List<String> sections = new ArrayList<>();
+
 		Object context = getContext();
 		if(context != null){
-			sb.append(System.lineSeparator());
-
-			sb.append(formatContext(context));
+			sections.add(formatContext(context));
 		}
 
 		String solution = getSolution();
 		if(solution != null){
-			sb.append(System.lineSeparator());
-
-			sb.append(formatSolution(solution));
+			sections.add(formatSolution(solution));
 		}
 
 		String example = getExample();
 		if(example != null){
-			sb.append(System.lineSeparator());
-
-			sb.append(formatExample(example));
+			sections.add(formatExample(example));
 		}
 
 		String documentation = getDocumentation();
 		if(documentation != null){
-			sb.append(System.lineSeparator());
+			sections.add(formatDocumentation(documentation));
+		}
 
-			sb.append(formatDocumentation(documentation));
+		StackTraceElement[] stackTrace = getStackTrace();
+		// Add a "Stack trace" pseudo-section only if there are other custom sections present
+		if(!sections.isEmpty() && (stackTrace != null && stackTrace.length > 0)){
+			sections.add(formatStackTrace());
+		}
+
+		for(Iterator<String> it = sections.iterator(); it.hasNext(); ){
+			String section = it.next();
+
+			if(section.isEmpty()){
+				continue;
+			}
+
+			sb.append(lineSeparator());
+			sb.append(sectionSeparator());
+
+			sb.append(section);
 		}
 
 		return sb.toString();
@@ -92,32 +109,44 @@ public class ConversionException extends RuntimeException {
 		return formatSection("Documentation", documentation);
 	}
 
+	protected String formatStackTrace(){
+		return formatSection("Stack trace", "");
+	}
+
 	protected String formatSection(String name, Object value){
-		return name + ": " + value;
+		return formatSection(name, String.valueOf(value));
 	}
 
 	protected String formatSection(String name, String value){
+		String header = MessageFormat.format(ConversionException.SECTION_HEADER_PATTERN, name);
 
-		// Single-line
-		if(value.indexOf('\n') < 0){
-			return name + ": " + value;
-		} else
+		StringBuilder sb = new StringBuilder();
 
-		// Multi-line
-		{
-			StringBuilder sb = new StringBuilder();
+		sb.append(header);
 
-			sb.append(name).append(':');
-
+		if(!value.isEmpty()){
 			Stream<String> lines = value.lines();
+
 			lines.forEach(line -> {
-				sb.append(System.lineSeparator());
+				sb.append(lineSeparator());
 
-				sb.append(line);
+				sb.append(blockIndent()).append(line);
 			});
-
-			return sb.toString();
 		}
+
+		return sb.toString();
+	}
+
+	protected String lineSeparator(){
+		return ConversionException.LINE_SEPARATOR;
+	}
+
+	protected String sectionSeparator(){
+		return ConversionException.SECTION_SEPARATOR;
+	}
+
+	protected String blockIndent(){
+		return ConversionException.BLOCK_INDENT;
 	}
 
 	public Object getContext(){
@@ -172,4 +201,12 @@ public class ConversionException extends RuntimeException {
 	public ConversionException fillInStackTrace(){
 		return (ConversionException)super.fillInStackTrace();
 	}
+
+	public static String LINE_SEPARATOR = System.lineSeparator();
+	public static String SECTION_SEPARATOR = "";
+
+	// Match the default indentation of stack trace elements
+	public static String BLOCK_INDENT = "\t";
+
+	public static String SECTION_HEADER_PATTERN = "{0}:";
 }
