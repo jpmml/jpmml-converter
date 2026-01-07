@@ -26,13 +26,13 @@ import java.util.stream.Stream;
 
 public class ConversionException extends RuntimeException {
 
-	private Object context = null;
-
 	private String solution = null;
 
 	private String example = null;
 
 	private String documentation = null;
+
+	private Object context = null;
 
 
 	public ConversionException(String message){
@@ -51,11 +51,6 @@ public class ConversionException extends RuntimeException {
 
 		List<String> sections = new ArrayList<>();
 
-		Object context = getContext();
-		if(context != null){
-			sections.add(formatContext(context));
-		}
-
 		String solution = getSolution();
 		if(solution != null){
 			sections.add(formatSolution(solution));
@@ -69,6 +64,11 @@ public class ConversionException extends RuntimeException {
 		String documentation = getDocumentation();
 		if(documentation != null){
 			sections.add(formatDocumentation(documentation));
+		}
+
+		Object context = getContext();
+		if(context != null){
+			sections.add(formatContext(context));
 		}
 
 		StackTraceElement[] stackTrace = getStackTrace();
@@ -93,10 +93,6 @@ public class ConversionException extends RuntimeException {
 		return sb.toString();
 	}
 
-	protected String formatContext(Object context){
-		return formatSection("Context", context);
-	}
-
 	protected String formatSolution(String solution){
 		return formatSection("Solution", solution);
 	}
@@ -107,6 +103,10 @@ public class ConversionException extends RuntimeException {
 
 	protected String formatDocumentation(String documentation){
 		return formatSection("Documentation", documentation);
+	}
+
+	protected String formatContext(Object context){
+		return formatSection("Context", context);
 	}
 
 	protected String formatStackTrace(){
@@ -149,16 +149,6 @@ public class ConversionException extends RuntimeException {
 		return ConversionException.BLOCK_INDENT;
 	}
 
-	public Object getContext(){
-		return this.context;
-	}
-
-	public ConversionException setContext(Object context){
-		this.context = context;
-
-		return this;
-	}
-
 	public String getSolution(){
 		return this.solution;
 	}
@@ -186,6 +176,16 @@ public class ConversionException extends RuntimeException {
 
 	public ConversionException setDocumentation(String documentation){
 		this.documentation = documentation;
+
+		return this;
+	}
+
+	public Object getContext(){
+		return this.context;
+	}
+
+	public ConversionException setContext(Object context){
+		this.context = context;
 
 		return this;
 	}
