@@ -225,7 +225,7 @@ public class ConversionException extends RuntimeException {
 	}
 
 	public static String LINE_SEPARATOR = System.lineSeparator();
-	public static String SECTION_SEPARATOR = "";
+	public static String SECTION_SEPARATOR = System.lineSeparator();
 
 	// Match the default indentation of stack trace elements
 	public static String BLOCK_INDENT = "\t";
