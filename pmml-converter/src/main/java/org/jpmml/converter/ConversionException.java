@@ -180,6 +180,21 @@ public class ConversionException extends RuntimeException {
 		return this;
 	}
 
+	public boolean hasContext(){
+		Object context = getContext();
+
+		return (context != null);
+	}
+
+	public ConversionException ensureContext(Object context){
+
+		if(!hasContext()){
+			return setContext(context);
+		}
+
+		return this;
+	}
+
 	public Object getContext(){
 		return this.context;
 	}
