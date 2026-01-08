@@ -106,6 +106,13 @@ public class ConversionException extends RuntimeException {
 	}
 
 	protected String formatContext(Object context){
+
+		if(context instanceof Formattable){
+			Formattable formattable = (Formattable)context;
+
+			context = formattable.format();
+		}
+
 		return formatSection("Context", context);
 	}
 
