@@ -33,6 +33,6 @@ public class ObjectFeature extends Feature {
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		throw new UnsupportedOperationException("Feature \'" + getName() + "\' (" + this + ") cannot be cast to continuous feature");
+		throw new UnsupportedOperationException("Feature " + ExceptionUtil.formatName(this) + " (" + this + ") cannot be cast to continuous feature");
 	}
 }

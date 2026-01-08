@@ -307,7 +307,7 @@ public class ModelEncoder extends PMMLEncoder {
 
 				Set<Field<?>> fields = featureFields.get(name);
 				if(fields == null){
-					logger.warn("Unused feature \'" + name + "\' has non-zero importance");
+					logger.warn("Unused feature " + ExceptionUtil.formatName(name) + " has non-zero importance");
 
 					continue;
 				}

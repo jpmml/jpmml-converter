@@ -29,7 +29,7 @@ public class SchemaUtil {
 	public void checkSize(int size, DiscreteLabel discreteLabel, List<? extends Feature> features){
 
 		if((discreteLabel.size() * features.size()) != size){
-			throw new IllegalArgumentException("Expected " + size + " element(s), got " + (discreteLabel.size() * features.size()));
+			throw new IllegalArgumentException("Expected " + ExceptionUtil.formatCount(size, "element") + ", got " + (discreteLabel.size() * features.size()));
 		}
 	}
 
@@ -37,7 +37,7 @@ public class SchemaUtil {
 	public void checkSize(int size, List<? extends Feature> features){
 
 		if(features.size() != size){
-			throw new SchemaException("Expected " + size + " feature(s), got " + features.size());
+			throw new SchemaException("Expected " + ExceptionUtil.formatCount(size, "feature") + ", got " + features.size());
 		}
 	}
 
@@ -45,7 +45,7 @@ public class SchemaUtil {
 	public void checkCardinality(int size, DiscreteLabel discreteLabel){
 
 		if(discreteLabel.size() != size){
-			throw new SchemaException("Expected a discrete label with " + size + " target categories, got " + discreteLabel.size() + " (" + discreteLabel.getValues() + ")");
+			throw new SchemaException("Expected a discrete label with " + ExceptionUtil.formatCount(size, "target category", "target categories") + ", got " + discreteLabel.size() + " (" + discreteLabel.getValues() + ")");
 		}
 	}
 
@@ -53,7 +53,7 @@ public class SchemaUtil {
 	public void checkCardinality(int size, CategoricalFeature categoricalFeature){
 
 		if(categoricalFeature.size() != size){
-			throw new SchemaException("Expected a categorical feature with " + size + " categories, got " + categoricalFeature.size() + " (" + categoricalFeature.getValues() + ")");
+			throw new SchemaException("Expected a categorical feature with " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + categoricalFeature.size() + " (" + categoricalFeature.getValues() + ")");
 		}
 	}
 }

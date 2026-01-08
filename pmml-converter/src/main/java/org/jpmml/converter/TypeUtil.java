@@ -55,7 +55,7 @@ public class TypeUtil {
 			return DataType.BOOLEAN;
 		}
 
-		throw new IllegalArgumentException("Expected a Java primitive value, got " + (value != null ? (value.getClass()).getTypeName() : null));
+		throw new IllegalArgumentException("Expected a Java primitive value, got " + (value != null ? ExceptionUtil.formatClass(value.getClass()) : null));
 	}
 
 	static
@@ -127,7 +127,7 @@ public class TypeUtil {
 				return DataType.STRING;
 			}
 
-			throw new IllegalArgumentException("Expected all values to be of the same data type, got " + dataTypes.size() + " (" + dataTypes + ")");
+			throw new IllegalArgumentException("Expected all values to be of the same data type, got " + ExceptionUtil.formatValues(dataTypes));
 		}
 	}
 

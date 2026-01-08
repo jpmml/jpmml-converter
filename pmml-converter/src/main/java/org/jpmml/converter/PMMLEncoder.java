@@ -123,7 +123,7 @@ public class PMMLEncoder {
 		DataField dataField = this.dataFields.remove(name);
 
 		if(dataField == null){
-			throw new ResolutionException("Field \'" + name + "\' is not defined");
+			throw new ResolutionException("Field " + ExceptionUtil.formatName(name) + " is not defined");
 		}
 
 		return dataField;
@@ -171,7 +171,7 @@ public class PMMLEncoder {
 		DerivedField derivedField = this.derivedFields.remove(name);
 
 		if(derivedField == null){
-			throw new ResolutionException("Field \'" + name + "\' is not defined");
+			throw new ResolutionException("Field " + ExceptionUtil.formatName(name) + " is not defined");
 		}
 
 		return derivedField;
@@ -193,7 +193,7 @@ public class PMMLEncoder {
 			return derivedField;
 		}
 
-		throw new ResolutionException("Field \'" + name + "\' is not defined");
+		throw new ResolutionException("Field " + ExceptionUtil.formatName(name) + " is not defined");
 	}
 
 	public Field<?> toContinuous(String name){
@@ -206,7 +206,7 @@ public class PMMLEncoder {
 			case DOUBLE:
 				break;
 			default:
-				throw new OperationException("Field \'" + name + "\' has non-numeric data type " + dataType);
+				throw new OperationException("Field " + ExceptionUtil.formatName(name) + " has non-numeric data type " + ExceptionUtil.formatValue(dataType));
 		}
 
 		field.setOpType(OpType.CONTINUOUS);
@@ -230,7 +230,7 @@ public class PMMLEncoder {
 		String name = defineFunction.requireName();
 
 		if(this.defineFunctions.containsKey(name)){
-			throw new NamingException("Function \'" + name + "\' is already defined");
+			throw new NamingException("Function " + ExceptionUtil.formatName(name) + " is already defined");
 		}
 
 		this.defineFunctions.put(name, defineFunction);
@@ -280,7 +280,7 @@ public class PMMLEncoder {
 		String name = field.requireName();
 
 		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new NamingException("Field \'" + name + "\' is already defined");
+			throw new NamingException("Field " + ExceptionUtil.formatName(name) + " is already defined");
 		}
 
 		return name;
