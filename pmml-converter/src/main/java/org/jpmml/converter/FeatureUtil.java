@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
@@ -99,14 +98,5 @@ public class FeatureUtil {
 		}
 
 		return null;
-	}
-
-	static
-	public List<String> formatNames(List<? extends Feature> features, char quoteChar){
-		String quoteString = Character.toString(quoteChar);
-
-		return features.stream()
-			.map(feature -> (quoteString + feature.getName() + quoteString))
-			.collect(Collectors.toList());
 	}
 }
