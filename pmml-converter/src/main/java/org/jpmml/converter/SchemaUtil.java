@@ -45,7 +45,7 @@ public class SchemaUtil {
 	public void checkCardinality(int size, DiscreteLabel discreteLabel){
 
 		if(discreteLabel.size() != size){
-			throw new SchemaException("Expected a discrete label with " + ExceptionUtil.formatCount(size, "target category", "target categories") + ", got " + discreteLabel.size() + " (" + discreteLabel.getValues() + ")");
+			throw new LabelException("Expected a discrete label with " + ExceptionUtil.formatCount(size, "target category", "target categories") + ", got " + discreteLabel.size() + " (" + discreteLabel.getValues() + ")");
 		}
 	}
 

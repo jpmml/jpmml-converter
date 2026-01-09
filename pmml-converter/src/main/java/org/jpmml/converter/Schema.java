@@ -112,7 +112,7 @@ public class Schema {
 		try {
 			return (ContinuousLabel)label;
 		} catch(ClassCastException cce){
-			throw new SchemaException("Expected a continuos label, got " + label, cce);
+			throw new LabelException("Expected a continuos label, got " + label, cce);
 		}
 	}
 
@@ -122,7 +122,7 @@ public class Schema {
 		try {
 			return (CategoricalLabel)label;
 		} catch(ClassCastException cce){
-			throw new SchemaException("Expected a categorical label, got " + label, cce);
+			throw new LabelException("Expected a categorical label, got " + label, cce);
 		}
 	}
 
@@ -132,7 +132,7 @@ public class Schema {
 		try {
 			return (OrdinalLabel)label;
 		} catch(ClassCastException cce){
-			throw new SchemaException("Expected an ordinal label, got " + label, cce);
+			throw new LabelException("Expected an ordinal label, got " + label, cce);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class Schema {
 		try {
 			return (ScalarLabel)label;
 		} catch(ClassCastException cce){
-			throw new SchemaException("Expected a scalar label, got " + label, cce);
+			throw new LabelException("Expected a scalar label, got " + label, cce);
 		}
 	}
 
@@ -152,7 +152,7 @@ public class Schema {
 		try {
 			return (MultiLabel)label;
 		} catch(ClassCastException cce){
-			throw new SchemaException("Expected multiple labels, got " + label, cce);
+			throw new LabelException("Expected multiple labels, got " + label, cce);
 		}
 	}
 
