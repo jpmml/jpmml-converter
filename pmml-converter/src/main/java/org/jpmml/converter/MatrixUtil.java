@@ -26,7 +26,7 @@ class MatrixUtil {
 	protected void validateSize(List<?> values, int rows, int columns){
 
 		if(values.size() != (rows * columns)){
-			throw new IllegalArgumentException("Expected " + ExceptionUtil.formatCount(rows * columns, "element") + " (" + ExceptionUtil.formatCount(rows, "row") + ", " + ExceptionUtil.formatCount(columns, "column") + "), got " + values.size());
+			throw new ConversionException("Expected " + ExceptionUtil.formatCount(rows * columns, "element") + " (" + ExceptionUtil.formatCount(rows, "row") + ", " + ExceptionUtil.formatCount(columns, "column") + "), got " + values.size());
 		}
 	}
 }

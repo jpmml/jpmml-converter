@@ -70,7 +70,7 @@ public class ValueUtil {
 			return (Number)object;
 		}
 
-		throw new IllegalArgumentException("Expected number, got " + object);
+		throw new ConversionException("Expected number, got " + object);
 	}
 
 	static
@@ -96,7 +96,7 @@ public class ValueUtil {
 			return Ints.checkedCast((long)value);
 		}
 
-		throw new IllegalArgumentException("Expected integer, got " + number);
+		throw new ConversionException("Expected integer, got " + number);
 	}
 
 	static

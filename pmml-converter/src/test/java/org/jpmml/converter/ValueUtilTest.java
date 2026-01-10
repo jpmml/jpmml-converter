@@ -80,8 +80,8 @@ public class ValueUtilTest {
 		assertEquals((Integer)0, ValueUtil.asInteger((Float)0f));
 		assertEquals((Integer)0, ValueUtil.asInteger((Double)0d));
 
-		assertThrows(IllegalArgumentException.class, () -> ValueUtil.asInteger((Double)0.5d));
-		assertThrows(IllegalArgumentException.class, () -> ValueUtil.asInteger((Double)(Integer.MAX_VALUE + 0.5d)));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInteger((Double)0.5d));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInteger((Double)(Integer.MAX_VALUE + 0.5d)));
 	}
 
 	@Test

@@ -31,7 +31,7 @@ public class SchemaUtil {
 	public void checkSize(int size, DiscreteLabel discreteLabel, List<? extends Feature> features){
 
 		if((discreteLabel.size() * features.size()) != size){
-			throw new IllegalArgumentException("Expected " + ExceptionUtil.formatCount(size, "element") + ", got " + (discreteLabel.size() * features.size()));
+			throw new ConversionException("Expected " + ExceptionUtil.formatCount(size, "element") + ", got " + (discreteLabel.size() * features.size()));
 		}
 	}
 
