@@ -45,7 +45,7 @@ public class SchemaUtil {
 	public void checkCardinality(int size, DiscreteLabel discreteLabel){
 
 		if(discreteLabel.size() != size){
-			throw new LabelException("Expected a discrete label with " + ExceptionUtil.formatCount(size, "target category", "target categories") + ", got " + discreteLabel.size() + " (" + discreteLabel.getValues() + ")");
+			throw new LabelException("Expected " + ExceptionUtil.formatCount(size, "target category", "target categories") + ", got " + discreteLabel.size() + " (" + discreteLabel.getValues() + ")");
 		}
 	}
 
@@ -53,7 +53,7 @@ public class SchemaUtil {
 	public void checkCardinality(int size, CategoricalFeature categoricalFeature){
 
 		if(categoricalFeature.size() != size){
-			throw new FeatureException("Expected a categorical feature with " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + categoricalFeature.size() + " (" + categoricalFeature.getValues() + ")");
+			throw new FeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + categoricalFeature.size() + " (" + categoricalFeature.getValues() + ")");
 		}
 	}
 }
