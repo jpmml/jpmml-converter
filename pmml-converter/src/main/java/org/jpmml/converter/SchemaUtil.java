@@ -20,6 +20,8 @@ package org.jpmml.converter;
 
 import java.util.List;
 
+import com.google.common.base.CaseFormat;
+
 public class SchemaUtil {
 
 	private SchemaUtil(){
@@ -55,5 +57,17 @@ public class SchemaUtil {
 		if(categoricalFeature.size() != size){
 			throw new FeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + categoricalFeature.size() + " (" + categoricalFeature.getValues() + ")");
 		}
+	}
+
+	static
+	public String formatTypeString(Class<?> clazz){
+
+		if(clazz.isAnonymousClass()){
+			clazz = clazz.getSuperclass();
+		}
+
+		String clazzName = clazz.getSimpleName();
+
+		return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clazzName).replace('_', ' ');
 	}
 }
