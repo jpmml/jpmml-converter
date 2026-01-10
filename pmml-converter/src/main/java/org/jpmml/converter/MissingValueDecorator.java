@@ -39,7 +39,7 @@ public class MissingValueDecorator implements Decorator {
 
 		{
 			if(missingValueReplacement != null && ValueUtil.isNaN(missingValueReplacement)){
-				throw new OperationException("Expected a valid value as a missing value replacement value, got an invalid value (NaN)");
+				throw new SchemaException("Expected a valid value as a missing value replacement value, got an invalid value (NaN)");
 			}
 		}
 

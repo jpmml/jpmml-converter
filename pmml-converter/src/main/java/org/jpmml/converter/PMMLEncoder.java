@@ -123,7 +123,7 @@ public class PMMLEncoder {
 		DataField dataField = this.dataFields.remove(name);
 
 		if(dataField == null){
-			throw new ResolutionException("Field " + ExceptionUtil.formatName(name) + " is not defined");
+			throw new SchemaException("Field " + ExceptionUtil.formatName(name) + " is not defined");
 		}
 
 		return dataField;
@@ -171,7 +171,7 @@ public class PMMLEncoder {
 		DerivedField derivedField = this.derivedFields.remove(name);
 
 		if(derivedField == null){
-			throw new ResolutionException("Field " + ExceptionUtil.formatName(name) + " is not defined");
+			throw new SchemaException("Field " + ExceptionUtil.formatName(name) + " is not defined");
 		}
 
 		return derivedField;
@@ -193,7 +193,7 @@ public class PMMLEncoder {
 			return derivedField;
 		}
 
-		throw new ResolutionException("Field " + ExceptionUtil.formatName(name) + " is not defined");
+		throw new SchemaException("Field " + ExceptionUtil.formatName(name) + " is not defined");
 	}
 
 	public Field<?> toContinuous(String name){
@@ -206,7 +206,7 @@ public class PMMLEncoder {
 			case DOUBLE:
 				break;
 			default:
-				throw new OperationException("Field " + ExceptionUtil.formatName(name) + " has non-numeric data type " + ExceptionUtil.formatValue(dataType));
+				throw new FeatureException("Field " + ExceptionUtil.formatName(name) + " has non-numeric data type " + ExceptionUtil.formatValue(dataType));
 		}
 
 		field.setOpType(OpType.CONTINUOUS);
@@ -265,7 +265,7 @@ public class PMMLEncoder {
 					break values;
 				}
 
-				throw new OperationException("Expected " + existingValues + " as valid values, got " + values);
+				throw new FeatureException("Expected " + existingValues + " as valid values, got " + values);
 			}
 
 			FieldUtil.addValues((Field & HasDiscreteDomain)field, values);

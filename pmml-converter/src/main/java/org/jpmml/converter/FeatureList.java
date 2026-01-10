@@ -42,7 +42,7 @@ public class FeatureList extends ArrayList<Feature> implements FeatureResolver {
 
 		int index = names.indexOf(name);
 		if(index < 0){
-			throw new ResolutionException("Feature " + ExceptionUtil.formatName(name) + " is not defined");
+			throw new SchemaException("Feature " + ExceptionUtil.formatName(name) + " is not defined");
 		}
 
 		return get(index);
