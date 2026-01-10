@@ -19,8 +19,8 @@
 package org.jpmml.converter;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.dmg.pmml.DataType;
 import org.junit.jupiter.api.Test;
@@ -57,14 +57,18 @@ public class ExceptionUtilTest {
 
 	@Test
 	public void formatNameList(){
-		assertEquals("[\'a\', \'b\']", ExceptionUtil.formatNameList(List.of("a", "b")));
-		assertEquals("[\'a\', \'b\']", ExceptionUtil.formatNameList(Set.of("a", "b")));
+		List<String> names = Arrays.asList("a", "b");
+
+		assertEquals("[\'a\', \'b\']", ExceptionUtil.formatNameList(names));
+		assertEquals("[\'a\', \'b\']", ExceptionUtil.formatNameList(new LinkedHashSet<>(names)));
 	}
 
 	@Test
 	public void formatNameSet(){
-		assertEquals("{\'a\', \'b\'}", ExceptionUtil.formatNameSet(List.of("a", "b")));
-		assertEquals("{\'a\', \'b\'}", ExceptionUtil.formatNameSet(Set.of("a", "b")));
+		List<String> names = Arrays.asList("a", "b");
+
+		assertEquals("{\'a\', \'b\'}", ExceptionUtil.formatNameSet(names));
+		assertEquals("{\'a\', \'b\'}", ExceptionUtil.formatNameSet(new LinkedHashSet<>(names)));
 	}
 
 	@Test
