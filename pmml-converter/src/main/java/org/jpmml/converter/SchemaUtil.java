@@ -55,7 +55,7 @@ public class SchemaUtil {
 	public void checkCardinality(int size, CategoricalFeature categoricalFeature){
 
 		if(categoricalFeature.size() != size){
-			throw new FeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + categoricalFeature.size() + " (" + categoricalFeature.getValues() + ")");
+			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + categoricalFeature.size());
 		}
 	}
 
