@@ -78,6 +78,10 @@ public class Feature {
 		return encoder.getField(getName());
 	}
 
+	public String typeString(){
+		return SchemaUtil.formatTypeString(getClass());
+	}
+
 	@Override
 	public int hashCode(){
 		int result = 0;

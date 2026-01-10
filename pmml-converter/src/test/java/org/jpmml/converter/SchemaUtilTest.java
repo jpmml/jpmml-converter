@@ -25,7 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SchemaUtilTest {
 
 	@Test
-	public void formatTypeString(){
+	public void formatFeature(){
+		assertEquals("feature", SchemaUtil.formatTypeString(Feature.class));
+
+		assertEquals("categorical feature", SchemaUtil.formatTypeString(CategoricalFeature.class));
+		assertEquals("boolean feature", SchemaUtil.formatTypeString(BooleanFeature.class));
+
+		assertEquals("wildcard feature", SchemaUtil.formatTypeString(WildcardFeature.class));
+	}
+
+	@Test
+	public void formatLabel(){
 		assertEquals("label", SchemaUtil.formatTypeString(Label.class));
 
 		Label label = new Label(){
