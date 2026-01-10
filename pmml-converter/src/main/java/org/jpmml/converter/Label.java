@@ -23,6 +23,10 @@ import org.jpmml.model.ToStringHelper;
 abstract
 public class Label {
 
+	public String typeString(){
+		return SchemaUtil.formatTypeString(getClass());
+	}
+
 	@Override
 	public String toString(){
 		ToStringHelper helper = toStringHelper();
