@@ -47,7 +47,7 @@ public class IndexFeature extends CategoricalFeature {
 		// XXX: Cannot derive a global field from a local field
 		try {
 			encoder.getField(getName());
-		} catch(IllegalArgumentException iae){
+		} catch(SchemaException se){
 			return new ContinuousFeature(encoder, this);
 		}
 
