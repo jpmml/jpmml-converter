@@ -18,7 +18,7 @@
  */
 package org.jpmml.converter;
 
-public class NamingException extends ConversionException {
+public class NamingException extends SchemaException {
 
 	public NamingException(String message){
 		super(message);

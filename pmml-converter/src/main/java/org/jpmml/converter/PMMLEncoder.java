@@ -227,11 +227,7 @@ public class PMMLEncoder {
 	}
 
 	public void addDefineFunction(DefineFunction defineFunction){
-		String name = defineFunction.requireName();
-
-		if(this.defineFunctions.containsKey(name)){
-			throw new NamingException("Function " + ExceptionUtil.formatName(name) + " is already defined");
-		}
+		String name = checkName(defineFunction);
 
 		this.defineFunctions.put(name, defineFunction);
 	}
@@ -276,11 +272,23 @@ public class PMMLEncoder {
 		return field;
 	}
 
+	private String checkName(DefineFunction defineFunction){
+		String name = defineFunction.requireName();
+
+		if(this.defineFunctions.containsKey(name)){
+			throw new NamingException("Function " + ExceptionUtil.formatName(name) + " is already defined")
+				.setSolution("Choose a different name");
+		}
+
+		return name;
+	}
+
 	private String checkName(Field<?> field){
 		String name = field.requireName();
 
 		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new NamingException("Field " + ExceptionUtil.formatName(name) + " is already defined");
+			throw new NamingException("Field " + ExceptionUtil.formatName(name) + " is already defined")
+				.setSolution("Choose a different name");
 		}
 
 		return name;
