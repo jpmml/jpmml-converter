@@ -261,7 +261,7 @@ public class PMMLEncoder {
 					break values;
 				}
 
-				throw new InvalidFeatureException("Expected " + existingValues + " as valid values, got " + values);
+				throw new InvalidFeatureException("Expected " + existingValues + " as categories, got " + values);
 			}
 
 			FieldUtil.addValues((Field & HasDiscreteDomain)field, values);
