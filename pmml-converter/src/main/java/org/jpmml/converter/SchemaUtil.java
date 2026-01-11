@@ -28,6 +28,13 @@ public class SchemaUtil {
 	}
 
 	static
+	public Feature getOnlyFeature(List<? extends Feature> features){
+		checkSize(1, features);
+
+		return features.get(0);
+	}
+
+	static
 	public void checkSize(int size, DiscreteLabel discreteLabel, List<? extends Feature> features){
 
 		if((discreteLabel.size() * features.size()) != size){
