@@ -78,6 +78,16 @@ public class Feature {
 		return encoder.getField(getName());
 	}
 
+	public Feature expectDataType(DataType expectedDataType){
+		DataType dataType = getDataType();
+
+		if(dataType != expectedDataType){
+			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatValue(expectedDataType) + " data type, got " + ExceptionUtil.formatValue(dataType));
+		}
+
+		return this;
+	}
+
 	public String typeString(){
 		return SchemaUtil.formatTypeString(getClass());
 	}
