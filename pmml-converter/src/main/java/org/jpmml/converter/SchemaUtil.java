@@ -52,14 +52,6 @@ public class SchemaUtil {
 	}
 
 	static
-	public void checkCardinality(int size, CategoricalFeature categoricalFeature){
-
-		if(categoricalFeature.size() != size){
-			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + categoricalFeature.size());
-		}
-	}
-
-	static
 	public String formatTypeString(Class<?> clazz){
 
 		if(clazz.isAnonymousClass()){

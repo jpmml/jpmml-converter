@@ -58,6 +58,16 @@ public class CategoricalFeature extends Feature {
 		return new ContinuousFeature(encoder, field);
 	}
 
+	public CategoricalFeature expectCardinality(int size){
+		List<?> values = getValues();
+
+		if(values.size() != size){
+			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + values.size());
+		}
+
+		return this;
+	}
+
 	@Override
 	public int hashCode(){
 		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());
