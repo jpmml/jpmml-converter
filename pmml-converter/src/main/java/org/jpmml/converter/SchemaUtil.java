@@ -44,14 +44,6 @@ public class SchemaUtil {
 	}
 
 	static
-	public void checkCardinality(int size, DiscreteLabel discreteLabel){
-
-		if(discreteLabel.size() != size){
-			throw new InvalidLabelException("Expected " + ExceptionUtil.formatCount(size, "target category", "target categories") + ", got " + discreteLabel.size());
-		}
-	}
-
-	static
 	public String formatTypeString(Class<?> clazz){
 
 		if(clazz.isAnonymousClass()){

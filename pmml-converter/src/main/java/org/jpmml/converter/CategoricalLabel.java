@@ -69,6 +69,11 @@ public class CategoricalLabel extends DiscreteLabel {
 	}
 
 	@Override
+	public CategoricalLabel expectCardinality(int size){
+		return (CategoricalLabel)super.expectCardinality(size);
+	}
+
+	@Override
 	public int hashCode(){
 		return super.hashCode();
 	}

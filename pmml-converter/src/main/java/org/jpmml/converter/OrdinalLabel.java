@@ -65,6 +65,11 @@ public class OrdinalLabel extends DiscreteLabel {
 	}
 
 	@Override
+	public OrdinalLabel expectCardinality(int size){
+		return (OrdinalLabel)super.expectCardinality(size);
+	}
+
+	@Override
 	public int hashCode(){
 		return super.hashCode();
 	}

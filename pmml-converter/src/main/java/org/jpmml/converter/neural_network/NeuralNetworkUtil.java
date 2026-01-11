@@ -44,7 +44,6 @@ import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.Label;
 import org.jpmml.converter.ScalarLabelUtil;
-import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 
 public class NeuralNetworkUtil {
@@ -182,7 +181,7 @@ public class NeuralNetworkUtil {
 
 	static
 	public NeuralOutputs createClassificationNeuralOutputs(List<? extends NeuralEntity> entities, CategoricalLabel categoricalLabel){
-		SchemaUtil.checkCardinality(entities.size(), categoricalLabel);
+		categoricalLabel.expectCardinality(entities.size());
 
 		NeuralOutputs neuralOutputs = new NeuralOutputs();
 

@@ -47,7 +47,6 @@ import org.jpmml.converter.OrdinalLabel;
 import org.jpmml.converter.PowerFeature;
 import org.jpmml.converter.ProductFeature;
 import org.jpmml.converter.Schema;
-import org.jpmml.converter.SchemaUtil;
 import org.jpmml.converter.ValueUtil;
 
 public class RegressionModelUtil {
@@ -96,9 +95,8 @@ public class RegressionModelUtil {
 
 	static
 	public RegressionModel createBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
-		CategoricalLabel categoricalLabel = schema.requireCategoricalLabel();
-
-		SchemaUtil.checkCardinality(2, categoricalLabel);
+		CategoricalLabel categoricalLabel = schema.requireCategoricalLabel()
+			.expectCardinality(2);
 
 		if(normalizationMethod != null){
 
@@ -137,9 +135,8 @@ public class RegressionModelUtil {
 
 	static
 	public RegressionModel createOrdinalClassification(MathContext mathContext, Feature feature, List<? extends Number> thresholds, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
-		OrdinalLabel ordinalLabel = schema.requireOrdinalLabel();
-
-		SchemaUtil.checkCardinality(thresholds.size() + 1, ordinalLabel);
+		OrdinalLabel ordinalLabel = schema.requireOrdinalLabel()
+			.expectCardinality(thresholds.size() + 1);
 
 		switch(normalizationMethod){
 			case NONE:

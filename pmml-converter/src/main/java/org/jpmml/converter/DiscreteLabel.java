@@ -46,6 +46,16 @@ public class DiscreteLabel extends ScalarLabel {
 	abstract
 	public OrdinalLabel toOrdinalLabel();
 
+	public DiscreteLabel expectCardinality(int size){
+		List<?> values = getValues();
+
+		if(values.size() != size){
+			throw new InvalidLabelException("Expected " + ExceptionUtil.formatCount(size, "target category", "target categories") + ", got " + values.size());
+		}
+
+		return this;
+	}
+
 	@Override
 	public int hashCode(){
 		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());
