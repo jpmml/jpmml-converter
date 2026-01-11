@@ -50,6 +50,9 @@ public class DiscreteFeature extends Feature {
 		setValues(values);
 	}
 
+	abstract
+	public CategoricalFeature toCategoricalFeature();
+
 	public DiscreteFeature expectCardinality(int size){
 		List<?> values = getValues();
 

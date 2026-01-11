@@ -38,14 +38,15 @@ public class OrdinalFeature extends DiscreteFeature {
 		super(encoder, name, dataType, values);
 	}
 
+	@Override
 	abstract
-	public IndexFeature getEncodedFeature();
+	public IndexFeature toCategoricalFeature();
 
 	@Override
 	public ContinuousFeature toContinuousFeature(){
-		IndexFeature encodedFeature = getEncodedFeature();
+		CategoricalFeature categoricalFeature = toCategoricalFeature();
 
-		return encodedFeature.toContinuousFeature();
+		return categoricalFeature.toContinuousFeature();
 	}
 
 	@Override

@@ -52,6 +52,11 @@ public class CategoricalFeature extends DiscreteFeature {
 	}
 
 	@Override
+	public CategoricalFeature toCategoricalFeature(){
+		return this;
+	}
+
+	@Override
 	public CategoricalFeature expectCardinality(int size){
 		return (CategoricalFeature)super.expectCardinality(size);
 	}
