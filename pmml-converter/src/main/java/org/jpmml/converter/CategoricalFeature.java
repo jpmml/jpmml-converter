@@ -19,34 +19,27 @@
 package org.jpmml.converter;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.HasDiscreteDomain;
-import org.jpmml.model.ToStringHelper;
 
-public class CategoricalFeature extends Feature {
-
-	private List<?> values = null;
-
+public class CategoricalFeature extends DiscreteFeature {
 
 	public <F extends Field<F> & HasDiscreteDomain<F>> CategoricalFeature(PMMLEncoder encoder, F field){
-		this(encoder, field, FieldUtil.<F>getValues(field));
+		super(encoder, field);
 	}
 
 	public CategoricalFeature(PMMLEncoder encoder, Field<?> field, List<?> values){
-		this(encoder, field.requireName(), field.requireDataType(), values);
+		super(encoder, field.requireName(), field.requireDataType(), values);
 	}
 
 	public CategoricalFeature(PMMLEncoder encoder, Feature feature, List<?> values){
-		this(encoder, feature.getName(), feature.getDataType(), values);
+		super(encoder, feature.getName(), feature.getDataType(), values);
 	}
 
 	public CategoricalFeature(PMMLEncoder encoder, String name, DataType dataType, List<?> values){
-		super(encoder, name, dataType);
-
-		setValues(values);
+		super(encoder, name, dataType, values);
 	}
 
 	@Override
@@ -58,62 +51,8 @@ public class CategoricalFeature extends Feature {
 		return new ContinuousFeature(encoder, field);
 	}
 
+	@Override
 	public CategoricalFeature expectCardinality(int size){
-		List<?> values = getValues();
-
-		if(values.size() != size){
-			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + values.size());
-		}
-
-		return this;
-	}
-
-	@Override
-	public int hashCode(){
-		return (31 * super.hashCode()) + Objects.hashCode(this.getValues());
-	}
-
-	@Override
-	public boolean equals(Object object){
-
-		if(object instanceof CategoricalFeature){
-			CategoricalFeature that = (CategoricalFeature)object;
-
-			return super.equals(object) && Objects.equals(this.getValues(), that.getValues());
-		}
-
-		return false;
-	}
-
-	@Override
-	protected ToStringHelper toStringHelper(){
-		return super.toStringHelper()
-			.add("values", getValues());
-	}
-
-	public int size(){
-		List<?> values = getValues();
-
-		return values.size();
-	}
-
-	public Object getValue(int index){
-		List<?> values = getValues();
-
-		return values.get(index);
-	}
-
-	public List<?> getValues(){
-		return this.values;
-	}
-
-	private void setValues(List<?> values){
-		values = Objects.requireNonNull(values);
-
-		if(values.isEmpty()){
-			throw new IllegalArgumentException();
-		}
-
-		this.values = values;
+		return (CategoricalFeature)super.expectCardinality(size);
 	}
 }
