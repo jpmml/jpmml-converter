@@ -45,6 +45,8 @@ public class ConversionExceptionTest {
 			.setDocumentation("reference 1\nreference 2")
 			.setContext(context);
 
+		ConversionException.SECTION_SEPARATOR = System.lineSeparator();
+
 		String string = printStackTrace(exception);
 
 		assertTrue(string.contains("Solution:\n"));
@@ -62,6 +64,12 @@ public class ConversionExceptionTest {
 		assertFalse(string.contains("Stack trace:\n"));
 
 		assertEquals(5, countSections(string));
+
+		ConversionException.SECTION_SEPARATOR = "";
+
+		string = printStackTrace(exception);
+
+		assertEquals(1, countSections(string));
 	}
 
 	static
