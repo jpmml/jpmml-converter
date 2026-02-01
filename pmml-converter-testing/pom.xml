@@ -8,9 +8,7 @@
 		<version>1.6-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.jpmml</groupId>
 	<artifactId>pmml-converter-testing</artifactId>
-	<packaging>jar</packaging>
 
 	<name>JPMML converter batch testing harness</name>
 	<description>JPMML class model converter batch testing harness</description>
