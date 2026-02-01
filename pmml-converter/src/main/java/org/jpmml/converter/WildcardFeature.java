@@ -43,6 +43,14 @@ public class WildcardFeature extends Feature {
 		return new ContinuousFeature(encoder, dataField);
 	}
 
+	public ObjectFeature toCategoricalFeature(){
+		PMMLEncoder encoder = getEncoder();
+
+		DataField dataField = (DataField)encoder.toCategorical(getName(), null);
+
+		return new ObjectFeature(encoder, dataField);
+	}
+
 	public CategoricalFeature toCategoricalFeature(List<?> values){
 		PMMLEncoder encoder = getEncoder();
 
@@ -55,11 +63,25 @@ public class WildcardFeature extends Feature {
 		return new CategoricalFeature(encoder, dataField);
 	}
 
-	public ObjectFeature toOrdinalFeature(List<?> values){
+	public ObjectFeature toOrdinalFeature(){
+		PMMLEncoder encoder = getEncoder();
+
+		DataField dataField = (DataField)encoder.toOrdinal(getName(), null);
+
+		return new ObjectFeature(encoder, dataField);
+	}
+
+	public OrdinalFeature toOrdinalFeature(List<?> values){
 		PMMLEncoder encoder = getEncoder();
 
 		DataField dataField = (DataField)encoder.toOrdinal(getName(), values);
 
-		return new ObjectFeature(encoder, dataField);
+		return new OrdinalFeature(encoder, dataField){
+
+			@Override
+			public IndexFeature toCategoricalFeature(){
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
 }
