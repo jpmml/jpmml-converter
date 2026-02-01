@@ -22,9 +22,13 @@ import java.util.List;
 
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
+import org.dmg.pmml.HasDiscreteDomain;
 
-abstract
 public class OrdinalFeature extends DiscreteFeature {
+
+	public <F extends Field<F> & HasDiscreteDomain<F>> OrdinalFeature(PMMLEncoder encoder, F field){
+		super(encoder, field);
+	}
 
 	public OrdinalFeature(PMMLEncoder encoder, Field<?> field, List<?> values){
 		super(encoder, field, values);
@@ -39,14 +43,15 @@ public class OrdinalFeature extends DiscreteFeature {
 	}
 
 	@Override
-	abstract
-	public IndexFeature toCategoricalFeature();
-
-	@Override
 	public ContinuousFeature toContinuousFeature(){
 		CategoricalFeature categoricalFeature = toCategoricalFeature();
 
 		return categoricalFeature.toContinuousFeature();
+	}
+
+	@Override
+	public IndexFeature toCategoricalFeature(){
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

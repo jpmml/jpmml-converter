@@ -76,12 +76,6 @@ public class WildcardFeature extends Feature {
 
 		DataField dataField = (DataField)encoder.toOrdinal(getName(), values);
 
-		return new OrdinalFeature(encoder, dataField){
-
-			@Override
-			public IndexFeature toCategoricalFeature(){
-				throw new UnsupportedOperationException();
-			}
-		};
+		return new OrdinalFeature(encoder, dataField);
 	}
 }
