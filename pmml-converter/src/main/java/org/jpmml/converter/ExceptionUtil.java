@@ -75,27 +75,6 @@ public class ExceptionUtil {
 	}
 
 	static
-	public String formatClassName(String name){
-		return name;
-	}
-
-	static
-	public String formatClassNames(Iterable<String> names){
-		StringBuilder sb = new StringBuilder();
-
-		for(String name : names){
-
-			if(sb.length() > 0){
-				sb.append(", ");
-			}
-
-			sb.append(name);
-		}
-
-		return sb.toString();
-	}
-
-	static
 	public String formatName(Feature feature){
 		return formatName(feature.getName());
 	}
