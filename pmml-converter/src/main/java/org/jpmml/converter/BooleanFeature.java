@@ -20,7 +20,6 @@ package org.jpmml.converter;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.NormDiscrete;
@@ -52,5 +51,5 @@ public class BooleanFeature extends CategoricalFeature implements HasDerivedName
 	public static final Boolean VALUE_TRUE = true;
 	public static final Boolean VALUE_FALSE = false;
 
-	public static final List<Object> VALUES = ImmutableList.of(BooleanFeature.VALUE_FALSE, BooleanFeature.VALUE_TRUE);
+	public static final List<Object> VALUES = List.of(BooleanFeature.VALUE_FALSE, BooleanFeature.VALUE_TRUE);
 }

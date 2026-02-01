@@ -27,7 +27,6 @@ import java.util.Objects;
 
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
-import com.google.common.primitives.Ints;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.adapters.ObjectUtil;
 
@@ -93,7 +92,7 @@ public class ValueUtil {
 		double value = number.doubleValue();
 
 		if(DoubleMath.isMathematicalInteger(value)){
-			return Ints.checkedCast((long)value);
+			return Math.toIntExact((long)value);
 		}
 
 		throw new ConversionException("Expected integer, got " + number);
