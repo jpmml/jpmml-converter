@@ -21,7 +21,7 @@ package org.jpmml.converter;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OutlierTreatmentMethod;
 
-public class OutlierDecorator implements Decorator {
+public class OutlierDecorator extends Decorator {
 
 	private OutlierTreatmentMethod outlierTreatment = null;
 

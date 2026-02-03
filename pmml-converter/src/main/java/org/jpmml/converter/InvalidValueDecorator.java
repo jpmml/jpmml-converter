@@ -21,7 +21,7 @@ package org.jpmml.converter;
 import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.dmg.pmml.MiningField;
 
-public class InvalidValueDecorator implements Decorator {
+public class InvalidValueDecorator extends Decorator {
 
 	private InvalidValueTreatmentMethod invalidValueTreatment = null;
 

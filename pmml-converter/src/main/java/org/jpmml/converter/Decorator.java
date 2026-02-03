@@ -20,7 +20,9 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.MiningField;
 
-public interface Decorator {
+abstract
+public class Decorator {
 
-	void decorate(MiningField miningField);
+	abstract
+	public void decorate(MiningField miningField);
 }

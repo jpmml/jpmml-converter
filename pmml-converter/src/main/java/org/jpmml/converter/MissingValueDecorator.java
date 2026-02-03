@@ -21,7 +21,7 @@ package org.jpmml.converter;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MissingValueTreatmentMethod;
 
-public class MissingValueDecorator implements Decorator {
+public class MissingValueDecorator extends Decorator {
 
 	private MissingValueTreatmentMethod missingValueTreatment = null;
 

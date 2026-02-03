@@ -20,7 +20,7 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.MiningField;
 
-public class ImportanceDecorator implements Decorator {
+public class ImportanceDecorator extends Decorator {
 
 	private Number importance = null;
 
