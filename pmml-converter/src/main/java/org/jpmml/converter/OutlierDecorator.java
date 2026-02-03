@@ -47,6 +47,11 @@ public class OutlierDecorator extends Decorator {
 	}
 
 	@Override
+	public boolean isReplaceable(){
+		return (getOutlierTreatmentMethod() == OutlierTreatmentMethod.AS_IS);
+	}
+
+	@Override
 	public void decorate(MiningField miningField){
 		miningField
 			.setOutlierTreatment(getOutlierTreatmentMethod())

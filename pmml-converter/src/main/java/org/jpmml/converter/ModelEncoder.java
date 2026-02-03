@@ -154,7 +154,13 @@ public class ModelEncoder extends PMMLEncoder {
 
 			int index = findDecorator(fieldDecorators, decorator.getClass());
 			if(index > -1){
-				return false;
+				Decorator existingDecorator = fieldDecorators.get(index);
+
+				if(!existingDecorator.isReplaceable()){
+					return false;
+				}
+
+				fieldDecorators.remove(index);
 			}
 		} else
 

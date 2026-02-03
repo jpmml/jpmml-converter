@@ -25,6 +25,9 @@ abstract
 public class Decorator {
 
 	abstract
+	public boolean isReplaceable();
+
+	abstract
 	public void decorate(MiningField miningField);
 
 	@Override

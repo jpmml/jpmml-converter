@@ -49,6 +49,11 @@ public class MissingValueDecorator extends Decorator {
 	}
 
 	@Override
+	public boolean isReplaceable(){
+		return (getMissingValueTreatment() == MissingValueTreatmentMethod.AS_IS);
+	}
+
+	@Override
 	public void decorate(MiningField miningField){
 		miningField
 			.setMissingValueTreatment(getMissingValueTreatment())

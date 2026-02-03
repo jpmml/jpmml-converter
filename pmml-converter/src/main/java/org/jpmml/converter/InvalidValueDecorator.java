@@ -49,6 +49,11 @@ public class InvalidValueDecorator extends Decorator {
 	}
 
 	@Override
+	public boolean isReplaceable(){
+		return (getInvalidValueTreatment() == InvalidValueTreatmentMethod.AS_IS);
+	}
+
+	@Override
 	public void decorate(MiningField miningField){
 		miningField
 			.setInvalidValueTreatment(getInvalidValueTreatment())

@@ -31,6 +31,11 @@ public class ImportanceDecorator extends Decorator {
 	}
 
 	@Override
+	public boolean isReplaceable(){
+		return getImportance() == null;
+	}
+
+	@Override
 	public void decorate(MiningField miningField){
 		miningField.setImportance(getImportance());
 	}
