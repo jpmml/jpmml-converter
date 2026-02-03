@@ -19,10 +19,22 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.MiningField;
+import org.jpmml.model.ToStringHelper;
 
 abstract
 public class Decorator {
 
 	abstract
 	public void decorate(MiningField miningField);
+
+	@Override
+	public String toString(){
+		ToStringHelper helper = toStringHelper();
+
+		return helper.toString();
+	}
+
+	protected ToStringHelper toStringHelper(){
+		return new ToStringHelper(this);
+	}
 }

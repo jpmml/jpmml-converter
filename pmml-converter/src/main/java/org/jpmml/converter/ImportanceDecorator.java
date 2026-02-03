@@ -19,6 +19,7 @@
 package org.jpmml.converter;
 
 import org.dmg.pmml.MiningField;
+import org.jpmml.model.ToStringHelper;
 
 public class ImportanceDecorator extends Decorator {
 
@@ -32,6 +33,12 @@ public class ImportanceDecorator extends Decorator {
 	@Override
 	public void decorate(MiningField miningField){
 		miningField.setImportance(getImportance());
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper(){
+		return super.toStringHelper()
+			.add("importance", getImportance());
 	}
 
 	public Number getImportance(){

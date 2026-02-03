@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MissingValueTreatmentMethod;
+import org.jpmml.model.ToStringHelper;
 
 public class MissingValueDecorator extends Decorator {
 
@@ -52,6 +53,13 @@ public class MissingValueDecorator extends Decorator {
 		miningField
 			.setMissingValueTreatment(getMissingValueTreatment())
 			.setMissingValueReplacement(getMissingValueReplacement());
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper(){
+		return super.toStringHelper()
+			.add("missingValueTreatment", getMissingValueTreatment())
+			.add("missingValueReplacement", getMissingValueReplacement());
 	}
 
 	public MissingValueTreatmentMethod getMissingValueTreatment(){

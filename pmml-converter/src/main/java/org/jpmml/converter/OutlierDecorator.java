@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OutlierTreatmentMethod;
+import org.jpmml.model.ToStringHelper;
 
 public class OutlierDecorator extends Decorator {
 
@@ -51,6 +52,14 @@ public class OutlierDecorator extends Decorator {
 			.setOutlierTreatment(getOutlierTreatmentMethod())
 			.setLowValue(getLowValue())
 			.setHighValue(getHighValue());
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper(){
+		return super.toStringHelper()
+			.add("outlierTreatment", getOutlierTreatmentMethod())
+			.add("lowValue", getLowValue())
+			.add("highValue", getHighValue());
 	}
 
 	public OutlierTreatmentMethod getOutlierTreatmentMethod(){

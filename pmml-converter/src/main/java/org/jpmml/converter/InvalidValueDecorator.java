@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.dmg.pmml.MiningField;
+import org.jpmml.model.ToStringHelper;
 
 public class InvalidValueDecorator extends Decorator {
 
@@ -52,6 +53,13 @@ public class InvalidValueDecorator extends Decorator {
 		miningField
 			.setInvalidValueTreatment(getInvalidValueTreatment())
 			.setInvalidValueReplacement(getInvalidValueReplacement());
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper(){
+		return super.toStringHelper()
+			.add("invalidValueTreatment", getInvalidValueTreatment())
+			.add("invalidValueReplacement", getInvalidValueReplacement());
 	}
 
 	public InvalidValueTreatmentMethod getInvalidValueTreatment(){
