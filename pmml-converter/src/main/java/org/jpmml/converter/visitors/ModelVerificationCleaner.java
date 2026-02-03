@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -198,7 +199,7 @@ public class ModelVerificationCleaner extends AbstractVisitor {
 	static
 	private String formatColumn(String prefix, String localPart){
 
-		if(prefix != null && !("").equals(prefix)){
+		if(prefix != null && !Objects.equals("", prefix)){
 			return prefix + ":" + localPart;
 		}
 

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.LocalTransformations;
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DerivedFieldRelocatorTest {
 
@@ -61,24 +63,24 @@ public class DerivedFieldRelocatorTest {
 
 				LocalTransformations localTransformations = model.getLocalTransformations();
 
-				if(("first").equals(segment.getId())){
+				if(Objects.equals("first", segment.getId())){
 					checkFields(Collections.singletonList("x1_squared"), localTransformations.getDerivedFields());
 				} else
 
-				if(("second").equals(segment.getId())){
+				if(Objects.equals("second", segment.getId())){
 					checkFields(Collections.singletonList("x2_squared"), localTransformations.getDerivedFields());
 				} else
 
-				if(("third").equals(segment.getId())){
+				if(Objects.equals("third", segment.getId())){
 					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
-				if(("sum").equals(segment.getId())){
+				if(Objects.equals("sum", segment.getId())){
 					assertNull(localTransformations);
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(segment);
@@ -109,20 +111,20 @@ public class DerivedFieldRelocatorTest {
 
 				LocalTransformations localTransformations = model.getLocalTransformations();
 
-				if(("first").equals(segment.getId())){
+				if(Objects.equals("first", segment.getId())){
 					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
-				if(("second").equals(segment.getId())){
+				if(Objects.equals("second", segment.getId())){
 					checkFields(Arrays.asList("x12", "x123", "x1234", "x12345"), localTransformations.getDerivedFields());
 				} else
 
-				if(("third").equals(segment.getId())){
+				if(Objects.equals("third", segment.getId())){
 					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(segment);

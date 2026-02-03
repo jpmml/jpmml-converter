@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.dmg.pmml.DataField;
@@ -39,6 +40,7 @@ import org.jpmml.model.visitors.AbstractVisitor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class FieldDependencyResolverTest {
 
@@ -66,20 +68,20 @@ public class FieldDependencyResolverTest {
 
 				String name = derivedField.requireName();
 
-				if("x1_squared".equals(name)){
+				if(Objects.equals("x1_squared", name)){
 					checkFields(Collections.singletonList("x1"), fields);
 				} else
 
-				if("x1_cubed".equals(name)){
+				if(Objects.equals("x1_cubed", name)){
 					checkFields(Arrays.asList("x1", "x1_squared"), fields);
 				} else
 
-				if("x2_squared".equals(name) || "x2_cubed".equals(name)){
+				if(Objects.equals("x2_squared", name) || Objects.equals("x2_cubed", name)){
 					checkFields(Collections.singletonList("x2"), fields);
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(derivedField);
@@ -113,24 +115,24 @@ public class FieldDependencyResolverTest {
 
 				String name = derivedField.requireName();
 
-				if("x12".equals(name)){
+				if(Objects.equals("x12", name)){
 					checkFields(Arrays.asList("x1", "x2"), fields);
 				} else
 
-				if("x123".equals(name)){
+				if(Objects.equals("x123", name)){
 					checkFields(Arrays.asList("x12", "x3"), fields);
 				} else
 
-				if("x1234".equals(name)){
+				if(Objects.equals("x1234", name)){
 					checkFields(Arrays.asList("x123", "x4"), fields);
 				} else
 
-				if("x12345".equals(name)){
+				if(Objects.equals("x12345", name)){
 					checkFields(Arrays.asList("x1234", "x5"), fields);
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(derivedField);

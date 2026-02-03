@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.LocalTransformations;
@@ -44,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TransformationDictionaryCleanerTest {
 
@@ -64,24 +66,24 @@ public class TransformationDictionaryCleanerTest {
 
 				String id = segment.getId();
 
-				if("first".equals(id)){
+				if(Objects.equals("first", id)){
 					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
-				if("second".equals(id)){
+				if(Objects.equals("second", id)){
 					checkFields(Collections.singletonList("x2_squared"), localTransformations.getDerivedFields());
 				} else
 
-				if("third".equals(id)){
+				if(Objects.equals("third", id)){
 					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
-				if("sum".equals(id)){
+				if(Objects.equals("sum", id)){
 					assertNull(localTransformations);
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(regressionModel);
@@ -144,16 +146,16 @@ public class TransformationDictionaryCleanerTest {
 					checkFields(Collections.singletonList("x12"), localTransformations.getDerivedFields());
 				} else
 
-				if("first".equals(id)){
+				if(Objects.equals("first", id)){
 					checkFields(Arrays.asList("x123", "x1234", "x12345"), localTransformations.getDerivedFields());
 				} else
 
-				if("second".equals(id)){
+				if(Objects.equals("second", id)){
 					assertFalse(localTransformations.hasDerivedFields());
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(miningModel);

@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.function.Function;
 
@@ -245,11 +246,11 @@ public class PMMLUtil {
 
 				Object cell;
 
-				if((inputColumnName).equals(columName)){
+				if(Objects.equals(inputColumnName, columName)){
 					cell = new InputCell(value);
 				} else
 
-				if((outputColumnName).equals(columName)){
+				if(Objects.equals(outputColumnName, columName)){
 					cell = new OutputCell(value);
 				} else
 

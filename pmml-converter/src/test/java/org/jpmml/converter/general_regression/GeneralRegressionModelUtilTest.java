@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.dmg.pmml.general_regression.GeneralRegressionModel;
 import org.dmg.pmml.general_regression.PCell;
@@ -95,7 +96,7 @@ public class GeneralRegressionModelUtilTest extends ModelTest {
 
 		for(C cell : cells){
 
-			if((cell.getParameterName()).equals(parameterName)){
+			if(Objects.equals(parameterName, cell.getParameterName())){
 				result.add(cell);
 			}
 		}

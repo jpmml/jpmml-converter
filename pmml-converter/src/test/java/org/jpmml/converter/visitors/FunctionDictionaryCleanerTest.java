@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,7 @@ public class FunctionDictionaryCleanerTest {
 			@Override
 			public VisitorAction visit(DerivedField derivedField){
 
-				if(("x2_squared").equals(derivedField.requireName())){
+				if(Objects.equals("x2_squared", derivedField.requireName())){
 					FieldRef fieldRef = new FieldRef("x2");
 
 					Apply apply = new Apply(PMMLFunctions.ADD)
@@ -93,7 +94,7 @@ public class FunctionDictionaryCleanerTest {
 					for(Iterator<DerivedField> it = derivedFields.iterator(); it.hasNext(); ){
 						DerivedField derivedField = it.next();
 
-						if(("x2_cubed").equals(derivedField.requireName())){
+						if(Objects.equals("x2_cubed", derivedField.requireName())){
 							it.remove();
 						}
 					}

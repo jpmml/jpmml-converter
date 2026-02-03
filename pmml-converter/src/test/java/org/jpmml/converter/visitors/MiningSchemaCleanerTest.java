@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,7 @@ import org.jpmml.model.visitors.AbstractVisitor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class MiningSchemaCleanerTest {
 
@@ -70,24 +72,24 @@ public class MiningSchemaCleanerTest {
 
 				String id = segment.getId();
 
-				if("first".equals(id)){
+				if(Objects.equals("first", id)){
 					checkMiningSchema(Collections.singletonList("x1"), miningSchema);
 				} else
 
-				if("second".equals(id)){
+				if(Objects.equals("second", id)){
 					checkMiningSchema(Collections.singletonList("x2"), miningSchema);
 				} else
 
-				if("third".equals(id)){
+				if(Objects.equals("third", id)){
 					checkMiningSchema(Collections.singletonList("x3"), miningSchema);
 				} else
 
-				if("sum".equals(id)){
+				if(Objects.equals("sum", id)){
 					checkMiningSchema(Arrays.asList("y", "first_output", "second_output", "third_output"), miningSchema);
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(regressionModel);
@@ -124,16 +126,16 @@ public class MiningSchemaCleanerTest {
 					checkMiningSchema(Arrays.asList("x1", "x2", "x3", "x4", "x5"), miningSchema);
 				} else
 
-				if("first".equals(id)){
+				if(Objects.equals("first", id)){
 					checkMiningSchema(Arrays.asList("x12", "x3", "x4", "x5"), miningSchema);
 				} else
 
-				if("second".equals(id)){
+				if(Objects.equals("second", id)){
 					checkMiningSchema(Arrays.asList("x123", "x12345"), miningSchema);
 				} else
 
 				{
-					throw new AssertionError();
+					fail();
 				}
 
 				return super.visit(miningModel);

@@ -19,6 +19,7 @@
 package org.jpmml.converter;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -56,7 +57,7 @@ public class WildcardFeature extends Feature {
 
 		DataField dataField = (DataField)encoder.toCategorical(getName(), values);
 
-		if((dataField.requireDataType() == DataType.BOOLEAN) && (BooleanFeature.VALUES).equals(values)){
+		if((dataField.requireDataType() == DataType.BOOLEAN) && Objects.equals(BooleanFeature.VALUES, values)){
 			return new BooleanFeature(encoder, dataField);
 		}
 

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.dmg.pmml.DataDictionary;
@@ -257,7 +258,7 @@ public class PMMLEncoder {
 			List<?> existingValues = FieldUtil.getValues((Field & HasDiscreteDomain)field);
 			if(existingValues != null && !existingValues.isEmpty()){
 
-				if((existingValues).equals(values)){
+				if(Objects.equals(existingValues, values)){
 					break values;
 				}
 

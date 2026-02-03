@@ -20,6 +20,7 @@ package org.jpmml.converter.visitors;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
@@ -110,7 +111,7 @@ public class ExpressionCompactor extends AbstractVisitor {
 			if(expression instanceof Apply){
 				Apply nestedApply = (Apply)expression;
 
-				if((function).equals(nestedApply.requireFunction())){
+				if(Objects.equals(function, nestedApply.requireFunction())){
 					expressionIt.remove();
 
 					// Depth first, breadth second
