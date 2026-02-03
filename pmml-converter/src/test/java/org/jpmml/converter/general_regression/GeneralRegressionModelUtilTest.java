@@ -96,7 +96,7 @@ public class GeneralRegressionModelUtilTest extends ModelTest {
 
 		for(C cell : cells){
 
-			if(Objects.equals(parameterName, cell.getParameterName())){
+			if(Objects.equals(parameterName, cell.requireParameterName())){
 				result.add(cell);
 			}
 		}
