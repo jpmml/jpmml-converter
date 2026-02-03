@@ -122,21 +122,36 @@ public class ModelEncoder extends PMMLEncoder {
 		return this.decorators;
 	}
 
-	public void addDecorator(Field<?> field, Decorator decorator){
-		addDecorator(null, field, decorator);
+	public boolean addDecorator(Field<?> field, Decorator decorator){
+		return addDecorator(null, field, decorator);
 	}
 
-	public void addDecorator(Model model, Field<?> field, Decorator decorator){
+	public boolean addDecorator(Model model, Field<?> field, Decorator decorator){
 		Map<Model, ListMultimap<String, Decorator>> decorators = getDecorators();
 
 		ListMultimap<String, Decorator> modelDecorators = decorators.get(model);
-		if(modelDecorators == null){
+		if(modelDecorators != null){
+			List<Decorator> fieldDecorators = modelDecorators.get(field.requireName());
+
+			if(fieldDecorators != null && !fieldDecorators.isEmpty()){
+				Class<? extends Decorator> clazz = decorator.getClass();
+
+				for(Decorator fieldDecorator : fieldDecorators){
+
+					if(Objects.equals(fieldDecorator.getClass(), clazz)){
+						return false;
+					}
+				}
+			}
+		} else
+
+		{
 			modelDecorators = ArrayListMultimap.create();
 
 			decorators.put(model, modelDecorators);
 		}
 
-		modelDecorators.put(field.requireName(), decorator);
+		return modelDecorators.put(field.requireName(), decorator);
 	}
 
 	public Decorator removeDecorator(Field<?> field, Class<? extends Decorator> clazz){
