@@ -44,6 +44,10 @@ public class ModelEncoderTest {
 		MissingValueDecorator passMissingValues = new MissingValueDecorator(MissingValueTreatmentMethod.AS_IS, null);
 		MissingValueDecorator rejectMissingValues = new MissingValueDecorator(MissingValueTreatmentMethod.RETURN_INVALID, null);
 
+		assertNull(encoder.getDecorator(dataField, InvalidValueDecorator.class));
+		assertNull(encoder.getDecorator(dataField, MissingValueDecorator.class));
+		assertNull(encoder.getDecorator(dataField, OutlierDecorator.class));
+
 		assertTrue(encoder.addDecorator(dataField, passInvalidValues));
 		assertTrue(encoder.addDecorator(dataField, passMissingValues));
 
@@ -53,9 +57,11 @@ public class ModelEncoderTest {
 		assertSame(passInvalidValues, encoder.removeDecorator(dataField, InvalidValueDecorator.class));
 		assertSame(passMissingValues, encoder.removeDecorator(dataField, MissingValueDecorator.class));
 
-		assertNull(encoder.removeDecorator(dataField, OutlierDecorator.class));
-
 		assertTrue(encoder.addDecorator(dataField, rejectInvalidValues));
 		assertTrue(encoder.addDecorator(dataField, rejectMissingValues));
+
+		assertSame(rejectInvalidValues, encoder.getDecorator(dataField, InvalidValueDecorator.class));
+		assertSame(rejectMissingValues, encoder.getDecorator(dataField, MissingValueDecorator.class));
+		assertNull(encoder.getDecorator(dataField, OutlierDecorator.class));
 	}
 }

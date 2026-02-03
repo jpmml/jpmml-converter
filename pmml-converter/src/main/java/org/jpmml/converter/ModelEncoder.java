@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +121,26 @@ public class ModelEncoder extends PMMLEncoder {
 		return this.decorators;
 	}
 
+	public Decorator getDecorator(Field<?> field, Class<? extends Decorator> clazz){
+		return getDecorator(null, field, clazz);
+	}
+
+	public Decorator getDecorator(Model model, Field<?> field, Class<? extends Decorator> clazz){
+		Map<Model, ListMultimap<String, Decorator>> decorators = getDecorators();
+
+		ListMultimap<String, Decorator> modelDecorators = decorators.get(model);
+		if(modelDecorators != null){
+			List<Decorator> fieldDecorators = modelDecorators.get(field.requireName());
+
+			int index = findDecorator(fieldDecorators, clazz);
+			if(index > -1){
+				return fieldDecorators.get(index);
+			}
+		}
+
+		return null;
+	}
+
 	public boolean addDecorator(Field<?> field, Decorator decorator){
 		return addDecorator(null, field, decorator);
 	}
@@ -133,15 +152,9 @@ public class ModelEncoder extends PMMLEncoder {
 		if(modelDecorators != null){
 			List<Decorator> fieldDecorators = modelDecorators.get(field.requireName());
 
-			if(fieldDecorators != null && !fieldDecorators.isEmpty()){
-				Class<? extends Decorator> clazz = decorator.getClass();
-
-				for(Decorator fieldDecorator : fieldDecorators){
-
-					if(Objects.equals(fieldDecorator.getClass(), clazz)){
-						return false;
-					}
-				}
+			int index = findDecorator(fieldDecorators, decorator.getClass());
+			if(index > -1){
+				return false;
 			}
 		} else
 
@@ -165,17 +178,9 @@ public class ModelEncoder extends PMMLEncoder {
 		if(modelDecorators != null){
 			List<Decorator> fieldDecorators = modelDecorators.get(field.requireName());
 
-			if(fieldDecorators != null && !fieldDecorators.isEmpty()){
-
-				for(Iterator<Decorator> it = fieldDecorators.iterator(); it.hasNext(); ){
-					Decorator fieldDecorator = it.next();
-
-					if(Objects.equals(fieldDecorator.getClass(), clazz)){
-						it.remove();
-
-						return fieldDecorator;
-					}
-				}
+			int index = findDecorator(fieldDecorators, clazz);
+			if(index > -1){
+				return fieldDecorators.remove(index);
 			}
 		}
 
@@ -431,6 +436,23 @@ public class ModelEncoder extends PMMLEncoder {
 				}
 			}
 		}
+	}
+
+	static
+	private int findDecorator(List<Decorator> decorators, Class<? extends Decorator> clazz){
+
+		if(decorators != null && !decorators.isEmpty()){
+
+			for(int i = 0; i < decorators.size(); i++){
+				Decorator decorator = decorators.get(i);
+
+				if(Objects.equals(decorator.getClass(), clazz)){
+					return i;
+				}
+			}
+		}
+
+		return -1;
 	}
 
 	static
