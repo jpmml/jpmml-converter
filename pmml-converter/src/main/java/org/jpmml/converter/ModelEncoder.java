@@ -156,6 +156,10 @@ public class ModelEncoder extends PMMLEncoder {
 			if(index > -1){
 				Decorator existingDecorator = fieldDecorators.get(index);
 
+				if(Objects.equals(existingDecorator, decorator)){
+					return true;
+				} // End if
+
 				if(!existingDecorator.isReplaceable()){
 					return false;
 				}

@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Objects;
+
 import org.dmg.pmml.MiningField;
 import org.jpmml.model.ToStringHelper;
 
@@ -29,6 +31,18 @@ public class Decorator {
 
 	abstract
 	public void decorate(MiningField miningField);
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof Decorator){
+			Decorator that = (Decorator)object;
+
+			return Objects.equals(this.getClass(), that.getClass());
+		}
+
+		return false;
+	}
 
 	@Override
 	public String toString(){

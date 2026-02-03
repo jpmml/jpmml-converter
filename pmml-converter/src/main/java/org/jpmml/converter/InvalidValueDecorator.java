@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Objects;
+
 import org.dmg.pmml.InvalidValueTreatmentMethod;
 import org.dmg.pmml.MiningField;
 import org.jpmml.model.ToStringHelper;
@@ -58,6 +60,18 @@ public class InvalidValueDecorator extends Decorator {
 		miningField
 			.setInvalidValueTreatment(getInvalidValueTreatment())
 			.setInvalidValueReplacement(getInvalidValueReplacement());
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof InvalidValueDecorator){
+			InvalidValueDecorator that = (InvalidValueDecorator)object;
+
+			return super.equals(object) && (this.getInvalidValueTreatment() == that.getInvalidValueTreatment()) && Objects.equals(this.getInvalidValueReplacement(), that.getInvalidValueReplacement());
+		}
+
+		return false;
 	}
 
 	@Override

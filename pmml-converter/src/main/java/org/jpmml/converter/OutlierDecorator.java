@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Objects;
+
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.OutlierTreatmentMethod;
 import org.jpmml.model.ToStringHelper;
@@ -57,6 +59,18 @@ public class OutlierDecorator extends Decorator {
 			.setOutlierTreatment(getOutlierTreatmentMethod())
 			.setLowValue(getLowValue())
 			.setHighValue(getHighValue());
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof OutlierDecorator){
+			OutlierDecorator that = (OutlierDecorator)object;
+
+			return super.equals(object) && (this.getOutlierTreatmentMethod() == that.getOutlierTreatmentMethod()) && Objects.equals(this.getLowValue(), that.getLowValue()) && Objects.equals(this.getHighValue(), that.getHighValue());
+		}
+
+		return false;
 	}
 
 	@Override

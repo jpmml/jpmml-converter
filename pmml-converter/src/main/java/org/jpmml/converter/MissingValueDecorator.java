@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Objects;
+
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MissingValueTreatmentMethod;
 import org.jpmml.model.ToStringHelper;
@@ -58,6 +60,18 @@ public class MissingValueDecorator extends Decorator {
 		miningField
 			.setMissingValueTreatment(getMissingValueTreatment())
 			.setMissingValueReplacement(getMissingValueReplacement());
+	}
+
+	@Override
+	public boolean equals(Object object){
+
+		if(object instanceof MissingValueDecorator){
+			MissingValueDecorator that = (MissingValueDecorator)object;
+
+			return super.equals(object) && (this.getMissingValueTreatment() == that.getMissingValueTreatment()) && Objects.equals(this.getMissingValueReplacement(), that.getMissingValueReplacement());
+		}
+
+		return false;
 	}
 
 	@Override
