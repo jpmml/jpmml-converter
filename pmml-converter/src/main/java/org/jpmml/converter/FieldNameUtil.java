@@ -98,6 +98,12 @@ public class FieldNameUtil {
 	static
 	private String toString(Object object){
 
+		if(object instanceof ScalarLabel){
+			ScalarLabel scalarLabel = (ScalarLabel)object;
+
+			return scalarLabel.getName();
+		} else
+
 		if(object instanceof Feature){
 			Feature feature = (Feature)object;
 
