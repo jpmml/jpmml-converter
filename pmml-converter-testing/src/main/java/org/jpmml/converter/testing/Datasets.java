@@ -24,10 +24,14 @@ public interface Datasets {
 	String AUDIT_NA = AUDIT + "NA";
 	String AUTO = "Auto";
 	String AUTO_NA = AUTO + "NA";
+	String EMAIL = "Email";
+	String EMAIL_NA = EMAIL + "NA";
 	String HOUSING = "Housing";
 	String HOUSING_NA = HOUSING + "NA";
 	String IRIS = "Iris";
 	String IRIS_NA = IRIS + "NA";
+	String LUNG = "Lung";
+	String LUNG_NA = LUNG + "NA";
 	String SENTIMENT = "Sentiment";
 	String SENTIMENT_NA = SENTIMENT + "NA";
 	String SHOPPING = "Shopping";
