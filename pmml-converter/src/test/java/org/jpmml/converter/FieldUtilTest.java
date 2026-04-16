@@ -18,6 +18,7 @@
  */
 package org.jpmml.converter;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.dmg.pmml.DataField;
@@ -39,5 +40,14 @@ public class FieldUtilTest {
 		FieldUtil.addValue(dataField, Value.Property.MISSING, -999);
 
 		assertEquals(Collections.singletonList(-999), FieldUtil.getValues(dataField, Value.Property.MISSING));
+	}
+
+	@Test
+	public void addValues(){
+		DataField dataField = new DataField();
+
+		FieldUtil.addValues(dataField, Arrays.asList(0, 0, 1));
+
+		assertEquals(Arrays.asList(0, 1), FieldUtil.getValues(dataField));
 	}
 }

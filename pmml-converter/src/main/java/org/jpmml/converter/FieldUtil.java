@@ -94,16 +94,8 @@ public class FieldUtil {
 	static
 	public <F extends Field<F> & HasDiscreteDomain<F>> void addValues(F field, Value.Property property, List<?> values){
 
-		if(property == Value.Property.VALID){
-			property = null;
-		}
-
-		List<Value> pmmlValues = field.getValues();
 		for(Object value : values){
-			Value pmmlValue = new Value(value)
-				.setProperty(property);
-
-			pmmlValues.add(pmmlValue);
+			addValue(field, property, value);
 		}
 	}
 
