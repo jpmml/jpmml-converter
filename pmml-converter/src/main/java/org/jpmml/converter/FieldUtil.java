@@ -21,6 +21,7 @@ package org.jpmml.converter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.dmg.pmml.Field;
 import org.dmg.pmml.HasDiscreteDomain;
@@ -47,12 +48,42 @@ public class FieldUtil {
 		List<Value> pmmlValues = field.getValues();
 		for(Value pmmlValue : pmmlValues){
 
-			if(property == pmmlValue.getProperty()){
+			if(pmmlValue.getProperty() == property){
 				result.add(pmmlValue.requireValue());
 			}
 		}
 
 		return result;
+	}
+
+	static
+	public <F extends Field<F> & HasDiscreteDomain<F>> void addValue(F field, Object value){
+		addValue(field, null, value);
+	}
+
+	static
+	public <F extends Field<F> & HasDiscreteDomain<F>> void addValue(F field, Value.Property property, Object value){
+		List<Value> pmmlValues = field.getValues();
+
+		if(property == null){
+			property = Value.Property.VALID;
+		}
+
+		for(Value pmmlValue : pmmlValues){
+
+			if((pmmlValue.getProperty() == property) && Objects.equals(pmmlValue.getValue(), value)){
+				return;
+			}
+		}
+
+		if(property == Value.Property.VALID){
+			property = null;
+		}
+
+		Value pmmlValue = new Value(value)
+			.setProperty(property);
+
+		pmmlValues.add(pmmlValue);
 	}
 
 	static
