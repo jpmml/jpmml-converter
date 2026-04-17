@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -166,31 +165,32 @@ public class MiningModelUtil {
 	}
 
 	static
+	public MiningFunction getMiningFunction(List<? extends Model> models){
+		MiningFunction result = null;
+
+		for(Model model : models){
+			MiningFunction miningFunction = model.getMiningFunction();
+
+			if(result == null){
+				result = miningFunction;
+			} else
+
+			if(miningFunction != result){
+				return MiningFunction.MIXED;
+			}
+		}
+
+		return result;
+	}
+
+	static
 	public MiningModel createMultiModelChain(List<? extends Model> models, Segmentation.MissingPredictionTreatment missingPredictionTreatment){
 
 		if(models.isEmpty()){
 			throw new IllegalArgumentException();
 		}
 
-		MiningFunction miningFunction = null;
-
-		for(Model model : models){
-			MiningFunction modelMiningFunction = model.requireMiningFunction();
-
-			if(miningFunction == null){
-				miningFunction = modelMiningFunction;
-			} else
-
-			if(miningFunction == MiningFunction.MIXED){
-				// Ignored
-			} else
-
-			{
-				if(!Objects.equals(miningFunction, modelMiningFunction)){
-					miningFunction = MiningFunction.MIXED;
-				}
-			}
-		}
+		MiningFunction miningFunction = getMiningFunction(models);
 
 		MiningModel miningModel = new MiningModel(miningFunction, createMiningSchema(models))
 			.setSegmentation(createSegmentation(Segmentation.MultipleModelMethod.MULTI_MODEL_CHAIN, missingPredictionTreatment, models));
