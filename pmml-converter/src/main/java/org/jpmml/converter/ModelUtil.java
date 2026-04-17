@@ -45,6 +45,7 @@ import org.dmg.pmml.Target;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.VerificationField;
 import org.dmg.pmml.VerificationFields;
+import org.jpmml.model.UnsupportedAttributeException;
 
 public class ModelUtil {
 
@@ -52,8 +53,38 @@ public class ModelUtil {
 	}
 
 	static
+	public MathContext getMathContext(List<? extends Model> models){
+		MathContext result = null;
+
+		for(Model model : models){
+			MathContext mathContext = model.getMathContext();
+
+			if(mathContext == null){
+				mathContext = MathContext.DOUBLE;
+			} // End if
+
+			if(result == null){
+				result = mathContext;
+			} else
+
+			{
+				if(mathContext != result){
+					throw new UnsupportedAttributeException(model, mathContext);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	static
 	public MathContext simplifyMathContext(MathContext mathContext){
-		return (mathContext == MathContext.DOUBLE) ? null : mathContext;
+
+		if(mathContext == MathContext.DOUBLE){
+			return null;
+		}
+
+		return mathContext;
 	}
 
 	static

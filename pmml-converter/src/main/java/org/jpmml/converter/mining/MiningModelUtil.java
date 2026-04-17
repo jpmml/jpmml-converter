@@ -119,27 +119,12 @@ public class MiningModelUtil {
 			}
 		}
 
-		MathContext mathContext = null;
+		MathContext mathContext = ModelUtil.getMathContext(models);
 
 		List<RegressionTable> regressionTables = new ArrayList<>();
 
 		for(int i = 0; i < categoricalLabel.size(); i++){
 			Model model = models.get(i);
-
-			MathContext modelMathContext = model.getMathContext();
-			if(modelMathContext == null){
-				modelMathContext = MathContext.DOUBLE;
-			} // End if
-
-			if(mathContext == null){
-				mathContext = modelMathContext;
-			} else
-
-			{
-				if(!Objects.equals(mathContext, modelMathContext)){
-					throw new IllegalArgumentException();
-				}
-			}
 
 			Feature feature = getPrediction(model, schema);
 
