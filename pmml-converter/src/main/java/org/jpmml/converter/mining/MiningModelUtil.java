@@ -118,7 +118,7 @@ public class MiningModelUtil {
 			}
 		}
 
-		MathContext mathContext = ModelUtil.getMathContext(models);
+		MathContext mathContext = getMathContext(models);
 
 		List<RegressionTable> regressionTables = new ArrayList<>();
 
@@ -162,25 +162,6 @@ public class MiningModelUtil {
 			.setSegmentation(createSegmentation(Segmentation.MultipleModelMethod.MODEL_CHAIN, missingPredictionTreatment, models));
 
 		return miningModel;
-	}
-
-	static
-	public MiningFunction getMiningFunction(List<? extends Model> models){
-		MiningFunction result = null;
-
-		for(Model model : models){
-			MiningFunction miningFunction = model.getMiningFunction();
-
-			if(result == null){
-				result = miningFunction;
-			} else
-
-			if(miningFunction != result){
-				return MiningFunction.MIXED;
-			}
-		}
-
-		return result;
 	}
 
 	static
@@ -412,6 +393,50 @@ public class MiningModelUtil {
 				}
 			}
 		}
+	}
+
+	static
+	private MathContext getMathContext(List<? extends Model> models){
+		MathContext result = null;
+
+		for(Model model : models){
+			MathContext mathContext = model.getMathContext();
+
+			if(mathContext == null){
+				mathContext = MathContext.DOUBLE;
+			} // End if
+
+			if(result == null){
+				result = mathContext;
+			} else
+
+			{
+				if(mathContext != result){
+					throw new IllegalArgumentException();
+				}
+			}
+		}
+
+		return result;
+	}
+
+	static
+	private MiningFunction getMiningFunction(List<? extends Model> models){
+		MiningFunction result = null;
+
+		for(Model model : models){
+			MiningFunction miningFunction = model.getMiningFunction();
+
+			if(result == null){
+				result = miningFunction;
+			} else
+
+			if(miningFunction != result){
+				return MiningFunction.MIXED;
+			}
+		}
+
+		return result;
 	}
 
 	static
