@@ -110,7 +110,7 @@ public class Feature {
 			Feature that = (Feature)object;
 
 			if(Objects.equals(this.getClass(), that.getClass())){
-				return Objects.equals(this.getEncoder(), that.getEncoder()) && Objects.equals(this.getName(), that.getName()) && Objects.equals(this.getDataType(), that.getDataType());
+				return Objects.equals(this.getEncoder(), that.getEncoder()) && Objects.equals(this.getName(), that.getName()) && (this.getDataType() == that.getDataType());
 			}
 		}
 

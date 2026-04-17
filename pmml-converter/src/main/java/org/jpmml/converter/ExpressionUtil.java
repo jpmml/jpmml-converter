@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
@@ -223,7 +222,7 @@ public class ExpressionUtil {
 							if(expressions.size() > 2){
 								DataType falseDataType = getDataType(expressions.get(2), featureResolver);
 
-								if(Objects.equals(trueDataType, falseDataType)){
+								if(trueDataType == falseDataType){
 									return trueDataType;
 								}
 
