@@ -19,10 +19,13 @@
 package org.jpmml.converter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import com.google.common.collect.Iterables;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
@@ -82,6 +85,75 @@ public class InteractionFeature extends Feature {
 	protected ToStringHelper toStringHelper(){
 		return super.toStringHelper()
 			.add("features", getFeatures());
+	}
+
+	public Feature simplify(){
+		PMMLEncoder encoder = getEncoder();
+		String name = getName();
+		DataType dataType = getDataType();
+		List<? extends Feature> features = getFeatures();
+		List<? extends Feature> flattenedFeatures = getFlattenedFeatures();
+
+		List<Feature> result = new ArrayList<>();
+
+		Map<String, Object> binaryValues = new HashMap<>();
+
+		for(int i = 0; i < flattenedFeatures.size(); i++){
+			Feature flattenedFeature = flattenedFeatures.get(i);
+
+			if(flattenedFeature instanceof BinaryFeature){
+				BinaryFeature binaryFeature = (BinaryFeature)flattenedFeature;
+
+				if(result.contains(binaryFeature)){
+					continue;
+				}
+
+				Object existingValue = binaryValues.put(binaryFeature.getName(), binaryFeature.getValue());
+				if(existingValue != null && !Objects.equals(existingValue, binaryFeature.getValue())){
+					return new ConstantFeature(encoder, 0d);
+				}
+			} else
+
+			if(flattenedFeature instanceof BooleanFeature){
+				BooleanFeature booleanFeature = (BooleanFeature)flattenedFeature;
+
+				if(result.contains(booleanFeature)){
+					continue;
+				}
+			} else
+
+			if(flattenedFeature instanceof ConstantFeature){
+				ConstantFeature constantFeature = (ConstantFeature)flattenedFeature;
+
+				Number value = constantFeature.getValue();
+
+				if(ValueUtil.isZero(value)){
+					return constantFeature;
+				} else
+
+				if(ValueUtil.isOne(value)){
+					continue;
+				}
+			}
+
+			result.add(flattenedFeature);
+		}
+
+		if(result.size() == 0){
+			return new ConstantFeature(encoder, 1d);
+		} else
+
+		if(result.size() == 1){
+			return Iterables.getOnlyElement(result);
+		} else
+
+		{
+			if(Objects.equals(result, features)){
+				return this;
+			}
+
+			return new InteractionFeature(encoder, name, dataType, result);
+		}
 	}
 
 	public List<? extends Feature> getFlattenedFeatures(){
