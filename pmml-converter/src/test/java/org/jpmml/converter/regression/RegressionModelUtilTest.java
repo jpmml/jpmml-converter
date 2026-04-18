@@ -91,6 +91,21 @@ public class RegressionModelUtilTest extends ModelTest {
 		assertEquals("x1", (fieldRefs.get(0)).requireField());
 		assertEquals("x2", (fieldRefs.get(1)).requireField());
 
+		feature = createInteractionFeature(encoder, "x1", "x2", feature);
+
+		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Arrays.asList(2d), 1d);
+
+		assertState(regressionTable, 1d, false, false, true);
+
+		predictorTerm = Iterables.getOnlyElement(regressionTable.getPredictorTerms());
+
+		assertEquals((Double)(2d * 5d), predictorTerm.requireCoefficient());
+
+		fieldRefs = predictorTerm.requireFieldRefs();
+
+		assertEquals("x1", (fieldRefs.get(0)).requireField());
+		assertEquals("x2", (fieldRefs.get(1)).requireField());
+
 		feature = new ContinuousFeature(encoder, "x", DataType.DOUBLE);
 
 		regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), 1d);

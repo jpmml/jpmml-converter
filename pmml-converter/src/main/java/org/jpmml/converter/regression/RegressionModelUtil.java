@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Iterables;
-import org.dmg.pmml.FieldRef;
+import com.google.common.collect.Multiset;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.regression.CategoricalPredictor;
@@ -44,6 +46,7 @@ import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.OrdinalLabel;
+import org.jpmml.converter.PMMLEncoder;
 import org.jpmml.converter.PowerFeature;
 import org.jpmml.converter.ProductFeature;
 import org.jpmml.converter.Schema;
@@ -193,8 +196,9 @@ public class RegressionModelUtil {
 			regressionTable.setIntercept(intercept);
 		}
 
-		Map<PredictorKey, NumericPredictor> numericPredictors = new LinkedHashMap<>();
-		Map<PredictorKey, CategoricalPredictor> categoricalPredictors = new LinkedHashMap<>();
+		Map<Feature, NumericPredictor> numericPredictors = new LinkedHashMap<>();
+		Map<Feature, CategoricalPredictor> categoricalPredictors = new LinkedHashMap<>();
+		Map<Feature, PredictorTerm> predictorTerms = new LinkedHashMap<>();
 
 		for(int i = 0; i < features.size(); i++){
 			Feature feature = features.get(i);
@@ -202,6 +206,42 @@ public class RegressionModelUtil {
 
 			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
+			} // End if
+
+			if(feature instanceof InteractionFeature){
+				InteractionFeature interactionFeature = (InteractionFeature)feature;
+
+				List<Feature> wrappedInputFeatures = new ArrayList<>();
+
+				List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
+				for(Feature inputFeature : inputFeatures){
+
+					if(inputFeature instanceof ConstantFeature){
+						ConstantFeature constantFeature = (ConstantFeature)inputFeature;
+
+						coefficient = ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue());
+					} else
+
+					{
+						wrappedInputFeatures.add(inputFeature);
+					}
+				}
+
+				if(wrappedInputFeatures.size() == 0){
+					Number value = ValueUtil.add(mathContext, regressionTable.requireIntercept(), coefficient);
+
+					regressionTable.setIntercept(value);
+
+					continue;
+				} else
+
+				if(wrappedInputFeatures.size() == 1){
+					feature = Iterables.getOnlyElement(wrappedInputFeatures);
+				} else
+
+				{
+					feature = new CanonicalInteractionFeature(interactionFeature.getEncoder(), interactionFeature.getName(), interactionFeature.getDataType(), wrappedInputFeatures);
+				}
 			} // End if
 
 			if(feature instanceof ProductFeature){
@@ -214,16 +254,14 @@ public class RegressionModelUtil {
 			if(feature instanceof BinaryFeature){
 				BinaryFeature binaryFeature = (BinaryFeature)feature;
 
-				PredictorKey predictorKey = new PredictorKey(binaryFeature.getName(), binaryFeature.getValue());
-
-				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(predictorKey);
+				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(binaryFeature);
 				if(categoricalPredictor == null){
 					categoricalPredictor = new CategoricalPredictor()
 						.setField(binaryFeature.getName())
 						.setValue(binaryFeature.getValue())
 						.setCoefficient(coefficient);
 
-					categoricalPredictors.put(predictorKey, categoricalPredictor);
+					categoricalPredictors.put(binaryFeature, categoricalPredictor);
 
 					regressionTable.addCategoricalPredictors(categoricalPredictor);
 				} else
@@ -236,16 +274,14 @@ public class RegressionModelUtil {
 			if(feature instanceof BooleanFeature){
 				BooleanFeature booleanFeature = (BooleanFeature)feature;
 
-				PredictorKey predictorKey = new PredictorKey(booleanFeature.getName(), BooleanFeature.VALUE_TRUE);
-
-				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(predictorKey);
+				CategoricalPredictor categoricalPredictor = categoricalPredictors.get(booleanFeature);
 				if(categoricalPredictor == null){
 					categoricalPredictor = new CategoricalPredictor()
 						.setField(booleanFeature.getName())
 						.setValue(BooleanFeature.VALUE_TRUE)
 						.setCoefficient(coefficient);
 
-					categoricalPredictors.put(predictorKey, categoricalPredictor);
+					categoricalPredictors.put(booleanFeature, categoricalPredictor);
 
 					regressionTable.addCategoricalPredictors(categoricalPredictor);
 				} else
@@ -263,76 +299,62 @@ public class RegressionModelUtil {
 				regressionTable.setIntercept(value);
 			} else
 
-			if(feature instanceof InteractionFeature){
-				InteractionFeature interactionFeature = (InteractionFeature)feature;
+			if(feature instanceof CanonicalInteractionFeature){
+				CanonicalInteractionFeature interactionFeature = (CanonicalInteractionFeature)feature;
 
-				PredictorTerm predictorTerm = new PredictorTerm()
-					.setName(interactionFeature.getName())
-					.setCoefficient(coefficient);
+				PredictorTerm predictorTerm = predictorTerms.get(interactionFeature);
+				if(predictorTerm == null){
+					predictorTerm = new PredictorTerm()
+						.setName(interactionFeature.getName())
+						.setCoefficient(coefficient);
 
-				List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
-				for(Feature inputFeature : inputFeatures){
+					List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
+					for(Feature inputFeature : inputFeatures){
+						ContinuousFeature continuousFeature = inputFeature.toContinuousFeature();
 
-					if(inputFeature instanceof ConstantFeature){
-						ConstantFeature constantFeature = (ConstantFeature)inputFeature;
-
-						Number value = ValueUtil.multiply(mathContext, predictorTerm.requireCoefficient(), constantFeature.getValue());
-
-						predictorTerm.setCoefficient(value);
-					} else
-
-					{
-						inputFeature = inputFeature.toContinuousFeature();
-
-						predictorTerm.addFieldRefs(inputFeature.ref());
+						predictorTerm.addFieldRefs(continuousFeature.ref());
 					}
-				}
 
-				List<FieldRef> fieldRefs = predictorTerm.getFieldRefs();
-				if(fieldRefs.size() == 0){
-					Number value = ValueUtil.add(mathContext, regressionTable.getIntercept(), predictorTerm.requireCoefficient());
+					predictorTerms.put(interactionFeature, predictorTerm);
 
-					regressionTable.setIntercept(value);
-				} else
-
-				if(fieldRefs.size() == 1){
-					FieldRef fieldRef = Iterables.getOnlyElement(fieldRefs);
-
-					NumericPredictor numericPredictor = new NumericPredictor()
-						.setField(fieldRef.requireField())
-						.setCoefficient(predictorTerm.requireCoefficient());
-
-					regressionTable.addNumericPredictors(numericPredictor);
+					regressionTable.addPredictorTerms(predictorTerm);
 				} else
 
 				{
-					regressionTable.addPredictorTerms(predictorTerm);
+					predictorTerm.setCoefficient(ValueUtil.add(mathContext, predictorTerm.requireCoefficient(), coefficient));
 				}
 			} else
 
 			if(feature instanceof PowerFeature){
 				PowerFeature powerFeature = (PowerFeature)feature;
 
-				NumericPredictor numericPredictor = new NumericPredictor()
-					.setField(powerFeature.getName())
-					.setExponent(powerFeature.getPower())
-					.setCoefficient(coefficient);
+				NumericPredictor numericPredictor = numericPredictors.get(powerFeature);
+				if(numericPredictor == null){
+					numericPredictor = new NumericPredictor()
+						.setField(powerFeature.getName())
+						.setExponent(powerFeature.getPower())
+						.setCoefficient(coefficient);
 
-				regressionTable.addNumericPredictors(numericPredictor);
+					numericPredictors.put(powerFeature, numericPredictor);
+
+					regressionTable.addNumericPredictors(numericPredictor);
+				} else
+
+				{
+					numericPredictor.setCoefficient(ValueUtil.add(mathContext, numericPredictor.requireCoefficient(), coefficient));
+				}
 			} else
 
 			{
 				ContinuousFeature continuousFeature = feature.toContinuousFeature();
 
-				PredictorKey predictorKey = new PredictorKey(continuousFeature.getName());
-
-				NumericPredictor numericPredictor = numericPredictors.get(predictorKey);
+				NumericPredictor numericPredictor = numericPredictors.get(continuousFeature);
 				if(numericPredictor == null){
 					numericPredictor = new NumericPredictor()
 						.setField(continuousFeature.getName())
 						.setCoefficient(coefficient);
 
-					numericPredictors.put(predictorKey, numericPredictor);
+					numericPredictors.put(continuousFeature, numericPredictor);
 
 					regressionTable.addNumericPredictors(numericPredictor);
 				} else
@@ -347,42 +369,36 @@ public class RegressionModelUtil {
 	}
 
 	static
-	private class PredictorKey {
+	private class CanonicalInteractionFeature extends InteractionFeature {
 
-		private String name = null;
-
-		private Object value = null;
-
-
-		private PredictorKey(String name){
-			this(name, null);
-		}
-
-		private PredictorKey(String name, Object value){
-			this.name = name;
-			this.value = value;
-		}
-
-		@Override
-		public boolean equals(Object object){
-
-			if(object instanceof PredictorKey){
-				PredictorKey that = (PredictorKey)object;
-
-				return Objects.equals(this.name, that.name) && Objects.equals(this.value, that.value);
-			}
-
-			return false;
+		public CanonicalInteractionFeature(PMMLEncoder encoder, String name, DataType dataType, List<? extends Feature> inputFeatures){
+			super(encoder, name, dataType, inputFeatures);
 		}
 
 		@Override
 		public int hashCode(){
 			int result = 0;
 
-			result = (31 * result) + Objects.hashCode(this.name);
-			result = (31 * result) + Objects.hashCode(this.value);
+			result = (31 * result) + Objects.hashCode(this.getDataType());
+			result = (31 * result) + Objects.hashCode(this.getCanonicalInputFeatures());
 
 			return result;
+		}
+
+		@Override
+		public boolean equals(Object object){
+
+			if(object instanceof CanonicalInteractionFeature){
+				CanonicalInteractionFeature that = (CanonicalInteractionFeature)object;
+
+				return (this.getDataType() == that.getDataType()) && Objects.equals(this.getCanonicalInputFeatures(), that.getCanonicalInputFeatures());
+			}
+
+			return false;
+		}
+
+		private Multiset<? extends Feature> getCanonicalInputFeatures(){
+			return HashMultiset.create(getInputFeatures());
 		}
 	}
 }

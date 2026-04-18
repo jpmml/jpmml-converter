@@ -63,6 +63,12 @@ public class ModelTest {
 				features.add(createConstantFeature(encoder, number));
 			} else
 
+			if(object instanceof Feature){
+				Feature feature = (Feature)object;
+
+				features.add(feature);
+			} else
+
 			{
 				throw new IllegalArgumentException();
 			}
