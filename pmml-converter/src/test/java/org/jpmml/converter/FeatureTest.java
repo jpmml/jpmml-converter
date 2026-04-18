@@ -135,7 +135,7 @@ public class FeatureTest {
 
 		InteractionFeature interactionOneThree = new InteractionFeature(encoder, "x=1:x=3", DataType.DOUBLE, Arrays.asList(binaryOne, binaryThree));
 
-		assertEquals(Arrays.asList(binaryOne, binaryThree), interactionOneThree.getInputFeatures());
+		assertEquals(Arrays.asList(binaryOne, binaryThree), interactionOneThree.getFlattenedFeatures());
 
 		ContinuousFeature continuousOneThree = interactionOneThree.toContinuousFeature();
 
@@ -155,7 +155,7 @@ public class FeatureTest {
 
 		InteractionFeature interactionTwoOneThree = new InteractionFeature(encoder, "x=2:x=1:x=3", DataType.DOUBLE, Arrays.asList(binaryTwo, interactionOneThree));
 
-		assertEquals(Arrays.asList(binaryTwo, binaryOne, binaryThree), interactionTwoOneThree.getInputFeatures());
+		assertEquals(Arrays.asList(binaryTwo, binaryOne, binaryThree), interactionTwoOneThree.getFlattenedFeatures());
 
 		ContinuousFeature continuousTwoOneThree = interactionTwoOneThree.toContinuousFeature();
 

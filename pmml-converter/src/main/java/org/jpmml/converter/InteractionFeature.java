@@ -84,7 +84,7 @@ public class InteractionFeature extends Feature {
 			.add("features", getFeatures());
 	}
 
-	public List<? extends Feature> getInputFeatures(){
+	public List<? extends Feature> getFlattenedFeatures(){
 		List<Feature> result = new ArrayList<>();
 
 		List<? extends Feature> features = getFeatures();
@@ -93,7 +93,7 @@ public class InteractionFeature extends Feature {
 			if(feature instanceof InteractionFeature){
 				InteractionFeature interactionFeature = (InteractionFeature)feature;
 
-				result.addAll(interactionFeature.getInputFeatures());
+				result.addAll(interactionFeature.getFlattenedFeatures());
 			} else
 
 			{

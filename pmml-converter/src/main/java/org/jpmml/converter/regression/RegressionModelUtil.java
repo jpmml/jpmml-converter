@@ -20,6 +20,7 @@ package org.jpmml.converter.regression;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -211,23 +212,21 @@ public class RegressionModelUtil {
 			if(feature instanceof InteractionFeature){
 				InteractionFeature interactionFeature = (InteractionFeature)feature;
 
-				List<Feature> wrappedInputFeatures = new ArrayList<>();
+				List<Feature> flattenedFeatures = new ArrayList<>(interactionFeature.getFlattenedFeatures());
 
-				List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
-				for(Feature inputFeature : inputFeatures){
+				for(Iterator<Feature> it = flattenedFeatures.iterator(); it.hasNext(); ){
+					Feature flattenedFeature = it.next();
 
-					if(inputFeature instanceof ConstantFeature){
-						ConstantFeature constantFeature = (ConstantFeature)inputFeature;
+					if(flattenedFeature instanceof ConstantFeature){
+						ConstantFeature constantFeature = (ConstantFeature)flattenedFeature;
 
 						coefficient = ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue());
-					} else
 
-					{
-						wrappedInputFeatures.add(inputFeature);
+						it.remove();
 					}
 				}
 
-				if(wrappedInputFeatures.size() == 0){
+				if(flattenedFeatures.size() == 0){
 					Number value = ValueUtil.add(mathContext, regressionTable.requireIntercept(), coefficient);
 
 					regressionTable.setIntercept(value);
@@ -235,12 +234,12 @@ public class RegressionModelUtil {
 					continue;
 				} else
 
-				if(wrappedInputFeatures.size() == 1){
-					feature = Iterables.getOnlyElement(wrappedInputFeatures);
+				if(flattenedFeatures.size() == 1){
+					feature = Iterables.getOnlyElement(flattenedFeatures);
 				} else
 
 				{
-					feature = new CanonicalInteractionFeature(interactionFeature.getEncoder(), interactionFeature.getName(), interactionFeature.getDataType(), wrappedInputFeatures);
+					feature = new CanonicalInteractionFeature(interactionFeature.getEncoder(), interactionFeature.getName(), interactionFeature.getDataType(), flattenedFeatures);
 				}
 			} // End if
 
@@ -308,9 +307,9 @@ public class RegressionModelUtil {
 						.setName(interactionFeature.getName())
 						.setCoefficient(coefficient);
 
-					List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
-					for(Feature inputFeature : inputFeatures){
-						ContinuousFeature continuousFeature = inputFeature.toContinuousFeature();
+					List<? extends Feature> flattenedFeatures = interactionFeature.getFlattenedFeatures();
+					for(Feature flattenedFeature : flattenedFeatures){
+						ContinuousFeature continuousFeature = flattenedFeature.toContinuousFeature();
 
 						predictorTerm.addFieldRefs(continuousFeature.ref());
 					}
@@ -380,7 +379,7 @@ public class RegressionModelUtil {
 			int result = 0;
 
 			result = (31 * result) + Objects.hashCode(this.getDataType());
-			result = (31 * result) + Objects.hashCode(this.getCanonicalInputFeatures());
+			result = (31 * result) + Objects.hashCode(this.getCanonicalFlattenedFeatures());
 
 			return result;
 		}
@@ -391,14 +390,14 @@ public class RegressionModelUtil {
 			if(object instanceof CanonicalInteractionFeature){
 				CanonicalInteractionFeature that = (CanonicalInteractionFeature)object;
 
-				return (this.getDataType() == that.getDataType()) && Objects.equals(this.getCanonicalInputFeatures(), that.getCanonicalInputFeatures());
+				return (this.getDataType() == that.getDataType()) && Objects.equals(this.getCanonicalFlattenedFeatures(), that.getCanonicalFlattenedFeatures());
 			}
 
 			return false;
 		}
 
-		private Multiset<? extends Feature> getCanonicalInputFeatures(){
-			return HashMultiset.create(getInputFeatures());
+		private Multiset<? extends Feature> getCanonicalFlattenedFeatures(){
+			return HashMultiset.create(getFlattenedFeatures());
 		}
 	}
 }

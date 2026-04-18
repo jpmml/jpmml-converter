@@ -186,9 +186,9 @@ public class GeneralRegressionModelUtil {
 
 			Number result = 1d;
 
-			List<? extends Feature> inputFeatures = interactionFeature.getInputFeatures();
-			for(Feature inputFeature : inputFeatures){
-				Number value = createPPCells(mathContext, inputFeature, parameter, ppMatrix, covariateFieldNames, factorFieldNames);
+			List<? extends Feature> flattenedFeatures = interactionFeature.getFlattenedFeatures();
+			for(Feature flattenedFeature : flattenedFeatures){
+				Number value = createPPCells(mathContext, flattenedFeature, parameter, ppMatrix, covariateFieldNames, factorFieldNames);
 
 				result = ValueUtil.multiply(mathContext, result, value);
 			}
