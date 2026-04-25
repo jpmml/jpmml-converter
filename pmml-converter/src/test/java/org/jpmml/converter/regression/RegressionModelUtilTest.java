@@ -41,16 +41,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RegressionModelUtilTest extends ModelTest {
 
 	@Test
-	public void createRegressionTable(){
-		ModelEncoder encoder = new ModelEncoder();
-
+	public void encodeEmpty(){
 		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.emptyList(), Collections.emptyList(), null);
 
 		assertState(regressionTable, 0d, false, false, false);
+	}
+
+	@Test
+	public void encodeBooleanFeature(){
+		ModelEncoder encoder = new ModelEncoder();
 
 		Feature feature = new BooleanFeature(encoder, "x");
 
-		regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), null);
+		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), null);
 
 		assertState(regressionTable, 0d, false, true, false);
 
@@ -58,16 +61,26 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		assertEquals("x", categoricalPredictor.requireField());
 		assertEquals(1d + 1d, categoricalPredictor.requireCoefficient());
+	}
 
-		feature = createConstantFeature(encoder, 3d);
+	@Test
+	public void encodeConstantFeature(){
+		ModelEncoder encoder = new ModelEncoder();
 
-		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
+		Feature feature = createConstantFeature(encoder, 3d);
+
+		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
 		assertState(regressionTable, 1d + (2d * 3d), false, false, false);
+	}
 
-		feature = createInteractionFeature(encoder, 3d, "x", 7d);
+	@Test
+	public void encodeInteractionFeature(){
+		ModelEncoder encoder = new ModelEncoder();
 
-		regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
+		Feature feature = createInteractionFeature(encoder, 3d, "x", 7d);
+
+		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Collections.singletonList(feature), Collections.singletonList(2d), 1d);
 
 		assertState(regressionTable, 1d, true, false, false);
 
@@ -105,14 +118,19 @@ public class RegressionModelUtilTest extends ModelTest {
 
 		assertEquals("x1", (fieldRefs.get(0)).requireField());
 		assertEquals("x2", (fieldRefs.get(1)).requireField());
+	}
 
-		feature = new ContinuousFeature(encoder, "x", DataType.DOUBLE);
+	@Test
+	public void encodeWildcardFeature(){
+		ModelEncoder encoder = new ModelEncoder();
 
-		regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), 1d);
+		Feature feature = new ContinuousFeature(encoder, "x", DataType.DOUBLE);
+
+		RegressionTable regressionTable = RegressionModelUtil.createRegressionTable(Arrays.asList(feature, feature), Arrays.asList(1d, 1d), 1d);
 
 		assertState(regressionTable, 1d, true, false, false);
 
-		numericPredictor = Iterables.getOnlyElement(regressionTable.getNumericPredictors());
+		NumericPredictor numericPredictor = Iterables.getOnlyElement(regressionTable.getNumericPredictors());
 
 		assertEquals("x", numericPredictor.requireField());
 		assertEquals(1d + 1d, numericPredictor.requireCoefficient());

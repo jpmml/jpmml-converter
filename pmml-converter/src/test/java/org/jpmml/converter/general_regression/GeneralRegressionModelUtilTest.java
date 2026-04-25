@@ -24,13 +24,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.general_regression.GeneralRegressionModel;
 import org.dmg.pmml.general_regression.PCell;
 import org.dmg.pmml.general_regression.PPCell;
 import org.dmg.pmml.general_regression.ParameterCell;
+import org.jpmml.converter.BinaryFeature;
+import org.jpmml.converter.BooleanFeature;
+import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.ModelEncoder;
 import org.jpmml.converter.ModelTest;
+import org.jpmml.converter.PowerFeature;
+import org.jpmml.converter.ProductFeature;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,14 +44,60 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class GeneralRegressionModelUtilTest extends ModelTest {
 
 	@Test
-	public void encodeRegressionTable(){
-		ModelEncoder encoder = new ModelEncoder();
-
+	public void encodeEmpty(){
 		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
 
 		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.emptyList(), Collections.emptyList(), null, null);
 
 		assertState(generalRegressionModel, false, false, false);
+	}
+
+	@Test
+	public void encodeBinaryFeature(){
+		ModelEncoder encoder = new ModelEncoder();
+
+		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
+
+		Feature colorRed = new BinaryFeature(encoder, "color", DataType.STRING, "red");
+
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Arrays.asList(colorRed, colorRed), Arrays.asList(2d, 3d), null, null);
+
+		assertState(generalRegressionModel, true, true, true);
+
+		assertParameter(generalRegressionModel, "p0", 2d + 3d, Collections.singletonList("color"));
+
+		generalRegressionModel = new GeneralRegressionModel();
+
+		Feature colorBlue = new BinaryFeature(encoder, "color", DataType.STRING, "blue");
+
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Arrays.asList(colorRed, colorBlue), Arrays.asList(2d, 3d), null, null);
+
+		assertState(generalRegressionModel, true, true, true);
+
+		assertParameter(generalRegressionModel, "p0", 2d, Collections.singletonList("color"));
+		assertParameter(generalRegressionModel, "p1", 3d, Collections.singletonList("color"));
+	}
+
+	@Test
+	public void encodeBooleanFeature(){
+		ModelEncoder encoder = new ModelEncoder();
+
+		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
+
+		Feature feature = new BooleanFeature(encoder, "x");
+
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Arrays.asList(feature, feature), Arrays.asList(1d, 1d), null, null);
+
+		assertState(generalRegressionModel, true, true, true);
+
+		assertParameter(generalRegressionModel, "p0", 1d + 1d, Collections.singletonList("x"));
+	}
+
+	@Test
+	public void encodeConstantFeature(){
+		ModelEncoder encoder = new ModelEncoder();
+
+		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
 
 		Feature feature = createConstantFeature(encoder, 3d);
 
@@ -53,8 +105,22 @@ public class GeneralRegressionModelUtilTest extends ModelTest {
 
 		assertState(generalRegressionModel, true, true, false);
 
-		assertParameter(generalRegressionModel, "p0", 1d, Collections.emptyList());
-		assertParameter(generalRegressionModel, "p1", (2d * 3d), Collections.emptyList());
+		assertParameter(generalRegressionModel, "p0", 1d + (2d * 3d), Collections.emptyList());
+	}
+
+	@Test
+	public void encodeInteractionFeature(){
+		ModelEncoder encoder = new ModelEncoder();
+
+		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
+
+		Feature feature = createInteractionFeature(encoder, 3d, "x", 7d);
+
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Collections.singletonList(feature), Collections.singletonList(2d), null, null);
+
+		assertState(generalRegressionModel, true, true, true);
+
+		assertParameter(generalRegressionModel, "p0", 2d * 3d * 7d, Collections.singletonList("x"));
 
 		generalRegressionModel = new GeneralRegressionModel();
 
@@ -66,6 +132,59 @@ public class GeneralRegressionModelUtilTest extends ModelTest {
 
 		assertParameter(generalRegressionModel, "p0", 1d, Collections.emptyList());
 		assertParameter(generalRegressionModel, "p1", (2d * 5d), Arrays.asList("x1", "x2"));
+	}
+
+	@Test
+	public void encodePowerFeature(){
+		ModelEncoder encoder = new ModelEncoder();
+
+		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
+
+		Feature feature = new PowerFeature(encoder, "x", DataType.DOUBLE, 2);
+
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Arrays.asList(feature, feature), Arrays.asList(1d, 4d), null, null);
+
+		assertState(generalRegressionModel, true, true, true);
+
+		assertParameter(generalRegressionModel, "p0", 1d + 4d, Collections.singletonList("x"));
+	}
+
+	@Test
+	public void encodeProductFeature(){
+		ModelEncoder encoder = new ModelEncoder();
+
+		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
+
+		Feature childFeature = new ContinuousFeature(encoder, "x", DataType.DOUBLE);
+
+		Feature feature = new ProductFeature(encoder, childFeature, 5d){
+
+			@Override
+			public ContinuousFeature toContinuousFeature(){
+				throw new UnsupportedOperationException();
+			}
+		};
+
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Arrays.asList(feature), Arrays.asList(2d), null, null);
+
+		assertState(generalRegressionModel, true, true, true);
+
+		assertParameter(generalRegressionModel, "p0", 2d * 5d, Collections.singletonList("x"));
+	}
+
+	@Test
+	public void encodeWildcardFeature(){
+		ModelEncoder encoder = new ModelEncoder();
+
+		GeneralRegressionModel generalRegressionModel = new GeneralRegressionModel();
+
+		Feature feature = new ContinuousFeature(encoder, "x", DataType.DOUBLE);
+
+		generalRegressionModel = GeneralRegressionModelUtil.encodeRegressionTable(generalRegressionModel, Arrays.asList(feature, feature), Arrays.asList(2d, 3d), null, null);
+
+		assertState(generalRegressionModel, true, true, true);
+
+		assertParameter(generalRegressionModel, "p0", 2d + 3d, Collections.singletonList("x"));
 	}
 
 	static

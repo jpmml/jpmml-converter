@@ -243,12 +243,12 @@ public class RegressionModelUtil {
 				}
 			} // End if
 
-			if(feature instanceof ProductFeature){
+			while(feature instanceof ProductFeature){
 				ProductFeature productFeature = (ProductFeature)feature;
 
 				feature = productFeature.getFeature();
 				coefficient = ValueUtil.multiply(mathContext, coefficient, productFeature.getFactor());
-			} // End if
+			}
 
 			if(feature instanceof BinaryFeature){
 				BinaryFeature binaryFeature = (BinaryFeature)feature;

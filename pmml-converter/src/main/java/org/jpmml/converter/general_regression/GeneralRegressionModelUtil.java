@@ -18,8 +18,10 @@
  */
 package org.jpmml.converter.general_regression;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.dmg.pmml.MathContext;
@@ -82,6 +84,8 @@ public class GeneralRegressionModelUtil {
 			generalRegressionModel.setParamMatrix(paramMatrix);
 		}
 
+		Map<Feature, PCell> pCells = new LinkedHashMap<>();
+
 		int p = (parameterList.getParameters()).size();
 
 		if(intercept != null && !ValueUtil.isZeroLike(intercept)){
@@ -96,6 +100,8 @@ public class GeneralRegressionModelUtil {
 				.setTargetCategory(targetCategory);
 
 			paramMatrix.addPCells(pCell);
+
+			pCells.put(null, pCell);
 		}
 
 		Set<String> covariateFieldNames = new LinkedHashSet<>();
@@ -107,30 +113,55 @@ public class GeneralRegressionModelUtil {
 
 			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
-			} // End if
+			}
 
-			if(feature instanceof ProductFeature){
+			while(feature instanceof ProductFeature){
 				ProductFeature productFeature = (ProductFeature)feature;
 
 				feature = productFeature.getFeature();
 				coefficient = ValueUtil.multiply(mathContext, coefficient, productFeature.getFactor());
 			}
 
-			Parameter parameter = new Parameter("p" + String.valueOf(p));
+			if(feature instanceof ConstantFeature){
+				ConstantFeature constantFeature = (ConstantFeature)feature;
 
-			parameterList.addParameters(parameter);
+				feature = null;
+				coefficient = ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue());
+			} // End if
 
-			p++;
+			PCell pCell = pCells.get(feature);
+			if(pCell == null){
+				Parameter parameter = new Parameter("p" + String.valueOf(p));
 
-			Number multiplier = createPPCells(mathContext, feature, parameter, ppMatrix, covariateFieldNames, factorFieldNames);
-			if(!ValueUtil.isOne(multiplier)){
-				coefficient = ValueUtil.multiply(mathContext, coefficient, multiplier);
+				if(feature == null){
+					parameter.setLabel("(intercept)");
+				}
+
+				parameterList.addParameters(parameter);
+
+				p++;
+
+				Number multiplier = null;
+
+				if(feature != null){
+					multiplier = createPPCells(mathContext, feature, parameter, ppMatrix, covariateFieldNames, factorFieldNames);
+				} // End if
+
+				if(multiplier != null && !ValueUtil.isOne(multiplier)){
+					coefficient = ValueUtil.multiply(mathContext, coefficient, multiplier);
+				}
+
+				pCell = new PCell(parameter.requireName(), coefficient)
+					.setTargetCategory(targetCategory);
+
+				paramMatrix.addPCells(pCell);
+
+				pCells.put(feature, pCell);
+			} else
+
+			{
+				pCell.setBeta(ValueUtil.add(mathContext, pCell.requireBeta(), coefficient));
 			}
-
-			PCell pCell = new PCell(parameter.requireName(), coefficient)
-				.setTargetCategory(targetCategory);
-
-			paramMatrix.addPCells(pCell);
 		}
 
 		if(!covariateFieldNames.isEmpty()){
@@ -190,7 +221,9 @@ public class GeneralRegressionModelUtil {
 			for(Feature flattenedFeature : flattenedFeatures){
 				Number value = createPPCells(mathContext, flattenedFeature, parameter, ppMatrix, covariateFieldNames, factorFieldNames);
 
-				result = ValueUtil.multiply(mathContext, result, value);
+				if(value != null){
+					result = ValueUtil.multiply(mathContext, result, value);
+				}
 			}
 
 			return result;
@@ -217,7 +250,7 @@ public class GeneralRegressionModelUtil {
 
 		fieldNames.add(ppCell.requireField());
 
-		return 1d;
+		return null;
 	}
 
 	static
