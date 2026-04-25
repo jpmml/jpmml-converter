@@ -20,16 +20,10 @@ package org.jpmml.converter.regression;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Multiset;
-import org.dmg.pmml.DataType;
 import org.dmg.pmml.MathContext;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.regression.CategoricalPredictor;
@@ -47,7 +41,6 @@ import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
 import org.jpmml.converter.ModelUtil;
 import org.jpmml.converter.OrdinalLabel;
-import org.jpmml.converter.PMMLEncoder;
 import org.jpmml.converter.PowerFeature;
 import org.jpmml.converter.ProductFeature;
 import org.jpmml.converter.Schema;
@@ -212,34 +205,20 @@ public class RegressionModelUtil {
 			if(feature instanceof InteractionFeature){
 				InteractionFeature interactionFeature = (InteractionFeature)feature;
 
-				List<Feature> flattenedFeatures = new ArrayList<>(interactionFeature.getFlattenedFeatures());
+				InteractionFeature.Canonicalization canonicalization = interactionFeature.canonicalize(mathContext);
 
-				for(Iterator<Feature> it = flattenedFeatures.iterator(); it.hasNext(); ){
-					Feature flattenedFeature = it.next();
-
-					if(flattenedFeature instanceof ConstantFeature){
-						ConstantFeature constantFeature = (ConstantFeature)flattenedFeature;
-
-						coefficient = ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue());
-
-						it.remove();
-					}
+				Number factor = canonicalization.getFactor();
+				if(factor != null){
+					coefficient = ValueUtil.multiply(mathContext, coefficient, factor);
 				}
 
-				if(flattenedFeatures.size() == 0){
-					Number value = ValueUtil.add(mathContext, regressionTable.requireIntercept(), coefficient);
+				feature = canonicalization.getFeature();
+				if(feature == null){
+					intercept = ValueUtil.add(mathContext, regressionTable.requireIntercept(), coefficient);
 
-					regressionTable.setIntercept(value);
+					regressionTable.setIntercept(intercept);
 
 					continue;
-				} else
-
-				if(flattenedFeatures.size() == 1){
-					feature = Iterables.getOnlyElement(flattenedFeatures);
-				} else
-
-				{
-					feature = new CanonicalInteractionFeature(interactionFeature.getEncoder(), interactionFeature.getName(), interactionFeature.getDataType(), flattenedFeatures);
 				}
 			} // End if
 
@@ -293,13 +272,13 @@ public class RegressionModelUtil {
 			if(feature instanceof ConstantFeature){
 				ConstantFeature constantFeature = (ConstantFeature)feature;
 
-				Number value = ValueUtil.add(mathContext, regressionTable.requireIntercept(), ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue()));
+				intercept = ValueUtil.add(mathContext, regressionTable.requireIntercept(), ValueUtil.multiply(mathContext, coefficient, constantFeature.getValue()));
 
-				regressionTable.setIntercept(value);
+				regressionTable.setIntercept(intercept);
 			} else
 
-			if(feature instanceof CanonicalInteractionFeature){
-				CanonicalInteractionFeature interactionFeature = (CanonicalInteractionFeature)feature;
+			if(feature instanceof InteractionFeature){
+				InteractionFeature interactionFeature = (InteractionFeature)feature;
 
 				PredictorTerm predictorTerm = predictorTerms.get(interactionFeature);
 				if(predictorTerm == null){
@@ -365,39 +344,5 @@ public class RegressionModelUtil {
 		}
 
 		return regressionTable;
-	}
-
-	static
-	private class CanonicalInteractionFeature extends InteractionFeature {
-
-		public CanonicalInteractionFeature(PMMLEncoder encoder, String name, DataType dataType, List<? extends Feature> inputFeatures){
-			super(encoder, name, dataType, inputFeatures);
-		}
-
-		@Override
-		public int hashCode(){
-			int result = 0;
-
-			result = (31 * result) + Objects.hashCode(this.getDataType());
-			result = (31 * result) + Objects.hashCode(this.getCanonicalFlattenedFeatures());
-
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object object){
-
-			if(object instanceof CanonicalInteractionFeature){
-				CanonicalInteractionFeature that = (CanonicalInteractionFeature)object;
-
-				return (this.getDataType() == that.getDataType()) && Objects.equals(this.getCanonicalFlattenedFeatures(), that.getCanonicalFlattenedFeatures());
-			}
-
-			return false;
-		}
-
-		private Multiset<? extends Feature> getCanonicalFlattenedFeatures(){
-			return HashMultiset.create(getFlattenedFeatures());
-		}
 	}
 }

@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +30,7 @@ import com.google.common.collect.Iterables;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.Field;
+import org.dmg.pmml.MathContext;
 import org.dmg.pmml.PMMLFunctions;
 import org.jpmml.model.ToStringHelper;
 
@@ -156,6 +158,48 @@ public class InteractionFeature extends Feature {
 		}
 	}
 
+	public Canonicalization canonicalize(MathContext mathContext){
+		PMMLEncoder encoder = getEncoder();
+		String name = getName();
+		DataType dataType = getDataType();
+		Number factor = null;
+		List<Feature> flattenedFeatures = new ArrayList<>(getFlattenedFeatures());
+
+		for(Iterator<? extends Feature> it = flattenedFeatures.iterator(); it.hasNext(); ){
+			Feature flattenedFeature = it.next();
+
+			if(flattenedFeature instanceof ConstantFeature){
+				ConstantFeature constantFeature = (ConstantFeature)flattenedFeature;
+
+				if(factor == null){
+					factor = constantFeature.getValue();
+				} else
+
+				{
+					factor = ValueUtil.multiply(mathContext, factor, constantFeature.getValue());
+				}
+
+				it.remove();
+			}
+		}
+
+		Feature feature;
+
+		if(flattenedFeatures.size() == 0){
+			feature = null;
+		} else
+
+		if(flattenedFeatures.size() == 1){
+			feature = Iterables.getOnlyElement(flattenedFeatures);
+		} else
+
+		{
+			feature = new CanonicalInteractionFeature(encoder, name, dataType, flattenedFeatures);
+		}
+
+		return new Canonicalization(factor, feature);
+	}
+
 	public List<? extends Feature> getFlattenedFeatures(){
 		List<Feature> result = new ArrayList<>();
 
@@ -188,5 +232,35 @@ public class InteractionFeature extends Feature {
 		}
 
 		this.features = features;
+	}
+
+	static
+	public class Canonicalization {
+
+		private Number factor = null;
+
+		private Feature feature = null;
+
+
+		Canonicalization(Number factor, Feature feature){
+			setFactor(factor);
+			setFeature(feature);
+		}
+
+		public Number getFactor(){
+			return this.factor;
+		}
+
+		private void setFactor(Number factor){
+			this.factor = factor;
+		}
+
+		public Feature getFeature(){
+			return this.feature;
+		}
+
+		private void setFeature(Feature feature){
+			this.feature = feature;
+		}
 	}
 }

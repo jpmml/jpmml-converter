@@ -113,6 +113,19 @@ public class GeneralRegressionModelUtil {
 
 			if(coefficient == null || ValueUtil.isZeroLike(coefficient)){
 				continue;
+			} // End if
+
+			if(feature instanceof InteractionFeature){
+				InteractionFeature interactionFeature = (InteractionFeature)feature;
+
+				InteractionFeature.Canonicalization canonicalization = interactionFeature.canonicalize(mathContext);
+
+				Number factor = canonicalization.getFactor();
+				if(factor != null){
+					coefficient = ValueUtil.multiply(mathContext, coefficient, factor);
+				}
+
+				feature = canonicalization.getFeature();
 			}
 
 			while(feature instanceof ProductFeature){
