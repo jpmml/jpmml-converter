@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>jpmml-converter</artifactId>
-	<version>1.6-SNAPSHOT</version>
+	<version>1.6.10</version>
 	<packaging>pom</packaging>
 
 	<name>JPMML-Converter</name>
@@ -28,15 +28,11 @@
 		<module>pmml-converter-testing</module>
 	</modules>
 
-	<scm
-		child.scm.connection.inherit.append.path="false"
-		child.scm.developerConnection.inherit.append.path="false"
-		child.scm.url.inherit.append.path="false"
-	>
+	<scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
 		<connection>scm:git:git@github.com:jpmml/jpmml-converter.git</connection>
 		<developerConnection>scm:git:git@github.com:jpmml/jpmml-converter.git</developerConnection>
 		<url>https://github.com/jpmml/jpmml-converter</url>
-		<tag>HEAD</tag>
+		<tag>1.6.10</tag>
 	</scm>
 	<issueManagement>
 		<system>GitHub</system>
@@ -49,7 +45,7 @@
 		<guava.version>33.5.0-jre</guava.version>
 		<jcommander.version>1.82</jcommander.version>
 		<slf4j.version>2.0.17</slf4j.version>
-		<project.build.outputTimestamp>2026-02-03T13:00:40Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2026-04-25T19:46:30Z</project.build.outputTimestamp>
 	</properties>
 
 	<dependencyManagement>
@@ -57,12 +53,12 @@
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-converter</artifactId>
-				<version>1.6-SNAPSHOT</version>
+				<version>1.6.10</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jpmml</groupId>
 				<artifactId>pmml-converter-testing</artifactId>
-				<version>1.6-SNAPSHOT</version>
+				<version>1.6.10</version>
 			</dependency>
 
 			<dependency>
