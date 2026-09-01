@@ -28,8 +28,8 @@ import org.dmg.pmml.HasFieldReference;
 import org.dmg.pmml.HasValue;
 import org.dmg.pmml.HasValueSet;
 import org.dmg.pmml.PMMLObject;
+import org.dmg.pmml.Payload;
 import org.dmg.pmml.Predicate;
-import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.tree.Node;
@@ -183,14 +183,10 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 
 		if(parentNode.hasScore()){
 			throw new UnsupportedElementException(parentNode);
-		} // End if
+		}
 
 		Number parentRecordCount = parentNode.getRecordCount();
 		if(parentRecordCount != null){
-			throw new UnsupportedElementException(parentNode);
-		} // End if
-
-		if(parentNode.hasScoreDistributions()){
 			throw new UnsupportedElementException(parentNode);
 		}
 
@@ -198,12 +194,22 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 			.setScore(score)
 			.setRecordCount(recordCount);
 
-		if(node.hasScoreDistributions()){
-			List<ScoreDistribution> scoreDistributions = node.getScoreDistributions();
+		initPayloads(parentNode, node);
+	}
 
-			List<ScoreDistribution> parentScoreDistributions = parentNode.getScoreDistributions();
+	static
+	protected void initPayloads(Node parentNode, Node node){
 
-			parentScoreDistributions.addAll(scoreDistributions);
+		if(parentNode.hasPayloads()){
+			throw new UnsupportedElementException(parentNode);
+		} // End if
+
+		if(node.hasPayloads()){
+			List<Payload> payloads = node.getPayloads();
+
+			List<Payload> parentPayloads = parentNode.getPayloads();
+
+			parentPayloads.addAll(payloads);
 		}
 	}
 
