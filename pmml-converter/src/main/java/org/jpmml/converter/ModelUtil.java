@@ -105,6 +105,53 @@ public class ModelUtil {
 
 	static
 	public Targets createRescaleTargets(Number slope, Number intercept, ContinuousLabel continuousLabel){
+		Target target = createRescaleTarget(slope, intercept, continuousLabel);
+
+		if(target == null){
+			return null;
+		}
+
+		Targets targets = new Targets()
+			.addTargets(target);
+
+		return targets;
+	}
+
+	static
+	public Targets createRescaleTargets(List<? extends Number> slopes, List<? extends Number> intercepts, Label label){
+		List<ContinuousLabel> continuousLabels = ScalarLabelUtil.toScalarLabels(ContinuousLabel.class, label);
+
+		if(slopes != null && continuousLabels.size() != slopes.size()){
+			throw new IllegalArgumentException();
+		} // End if
+
+		if(intercepts != null && continuousLabels.size() != intercepts.size()){
+			throw new IllegalArgumentException();
+		}
+
+		Targets targets = new Targets();
+
+		for(int i = 0; i < continuousLabels.size(); i++){
+			ContinuousLabel continuousLabel = continuousLabels.get(i);
+
+			Number slope = (slopes != null ? slopes.get(i) : null);
+			Number intercept = (intercepts != null ? intercepts.get(i) : null);
+
+			Target target = createRescaleTarget(slope, intercept, continuousLabel);
+			if(target != null){
+				targets.addTargets(target);
+			}
+		}
+
+		if(!targets.hasTargets()){
+			return null;
+		}
+
+		return targets;
+	}
+
+	static
+	private Target createRescaleTarget(Number slope, Number intercept, ContinuousLabel continuousLabel){
 		Target target = new Target()
 			.setTargetField(continuousLabel.getName());
 
@@ -126,10 +173,7 @@ public class ModelUtil {
 			return null;
 		}
 
-		Targets targets = new Targets()
-			.addTargets(target);
-
-		return targets;
+		return target;
 	}
 
 	static
