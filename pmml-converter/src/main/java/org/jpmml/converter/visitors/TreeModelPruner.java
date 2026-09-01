@@ -85,7 +85,7 @@ public class TreeModelPruner extends AbstractTreeModelTransformer {
 					} else
 
 					if(this.miningFunction == MiningFunction.CLASSIFICATION){
-						initScoreDistribution(node, child);
+						initScoreDistributions(node, child);
 					}
 
 					initDefaultChild(node, child);

@@ -177,7 +177,7 @@ public class AbstractTreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
-	protected void initScoreDistribution(Node parentNode, Node node){
+	protected void initScoreDistributions(Node parentNode, Node node){
 		Object score = node.getScore();
 		Number recordCount = node.getRecordCount();
 
