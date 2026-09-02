@@ -43,6 +43,30 @@ public class Schema {
 		setFeatures(features);
 	}
 
+	public Schema toSegmentSchema(){
+		Label label = getLabel();
+
+		if(label instanceof ScalarLabel){
+			ScalarLabel scalarLabel = (ScalarLabel)label;
+
+			// The sole target field does not need to be named.
+			// Drop the original target field name, so that nested models can fall back to using the default target field name (ie. null).
+			return toAnonymousSchema();
+		} else
+
+		if(label instanceof MultiLabel){
+			MultiLabel multiLabel = (MultiLabel)label;
+
+			// Multiple target fields must all be named.
+			// Carry the original target field names forward to nested models.
+			return this;
+		} else
+
+		{
+			throw new IllegalArgumentException();
+		}
+	}
+
 	public Schema toRelabeledSchema(Label label){
 		ModelEncoder encoder = getEncoder();
 		List<? extends Feature> features = getFeatures();
