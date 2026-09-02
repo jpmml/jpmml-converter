@@ -65,6 +65,12 @@ public class MultiLabel extends Label {
 			.add("labels", getLabels());
 	}
 
+	public int size(){
+		List<? extends Label> labels = getLabels();
+
+		return labels.size();
+	}
+
 	public Label getLabel(int index){
 		List<? extends Label> labels = getLabels();
 
