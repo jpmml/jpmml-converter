@@ -27,7 +27,7 @@ import org.dmg.pmml.ScoreFrequency;
 import org.dmg.pmml.ScoreProbability;
 import org.jpmml.model.PMMLObjectCache;
 
-public class ScoreDistributionManager {
+public class PayloadManager {
 
 	private PMMLObjectCache<ScoreDistribution> cache = new PMMLObjectCache<>();
 
