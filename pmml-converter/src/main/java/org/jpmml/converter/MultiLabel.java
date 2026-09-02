@@ -32,6 +32,16 @@ public class MultiLabel extends Label {
 		setLabels(labels);
 	}
 
+	public MultiLabel expectSize(int size){
+		List<? extends Label> labels = getLabels();
+
+		if(labels.size() != size){
+			throw new InvalidLabelException("Expected a multi-label with " + ExceptionUtil.formatCount(size, "element") + ", got " + labels.size());
+		}
+
+		return this;
+	}
+
 	@Override
 	public int hashCode(){
 		return (31 * super.hashCode()) + Objects.hashCode(getLabels());
