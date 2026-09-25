@@ -45,6 +45,8 @@ public class ModelEncoderBatch extends ArchiveBatch {
 
 	private Map<String, Object> options = new LinkedHashMap<>();
 
+	private Number recordCount = null;
+
 
 	public ModelEncoderBatch(String algorithm, String dataset, Predicate<ResultField> columnFilter, Equivalence<Object> equivalence){
 		super(algorithm, dataset, columnFilter, equivalence);
@@ -127,6 +129,31 @@ public class ModelEncoderBatch extends ArchiveBatch {
 
 	public void setOptions(Map<String, Object> options){
 		this.options = options;
+	}
+
+	public Number getRecordCount(){
+		return this.recordCount;
+	}
+
+	public void setRecordCount(Number recordCount){
+		this.recordCount = recordCount;
+	}
+
+	protected void assertRecordCount(Number recordCount){
+		Number expectedRecordCount = getRecordCount();
+
+		assertTrue(recordCount.doubleValue() == expectedRecordCount.doubleValue(), "Expected " + expectedRecordCount + " records, got " + recordCount);
+	}
+
+	protected void assertTrue(boolean flag){
+		assertTrue(flag, null);
+	}
+
+	protected void assertTrue(boolean flag, String message){
+
+		if(!flag){
+			throw new AssertionError(message);
+		}
 	}
 
 	static
