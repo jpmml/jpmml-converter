@@ -21,10 +21,10 @@ package org.jpmml.converter.visitors;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.dmg.pmml.ComplexScoreDistribution;
 import org.dmg.pmml.False;
-import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
-import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.Score;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
 import org.dmg.pmml.tree.ComplexNode;
@@ -43,25 +43,31 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		Node parent = createBranch(0, null, new SimplePredicate("x", SimplePredicate.Operator.IS_NOT_MISSING, null), firstChild.getId(), firstChild, secondChild);
 
-		prune(parent);
+		Node root = createBranch(null, null, True.INSTANCE, null, parent);
+
+		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+
+		TreeModelPruner pruner = new TreeModelPruner();
+
+		prune(pruner, treeModel);
 
 		assertEquals(Arrays.asList(firstChild, secondChild), parent.getNodes());
 
 		parent.setDefaultChild(secondChild);
 
-		prune(parent);
+		prune(pruner, treeModel);
 
 		assertEquals(Collections.singletonList(secondChild), parent.getNodes());
 
 		secondChild.setPredicate(False.INSTANCE);
 
-		prune(parent);
+		prune(pruner, treeModel);
 
 		assertEquals(Collections.singletonList(secondChild), parent.getNodes());
 
 		parent.setDefaultChild(null);
 
-		prune(parent);
+		prune(pruner, treeModel);
 
 		assertEquals(Collections.emptyList(), parent.getNodes());
 	}
@@ -78,30 +84,79 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		Node parent = createBranch(null, null, parentPredicate, null, child);
 
-		prune(parent);
+		Node root = createBranch(null, null, True.INSTANCE, null, parent);
+
+		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.NONE, root);
+
+		TreeModelPruner pruner = new TreeModelPruner();
+
+		prune(pruner, treeModel);
 
 		assertEquals(Collections.singletonList(child), parent.getNodes());
 		assertEquals(Arrays.asList(firstGrandchild, secondGrandchild), child.getNodes());
 
 		childPredicate.setValue(0);
 
-		prune(parent);
+		prune(pruner, treeModel);
 
 		assertEquals(Arrays.asList(firstGrandchild, secondGrandchild), parent.getNodes());
 	}
 
-	static
-	private void prune(Node node){
-		Node root = new ComplexNode()
-			.setPredicate(True.INSTANCE)
-			.addNodes(node);
+	@Test
+	public void pruneSamePredicate(){
+		SimplePredicate parentPredicate = new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0);
+		SimplePredicate childPredicate = new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0);
 
-		MiningSchema miningSchema = new MiningSchema()
-			.addMiningFields(new MiningField("x"));
+		Node firstGrandchild = createLeaf(null, 1d, new SimplePredicate("y", SimplePredicate.Operator.LESS_OR_EQUAL, 0));
+		Node secondGrandchild = createLeaf(null, 2d, new SimplePredicate("y", SimplePredicate.Operator.GREATER_THAN, 0));
 
-		TreeModel treeModel = new TreeModel(MiningFunction.REGRESSION, miningSchema, root);
+		Node child = new ComplexNode(2d, childPredicate)
+			.addScores(new Score("y1", 2d), new Score("y2", 20d))
+			.addNodes(firstGrandchild, secondGrandchild);
+
+		Node parent = new ComplexNode(1d, parentPredicate)
+			.addScores(new Score("y1", 1d), new Score("y2", 10d))
+			.addNodes(child);
+
+		Node root = createBranch(null, null, True.INSTANCE, null, parent);
+
+		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.NONE, root);
 
 		TreeModelPruner pruner = new TreeModelPruner();
+
+		prune(pruner, treeModel);
+
+		checkBranch(parent, 2d, firstGrandchild, secondGrandchild);
+
+		assertEquals(child.getScores(), parent.getScores());
+
+		firstGrandchild = createLeaf(null, "no", new SimplePredicate("y", SimplePredicate.Operator.LESS_OR_EQUAL, 0));
+		secondGrandchild = createLeaf(null, "yes", new SimplePredicate("y", SimplePredicate.Operator.GREATER_THAN, 0));
+
+		child = new ComplexNode("yes", childPredicate)
+			.setRecordCount(10)
+			.addScoreDistributions(new ComplexScoreDistribution("no", 4), new ComplexScoreDistribution("yes", 6))
+			.addNodes(firstGrandchild, secondGrandchild);
+
+		parent = new ComplexNode("no", parentPredicate)
+			.setRecordCount(10)
+			.addScoreDistributions(new ComplexScoreDistribution("no", 6), new ComplexScoreDistribution("yes", 4))
+			.addNodes(child);
+
+		root = createBranch(null, null, True.INSTANCE, null, parent);
+
+		treeModel = createTreeModel(MiningFunction.CLASSIFICATION, TreeModel.MissingValueStrategy.NONE, root);
+
+		prune(pruner, treeModel);
+
+		checkBranch(parent, "yes", firstGrandchild, secondGrandchild);
+
+		assertEquals(10, parent.getRecordCount());
+		assertEquals(child.getScoreDistributions(), parent.getScoreDistributions());
+	}
+
+	static
+	private void prune(TreeModelPruner pruner, TreeModel treeModel){
 		pruner.applyTo(treeModel);
 	}
 }

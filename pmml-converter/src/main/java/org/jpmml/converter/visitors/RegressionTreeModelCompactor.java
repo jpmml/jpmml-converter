@@ -58,10 +58,10 @@ public class RegressionTreeModelCompactor extends TreeModelCompactor {
 	protected void mergeNode(Node parentNode, Node node){
 		parentNode.setScore(null);
 
-		clearPayloads(parentNode);
+		clearScores(parentNode);
 
 		initScore(parentNode, node);
-		initPayloads(parentNode, node);
+		initScores(parentNode, node);
 		replaceChildWithGrandchildren(parentNode, node);
 	}
 }

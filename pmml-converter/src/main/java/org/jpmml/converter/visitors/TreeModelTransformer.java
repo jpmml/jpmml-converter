@@ -28,8 +28,9 @@ import org.dmg.pmml.HasFieldReference;
 import org.dmg.pmml.HasValue;
 import org.dmg.pmml.HasValueSet;
 import org.dmg.pmml.PMMLObject;
-import org.dmg.pmml.Payload;
 import org.dmg.pmml.Predicate;
+import org.dmg.pmml.Score;
+import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.tree.Node;
@@ -177,49 +178,69 @@ public class TreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
-	protected void initScoreDistributions(Node parentNode, Node node){
-		Object score = node.getScore();
-		Number recordCount = node.getRecordCount();
-
-		if(parentNode.hasScore()){
-			throw new UnsupportedElementException(parentNode);
-		}
-
-		Number parentRecordCount = parentNode.getRecordCount();
-		if(parentRecordCount != null){
-			throw new UnsupportedElementException(parentNode);
-		}
-
-		parentNode
-			.setScore(score)
-			.setRecordCount(recordCount);
-
-		initPayloads(parentNode, node);
-	}
-
-	static
-	protected void initPayloads(Node parentNode, Node node){
+	protected void initScores(Node parentNode, Node node){
 
 		if(parentNode.hasPayloads()){
 			throw new UnsupportedElementException(parentNode);
 		} // End if
 
 		if(node.hasPayloads()){
-			List<Payload> payloads = node.getPayloads();
+			List<Score> scores = node.requireScores();
 
-			List<Payload> parentPayloads = parentNode.getPayloads();
+			List<Score> parentScores = parentNode.getScores();
 
-			parentPayloads.addAll(payloads);
+			parentScores.addAll(scores);
 		}
 	}
 
 	static
-	protected void clearPayloads(Node node){
+	protected void clearScores(Node node){
 
 		if(node.hasPayloads()){
-			List<Payload> payloads = node.getPayloads();
+			List<Score> scores = node.requireScores();
 
-			payloads.clear();
+			scores.clear();
+		}
+	}
+
+	static
+	protected void initScoreDistributions(Node parentNode, Node node){
+		Number recordCount = node.getRecordCount();
+
+		Number parentRecordCount = parentNode.getRecordCount();
+		if(parentRecordCount != null){
+			throw new UnsupportedElementException(parentNode);
+		} // End if
+
+		if(parentNode.hasPayloads()){
+			throw new UnsupportedElementException(parentNode);
+		} // End if
+
+		if(recordCount != null){
+			parentNode.setRecordCount(recordCount);
+		} // End if
+
+		if(node.hasPayloads()){
+			List<ScoreDistribution> scoreDistributions = node.requireScoreDistributions();
+
+			List<ScoreDistribution> parentScoreDistributions = parentNode.getScoreDistributions();
+
+			parentScoreDistributions.addAll(scoreDistributions);
+		}
+	}
+
+	static
+	protected void clearScoreDistributions(Node node){
+		Number recordCount = node.getRecordCount();
+
+		if(recordCount != null){
+			node.setRecordCount(null);
+		} // End if
+
+		if(node.hasPayloads()){
+			List<ScoreDistribution> scoreDistributions = node.requireScoreDistributions();
+
+			scoreDistributions.clear();
 		}
 	}
 

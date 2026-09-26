@@ -79,12 +79,19 @@ public class TreeModelPruner extends TreeModelTransformer {
 						node.setDefaultChild(null);
 					} // End if
 
+					node.setScore(null);
+
 					if(this.miningFunction == MiningFunction.REGRESSION){
+						clearScores(node);
+
 						initScore(node, child);
-						initPayloads(node, child);
+						initScores(node, child);
 					} else
 
 					if(this.miningFunction == MiningFunction.CLASSIFICATION){
+						clearScoreDistributions(node);
+
+						initScore(node, child);
 						initScoreDistributions(node, child);
 					}
 
