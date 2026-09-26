@@ -100,6 +100,7 @@ public class TreeModelCompactor extends TreeModelTransformer {
 
 						switch(splitType){
 							case CONTINUOUS:
+							case CATEGORICAL:
 								break;
 							case BINARY:
 								{
@@ -266,10 +267,6 @@ public class TreeModelCompactor extends TreeModelTransformer {
 
 		String leftFieldName = leftCategories.getFieldName();
 		String rightFieldName = rightCategories.getFieldName();
-
-		if(leftFieldName == null && rightFieldName == null){
-			throw new UnsupportedElementException(left);
-		} // End if
 
 		if(leftFieldName != null && rightFieldName != null && !Objects.equals(leftFieldName, rightFieldName)){
 			throw new IllegalArgumentException("Field names " + leftFieldName + " and " + rightFieldName + " are not the same");

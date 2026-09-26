@@ -21,6 +21,7 @@ package org.jpmml.converter.visitors;
 import java.util.Arrays;
 
 import org.dmg.pmml.CompoundPredicate;
+import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Score;
 import org.dmg.pmml.SimplePredicate;
@@ -205,8 +206,9 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		Predicate secondPredicate = new SimpleSetPredicate("x", SimpleSetPredicate.BooleanOperator.IS_IN, PMMLUtil.createStringArray(Arrays.asList("b", "c")));
 
 		Node firstChild = createLeaf(1, 1d, firstPredicate);
+		Node secondChild = createLeaf(2, 2d, secondPredicate);
 
-		Node root = createRoot(0, 1.5d, 2, firstChild, createLeaf(2, 2d, secondPredicate));
+		Node root = createRoot(0, 1.5d, 2, firstChild, secondChild);
 
 		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
@@ -217,12 +219,38 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		checkRoot(root, 2d, firstChild);
 		checkLeaf(firstChild, 1d);
 
+		firstChild = createLeaf(1, 1d, firstPredicate);
+		secondChild = createLeaf(2, 2d, secondPredicate);
+
+		root = createRoot(0, 1.5d, null, firstChild, secondChild);
+
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
+
+		compact(compactor, treeModel);
+
+		checkTreeModel(treeModel, TreeModel.MissingValueStrategy.NULL_PREDICTION, TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
+		checkRoot(root, 2d, firstChild);
+		checkLeaf(firstChild, 1d);
+
+		firstChild = createLeaf(1, 1d, False.INSTANCE);
+		secondChild = createLeaf(2, 2d, True.INSTANCE);
+
+		root = createRoot(0, 1.5d, null, firstChild, secondChild);
+
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
+
+		compact(compactor, treeModel);
+
+		checkRoot(root, 2d, firstChild);
+		checkLeaf(firstChild, 1d);
+
 		Predicate surrogatePredicate = new CompoundPredicate(CompoundPredicate.BooleanOperator.SURROGATE, null)
 			.addPredicates(secondPredicate, new SimplePredicate("x", SimplePredicate.Operator.IS_MISSING, null));
 
 		firstChild = createLeaf(1, 1d, surrogatePredicate);
+		secondChild = createLeaf(2, 2d, True.INSTANCE);
 
-		root = createRoot(0, 1.5d, 2, firstChild, createLeaf(2, 2d, True.INSTANCE));
+		root = createRoot(0, 1.5d, 2, firstChild, secondChild);
 
 		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
