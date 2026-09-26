@@ -38,7 +38,7 @@ import org.jpmml.model.UnsupportedElementException;
 import org.jpmml.model.visitors.AbstractVisitor;
 
 abstract
-public class AbstractTreeModelTransformer extends AbstractVisitor {
+public class TreeModelTransformer extends AbstractVisitor {
 
 	@Override
 	public void pushParent(PMMLObject object){

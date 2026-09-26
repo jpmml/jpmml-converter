@@ -30,7 +30,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.jpmml.model.ReflectionUtil;
 import org.jpmml.model.UnsupportedAttributeException;
 
-public class TreeModelPruner extends AbstractTreeModelTransformer {
+public class TreeModelPruner extends TreeModelTransformer {
 
 	private MiningFunction miningFunction = null;
 
