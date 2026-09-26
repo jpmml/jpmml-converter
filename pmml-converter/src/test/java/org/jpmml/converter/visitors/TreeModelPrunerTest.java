@@ -27,34 +27,21 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
-import org.dmg.pmml.tree.BranchNode;
 import org.dmg.pmml.tree.ComplexNode;
-import org.dmg.pmml.tree.LeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TreeModelPrunerTest {
+public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 	@Test
 	public void pruneFalse(){
-		Node parent = new BranchNode()
-			.setId(0)
-			.setPredicate(new SimplePredicate("x", SimplePredicate.Operator.IS_NOT_MISSING, null));
+		Node firstChild = createLeaf(1, null, False.INSTANCE);
+		Node secondChild = createLeaf(2, null, True.INSTANCE);
 
-		Node firstChild = new LeafNode()
-			.setId(1)
-			.setPredicate(False.INSTANCE);
-
-		Node secondChild = new LeafNode()
-			.setId(2)
-			.setPredicate(True.INSTANCE);
-
-		parent
-			.setDefaultChild(firstChild.getId())
-			.addNodes(firstChild, secondChild);
+		Node parent = createBranch(0, null, new SimplePredicate("x", SimplePredicate.Operator.IS_NOT_MISSING, null), firstChild.getId(), firstChild, secondChild);
 
 		prune(parent);
 
@@ -82,24 +69,14 @@ public class TreeModelPrunerTest {
 	@Test
 	public void pruneNoOp(){
 		SimplePredicate parentPredicate = new SimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 0);
-
-		Node parent = new BranchNode()
-			.setPredicate(parentPredicate);
-
 		SimplePredicate childPredicate = new SimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, 1);
 
-		Node child = new BranchNode()
-			.setPredicate(childPredicate);
+		Node firstGrandchild = createLeaf(null, null, new SimplePredicate("x", SimplePredicate.Operator.EQUAL, 1));
+		Node secondGrandchild = createLeaf(null, null, new SimplePredicate("x", SimplePredicate.Operator.EQUAL, 2));
 
-		parent.addNodes(child);
+		Node child = createBranch(null, null, childPredicate, null, firstGrandchild, secondGrandchild);
 
-		Node firstGrandchild = new LeafNode()
-			.setPredicate(new SimplePredicate("x", SimplePredicate.Operator.EQUAL, 1));
-
-		Node secondGrandchild = new LeafNode()
-			.setPredicate(new SimplePredicate("x", SimplePredicate.Operator.EQUAL, 2));
-
-		child.addNodes(firstGrandchild, secondGrandchild);
+		Node parent = createBranch(null, null, parentPredicate, null, child);
 
 		prune(parent);
 

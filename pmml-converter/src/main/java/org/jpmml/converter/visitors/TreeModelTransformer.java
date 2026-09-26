@@ -214,6 +214,16 @@ public class TreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
+	protected void clearPayloads(Node node){
+
+		if(node.hasPayloads()){
+			List<Payload> payloads = node.getPayloads();
+
+			payloads.clear();
+		}
+	}
+
+	static
 	protected void initDefaultChild(Node parentNode, Node node){
 		Object defaultChild = node.getDefaultChild();
 
