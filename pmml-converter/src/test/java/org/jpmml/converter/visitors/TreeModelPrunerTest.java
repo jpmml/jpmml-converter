@@ -46,7 +46,7 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
-		TreeModelPruner pruner = new TreeModelPruner();
+		TreeModelPruner pruner = new RegressionTreeModelPruner();
 
 		prune(pruner, treeModel);
 
@@ -87,7 +87,7 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
-		TreeModelPruner pruner = new TreeModelPruner();
+		TreeModelPruner pruner = new RegressionTreeModelPruner();
 
 		prune(pruner, treeModel);
 
@@ -121,9 +121,15 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
-		TreeModelPruner pruner = new TreeModelPruner();
+		TreeModelPruner classificationPruner = new ClassificationTreeModelPruner();
 
-		prune(pruner, treeModel);
+		prune(classificationPruner, treeModel);
+
+		assertEquals(Collections.singletonList(child), parent.getNodes());
+
+		TreeModelPruner regressionPruner = new RegressionTreeModelPruner();
+
+		prune(regressionPruner, treeModel);
 
 		checkBranch(parent, 2d, firstGrandchild, secondGrandchild);
 
@@ -133,7 +139,7 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 		secondGrandchild = createLeaf(null, "yes", new SimplePredicate("y", SimplePredicate.Operator.GREATER_THAN, 0));
 
 		child = new ComplexNode("yes", childPredicate)
-			.setRecordCount(10)
+			.setRecordCount(9)
 			.addScoreDistributions(new ComplexScoreDistribution("no", 4), new ComplexScoreDistribution("yes", 6))
 			.addNodes(firstGrandchild, secondGrandchild);
 
@@ -146,12 +152,39 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		treeModel = createClassificationTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
-		prune(pruner, treeModel);
+		prune(regressionPruner, treeModel);
+
+		assertEquals(Collections.singletonList(child), parent.getNodes());
+
+		prune(classificationPruner, treeModel);
+
+		assertEquals(Collections.singletonList(child), parent.getNodes());
+
+		child.setRecordCount(10);
+
+		prune(classificationPruner, treeModel);
 
 		checkBranch(parent, "yes", firstGrandchild, secondGrandchild);
 
 		assertEquals(10, parent.getRecordCount());
 		assertEquals(child.getScoreDistributions(), parent.getScoreDistributions());
+
+		firstGrandchild = createLeaf(3, 1d, new SimplePredicate("y", SimplePredicate.Operator.LESS_OR_EQUAL, 0));
+		secondGrandchild = createLeaf(4, 2d, new SimplePredicate("y", SimplePredicate.Operator.GREATER_THAN, 0));
+
+		child = createBranch(2, 2d, childPredicate, secondGrandchild.getId(), firstGrandchild, secondGrandchild);
+
+		parent = createBranch(1, 1d, parentPredicate, child.getId(), child);
+
+		root = createRoot(null, null, null, parent);
+
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+
+		prune(regressionPruner, treeModel);
+
+		assertEquals(secondGrandchild.getId(), parent.getDefaultChild());
+		assertEquals(2d, parent.getScore());
+		assertEquals(Arrays.asList(firstGrandchild, secondGrandchild), parent.getNodes());
 	}
 
 	static

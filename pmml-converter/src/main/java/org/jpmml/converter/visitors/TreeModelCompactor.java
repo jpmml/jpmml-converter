@@ -122,11 +122,11 @@ public class TreeModelCompactor extends TreeModelTransformer {
 		} else
 
 		{
-			if(!node.hasScore() && !node.hasPayloads()){
+			if(defaultChild != null){
 				throw new UnsupportedElementException(node);
 			} // End if
 
-			if(defaultChild != null){
+			if(!node.hasScore() && !node.hasPayloads()){
 				throw new UnsupportedElementException(node);
 			}
 		}

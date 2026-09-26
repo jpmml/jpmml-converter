@@ -23,17 +23,15 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.False;
-import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.tree.Node;
-import org.dmg.pmml.tree.TreeModel;
 import org.jpmml.model.ReflectionUtil;
-import org.jpmml.model.UnsupportedAttributeException;
 
+abstract
 public class TreeModelPruner extends TreeModelTransformer {
 
-	private MiningFunction miningFunction = null;
-
+	abstract
+	protected void mergeNode(Node parentNode, Node node);
 
 	@Override
 	public void enterNode(Node node){
@@ -61,8 +59,8 @@ public class TreeModelPruner extends TreeModelTransformer {
 	@Override
 	public void exitNode(Node node){
 		Object defaultChild = node.getDefaultChild();
-		Predicate predicate = node.requirePredicate();
 		Number recordCount = node.getRecordCount();
+		Predicate predicate = node.requirePredicate();
 
 		if(node.hasNodes()){
 			List<Node> children = node.getNodes();
@@ -70,58 +68,20 @@ public class TreeModelPruner extends TreeModelTransformer {
 			if(children.size() == 1){
 				Node child = children.get(0);
 
-				Predicate childPredicate = child.requirePredicate();
 				Number childRecordCount = child.getRecordCount();
+				Predicate childPredicate = child.requirePredicate();
 
-				if(ReflectionUtil.equals(predicate, childPredicate) && Objects.equals(recordCount, childRecordCount)){
+				if(Objects.equals(recordCount, childRecordCount) && ReflectionUtil.equals(predicate, childPredicate)){
 
 					if(defaultChild != null){
 						node.setDefaultChild(null);
 					} // End if
 
-					node.setScore(null);
-
-					if(this.miningFunction == MiningFunction.REGRESSION){
-						clearScores(node);
-
-						initScore(node, child);
-						initScores(node, child);
-					} else
-
-					if(this.miningFunction == MiningFunction.CLASSIFICATION){
-						clearScoreDistributions(node);
-
-						initScore(node, child);
-						initScoreDistributions(node, child);
-					}
-
 					initDefaultChild(node, child);
-					replaceChildWithGrandchildren(node, child);
+
+					mergeNode(node, child);
 				}
 			}
 		}
-	}
-
-	@Override
-	public void enterTreeModel(TreeModel treeModel){
-		super.enterTreeModel(treeModel);
-
-		MiningFunction miningFunction = treeModel.requireMiningFunction();
-		switch(miningFunction){
-			case REGRESSION:
-			case CLASSIFICATION:
-				break;
-			default:
-				throw new UnsupportedAttributeException(treeModel, miningFunction);
-		}
-
-		this.miningFunction = miningFunction;
-	}
-
-	@Override
-	public void exitTreeModel(TreeModel treeModel){
-		super.exitTreeModel(treeModel);
-
-		this.miningFunction = null;
 	}
 }
