@@ -21,7 +21,6 @@ package org.jpmml.converter.visitors;
 import java.util.Arrays;
 
 import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Score;
 import org.dmg.pmml.SimplePredicate;
@@ -46,11 +45,12 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		Node firstChild = new CountingLeafNode(1d, new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0))
 			.setId(1)
 			.setRecordCount(10);
+
 		Node secondChild = createLeaf(2, 2d, new SimplePredicate("x", SimplePredicate.Operator.GREATER_THAN, 0));
 
-		Node root = createRoot(1.5d, 2, firstChild, secondChild);
+		Node root = createRoot(0, 1.5d, 2, firstChild, secondChild);
 
-		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		TreeModelCompactor compactor = new RegressionTreeModelCompactor();
 
@@ -60,20 +60,20 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		checkRoot(root, 2d, firstChild);
 		checkLeaf(firstChild, 1d);
 
-		root = createRoot(1.5d, 2, createLeaf(1, 1d, new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0)), createLeaf(2, 2d, new SimplePredicate("x", SimplePredicate.Operator.GREATER_THAN, 1)));
+		root = createRoot(0, 1.5d, 2, createLeaf(1, 1d, new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0)), createLeaf(2, 2d, new SimplePredicate("x", SimplePredicate.Operator.GREATER_THAN, 1)));
 
 		assertEquals(10, firstChild.getRecordCount());
 
-		treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		compactThrows(compactor, treeModel, IllegalArgumentException.class);
 
 		firstChild = createLeaf(1, 1d, new SimplePredicate("x", SimplePredicate.Operator.LESS_THAN, 0));
 		secondChild = createLeaf(2, 2d, new SimplePredicate("x", SimplePredicate.Operator.GREATER_OR_EQUAL, 0));
 
-		root = createRoot(1.5d, 1, firstChild, secondChild);
+		root = createRoot(0, 1.5d, 1, firstChild, secondChild);
 
-		treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		TreeModelCompactor lessThanCompactor = new RegressionTreeModelCompactor(){
 
@@ -91,6 +91,7 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		firstChild = new ComplexNode(null, new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0))
 			.setId(1)
 			.addScores(new Score("y1", 1d), new Score("y2", 10d));
+
 		secondChild = new ComplexNode(null, new SimplePredicate("x", SimplePredicate.Operator.GREATER_THAN, 0))
 			.setId(2)
 			.addScores(new Score("y1", 2d), new Score("y2", 20d));
@@ -101,7 +102,7 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 			.addScores(new Score("y1", 1.5d), new Score("y2", 15d))
 			.addNodes(firstChild, secondChild);
 
-		treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		compact(compactor, treeModel);
 
@@ -122,7 +123,7 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 			.setDefaultChild(2)
 			.addNodes(firstChild, secondChild);
 
-		treeModel = createTreeModel(MiningFunction.CLASSIFICATION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		treeModel = createClassificationTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		compact(compactor, treeModel);
 
@@ -130,9 +131,7 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
 		assertEquals(0, root.getId());
 
-		TreeModelCompactor classificationCompactor = new ClassificationTreeModelCompactor();
-
-		compact(classificationCompactor, treeModel);
+		compact(new ClassificationTreeModelCompactor(), treeModel);
 
 		checkTreeModel(treeModel, TreeModel.MissingValueStrategy.NONE, TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION);
 		checkRoot(root, null, firstChild, firstGrandchild, secondGrandchild);
@@ -150,9 +149,9 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		Node firstChild = createLeaf(1, 1d, new SimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, "a"));
 		Node secondChild = createLeaf(2, 2d, new SimplePredicate("x", SimplePredicate.Operator.EQUAL, "a"));
 
-		Node root = createRoot(1.5d, null, firstChild, secondChild);
+		Node root = createRoot(0, 1.5d, null, firstChild, secondChild);
 
-		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.NONE, root);
+		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
 		TreeModelCompactor compactor = new RegressionTreeModelCompactor();
 
@@ -165,9 +164,9 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		firstChild = createLeaf(null, 1d, new SimplePredicate("x", SimplePredicate.Operator.EQUAL, "a"));
 		secondChild = createLeaf(null, 2d, new SimplePredicate("x", SimplePredicate.Operator.NOT_EQUAL, "a"));
 
-		root = createRoot(1.5d, null, firstChild, secondChild);
+		root = createRoot(0, 1.5d, null, firstChild, secondChild);
 
-		treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.NONE, root);
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
 		compact(compactor, treeModel);
 
@@ -180,13 +179,11 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		Node firstChild = createLeaf(1, 1d, new SimplePredicate("x", SimplePredicate.Operator.IS_NOT_MISSING, null));
 		Node secondChild = createLeaf(2, 2d, new SimplePredicate("x", SimplePredicate.Operator.IS_MISSING, null));
 
-		Node root = createRoot(1.5d, 2, firstChild, secondChild);
+		Node root = createRoot(0, 1.5d, 2, firstChild, secondChild);
 
-		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
-		TreeModelCompactor compactor = new RegressionTreeModelCompactor();
-
-		compact(compactor, treeModel);
+		compact(new RegressionTreeModelCompactor(), treeModel);
 
 		checkRoot(root, 2d, firstChild);
 		checkLeaf(firstChild, 1d);
@@ -199,9 +196,9 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
 		Node firstChild = createLeaf(1, 1d, firstPredicate);
 
-		Node root = createRoot(1.5d, 2, firstChild, createLeaf(2, 2d, secondPredicate));
+		Node root = createRoot(0, 1.5d, 2, firstChild, createLeaf(2, 2d, secondPredicate));
 
-		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		TreeModelCompactor compactor = new RegressionTreeModelCompactor();
 
@@ -215,26 +212,26 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
 		firstChild = createLeaf(1, 1d, surrogatePredicate);
 
-		root = createRoot(1.5d, 2, firstChild, createLeaf(2, 2d, True.INSTANCE));
+		root = createRoot(0, 1.5d, 2, firstChild, createLeaf(2, 2d, True.INSTANCE));
 
-		treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		compact(compactor, treeModel);
 
 		checkRoot(root, 2d, firstChild);
 		checkLeaf(firstChild, 1d);
 
-		root = createRoot(1.5d, 1, createLeaf(1, 1d, surrogatePredicate), createLeaf(2, 2d, True.INSTANCE));
+		root = createRoot(0, 1.5d, 1, createLeaf(1, 1d, surrogatePredicate), createLeaf(2, 2d, True.INSTANCE));
 
-		treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		compactThrows(compactor, treeModel, UnsupportedElementException.class);
 
 		Predicate overlappingPredicate = new SimpleSetPredicate("x", SimpleSetPredicate.BooleanOperator.IS_IN, PMMLUtil.createStringArray(Arrays.asList("a", "b")));
 
-		root = createRoot(1.5d, 2, createLeaf(1, 1d, firstPredicate), createLeaf(2, 2d, overlappingPredicate));
+		root = createRoot(0, 1.5d, 2, createLeaf(1, 1d, firstPredicate), createLeaf(2, 2d, overlappingPredicate));
 
-		treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		compactThrows(compactor, treeModel, IllegalArgumentException.class);
 	}

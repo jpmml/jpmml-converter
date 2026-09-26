@@ -23,7 +23,6 @@ import java.util.Collections;
 
 import org.dmg.pmml.ComplexScoreDistribution;
 import org.dmg.pmml.False;
-import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Score;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
@@ -43,9 +42,9 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		Node parent = createBranch(0, null, new SimplePredicate("x", SimplePredicate.Operator.IS_NOT_MISSING, null), firstChild.getId(), firstChild, secondChild);
 
-		Node root = createBranch(null, null, True.INSTANCE, null, parent);
+		Node root = createRoot(null, null, null, parent);
 
-		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
+		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
 		TreeModelPruner pruner = new TreeModelPruner();
 
@@ -84,9 +83,9 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 
 		Node parent = createBranch(null, null, parentPredicate, null, child);
 
-		Node root = createBranch(null, null, True.INSTANCE, null, parent);
+		Node root = createRoot(null, null, null, parent);
 
-		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.NONE, root);
+		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
 		TreeModelPruner pruner = new TreeModelPruner();
 
@@ -118,9 +117,9 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 			.addScores(new Score("y1", 1d), new Score("y2", 10d))
 			.addNodes(child);
 
-		Node root = createBranch(null, null, True.INSTANCE, null, parent);
+		Node root = createRoot(null, null, null, parent);
 
-		TreeModel treeModel = createTreeModel(MiningFunction.REGRESSION, TreeModel.MissingValueStrategy.NONE, root);
+		TreeModel treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
 		TreeModelPruner pruner = new TreeModelPruner();
 
@@ -143,9 +142,9 @@ public class TreeModelPrunerTest extends TreeModelTransformerTest {
 			.addScoreDistributions(new ComplexScoreDistribution("no", 6), new ComplexScoreDistribution("yes", 4))
 			.addNodes(child);
 
-		root = createBranch(null, null, True.INSTANCE, null, parent);
+		root = createRoot(null, null, null, parent);
 
-		treeModel = createTreeModel(MiningFunction.CLASSIFICATION, TreeModel.MissingValueStrategy.NONE, root);
+		treeModel = createClassificationTreeModel(TreeModel.MissingValueStrategy.NONE, root);
 
 		prune(pruner, treeModel);
 

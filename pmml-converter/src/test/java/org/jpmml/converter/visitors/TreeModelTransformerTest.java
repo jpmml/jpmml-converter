@@ -37,6 +37,16 @@ abstract
 public class TreeModelTransformerTest {
 
 	static
+	protected TreeModel createRegressionTreeModel(TreeModel.MissingValueStrategy missingValueStrategy, Node root){
+		return createTreeModel(MiningFunction.REGRESSION, missingValueStrategy, root);
+	}
+
+	static
+	protected TreeModel createClassificationTreeModel(TreeModel.MissingValueStrategy missingValueStrategy, Node root){
+		return createTreeModel(MiningFunction.CLASSIFICATION, missingValueStrategy, root);
+	}
+
+	static
 	protected TreeModel createTreeModel(MiningFunction miningFunction, TreeModel.MissingValueStrategy missingValueStrategy, Node root){
 		TreeModel treeModel = new TreeModel(miningFunction, new MiningSchema(), root)
 			.setMissingValueStrategy(missingValueStrategy)
@@ -46,8 +56,8 @@ public class TreeModelTransformerTest {
 	}
 
 	static
-	protected Node createRoot(Object score, Object defaultChild, Node... children){
-		return createBranch(0, score, True.INSTANCE, defaultChild, children);
+	protected Node createRoot(Object id, Object score, Object defaultChild, Node... children){
+		return createBranch(id, score, True.INSTANCE, defaultChild, children);
 	}
 
 	static
