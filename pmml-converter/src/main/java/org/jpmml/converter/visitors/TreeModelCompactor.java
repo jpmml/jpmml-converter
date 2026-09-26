@@ -183,8 +183,6 @@ public class TreeModelCompactor extends TreeModelTransformer {
 
 	@Override
 	public void exitTreeModel(TreeModel treeModel){
-		super.exitTreeModel(treeModel);
-
 		TreeModel.MissingValueStrategy missingValueStrategy = treeModel.getMissingValueStrategy();
 		switch(missingValueStrategy){
 			case NONE:
@@ -200,6 +198,8 @@ public class TreeModelCompactor extends TreeModelTransformer {
 		}
 
 		treeModel.setSplitCharacteristic(TreeModel.SplitCharacteristic.MULTI_SPLIT);
+
+		super.exitTreeModel(treeModel);
 	}
 
 	protected SimplePredicate.Operator getSplit(){

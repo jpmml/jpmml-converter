@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.Array;
+import org.dmg.pmml.EmbeddedModel;
 import org.dmg.pmml.HasFieldReference;
 import org.dmg.pmml.HasValue;
 import org.dmg.pmml.HasValueSet;
@@ -40,6 +41,9 @@ import org.jpmml.model.visitors.AbstractVisitor;
 
 abstract
 public class TreeModelTransformer extends AbstractVisitor {
+
+	private TreeModel treeModel = null;
+
 
 	@Override
 	public void pushParent(PMMLObject object){
@@ -76,9 +80,11 @@ public class TreeModelTransformer extends AbstractVisitor {
 	}
 
 	public void enterTreeModel(TreeModel treeModel){
+		this.treeModel = treeModel;
 	}
 
 	public void exitTreeModel(TreeModel treeModel){
+		this.treeModel = null;
 	}
 
 	protected Node getParentNode(){
@@ -128,27 +134,13 @@ public class TreeModelTransformer extends AbstractVisitor {
 	}
 
 	protected TreeModel getParentTreeModel(){
-		Deque<PMMLObject> parents = getParents();
+		TreeModel treeModel = this.treeModel;
 
-		Iterator<PMMLObject> parentIt = parents.iterator();
-
-		while(parentIt.hasNext()){
-			PMMLObject parent = parentIt.next();
-
-			if(parent instanceof Node){
-				continue;
-			} else
-
-			if(parent instanceof TreeModel){
-				return (TreeModel)parent;
-			} else
-
-			{
-				throw new IllegalStateException();
-			}
+		if(treeModel == null){
+			throw new IllegalStateException();
 		}
 
-		throw new IllegalStateException();
+		return treeModel;
 	}
 
 	static
@@ -167,6 +159,36 @@ public class TreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
+	protected void clearDefaultChild(Node node){
+		Object defaultChild = node.getDefaultChild();
+
+		if(defaultChild != null){
+			node.setDefaultChild(null);
+		}
+	}
+
+	static
+	protected void initDefaultChild(Node parentNode, Node node){
+		Object defaultChild = node.getDefaultChild();
+
+		Object parentDefaultChild = parentNode.getDefaultChild();
+		if(parentDefaultChild != null){
+			throw new UnsupportedElementException(parentNode);
+		}
+
+		parentNode.setDefaultChild(defaultChild);
+	}
+
+	static
+	protected void clearScore(Node node){
+		Object score = node.getScore();
+
+		if(score != null){
+			node.setScore(null);
+		}
+	}
+
+	static
 	protected void initScore(Node parentNode, Node node){
 		Object score = node.getScore();
 
@@ -175,6 +197,16 @@ public class TreeModelTransformer extends AbstractVisitor {
 		}
 
 		parentNode.setScore(score);
+	}
+
+	static
+	protected void clearScores(Node node){
+
+		if(node.hasPayloads()){
+			List<Score> scores = node.requireScores();
+
+			scores.clear();
+		}
 	}
 
 	static
@@ -194,12 +226,17 @@ public class TreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
-	protected void clearScores(Node node){
+	protected void clearScoreDistributions(Node node){
+		Number recordCount = node.getRecordCount();
+
+		if(recordCount != null){
+			node.setRecordCount(null);
+		} // End if
 
 		if(node.hasPayloads()){
-			List<Score> scores = node.requireScores();
+			List<ScoreDistribution> scoreDistributions = node.requireScoreDistributions();
 
-			scores.clear();
+			scoreDistributions.clear();
 		}
 	}
 
@@ -230,34 +267,10 @@ public class TreeModelTransformer extends AbstractVisitor {
 	}
 
 	static
-	protected void clearScoreDistributions(Node node){
-		Number recordCount = node.getRecordCount();
-
-		if(recordCount != null){
-			node.setRecordCount(null);
-		} // End if
-
-		if(node.hasPayloads()){
-			List<ScoreDistribution> scoreDistributions = node.requireScoreDistributions();
-
-			scoreDistributions.clear();
-		}
-	}
-
-	static
-	protected void initDefaultChild(Node parentNode, Node node){
-		Object defaultChild = node.getDefaultChild();
-
-		Object parentDefaultChild = parentNode.getDefaultChild();
-		if(parentDefaultChild != null){
-			throw new UnsupportedElementException(parentNode);
-		}
-
-		parentNode.setDefaultChild(defaultChild);
-	}
-
-	static
 	protected void replaceChildWithGrandchildren(Node parentNode, Node node){
+		checkEmbeddedModel(parentNode);
+		checkEmbeddedModel(node);
+
 		List<Node> parentChildren = parentNode.getNodes();
 
 		int index = parentChildren.indexOf(node);
@@ -271,6 +284,15 @@ public class TreeModelTransformer extends AbstractVisitor {
 			List<Node> children = node.getNodes();
 
 			parentChildren.addAll(index, children);
+		}
+	}
+
+	static
+	protected void checkEmbeddedModel(Node node){
+		EmbeddedModel embeddedModel = node.getEmbeddedModel();
+
+		if(embeddedModel != null){
+			throw new UnsupportedElementException(embeddedModel);
 		}
 	}
 

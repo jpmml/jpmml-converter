@@ -58,7 +58,6 @@ public class TreeModelPruner extends TreeModelTransformer {
 
 	@Override
 	public void exitNode(Node node){
-		Object defaultChild = node.getDefaultChild();
 		Number recordCount = node.getRecordCount();
 		Predicate predicate = node.requirePredicate();
 
@@ -72,13 +71,6 @@ public class TreeModelPruner extends TreeModelTransformer {
 				Predicate childPredicate = child.requirePredicate();
 
 				if(Objects.equals(recordCount, childRecordCount) && ReflectionUtil.equals(predicate, childPredicate)){
-
-					if(defaultChild != null){
-						node.setDefaultChild(null);
-					} // End if
-
-					initDefaultChild(node, child);
-
 					mergeNode(node, child);
 				}
 			}

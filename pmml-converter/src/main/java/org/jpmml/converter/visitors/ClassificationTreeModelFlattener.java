@@ -44,12 +44,12 @@ public class ClassificationTreeModelFlattener extends TreeModelFlattener {
 
 	@Override
 	protected void mergeNode(Node parentNode, Node node){
-		parentNode.setScore(null);
-
+		clearScore(parentNode);
 		clearScoreDistributions(parentNode);
 
 		initScore(parentNode, node);
 		initScoreDistributions(parentNode, node);
+
 		replaceChildWithGrandchildren(parentNode, node);
 	}
 }

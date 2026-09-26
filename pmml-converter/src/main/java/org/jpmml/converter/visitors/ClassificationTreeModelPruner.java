@@ -44,12 +44,14 @@ public class ClassificationTreeModelPruner extends TreeModelPruner {
 
 	@Override
 	protected void mergeNode(Node parentNode, Node node){
-		parentNode.setScore(null);
-
+		clearDefaultChild(parentNode);
+		clearScore(parentNode);
 		clearScoreDistributions(parentNode);
 
+		initDefaultChild(parentNode, node);
 		initScore(parentNode, node);
 		initScoreDistributions(parentNode, node);
+
 		replaceChildWithGrandchildren(parentNode, node);
 	}
 }

@@ -44,12 +44,12 @@ public class RegressionTreeModelFlattener extends TreeModelFlattener {
 
 	@Override
 	protected void mergeNode(Node parentNode, Node node){
-		parentNode.setScore(null);
-
+		clearScore(parentNode);
 		clearScores(parentNode);
 
 		initScore(parentNode, node);
 		initScores(parentNode, node);
+
 		replaceChildWithGrandchildren(parentNode, node);
 	}
 }

@@ -49,19 +49,19 @@ public class RegressionTreeModelCompactor extends TreeModelCompactor {
 
 	@Override
 	public void exitTreeModel(TreeModel treeModel){
-		super.exitTreeModel(treeModel);
-
 		treeModel.setNoTrueChildStrategy(TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
+
+		super.exitTreeModel(treeModel);
 	}
 
 	@Override
 	protected void mergeNode(Node parentNode, Node node){
-		parentNode.setScore(null);
-
+		clearScore(parentNode);
 		clearScores(parentNode);
 
 		initScore(parentNode, node);
 		initScores(parentNode, node);
+
 		replaceChildWithGrandchildren(parentNode, node);
 	}
 }
