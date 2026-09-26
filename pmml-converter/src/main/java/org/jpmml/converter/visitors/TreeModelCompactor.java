@@ -34,14 +34,12 @@ import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
+import org.jpmml.model.InvalidElementException;
 import org.jpmml.model.UnsupportedAttributeException;
 import org.jpmml.model.UnsupportedElementException;
 
 abstract
 public class TreeModelCompactor extends TreeModelTransformer {
-
-	private TreeModel.MissingValueStrategy missingValueStrategy = null;
-
 
 	abstract
 	protected void mergeNode(Node parentNode, Node node);
@@ -60,9 +58,19 @@ public class TreeModelCompactor extends TreeModelTransformer {
 			Node firstChild = children.get(0);
 			Node secondChild = children.get(1);
 
-			SplitType splitType = getSplitType(firstChild.requirePredicate(), secondChild.requirePredicate());
+			SplitType splitType;
 
-			switch(this.missingValueStrategy){
+			try {
+				splitType = getSplitType(firstChild.requirePredicate(), secondChild.requirePredicate());
+			} catch(IllegalArgumentException iae){
+				throw new InvalidElementException(node)
+					.initCause(iae);
+			}
+
+			TreeModel treeModel = getParentTreeModel();
+
+			TreeModel.MissingValueStrategy missingValueStrategy = treeModel.getMissingValueStrategy();
+			switch(missingValueStrategy){
 				case DEFAULT_CHILD:
 					{
 						if(defaultChild == null){
@@ -108,7 +116,7 @@ public class TreeModelCompactor extends TreeModelTransformer {
 					}
 					break;
 				default:
-					throw new IllegalStateException();
+					throw new UnsupportedAttributeException(treeModel, missingValueStrategy);
 			}
 
 			firstChild = children.get(0);
@@ -156,12 +164,7 @@ public class TreeModelCompactor extends TreeModelTransformer {
 		TreeModel.MissingValueStrategy missingValueStrategy = treeModel.getMissingValueStrategy();
 		switch(missingValueStrategy){
 			case NONE:
-				// Missing values are not allowed
-				treeModel.setMissingValueStrategy(TreeModel.MissingValueStrategy.NULL_PREDICTION);
-				break;
 			case DEFAULT_CHILD:
-				// Missing values are allowed
-				treeModel.setMissingValueStrategy(TreeModel.MissingValueStrategy.NONE);
 				break;
 			default:
 				throw new UnsupportedAttributeException(treeModel, missingValueStrategy);
@@ -176,17 +179,27 @@ public class TreeModelCompactor extends TreeModelTransformer {
 		if(splitCharacteristic != TreeModel.SplitCharacteristic.BINARY_SPLIT){
 			throw new UnsupportedAttributeException(treeModel, splitCharacteristic);
 		}
-
-		treeModel.setSplitCharacteristic(TreeModel.SplitCharacteristic.MULTI_SPLIT);
-
-		this.missingValueStrategy = missingValueStrategy;
 	}
 
 	@Override
 	public void exitTreeModel(TreeModel treeModel){
 		super.exitTreeModel(treeModel);
 
-		this.missingValueStrategy = null;
+		TreeModel.MissingValueStrategy missingValueStrategy = treeModel.getMissingValueStrategy();
+		switch(missingValueStrategy){
+			case NONE:
+				// Missing values are not allowed
+				treeModel.setMissingValueStrategy(TreeModel.MissingValueStrategy.NULL_PREDICTION);
+				break;
+			case DEFAULT_CHILD:
+				// Missing values are allowed
+				treeModel.setMissingValueStrategy(TreeModel.MissingValueStrategy.NONE);
+				break;
+			default:
+				throw new UnsupportedAttributeException(treeModel, missingValueStrategy);
+		}
+
+		treeModel.setSplitCharacteristic(TreeModel.SplitCharacteristic.MULTI_SPLIT);
 	}
 
 	protected SimplePredicate.Operator getSplit(){

@@ -45,13 +45,13 @@ public class RegressionTreeModelCompactor extends TreeModelCompactor {
 	@Override
 	public void enterTreeModel(TreeModel treeModel){
 		super.enterTreeModel(treeModel);
-
-		treeModel.setNoTrueChildStrategy(TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
 	}
 
 	@Override
 	public void exitTreeModel(TreeModel treeModel){
 		super.exitTreeModel(treeModel);
+
+		treeModel.setNoTrueChildStrategy(TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
 	}
 
 	@Override

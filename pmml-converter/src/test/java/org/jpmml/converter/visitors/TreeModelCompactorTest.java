@@ -32,11 +32,14 @@ import org.dmg.pmml.tree.CountingLeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.jpmml.converter.PMMLUtil;
+import org.jpmml.model.InvalidElementException;
 import org.jpmml.model.UnsupportedElementException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
@@ -66,7 +69,14 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
 		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
-		compactThrows(compactor, treeModel, IllegalArgumentException.class);
+		InvalidElementException exception = compactThrows(compactor, treeModel, InvalidElementException.class);
+
+		assertSame(root, exception.getContext());
+		assertTrue(exception.getCause() instanceof IllegalArgumentException);
+
+		assertEquals(TreeModel.MissingValueStrategy.DEFAULT_CHILD, treeModel.getMissingValueStrategy());
+		assertEquals(TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION, treeModel.getNoTrueChildStrategy());
+		assertEquals(TreeModel.SplitCharacteristic.BINARY_SPLIT, treeModel.getSplitCharacteristic());
 
 		firstChild = createLeaf(1, 1d, new SimplePredicate("x", SimplePredicate.Operator.LESS_THAN, 0));
 		secondChild = createLeaf(2, 2d, new SimplePredicate("x", SimplePredicate.Operator.GREATER_OR_EQUAL, 0));
@@ -233,7 +243,7 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
 		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
-		compactThrows(compactor, treeModel, IllegalArgumentException.class);
+		compactThrows(compactor, treeModel, InvalidElementException.class);
 	}
 
 	static
