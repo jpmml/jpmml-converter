@@ -43,7 +43,7 @@
 		<jpmml-model.version>1.7.8</jpmml-model.version>
 		<jpmml-evaluator.version>1.7.8</jpmml-evaluator.version>
 		<guava.version>33.7.1-jre</guava.version>
-		<jcommander.version>1.82</jcommander.version>
+		<jcommander.version>1.85</jcommander.version>
 		<slf4j.version>2.0.17</slf4j.version>
 		<project.build.outputTimestamp>2026-04-25T19:47:03Z</project.build.outputTimestamp>
 	</properties>
@@ -85,7 +85,7 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.beust</groupId>
+				<groupId>org.jcommander</groupId>
 				<artifactId>jcommander</artifactId>
 				<version>${jcommander.version}</version>
 			</dependency>
