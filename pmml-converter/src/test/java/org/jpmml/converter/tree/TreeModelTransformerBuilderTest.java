@@ -27,6 +27,7 @@ import java.util.Map;
 import org.dmg.pmml.Visitor;
 import org.jpmml.converter.ConfigurationException;
 import org.jpmml.converter.ModelTransformer;
+import org.jpmml.converter.tree.visitors.NodeIdCleaner;
 import org.jpmml.converter.tree.visitors.RegressionTreeModelCompactor;
 import org.jpmml.converter.tree.visitors.RegressionTreeModelFlattener;
 import org.jpmml.converter.tree.visitors.RegressionTreeModelPruner;
@@ -48,17 +49,19 @@ public class TreeModelTransformerBuilderTest {
 		assertTrue(modelTransformer.isEmpty());
 
 		builder = createBuilder(Collections.emptyMap())
+			.putOption(HasTreeModelOptions.OPTION_NODE_ID, Boolean.FALSE)
 			.putOption(HasTreeModelOptions.OPTION_PRUNE, Boolean.TRUE)
 			.putOption(HasTreeModelOptions.OPTION_FLAT, Boolean.TRUE)
 			.putOption(HasTreeModelOptions.OPTION_COMPACT, Boolean.TRUE);
 
 		modelTransformer = builder.build();
 
-		assertEquals(3, modelTransformer.size());
+		assertEquals(4, modelTransformer.size());
 
 		checkVisitor(RegressionTreeModelCompactor.class, modelTransformer.get(0));
 		checkVisitor(RegressionTreeModelFlattener.class, modelTransformer.get(1));
 		checkVisitor(RegressionTreeModelPruner.class, modelTransformer.get(2));
+		checkVisitor(NodeIdCleaner.class, modelTransformer.get(3));
 	}
 
 	@Test
@@ -126,7 +129,7 @@ public class TreeModelTransformerBuilderTest {
 
 		modelTransformer = builder.build();
 
-		assertEquals(1, modelTransformer.size());
+		assertEquals(2, modelTransformer.size());
 
 		TreeModelTransformerBuilder conflictingBuilder = createBuilder(defaults, TreeModelTransformerBuilderTest.OPTION_NODE_EXTENSIONS)
 			.putOption(TreeModelTransformerBuilderTest.OPTION_NODE_EXTENSIONS, Map.of("impurity", Map.of()))

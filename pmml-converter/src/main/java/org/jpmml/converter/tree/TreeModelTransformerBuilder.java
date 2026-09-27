@@ -26,6 +26,7 @@ import org.jpmml.converter.ConfigurationException;
 import org.jpmml.converter.ExceptionUtil;
 import org.jpmml.converter.ModelTransformer;
 import org.jpmml.converter.ModelTransformerBuilder;
+import org.jpmml.converter.tree.visitors.NodeIdCleaner;
 import org.jpmml.converter.tree.visitors.TreeModelCompactor;
 import org.jpmml.converter.tree.visitors.TreeModelFlattener;
 import org.jpmml.converter.tree.visitors.TreeModelPruner;
@@ -62,6 +63,10 @@ public class TreeModelTransformerBuilder extends ModelTransformerBuilder {
 
 		if(isEnabled(HasTreeModelOptions.OPTION_PRUNE)){
 			result.add(createPruner());
+		} // End if
+
+		if(isDisabled(HasTreeModelOptions.OPTION_NODE_ID)){
+			result.add(new NodeIdCleaner());
 		}
 
 		return result;

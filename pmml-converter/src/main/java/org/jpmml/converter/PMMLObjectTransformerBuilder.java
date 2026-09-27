@@ -79,6 +79,15 @@ public class PMMLObjectTransformerBuilder<E extends PMMLObject> {
 		return (value != null) && !Objects.equals(Boolean.FALSE, value);
 	}
 
+	/**
+	 * Tests whether the resolved option value is false.
+	 */
+	protected boolean isDisabled(String name){
+		Object value = getOption(name);
+
+		return Objects.equals(Boolean.FALSE, value);
+	}
+
 	protected Map<String, ?> getDefaults(){
 		return Collections.emptyMap();
 	}

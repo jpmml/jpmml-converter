@@ -21,6 +21,7 @@ package org.jpmml.converter.tree;
 import java.util.List;
 
 import org.jpmml.converter.HasModelOptions;
+import org.jpmml.converter.tree.visitors.NodeIdCleaner;
 import org.jpmml.converter.tree.visitors.TreeModelCompactor;
 import org.jpmml.converter.tree.visitors.TreeModelFlattener;
 import org.jpmml.converter.tree.visitors.TreeModelPruner;
@@ -37,6 +38,9 @@ public interface HasTreeModelOptions extends HasModelOptions {
 	 */
 	String OPTION_FLAT = "flat";
 
+	/**
+	 * @see NodeIdCleaner
+	 */
 	String OPTION_NODE_ID = "node_id";
 
 	/**
