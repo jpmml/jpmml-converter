@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter.visitors;
+package org.jpmml.converter.tree.visitors;
 
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.VisitorAction;
@@ -24,7 +24,7 @@ import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.jpmml.model.UnsupportedAttributeException;
 
-public class RegressionTreeModelCompactor extends TreeModelCompactor {
+public class RegressionTreeModelPruner extends TreeModelPruner {
 
 	@Override
 	public VisitorAction visit(TreeModel treeModel){
@@ -43,22 +43,12 @@ public class RegressionTreeModelCompactor extends TreeModelCompactor {
 	}
 
 	@Override
-	public void enterTreeModel(TreeModel treeModel){
-		super.enterTreeModel(treeModel);
-	}
-
-	@Override
-	public void exitTreeModel(TreeModel treeModel){
-		treeModel.setNoTrueChildStrategy(TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
-
-		super.exitTreeModel(treeModel);
-	}
-
-	@Override
 	protected void mergeNode(Node parentNode, Node node){
+		clearDefaultChild(parentNode);
 		clearScore(parentNode);
 		clearScores(parentNode);
 
+		initDefaultChild(parentNode, node);
 		initScore(parentNode, node);
 		initScores(parentNode, node);
 

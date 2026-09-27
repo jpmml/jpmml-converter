@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter.visitors;
+package org.jpmml.converter.tree.visitors;
 
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.VisitorAction;
@@ -24,16 +24,16 @@ import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.jpmml.model.UnsupportedAttributeException;
 
-public class ClassificationTreeModelPruner extends TreeModelPruner {
+public class RegressionTreeModelCompactor extends TreeModelCompactor {
 
 	@Override
 	public VisitorAction visit(TreeModel treeModel){
 		MiningFunction miningFunction = treeModel.requireMiningFunction();
 
 		switch(miningFunction){
-			case CLASSIFICATION:
-				break;
 			case REGRESSION:
+				break;
+			case CLASSIFICATION:
 				return VisitorAction.SKIP;
 			default:
 				throw new UnsupportedAttributeException(treeModel, miningFunction);
@@ -43,14 +43,24 @@ public class ClassificationTreeModelPruner extends TreeModelPruner {
 	}
 
 	@Override
-	protected void mergeNode(Node parentNode, Node node){
-		clearDefaultChild(parentNode);
-		clearScore(parentNode);
-		clearScoreDistributions(parentNode);
+	public void enterTreeModel(TreeModel treeModel){
+		super.enterTreeModel(treeModel);
+	}
 
-		initDefaultChild(parentNode, node);
+	@Override
+	public void exitTreeModel(TreeModel treeModel){
+		treeModel.setNoTrueChildStrategy(TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
+
+		super.exitTreeModel(treeModel);
+	}
+
+	@Override
+	protected void mergeNode(Node parentNode, Node node){
+		clearScore(parentNode);
+		clearScores(parentNode);
+
 		initScore(parentNode, node);
-		initScoreDistributions(parentNode, node);
+		initScores(parentNode, node);
 
 		replaceChildWithGrandchildren(parentNode, node);
 	}

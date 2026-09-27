@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with JPMML-Converter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpmml.converter.visitors;
+package org.jpmml.converter.tree.visitors;
 
 import org.dmg.pmml.ComplexScoreDistribution;
 import org.dmg.pmml.Score;
