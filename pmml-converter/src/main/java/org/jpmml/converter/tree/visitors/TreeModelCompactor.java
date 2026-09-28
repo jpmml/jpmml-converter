@@ -203,18 +203,6 @@ public class TreeModelCompactor extends TreeModelTransformer {
 		super.exitTreeModel(treeModel);
 	}
 
-	protected SimplePredicate.Operator getSplit(){
-		return SimplePredicate.Operator.LESS_OR_EQUAL;
-	}
-
-	protected SimplePredicate.Operator getLeftSplit(){
-		return getSplit();
-	}
-
-	protected SimplePredicate.Operator getRightSplit(){
-		return negate(getSplit());
-	}
-
 	private SplitType getSplitType(Predicate left, Predicate right){
 
 		if((left instanceof SimplePredicate) && (right instanceof SimplePredicate)){
@@ -226,13 +214,17 @@ public class TreeModelCompactor extends TreeModelTransformer {
 			SimplePredicate.Operator leftOperator = leftSimplePredicate.requireOperator();
 			SimplePredicate.Operator rightOperator = rightSimplePredicate.requireOperator();
 
-			if(leftOperator == getLeftSplit() && rightOperator == getRightSplit()){
-				checkValue(left, right);
-
-				return SplitType.CONTINUOUS;
-			}
-
 			switch(leftOperator){
+				case LESS_THAN:
+				case LESS_OR_EQUAL:
+					{
+						if(rightOperator == negate(leftOperator)){
+							checkValue(left, right);
+
+							return SplitType.CONTINUOUS;
+						}
+					}
+					break;
 				case EQUAL:
 				case NOT_EQUAL:
 					{

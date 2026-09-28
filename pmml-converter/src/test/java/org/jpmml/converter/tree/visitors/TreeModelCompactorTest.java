@@ -85,15 +85,7 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
 		treeModel = createRegressionTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
-		TreeModelCompactor lessThanCompactor = new RegressionTreeModelCompactor(){
-
-			@Override
-			protected SimplePredicate.Operator getSplit(){
-				return SimplePredicate.Operator.LESS_THAN;
-			}
-		};
-
-		compact(lessThanCompactor, treeModel);
+		compact(compactor, treeModel);
 
 		checkRoot(root, 1d, secondChild);
 		checkLeaf(secondChild, 2d);
