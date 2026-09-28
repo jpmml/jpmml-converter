@@ -28,7 +28,6 @@ import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
 import org.dmg.pmml.tree.ComplexNode;
-import org.dmg.pmml.tree.CountingBranchNode;
 import org.dmg.pmml.tree.CountingLeafNode;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
@@ -125,14 +124,12 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 		Node firstGrandchild = createLeaf(3, "no", new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 1));
 		Node secondGrandchild = createLeaf(4, "yes", new SimplePredicate("x", SimplePredicate.Operator.GREATER_THAN, 1));
 
-		firstChild = createLeaf(1, "no", new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0));
+		firstChild = new CountingLeafNode("no", new SimplePredicate("x", SimplePredicate.Operator.LESS_OR_EQUAL, 0))
+			.setId(1)
+			.setRecordCount(10);
 		secondChild = createBranch(2, null, new SimplePredicate("x", SimplePredicate.Operator.GREATER_THAN, 0), 4, firstGrandchild, secondGrandchild);
 
-		root = new CountingBranchNode(null, True.INSTANCE)
-			.setId(0)
-			.setRecordCount(10)
-			.setDefaultChild(2)
-			.addNodes(firstChild, secondChild);
+		root = createRoot(0, null, 2, firstChild, secondChild);
 
 		treeModel = createClassificationTreeModel(TreeModel.MissingValueStrategy.DEFAULT_CHILD, root);
 
@@ -144,15 +141,12 @@ public class TreeModelCompactorTest extends TreeModelTransformerTest {
 
 		compact(new ClassificationTreeModelCompactor(), treeModel);
 
-		checkTreeModel(treeModel, TreeModel.MissingValueStrategy.NONE, TreeModel.NoTrueChildStrategy.RETURN_NULL_PREDICTION);
-		checkRoot(root, null, firstChild, firstGrandchild, secondGrandchild);
+		checkTreeModel(treeModel, TreeModel.MissingValueStrategy.NONE, TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
+		checkRoot(root, "yes", firstChild, firstGrandchild);
 		checkLeaf(firstChild, "no");
 		checkLeaf(firstGrandchild, "no");
-		checkLeaf(secondGrandchild, "yes");
 
-		assertEquals(10, root.getRecordCount());
-
-		assertEquals(True.INSTANCE, secondGrandchild.getPredicate());
+		assertEquals(10, firstChild.getRecordCount());
 	}
 
 	@Test

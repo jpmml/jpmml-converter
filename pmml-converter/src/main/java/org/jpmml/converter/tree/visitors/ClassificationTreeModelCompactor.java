@@ -43,11 +43,25 @@ public class ClassificationTreeModelCompactor extends TreeModelCompactor {
 	}
 
 	@Override
-	protected void mergeNode(Node parentNode, Node node){
+	public void enterTreeModel(TreeModel treeModel){
+		super.enterTreeModel(treeModel);
+	}
 
-		// Replace intermediate nodes, but not terminal nodes
-		if(node.hasNodes()){
-			replaceChildWithGrandchildren(parentNode, node);
-		}
+	@Override
+	public void exitTreeModel(TreeModel treeModel){
+		treeModel.setNoTrueChildStrategy(TreeModel.NoTrueChildStrategy.RETURN_LAST_PREDICTION);
+
+		super.exitTreeModel(treeModel);
+	}
+
+	@Override
+	protected void mergeNode(Node parentNode, Node node){
+		clearScore(parentNode);
+		clearScoreDistributions(parentNode);
+
+		initScore(parentNode, node);
+		initScoreDistributions(parentNode, node);
+
+		replaceChildWithGrandchildren(parentNode, node);
 	}
 }
