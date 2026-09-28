@@ -28,6 +28,7 @@ import org.dmg.pmml.Visitor;
 import org.jpmml.converter.ConfigurationException;
 import org.jpmml.converter.ModelTransformer;
 import org.jpmml.converter.tree.visitors.NodeIdCleaner;
+import org.jpmml.converter.tree.visitors.NodeRecordCountCleaner;
 import org.jpmml.converter.tree.visitors.RegressionTreeModelCompactor;
 import org.jpmml.converter.tree.visitors.RegressionTreeModelFlattener;
 import org.jpmml.converter.tree.visitors.RegressionTreeModelPruner;
@@ -50,18 +51,20 @@ public class TreeModelTransformerBuilderTest {
 
 		builder = createBuilder(Collections.emptyMap())
 			.putOption(HasTreeModelOptions.OPTION_NODE_ID, Boolean.FALSE)
+			.putOption(HasTreeModelOptions.OPTION_NODE_RECORDCOUNT, Boolean.FALSE)
 			.putOption(HasTreeModelOptions.OPTION_PRUNE, Boolean.TRUE)
 			.putOption(HasTreeModelOptions.OPTION_FLAT, Boolean.TRUE)
 			.putOption(HasTreeModelOptions.OPTION_COMPACT, Boolean.TRUE);
 
 		modelTransformer = builder.build();
 
-		assertEquals(4, modelTransformer.size());
+		assertEquals(5, modelTransformer.size());
 
 		checkVisitor(RegressionTreeModelCompactor.class, modelTransformer.get(0));
 		checkVisitor(RegressionTreeModelFlattener.class, modelTransformer.get(1));
 		checkVisitor(RegressionTreeModelPruner.class, modelTransformer.get(2));
 		checkVisitor(NodeIdCleaner.class, modelTransformer.get(3));
+		checkVisitor(NodeRecordCountCleaner.class, modelTransformer.get(4));
 	}
 
 	@Test

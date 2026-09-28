@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jpmml.converter.HasModelOptions;
 import org.jpmml.converter.tree.visitors.NodeIdCleaner;
+import org.jpmml.converter.tree.visitors.NodeRecordCountCleaner;
 import org.jpmml.converter.tree.visitors.TreeModelCompactor;
 import org.jpmml.converter.tree.visitors.TreeModelFlattener;
 import org.jpmml.converter.tree.visitors.TreeModelPruner;
@@ -44,11 +45,16 @@ public interface HasTreeModelOptions extends HasModelOptions {
 	String OPTION_NODE_ID = "node_id";
 
 	/**
+	 * @see NodeRecordCountCleaner
+	 */
+	String OPTION_NODE_RECORDCOUNT = "node_record_count";
+
+	/**
 	 * @see TreeModelPruner
 	 */
 	String OPTION_PRUNE = "prune";
 
 	List<String> OPTIONS_TREEMODEL_TRANSFORMATIONS = List.of(HasTreeModelOptions.OPTION_COMPACT, HasTreeModelOptions.OPTION_FLAT, HasTreeModelOptions.OPTION_PRUNE);
 
-	List<String> OPTIONS_NODE = List.of(HasTreeModelOptions.OPTION_NODE_ID);
+	List<String> OPTIONS_NODE = List.of(HasTreeModelOptions.OPTION_NODE_ID, HasTreeModelOptions.OPTION_NODE_RECORDCOUNT);
 }
