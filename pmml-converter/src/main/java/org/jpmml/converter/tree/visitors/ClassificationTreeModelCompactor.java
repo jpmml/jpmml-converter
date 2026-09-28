@@ -19,27 +19,13 @@
 package org.jpmml.converter.tree.visitors;
 
 import org.dmg.pmml.MiningFunction;
-import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
-import org.jpmml.model.UnsupportedAttributeException;
 
 public class ClassificationTreeModelCompactor extends TreeModelCompactor {
 
-	@Override
-	public VisitorAction visit(TreeModel treeModel){
-		MiningFunction miningFunction = treeModel.requireMiningFunction();
-
-		switch(miningFunction){
-			case CLASSIFICATION:
-				break;
-			case REGRESSION:
-				return VisitorAction.SKIP;
-			default:
-				throw new UnsupportedAttributeException(treeModel, miningFunction);
-		}
-
-		return super.visit(treeModel);
+	public ClassificationTreeModelCompactor(){
+		super(MiningFunction.CLASSIFICATION);
 	}
 
 	@Override

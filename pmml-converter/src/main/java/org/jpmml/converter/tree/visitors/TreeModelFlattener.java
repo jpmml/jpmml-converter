@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.True;
@@ -30,6 +31,13 @@ import org.dmg.pmml.tree.TreeModel;
 
 abstract
 public class TreeModelFlattener extends TreeModelTransformer {
+
+	public TreeModelFlattener(){
+	}
+
+	public TreeModelFlattener(MiningFunction miningFunction){
+		super(miningFunction);
+	}
 
 	abstract
 	protected void mergeNode(Node parentNode, Node node);

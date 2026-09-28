@@ -23,12 +23,20 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.False;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.tree.Node;
 import org.jpmml.model.ReflectionUtil;
 
 abstract
 public class TreeModelPruner extends TreeModelTransformer {
+
+	public TreeModelPruner(){
+	}
+
+	public TreeModelPruner(MiningFunction miningFunction){
+		super(miningFunction);
+	}
 
 	abstract
 	protected void mergeNode(Node parentNode, Node node);

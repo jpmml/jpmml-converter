@@ -28,6 +28,7 @@ import java.util.Set;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.False;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
@@ -40,6 +41,13 @@ import org.jpmml.model.UnsupportedElementException;
 
 abstract
 public class TreeModelCompactor extends TreeModelTransformer {
+
+	public TreeModelCompactor(){
+	}
+
+	public TreeModelCompactor(MiningFunction miningFunction){
+		super(miningFunction);
+	}
 
 	abstract
 	protected void mergeNode(Node parentNode, Node node);

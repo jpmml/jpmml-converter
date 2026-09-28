@@ -28,22 +28,57 @@ import org.dmg.pmml.EmbeddedModel;
 import org.dmg.pmml.HasFieldReference;
 import org.dmg.pmml.HasValue;
 import org.dmg.pmml.HasValueSet;
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.PMMLObject;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.Score;
 import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
+import org.dmg.pmml.VisitorAction;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
+import org.jpmml.model.UnsupportedAttributeException;
 import org.jpmml.model.UnsupportedElementException;
 import org.jpmml.model.visitors.AbstractVisitor;
 
 abstract
 public class TreeModelTransformer extends AbstractVisitor {
 
+	private MiningFunction miningFunction = null;
+
 	private TreeModel treeModel = null;
 
+
+	public TreeModelTransformer(){
+	}
+
+	public TreeModelTransformer(MiningFunction miningFunction){
+		setMiningFunction(miningFunction);
+	}
+
+	@Override
+	public VisitorAction visit(TreeModel treeModel){
+		MiningFunction miningFunction = getMiningFunction();
+
+		if(miningFunction != null){
+			MiningFunction treeModelMiningFunction = treeModel.requireMiningFunction();
+
+			switch(treeModelMiningFunction){
+				case CLASSIFICATION:
+				case REGRESSION:
+					break;
+				default:
+					throw new UnsupportedAttributeException(treeModel, treeModelMiningFunction);
+			}
+
+			if(treeModelMiningFunction != miningFunction){
+				return VisitorAction.SKIP;
+			}
+		}
+
+		return super.visit(treeModel);
+	}
 
 	@Override
 	public void pushParent(PMMLObject object){
@@ -397,5 +432,13 @@ public class TreeModelTransformer extends AbstractVisitor {
 		if(!Objects.equals(leftArray.getValue(), rightArray.getValue())){
 			throw new IllegalArgumentException("Field value sets " + leftArray.getValue() + " and " + rightArray.getValue() + " are not the same");
 		}
+	}
+
+	public MiningFunction getMiningFunction(){
+		return this.miningFunction;
+	}
+
+	private void setMiningFunction(MiningFunction miningFunction){
+		this.miningFunction = Objects.requireNonNull(miningFunction);
 	}
 }
