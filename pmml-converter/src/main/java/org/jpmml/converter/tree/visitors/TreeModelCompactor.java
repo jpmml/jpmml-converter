@@ -297,7 +297,7 @@ public class TreeModelCompactor extends TreeModelTransformer {
 			case IS_NOT_MISSING:
 				return SimplePredicate.Operator.IS_MISSING;
 			default:
-				throw new IllegalArgumentException(String.valueOf(operator));
+				throw new IllegalArgumentException();
 		}
 	}
 

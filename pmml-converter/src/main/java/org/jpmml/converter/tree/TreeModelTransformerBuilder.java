@@ -20,14 +20,22 @@ package org.jpmml.converter.tree;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
+import org.dmg.pmml.MiningFunction;
 import org.jpmml.converter.ConfigurationException;
 import org.jpmml.converter.ExceptionUtil;
 import org.jpmml.converter.ModelTransformer;
 import org.jpmml.converter.ModelTransformerBuilder;
+import org.jpmml.converter.tree.visitors.ClassificationTreeModelCompactor;
+import org.jpmml.converter.tree.visitors.ClassificationTreeModelFlattener;
+import org.jpmml.converter.tree.visitors.ClassificationTreeModelPruner;
 import org.jpmml.converter.tree.visitors.NodeIdCleaner;
 import org.jpmml.converter.tree.visitors.NodeRecordCountCleaner;
+import org.jpmml.converter.tree.visitors.RegressionTreeModelCompactor;
+import org.jpmml.converter.tree.visitors.RegressionTreeModelFlattener;
+import org.jpmml.converter.tree.visitors.RegressionTreeModelPruner;
 import org.jpmml.converter.tree.visitors.TreeModelCompactor;
 import org.jpmml.converter.tree.visitors.TreeModelFlattener;
 import org.jpmml.converter.tree.visitors.TreeModelPruner;
@@ -35,17 +43,53 @@ import org.jpmml.converter.tree.visitors.TreeModelPruner;
 /**
  * @see HasTreeModelOptions
  */
-abstract
 public class TreeModelTransformerBuilder extends ModelTransformerBuilder {
 
-	abstract
-	protected TreeModelCompactor createCompactor();
+	private MiningFunction miningFunction = null;
 
-	abstract
-	protected TreeModelFlattener createFlattener();
 
-	abstract
-	protected TreeModelPruner createPruner();
+	public TreeModelTransformerBuilder(MiningFunction miningFunction){
+		setMiningFunction(miningFunction);
+	}
+
+	protected TreeModelCompactor createCompactor(){
+		MiningFunction miningFunction = getMiningFunction();
+
+		switch(miningFunction){
+			case CLASSIFICATION:
+				return new ClassificationTreeModelCompactor();
+			case REGRESSION:
+				return new RegressionTreeModelCompactor();
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	protected TreeModelFlattener createFlattener(){
+		MiningFunction miningFunction = getMiningFunction();
+
+		switch(miningFunction){
+			case CLASSIFICATION:
+				return new ClassificationTreeModelFlattener();
+			case REGRESSION:
+				return new RegressionTreeModelFlattener();
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	protected TreeModelPruner createPruner(){
+		MiningFunction miningFunction = getMiningFunction();
+
+		switch(miningFunction){
+			case CLASSIFICATION:
+				return new ClassificationTreeModelPruner();
+			case REGRESSION:
+				return new RegressionTreeModelPruner();
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
 
 	@Override
 	public ModelTransformer build(){
@@ -134,6 +178,14 @@ public class TreeModelTransformerBuilder extends ModelTransformerBuilder {
 
 	protected List<String> getNodeOptions(){
 		return HasTreeModelOptions.OPTIONS_NODE;
+	}
+
+	public MiningFunction getMiningFunction(){
+		return this.miningFunction;
+	}
+
+	private void setMiningFunction(MiningFunction miningFunction){
+		this.miningFunction = Objects.requireNonNull(miningFunction);
 	}
 
 	static

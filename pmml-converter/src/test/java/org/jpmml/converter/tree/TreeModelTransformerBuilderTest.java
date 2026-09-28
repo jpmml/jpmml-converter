@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.Visitor;
 import org.jpmml.converter.ConfigurationException;
 import org.jpmml.converter.ModelTransformer;
@@ -143,7 +144,7 @@ public class TreeModelTransformerBuilderTest {
 
 	static
 	private TreeModelTransformerBuilder createBuilder(Map<String, ?> defaults, String... extraNodeOptions){
-		TreeModelTransformerBuilder result = new RegressionTreeModelTransformerBuilder(){
+		TreeModelTransformerBuilder result = new TreeModelTransformerBuilder(MiningFunction.REGRESSION){
 
 			@Override
 			protected List<String> getNodeOptions(){
