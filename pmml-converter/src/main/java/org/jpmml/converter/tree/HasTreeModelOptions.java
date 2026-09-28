@@ -18,16 +18,19 @@
  */
 package org.jpmml.converter.tree;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jpmml.converter.HasModelOptions;
+import org.jpmml.converter.HasNativeConfiguration;
 import org.jpmml.converter.tree.visitors.NodeIdCleaner;
 import org.jpmml.converter.tree.visitors.NodeRecordCountCleaner;
 import org.jpmml.converter.tree.visitors.TreeModelCompactor;
 import org.jpmml.converter.tree.visitors.TreeModelFlattener;
 import org.jpmml.converter.tree.visitors.TreeModelPruner;
 
-public interface HasTreeModelOptions extends HasModelOptions {
+public interface HasTreeModelOptions extends HasModelOptions, HasNativeConfiguration {
 
 	/**
 	 * @see TreeModelCompactor
@@ -57,4 +60,15 @@ public interface HasTreeModelOptions extends HasModelOptions {
 	List<String> OPTIONS_TREEMODEL_TRANSFORMATIONS = List.of(HasTreeModelOptions.OPTION_COMPACT, HasTreeModelOptions.OPTION_FLAT, HasTreeModelOptions.OPTION_PRUNE);
 
 	List<String> OPTIONS_NODE = List.of(HasTreeModelOptions.OPTION_NODE_ID, HasTreeModelOptions.OPTION_NODE_RECORDCOUNT);
+
+	@Override
+	default
+	public Map<String, ?> getNativeConfiguration(){
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put(HasTreeModelOptions.OPTION_COMPACT, Boolean.FALSE);
+		result.put(HasTreeModelOptions.OPTION_FLAT, Boolean.FALSE);
+		result.put(HasTreeModelOptions.OPTION_PRUNE, Boolean.FALSE);
+
+		return result;
+	}
 }
