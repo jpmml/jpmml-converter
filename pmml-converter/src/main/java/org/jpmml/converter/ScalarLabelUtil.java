@@ -18,10 +18,6 @@
  */
 package org.jpmml.converter;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.OpType;
@@ -45,35 +41,6 @@ public class ScalarLabelUtil {
 				return new OrdinalLabel(dataField);
 			default:
 				throw new IllegalArgumentException();
-		}
-	}
-
-	static
-	public List<ScalarLabel> toScalarLabels(Label label){
-		return toScalarLabels(ScalarLabel.class, label);
-	}
-
-	static
-	public <E extends ScalarLabel> List<E> toScalarLabels(Class<? extends E> clazz, Label label){
-
-		if(label instanceof ScalarLabel){
-			ScalarLabel scalarLabel = (ScalarLabel)label;
-
-			return Collections.singletonList(clazz.cast(scalarLabel));
-		} else
-
-		if(label instanceof MultiLabel){
-			MultiLabel multiLabel = (MultiLabel)label;
-
-			List<? extends ScalarLabel> scalarLabels = multiLabel.getScalarLabels();
-
-			return scalarLabels.stream()
-				.map(clazz::cast)
-				.collect(Collectors.toList());
-		} else
-
-		{
-			throw new IllegalArgumentException();
 		}
 	}
 }

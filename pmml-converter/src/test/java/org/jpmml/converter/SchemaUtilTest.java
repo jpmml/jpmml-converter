@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +41,11 @@ public class SchemaUtilTest {
 		assertEquals("label", SchemaUtil.formatTypeString(Label.class));
 
 		Label label = new Label(){
+
+			@Override
+			public <E extends ScalarLabel> List<E> toScalarLabels(Class<? extends E> clazz){
+				throw new UnsupportedOperationException();
+			}
 		};
 
 		assertEquals("label", SchemaUtil.formatTypeString(label.getClass()));

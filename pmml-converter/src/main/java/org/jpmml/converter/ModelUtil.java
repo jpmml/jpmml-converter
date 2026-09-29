@@ -73,7 +73,7 @@ public class ModelUtil {
 		MiningSchema miningSchema = new MiningSchema();
 
 		if(label != null){
-			List<ScalarLabel> scalarLabels = ScalarLabelUtil.toScalarLabels(label);
+			List<ScalarLabel> scalarLabels = label.toScalarLabels();
 
 			for(ScalarLabel scalarLabel : scalarLabels){
 
@@ -119,7 +119,7 @@ public class ModelUtil {
 
 	static
 	public Targets createRescaleTargets(List<? extends Number> slopes, List<? extends Number> intercepts, Label label){
-		List<ContinuousLabel> continuousLabels = ScalarLabelUtil.toScalarLabels(ContinuousLabel.class, label);
+		List<ContinuousLabel> continuousLabels = label.toScalarLabels(ContinuousLabel.class);
 
 		if(slopes != null && continuousLabels.size() != slopes.size()){
 			throw new IllegalArgumentException();

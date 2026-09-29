@@ -18,6 +18,8 @@
  */
 package org.jpmml.converter;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.dmg.pmml.DataType;
@@ -45,6 +47,11 @@ public class ScalarLabel extends Label {
 
 	public ScalarLabel toAnonymousLabel(){
 		return toRenamedLabel(null);
+	}
+
+	@Override
+	public <E extends ScalarLabel> List<E> toScalarLabels(Class<? extends E> clazz){
+		return Collections.singletonList(clazz.cast(this));
 	}
 
 	public boolean isAnonymous(){

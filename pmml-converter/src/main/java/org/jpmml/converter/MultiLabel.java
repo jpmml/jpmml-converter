@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.jpmml.model.ToStringHelper;
 
@@ -40,6 +41,15 @@ public class MultiLabel extends Label {
 		}
 
 		return this;
+	}
+
+	@Override
+	public <E extends ScalarLabel> List<E> toScalarLabels(Class<? extends E> clazz){
+		List<? extends ScalarLabel> scalarLabels = getScalarLabels();
+
+		return scalarLabels.stream()
+			.map(clazz::cast)
+			.collect(Collectors.toList());
 	}
 
 	@Override

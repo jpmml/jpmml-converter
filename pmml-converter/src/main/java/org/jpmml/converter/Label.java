@@ -18,10 +18,19 @@
  */
 package org.jpmml.converter;
 
+import java.util.List;
+
 import org.jpmml.model.ToStringHelper;
 
 abstract
 public class Label {
+
+	abstract
+	public <E extends ScalarLabel> List<E> toScalarLabels(Class<? extends E> clazz);
+
+	public List<ScalarLabel> toScalarLabels(){
+		return toScalarLabels(ScalarLabel.class);
+	}
 
 	public String typeString(){
 		return SchemaUtil.formatTypeString(getClass());

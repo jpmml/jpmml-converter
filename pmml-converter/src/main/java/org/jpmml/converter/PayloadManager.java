@@ -105,7 +105,7 @@ public class PayloadManager {
 	public <E extends PMMLObject & HasScores<E>> void addScores(E object, List<?> values, MultiLabel multiLabel){
 		List<Score> scores = object.getScores();
 
-		List<ScalarLabel> scalarLabels = ScalarLabelUtil.toScalarLabels(multiLabel);
+		List<ScalarLabel> scalarLabels = multiLabel.toScalarLabels();
 
 		if(scalarLabels.size() != values.size()){
 			throw new IllegalArgumentException();

@@ -43,7 +43,6 @@ import org.jpmml.converter.ContinuousFeature;
 import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.Label;
-import org.jpmml.converter.ScalarLabelUtil;
 import org.jpmml.converter.ValueUtil;
 
 public class NeuralNetworkUtil {
@@ -155,7 +154,7 @@ public class NeuralNetworkUtil {
 
 	static
 	public NeuralOutputs createRegressionNeuralOutputs(List<? extends NeuralEntity> entities, Label label){
-		List<ContinuousLabel> continuousLabels = ScalarLabelUtil.toScalarLabels(ContinuousLabel.class, label);
+		List<ContinuousLabel> continuousLabels = label.toScalarLabels(ContinuousLabel.class);
 
 		if(entities.size() != continuousLabels.size()){
 			throw new IllegalArgumentException();
