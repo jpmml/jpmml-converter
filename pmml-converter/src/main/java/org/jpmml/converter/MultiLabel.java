@@ -25,18 +25,18 @@ import org.jpmml.model.ToStringHelper;
 
 public class MultiLabel extends Label {
 
-	private List<? extends Label> labels = null;
+	private List<? extends ScalarLabel> scalarLabels = null;
 
 
-	public MultiLabel(List<? extends Label> labels){
-		setLabels(labels);
+	public MultiLabel(List<? extends ScalarLabel> scalarLabels){
+		setScalarLabels(scalarLabels);
 	}
 
 	public MultiLabel expectSize(int size){
-		List<? extends Label> labels = getLabels();
+		List<? extends ScalarLabel> scalarLabels = getScalarLabels();
 
-		if(labels.size() != size){
-			throw new InvalidLabelException("Expected a multi-label with " + ExceptionUtil.formatCount(size, "element") + ", got " + labels.size());
+		if(scalarLabels.size() != size){
+			throw new InvalidLabelException("Expected a multi-label with " + ExceptionUtil.formatCount(size, "element") + ", got " + scalarLabels.size());
 		}
 
 		return this;
@@ -44,7 +44,7 @@ public class MultiLabel extends Label {
 
 	@Override
 	public int hashCode(){
-		return (31 * super.hashCode()) + Objects.hashCode(getLabels());
+		return (31 * super.hashCode()) + Objects.hashCode(getScalarLabels());
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class MultiLabel extends Label {
 		if(object instanceof MultiLabel){
 			MultiLabel that = (MultiLabel)object;
 
-			return super.equals(object) && Objects.equals(this.getLabels(), that.getLabels());
+			return super.equals(object) && Objects.equals(this.getScalarLabels(), that.getScalarLabels());
 		}
 
 		return false;
@@ -62,26 +62,26 @@ public class MultiLabel extends Label {
 	@Override
 	protected ToStringHelper toStringHelper(){
 		return super.toStringHelper()
-			.add("labels", getLabels());
+			.add("scalarLabels", getScalarLabels());
 	}
 
 	public int size(){
-		List<? extends Label> labels = getLabels();
+		List<? extends ScalarLabel> scalarLabels = getScalarLabels();
 
-		return labels.size();
+		return scalarLabels.size();
 	}
 
-	public Label getLabel(int index){
-		List<? extends Label> labels = getLabels();
+	public ScalarLabel getScalarLabel(int index){
+		List<? extends ScalarLabel> scalarLabels = getScalarLabels();
 
-		return labels.get(index);
+		return scalarLabels.get(index);
 	}
 
-	public List<? extends Label> getLabels(){
-		return this.labels;
+	public List<? extends ScalarLabel> getScalarLabels(){
+		return this.scalarLabels;
 	}
 
-	private void setLabels(List<? extends Label> labels){
-		this.labels = Objects.requireNonNull(labels);
+	private void setScalarLabels(List<? extends ScalarLabel> scalarLabels){
+		this.scalarLabels = Objects.requireNonNull(scalarLabels);
 	}
 }

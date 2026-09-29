@@ -65,9 +65,9 @@ public class ScalarLabelUtil {
 		if(label instanceof MultiLabel){
 			MultiLabel multiLabel = (MultiLabel)label;
 
-			List<? extends Label> labels = multiLabel.getLabels();
+			List<? extends ScalarLabel> scalarLabels = multiLabel.getScalarLabels();
 
-			return labels.stream()
+			return scalarLabels.stream()
 				.map(clazz::cast)
 				.collect(Collectors.toList());
 		} else
