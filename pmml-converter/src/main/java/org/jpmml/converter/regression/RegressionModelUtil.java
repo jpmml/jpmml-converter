@@ -40,6 +40,7 @@ import org.jpmml.converter.ContinuousLabel;
 import org.jpmml.converter.Feature;
 import org.jpmml.converter.InteractionFeature;
 import org.jpmml.converter.ModelUtil;
+import org.jpmml.converter.MultiLabel;
 import org.jpmml.converter.OrdinalLabel;
 import org.jpmml.converter.PowerFeature;
 import org.jpmml.converter.ProductFeature;
@@ -58,29 +59,51 @@ public class RegressionModelUtil {
 
 	static
 	public RegressionModel createRegression(MathContext mathContext, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+		checkRegressionNormalizationMethod(normalizationMethod);
+
 		ContinuousLabel continuousLabel = schema.requireContinuousLabel();
-
-		if(normalizationMethod != null){
-
-			switch(normalizationMethod){
-				case NONE:
-				case SOFTMAX:
-				case LOGIT:
-				case PROBIT:
-				case CLOGLOG:
-				case EXP:
-				case LOGLOG:
-				case CAUCHIT:
-					break;
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
 
 		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(continuousLabel), null)
 			.setNormalizationMethod(normalizationMethod)
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
 			.addRegressionTables(createRegressionTable(mathContext, features, coefficients, intercept));
+
+		return regressionModel;
+	}
+
+	static
+	public RegressionModel createMultiRegression(List<? extends Feature> features, List<List<? extends Number>> coefficients, List<? extends Number> intercepts, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+		return createMultiRegression(null, features, coefficients, intercepts, normalizationMethod, schema);
+	}
+
+	static
+	public RegressionModel createMultiRegression(MathContext mathContext, List<? extends Feature> features, List<List<? extends Number>> coefficients, List<? extends Number> intercepts, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+
+		if(coefficients.size() != intercepts.size()){
+			throw new IllegalArgumentException();
+		}
+
+		checkRegressionNormalizationMethod(normalizationMethod);
+
+		MultiLabel multiLabel = schema.requireMultiLabel()
+			.expectSize(Math.max(coefficients.size(), intercepts.size()));
+
+		List<ContinuousLabel> continuousLabels = multiLabel.toScalarLabels(ContinuousLabel.class);
+
+		List<RegressionTable> regressionTables = new ArrayList<>();
+
+		for(int i = 0, max = continuousLabels.size(); i < max; i++){
+			ContinuousLabel continuousLabel = continuousLabels.get(i);
+
+			RegressionTable regressionTable = createRegressionTable(mathContext, features, coefficients.get(i), intercepts.get(i))
+				.setTargetField(continuousLabel.getName());
+
+			regressionTables.add(regressionTable);
+		}
+
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.REGRESSION, ModelUtil.createMiningSchema(multiLabel), regressionTables)
+			.setNormalizationMethod(normalizationMethod)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
 
 		return regressionModel;
 	}
@@ -92,23 +115,10 @@ public class RegressionModelUtil {
 
 	static
 	public RegressionModel createBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<? extends Number> coefficients, Number intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		checkBinaryLogisticClassificationNormalizationMethod(normalizationMethod);
+
 		CategoricalLabel categoricalLabel = schema.requireCategoricalLabel()
 			.expectCardinality(2);
-
-		if(normalizationMethod != null){
-
-			switch(normalizationMethod){
-				case NONE:
-				case LOGIT:
-				case PROBIT:
-				case CLOGLOG:
-				case LOGLOG:
-				case CAUCHIT:
-					break;
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
 
 		RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(mathContext, features, coefficients, intercept)
 			.setTargetCategory(categoricalLabel.getValue(1));
@@ -121,6 +131,53 @@ public class RegressionModelUtil {
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
 			.addRegressionTables(activeRegressionTable, passiveRegressionTable)
 			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(mathContext, categoricalLabel) : null);
+
+		return regressionModel;
+	}
+
+	static
+	public RegressionModel createMultiBinaryLogisticClassification(List<? extends Feature> features, List<List<? extends Number>> coefficients, List<? extends Number> intercepts, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		return createMultiBinaryLogisticClassification(null, features, coefficients, intercepts, normalizationMethod, hasProbabilityDistribution, schema);
+	}
+
+	static
+	public RegressionModel createMultiBinaryLogisticClassification(MathContext mathContext, List<? extends Feature> features, List<List<? extends Number>> coefficients, List<? extends Number> intercepts, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+
+		if(coefficients.size() != intercepts.size()){
+			throw new IllegalArgumentException();
+		}
+
+		checkBinaryLogisticClassificationNormalizationMethod(normalizationMethod);
+
+		MultiLabel multiLabel = schema.requireMultiLabel()
+			.expectSize(Math.max(coefficients.size(), intercepts.size()));
+
+		List<CategoricalLabel> categoricalLabels = multiLabel.toScalarLabels(CategoricalLabel.class);
+
+		List<RegressionTable> regressionTables = new ArrayList<>();
+
+		for(int i = 0, max = categoricalLabels.size(); i < max; i++){
+			CategoricalLabel categoricalLabel = categoricalLabels.get(i)
+				.expectCardinality(2);
+
+			String name = categoricalLabel.getName();
+
+			RegressionTable activeRegressionTable = RegressionModelUtil.createRegressionTable(mathContext, features, coefficients.get(i), intercepts.get(i))
+				.setTargetField(name)
+				.setTargetCategory(categoricalLabel.getValue(1));
+
+			RegressionTable passiveRegressionTable = RegressionModelUtil.createRegressionTable(mathContext, Collections.emptyList(), Collections.emptyList(), null)
+				.setTargetField(name)
+				.setTargetCategory(categoricalLabel.getValue(0));
+
+			regressionTables.add(activeRegressionTable);
+			regressionTables.add(passiveRegressionTable);
+		}
+
+		RegressionModel regressionModel = new RegressionModel(MiningFunction.CLASSIFICATION, ModelUtil.createMiningSchema(multiLabel), regressionTables)
+			.setNormalizationMethod(normalizationMethod)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
+			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(mathContext, multiLabel) : null);
 
 		return regressionModel;
 	}
@@ -344,5 +401,47 @@ public class RegressionModelUtil {
 		}
 
 		return regressionTable;
+	}
+
+	static
+	private void checkRegressionNormalizationMethod(RegressionModel.NormalizationMethod normalizationMethod){
+
+		if(normalizationMethod == null){
+			throw new IllegalArgumentException();
+		}
+
+		switch(normalizationMethod){
+			case NONE:
+			case SOFTMAX:
+			case LOGIT:
+			case PROBIT:
+			case CLOGLOG:
+			case EXP:
+			case LOGLOG:
+			case CAUCHIT:
+				break;
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
+	static
+	private void checkBinaryLogisticClassificationNormalizationMethod(RegressionModel.NormalizationMethod normalizationMethod){
+
+		if(normalizationMethod == null){
+			throw new IllegalArgumentException();
+		}
+
+		switch(normalizationMethod){
+			case NONE:
+			case LOGIT:
+			case PROBIT:
+			case CLOGLOG:
+			case LOGLOG:
+			case CAUCHIT:
+				break;
+			default:
+				throw new IllegalArgumentException();
+		}
 	}
 }
