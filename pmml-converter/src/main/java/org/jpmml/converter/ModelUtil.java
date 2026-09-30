@@ -229,6 +229,27 @@ public class ModelUtil {
 	}
 
 	static
+	public Output createProbabilityOutput(MathContext mathContext, MultiLabel multiLabel){
+		DataType dataType = DataType.DOUBLE;
+
+		if(mathContext == MathContext.FLOAT){
+			dataType = DataType.FLOAT;
+		}
+
+		return createProbabilityOutput(dataType, multiLabel);
+	}
+
+	static
+	public Output createProbabilityOutput(DataType dataType, MultiLabel multiLabel){
+		Output output = new Output();
+
+		List<OutputField> outputFields = output.getOutputFields();
+		outputFields.addAll(createProbabilityFields(dataType, multiLabel));
+
+		return output;
+	}
+
+	static
 	public Output createNeighborOutput(int count){
 		Output output = new Output();
 
@@ -303,6 +324,12 @@ public class ModelUtil {
 	}
 
 	static
+	public OutputField createProbabilityField(DataType dataType, String targetField, Object value){
+		return createProbabilityField(FieldNameUtil.create(FieldNames.PROBABILITY, targetField, value), dataType, value)
+			.setTargetField(targetField);
+	}
+
+	static
 	public OutputField createProbabilityField(String name, DataType dataType, Object value){
 		OutputField outputField = new OutputField(name, OpType.CONTINUOUS, dataType)
 			.setResultFeature(ResultFeature.PROBABILITY)
@@ -316,6 +343,24 @@ public class ModelUtil {
 		return values.stream()
 			.map(value -> createProbabilityField(dataType, value))
 			.collect(Collectors.toList());
+	}
+
+	static
+	public List<OutputField> createProbabilityFields(DataType dataType, MultiLabel multiLabel){
+		List<DiscreteLabel> discreteLabels = multiLabel.toScalarLabels(DiscreteLabel.class);
+
+		List<OutputField> result = new ArrayList<>();
+
+		for(DiscreteLabel discreteLabel : discreteLabels){
+			String targetField = discreteLabel.getName();
+
+			List<?> values = discreteLabel.getValues();
+			for(Object value : values){
+				result.add(createProbabilityField(dataType, targetField, value));
+			}
+		}
+
+		return result;
 	}
 
 	static
