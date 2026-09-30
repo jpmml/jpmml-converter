@@ -75,6 +75,20 @@ public class MiningModelUtil {
 	}
 
 	static
+	public MiningModel createMultiRegression(List<? extends Model> models, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+		List<Feature> features = getPredictions(models, schema);
+
+		MathContext mathContext = getMathContext(models);
+
+		RegressionModel regressionModel = RegressionModelUtil.createMultiRegression(mathContext, features, createDiagonalCoefficients(features.size(), 1d), Collections.nCopies(features.size(), null), normalizationMethod, schema);
+
+		MiningModel miningModel = createModelChain(models, regressionModel, Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
+
+		return miningModel;
+	}
+
+	static
 	public MiningModel createBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		Feature feature = getPrediction(model, schema);
 
@@ -83,6 +97,20 @@ public class MiningModelUtil {
 		RegressionModel regressionModel = RegressionModelUtil.createBinaryLogisticClassification(mathContext, Collections.singletonList(feature), Collections.singletonList(coefficient), intercept, normalizationMethod, hasProbabilityDistribution, schema);
 
 		MiningModel miningModel = createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
+
+		return miningModel;
+	}
+
+	static
+	public MiningModel createMultiBinaryLogisticClassification(List<? extends Model> models, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		List<Feature> features = getPredictions(models, schema);
+
+		MathContext mathContext = getMathContext(models);
+
+		RegressionModel regressionModel = RegressionModelUtil.createMultiBinaryLogisticClassification(mathContext, features, createDiagonalCoefficients(features.size(), coefficient), Collections.nCopies(features.size(), intercept), normalizationMethod, hasProbabilityDistribution, schema);
+
+		MiningModel miningModel = createModelChain(models, regressionModel, Segmentation.MissingPredictionTreatment.RETURN_MISSING)
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
 
 		return miningModel;
@@ -138,13 +166,23 @@ public class MiningModelUtil {
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext))
 			.setOutput(hasProbabilityDistribution ? ModelUtil.createProbabilityOutput(mathContext, categoricalLabel) : null);
 
-		List<Model> segmentationModels = new ArrayList<>(models);
-		segmentationModels.add(regressionModel);
-
-		MiningModel miningModel = createModelChain(segmentationModels, Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+		MiningModel miningModel = createModelChain(models, regressionModel, Segmentation.MissingPredictionTreatment.RETURN_MISSING)
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
 
 		return miningModel;
+	}
+
+	static
+	public MiningModel createModelChain(List<? extends Model> inputModels, Model outputModel, Segmentation.MissingPredictionTreatment missingPredictionTreatment){
+
+		if(inputModels.isEmpty()){
+			throw new IllegalArgumentException();
+		}
+
+		List<Model> models = new ArrayList<>(inputModels);
+		models.add(outputModel);
+
+		return createModelChain(models, missingPredictionTreatment);
 	}
 
 	static
@@ -396,6 +434,20 @@ public class MiningModelUtil {
 	}
 
 	static
+	private List<List<? extends Number>> createDiagonalCoefficients(int size, Number value){
+		List<List<? extends Number>> result = new ArrayList<>();
+
+		for(int i = 0; i < size; i++){
+			List<Number> coefficients = new ArrayList<>(Collections.nCopies(size, 0d));
+			coefficients.set(i, value);
+
+			result.add(coefficients);
+		}
+
+		return result;
+	}
+
+	static
 	private MathContext getMathContext(List<? extends Model> models){
 		MathContext result = null;
 
@@ -437,6 +489,13 @@ public class MiningModelUtil {
 		}
 
 		return result;
+	}
+
+	static
+	private List<Feature> getPredictions(List<? extends Model> models, Schema schema){
+		return models.stream()
+			.map(model -> getPrediction(model, schema))
+			.collect(Collectors.toList());
 	}
 
 	static
