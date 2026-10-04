@@ -99,7 +99,7 @@ public class PMMLEncoder {
 	}
 
 	public void addDataField(DataField dataField){
-		String name = checkName(dataField);
+		String name = checkField(dataField);
 
 		this.dataFields.put(name, dataField);
 	}
@@ -147,7 +147,7 @@ public class PMMLEncoder {
 	}
 
 	public void addDerivedField(DerivedField derivedField){
-		String name = checkName(derivedField);
+		String name = checkField(derivedField);
 
 		this.derivedFields.put(name, derivedField);
 	}
@@ -228,7 +228,7 @@ public class PMMLEncoder {
 	}
 
 	public void addDefineFunction(DefineFunction defineFunction){
-		String name = checkName(defineFunction);
+		String name = checkDefineFunction(defineFunction);
 
 		this.defineFunctions.put(name, defineFunction);
 	}
@@ -273,22 +273,28 @@ public class PMMLEncoder {
 		return field;
 	}
 
-	private String checkName(DefineFunction defineFunction){
-		String name = defineFunction.requireName();
+	protected String checkField(Field<?> field){
+		return checkField(field.requireName());
+	}
 
-		if(this.defineFunctions.containsKey(name)){
-			throw new NamingException("Function " + ExceptionUtil.formatName(name) + " is already defined")
+	protected String checkField(String name){
+
+		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
+			throw new NamingException("Field " + ExceptionUtil.formatName(name) + " is already defined")
 				.setSolution("Choose a different name");
 		}
 
 		return name;
 	}
 
-	private String checkName(Field<?> field){
-		String name = field.requireName();
+	protected String checkDefineFunction(DefineFunction defineFunction){
+		return checkDefineFunction(defineFunction.requireName());
+	}
 
-		if(this.dataFields.containsKey(name) || this.derivedFields.containsKey(name)){
-			throw new NamingException("Field " + ExceptionUtil.formatName(name) + " is already defined")
+	protected String checkDefineFunction(String name){
+
+		if(this.defineFunctions.containsKey(name)){
+			throw new NamingException("Function " + ExceptionUtil.formatName(name) + " is already defined")
 				.setSolution("Choose a different name");
 		}
 
