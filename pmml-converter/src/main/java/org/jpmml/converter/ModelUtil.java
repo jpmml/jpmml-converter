@@ -208,6 +208,46 @@ public class ModelUtil {
 	}
 
 	static
+	public Output createPredictedOutput(String name, OpType opType, DataType dataType, MultiLabel multiLabel, Transformation... transformations){
+		return createPredictedOutput(name, opType, dataType, multiLabel, multiLabel, transformations);
+	}
+
+	static
+	public Output createPredictedOutput(String name, OpType opType, DataType dataType, MultiLabel multiLabel, MultiLabel localMultiLabel, Transformation... transformations){
+
+		if(multiLabel.size() != localMultiLabel.size()){
+			throw new IllegalArgumentException();
+		}
+
+		Output output = new Output();
+
+		List<OutputField> outputFields = new ArrayList<>();
+
+		for(int i = 0; i < multiLabel.size(); i++){
+			ScalarLabel scalarLabel = multiLabel.getScalarLabel(i);
+			ScalarLabel localScalarLabel = localMultiLabel.getScalarLabel(i);
+
+			OutputField outputField = createPredictedField(FieldNameUtil.create(name, scalarLabel.getName()), opType, dataType)
+				.setTargetField(localScalarLabel.getName())
+				.setFinalResult(false);
+
+			output.addOutputFields(outputField);
+
+			outputFields.add(outputField);
+		}
+
+		for(Transformation transformation : transformations){
+			outputFields = outputFields.stream()
+				.map(transformation::createOutputField)
+				.collect(Collectors.toList());
+
+			(output.getOutputFields()).addAll(outputFields);
+		}
+
+		return output;
+	}
+
+	static
 	public Output createProbabilityOutput(MathContext mathContext, DiscreteLabel discreteLabel){
 		DataType dataType = DataType.DOUBLE;
 
