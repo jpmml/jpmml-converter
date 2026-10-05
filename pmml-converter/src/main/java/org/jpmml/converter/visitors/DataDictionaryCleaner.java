@@ -76,6 +76,7 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 
 		MiningSchema miningSchema = model.requireMiningSchema();
 		if(miningSchema.hasMiningFields()){
+			Set<String> targetFieldNames = new LinkedHashSet<>();
 			Set<String> fieldNames = new LinkedHashSet<>();
 
 			List<MiningField> miningFields = miningSchema.getMiningFields();
@@ -86,15 +87,21 @@ public class DataDictionaryCleaner extends ActiveFieldFinder {
 				switch(usageType){
 					case ACTIVE:
 						break;
+					case PREDICTED:
+					case TARGET:
+						targetFieldNames.add(fieldName);
+						break;
 					default:
 						fieldNames.add(fieldName);
 						break;
 				}
 			}
 
-			if(!fieldNames.isEmpty()){
+			if(!targetFieldNames.isEmpty() || !fieldNames.isEmpty()){
 				Collection<Field<?>> modelFields = getFields(model);
 
+				// Local target fields are not resolvable
+				nonActiveFields.addAll(FieldUtil.selectAll(modelFields, targetFieldNames, true));
 				nonActiveFields.addAll(FieldUtil.selectAll(modelFields, fieldNames));
 			}
 		}

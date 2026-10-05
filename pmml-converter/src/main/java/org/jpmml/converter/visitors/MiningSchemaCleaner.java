@@ -56,7 +56,8 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 			Set<Field<?>> activeFields = processMiningModel(miningModel);
 
-			clean(miningModel, activeFields);
+			cleanActiveFields(miningModel, activeFields);
+			cleanTargetFields(miningModel);
 		} else
 
 		if(parent instanceof Model){
@@ -64,7 +65,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 
 			Set<Field<?>> activeFields = processModel(model);
 
-			clean(model, activeFields);
+			cleanActiveFields(model, activeFields);
 		}
 
 		return parent;
@@ -126,7 +127,7 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		}
 	}
 
-	private void clean(Model model, Set<Field<?>> activeFields){
+	private void cleanActiveFields(Model model, Set<Field<?>> activeFields){
 		MiningSchema miningSchema = model.requireMiningSchema();
 
 		List<MiningField> miningFields = miningSchema.getMiningFields();
@@ -217,5 +218,56 @@ public class MiningSchemaCleaner extends DeepFieldResolver {
 		};
 
 		miningFields.sort(comparator);
+	}
+
+	private void cleanTargetFields(MiningModel miningModel){
+		MiningSchema miningSchema = miningModel.requireMiningSchema();
+		Segmentation segmentation = miningModel.requireSegmentation();
+
+		Segmentation.MultipleModelMethod multipleModelMethod = segmentation.requireMultipleModelMethod();
+		switch(multipleModelMethod){
+			case SELECT_FIRST:
+			case SELECT_ALL:
+			case MODEL_CHAIN:
+			case MULTI_MODEL_CHAIN:
+				break;
+			default:
+				return;
+		}
+
+		Collection<Field<?>> modelFields = getFields(miningModel);
+
+		Map<String, Field<?>> modelFieldMap = FieldUtil.nameMap(modelFields);
+
+		List<MiningField> miningFields = miningSchema.getMiningFields();
+		for(Iterator<MiningField> it = miningFields.iterator(); it.hasNext(); ){
+			MiningField miningField = it.next();
+
+			String fieldName = miningField.requireName();
+
+			MiningField.UsageType usageType = miningField.getUsageType();
+			switch(usageType){
+				case PREDICTED:
+				case TARGET:
+					break;
+				default:
+					continue;
+			}
+
+			Field<?> field = modelFieldMap.get(fieldName);
+
+			// Global target field
+			if(field != null){
+
+				if(!(field instanceof DataField)){
+					throw new IllegalArgumentException();
+				}
+			} else
+
+			// Local target field
+			{
+				it.remove();
+			}
+		}
 	}
 }
