@@ -89,6 +89,20 @@ public class MiningModelUtil {
 	}
 
 	static
+	public MiningModel createMultiRegression(Model model, RegressionModel.NormalizationMethod normalizationMethod, Schema schema){
+		List<Feature> features = getMultiPrediction(model, schema);
+
+		MathContext mathContext = model.getMathContext();
+
+		RegressionModel regressionModel = RegressionModelUtil.createMultiRegression(mathContext, features, createDiagonalCoefficients(features.size(), 1d), Collections.nCopies(features.size(), null), normalizationMethod, schema);
+
+		MiningModel miningModel = createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
+
+		return miningModel;
+	}
+
+	static
 	public MiningModel createBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
 		Feature feature = getPrediction(model, schema);
 
@@ -111,6 +125,20 @@ public class MiningModelUtil {
 		RegressionModel regressionModel = RegressionModelUtil.createMultiBinaryLogisticClassification(mathContext, features, createDiagonalCoefficients(features.size(), coefficient), Collections.nCopies(features.size(), intercept), normalizationMethod, hasProbabilityDistribution, schema);
 
 		MiningModel miningModel = createModelChain(models, regressionModel, Segmentation.MissingPredictionTreatment.RETURN_MISSING)
+			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
+
+		return miningModel;
+	}
+
+	static
+	public MiningModel createMultiBinaryLogisticClassification(Model model, double coefficient, double intercept, RegressionModel.NormalizationMethod normalizationMethod, boolean hasProbabilityDistribution, Schema schema){
+		List<Feature> features = getMultiPrediction(model, schema);
+
+		MathContext mathContext = model.getMathContext();
+
+		RegressionModel regressionModel = RegressionModelUtil.createMultiBinaryLogisticClassification(mathContext, features, createDiagonalCoefficients(features.size(), coefficient), Collections.nCopies(features.size(), intercept), normalizationMethod, hasProbabilityDistribution, schema);
+
+		MiningModel miningModel = createModelChain(Arrays.asList(model, regressionModel), Segmentation.MissingPredictionTreatment.RETURN_MISSING)
 			.setMathContext(ModelUtil.simplifyMathContext(mathContext));
 
 		return miningModel;
@@ -502,14 +530,56 @@ public class MiningModelUtil {
 	private ContinuousFeature getPrediction(Model model, Schema schema){
 		Output output = model.getOutput();
 
+		ModelEncoder encoder = schema.getEncoder();
+
 		if(output == null || !output.hasOutputFields()){
 			throw new InvalidElementException(model);
 		}
 
 		OutputField outputField = Iterables.getLast(output.getOutputFields());
 
+		return new ContinuousFeature(encoder, outputField);
+	}
+
+	static
+	private List<Feature> getMultiPrediction(Model model, Schema schema){
+		Output output = model.getOutput();
+
 		ModelEncoder encoder = schema.getEncoder();
 
-		return new ContinuousFeature(encoder, outputField);
+		if(output == null || !output.hasOutputFields()){
+			throw new InvalidElementException(model);
+		}
+
+		List<OutputField> outputFields = output.getOutputFields();
+
+		int numberOfTargets = 0;
+
+		for(OutputField outputField : outputFields){
+			ResultFeature resultFeature = outputField.getResultFeature();
+
+			switch(resultFeature){
+				case PREDICTED_VALUE:
+					numberOfTargets++;
+					break;
+				case TRANSFORMED_VALUE:
+					break;
+				default:
+					throw new UnsupportedAttributeException(outputField, resultFeature);
+			}
+		}
+
+		if(numberOfTargets == 0 || (outputFields.size() % numberOfTargets) != 0){
+			throw new InvalidElementException(output);
+		}
+
+		List<Feature> result = new ArrayList<>();
+
+		List<OutputField> lastOutputFields = outputFields.subList(outputFields.size() - numberOfTargets, outputFields.size());
+		for(OutputField lastOutputField : lastOutputFields){
+			result.add(new ContinuousFeature(encoder, lastOutputField));
+		}
+
+		return result;
 	}
 }
