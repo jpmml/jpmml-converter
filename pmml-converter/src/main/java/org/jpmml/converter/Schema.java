@@ -43,6 +43,15 @@ public class Schema {
 		setFeatures(features);
 	}
 
+	/**
+	 * <p>
+	 * Creates a schema that is shared by all child models of an aggregating ensemble model.
+	 * </p>
+	 *
+	 * <p>
+	 * The prediction of the parent is a direct aggregate of the predictions of its children.
+	 * </p>
+	 */
 	public Schema toSegmentSchema(){
 		Label label = getLabel();
 
@@ -60,6 +69,85 @@ public class Schema {
 			// Multiple target fields must all be named.
 			// Carry the original target field names forward to nested models.
 			return this;
+		} else
+
+		{
+			throw new IllegalArgumentException();
+		}
+	}
+
+	public Schema toLocalSchema(){
+		return toLocalSchema(null);
+	}
+
+	/**
+	 * <p>
+	 * Creates a schema for a child model of a chaining ensemble model.
+	 * </p>
+	 *
+	 * <p>
+	 * The prediction of the child is consumed by some of its siblings, and is not exposed by the parent.
+	 * </p>
+	 */
+	public Schema toLocalSchema(String name){
+		ModelEncoder encoder = getEncoder();
+		Label label = getLabel();
+
+		if(label instanceof ScalarLabel){
+			return toAnonymousSchema();
+		} else
+
+		if(label instanceof MultiLabel){
+			MultiLabel multiLabel = (MultiLabel)label;
+
+			if(name == null){
+				name = "_";
+			}
+
+			List<ScalarLabel> scalarLabels = new ArrayList<>();
+
+			for(int i = 0; i < multiLabel.size(); i++){
+				ScalarLabel scalarLabel = multiLabel.getScalarLabel(i);
+
+				String localName = encoder.checkField(FieldNameUtil.create(name, i + 1));
+
+				scalarLabels.add(scalarLabel.toRenamedLabel(localName));
+			}
+
+			return toRelabeledSchema(new MultiLabel(scalarLabels));
+		} else
+
+		{
+			throw new IllegalArgumentException();
+		}
+	}
+
+	public Schema toLocalRegressorSchema(DataType dataType){
+		return toLocalRegressorSchema(null, dataType);
+	}
+
+	public Schema toLocalRegressorSchema(String name, DataType dataType){
+		Label label = getLabel();
+
+		if(label instanceof ScalarLabel){
+			return toAnonymousRegressorSchema(dataType);
+		} else
+
+		if(label instanceof MultiLabel){
+			MultiLabel multiLabel = (MultiLabel)label;
+
+			switch(dataType){
+				case FLOAT:
+				case DOUBLE:
+					break;
+				default:
+					throw new IllegalArgumentException();
+			}
+
+			MultiLabel regressorMultiLabel = multiLabel.toTransformedLabel(scalarLabel -> new ContinuousLabel(scalarLabel.getName(), dataType));
+
+			return toRelabeledSchema(regressorMultiLabel)
+				.toLocalSchema(name);
 		} else
 
 		{

@@ -20,6 +20,7 @@ package org.jpmml.converter;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jpmml.model.ToStringHelper;
@@ -41,6 +42,16 @@ public class MultiLabel extends Label {
 		}
 
 		return this;
+	}
+
+	public MultiLabel toTransformedLabel(Function<ScalarLabel, ScalarLabel> function){
+		List<? extends ScalarLabel> scalarLabels = getScalarLabels();
+
+		List<ScalarLabel> transformedScalarLabels = scalarLabels.stream()
+			.map(function)
+			.collect(Collectors.toList());
+
+		return new MultiLabel(transformedScalarLabels);
 	}
 
 	@Override
