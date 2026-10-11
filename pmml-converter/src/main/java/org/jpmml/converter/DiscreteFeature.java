@@ -57,7 +57,7 @@ public class DiscreteFeature extends Feature {
 		List<?> values = getValues();
 
 		if(values.size() != size){
-			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + ", got " + values.size());
+			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatCount(size, "category", "categories") + " for " + typeString() + " " + ExceptionUtil.formatName(this) + ", got " + values.size());
 		}
 
 		return this;

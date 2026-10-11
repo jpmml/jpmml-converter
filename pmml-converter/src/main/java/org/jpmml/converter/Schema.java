@@ -224,7 +224,7 @@ public class Schema {
 		try {
 			return (ContinuousLabel)label;
 		} catch(ClassCastException cce){
-			throw new UnsupportedLabelException("Expected a continuos label, got " + label.typeString(), cce);
+			throw new UnsupportedLabelException("Expected a continuous label, got " + label.typeString(), cce);
 		}
 	}
 

@@ -207,7 +207,7 @@ public class PMMLEncoder {
 			case DOUBLE:
 				break;
 			default:
-				throw new InvalidFeatureException("Expected numeric data type, got " + ExceptionUtil.formatValue(dataType));
+				throw new InvalidFeatureException("Expected numeric data type for field " + ExceptionUtil.formatName(name) + ", got " + ExceptionUtil.formatValue(dataType));
 		}
 
 		field.setOpType(OpType.CONTINUOUS);
@@ -262,7 +262,7 @@ public class PMMLEncoder {
 					break values;
 				}
 
-				throw new InvalidFeatureException("Expected " + existingValues + " as categories, got " + values);
+				throw new InvalidFeatureException("Expected " + existingValues + " as categories for field " + ExceptionUtil.formatName(name) + ", got " + values);
 			}
 
 			FieldUtil.addValues((Field & HasDiscreteDomain)field, values);

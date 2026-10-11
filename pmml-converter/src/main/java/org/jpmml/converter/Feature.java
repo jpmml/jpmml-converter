@@ -82,7 +82,7 @@ public class Feature {
 		DataType dataType = getDataType();
 
 		if(dataType != expectedDataType){
-			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatValue(expectedDataType) + " data type, got " + ExceptionUtil.formatValue(dataType));
+			throw new InvalidFeatureException("Expected " + ExceptionUtil.formatValue(expectedDataType) + " data type for " + typeString() + " " + ExceptionUtil.formatName(this) + ", got " + ExceptionUtil.formatValue(dataType));
 		}
 
 		return this;
