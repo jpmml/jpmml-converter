@@ -21,6 +21,7 @@ package org.jpmml.converter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.Field;
 import org.dmg.pmml.StringValue;
 
 public class ExceptionUtil {
@@ -72,6 +73,14 @@ public class ExceptionUtil {
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * @see SchemaException
+	 */
+	static
+	public String formatField(Field<?> field){
+		return SchemaUtil.formatTypeString(field.getClass()) + " " + formatName(field.requireName());
 	}
 
 	/**
