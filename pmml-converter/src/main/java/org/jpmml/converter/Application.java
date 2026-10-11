@@ -20,6 +20,9 @@ package org.jpmml.converter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Objects;
 import java.util.jar.Manifest;
 
 abstract
@@ -34,21 +37,66 @@ public class Application {
 	public Manifest getManifest(){
 
 		if(this.manifest == null){
-			this.manifest = loadManifest();
+			Class<?> clazz = getClass();
+
+			this.manifest = loadManifest(clazz);
 		}
 
 		return this.manifest;
 	}
 
-	protected Manifest loadManifest(){
-		Class<?> clazz = getClass();
+	static
+	protected Manifest loadManifest(Class<?> clazz){
+		URL url = getManifestURL(clazz);
 
-		ClassLoader clazzLoader = clazz.getClassLoader();
+		if(url != null){
 
-		try(InputStream is = clazzLoader.getResourceAsStream("META-INF/MANIFEST.MF")){
+			try {
+				return readManifest(url);
+			} catch(IOException ioe){
+				// Ignored
+			}
+		}
+
+		url = getDefaultManifestURL(clazz);
+		if(url != null){
+
+			try {
+				return readManifest(url);
+			} catch(IOException ioe){
+				throw new RuntimeException(ioe);
+			}
+		}
+
+		return new Manifest();
+	}
+
+	static
+	protected URL getManifestURL(Class<?> clazz){
+		URL url = clazz.getResource("/" + (clazz.getName()).replace('.', '/') + ".class");
+
+		if(url != null && Objects.equals("jar", url.getProtocol())){
+
+			try {
+				return new URL(url, "/" + Application.MANIFEST_NAME);
+			} catch(MalformedURLException mue){
+				throw new RuntimeException(mue);
+			}
+		}
+
+		return null;
+	}
+
+	static
+	protected URL getDefaultManifestURL(Class<?> clazz){
+		return clazz.getResource("/" + Application.MANIFEST_NAME);
+	}
+
+	static
+	private Manifest readManifest(URL url) throws IOException {
+
+		try(InputStream is = url.openStream()){
 			return new Manifest(is);
-		} catch(IOException ioe){
-			throw new RuntimeException(ioe);
 		}
 	}
 
@@ -63,4 +111,6 @@ public class Application {
 	}
 
 	private static Application application = null;
+
+	private static final String MANIFEST_NAME = "META-INF/MANIFEST.MF";
 }
