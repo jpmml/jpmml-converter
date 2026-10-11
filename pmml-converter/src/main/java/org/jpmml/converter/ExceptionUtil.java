@@ -82,6 +82,37 @@ public class ExceptionUtil {
 		return feature.typeString() + " " + formatName(feature);
 	}
 
+	/**
+	 * @see LabelException
+	 */
+	static
+	public String formatLabel(Label label){
+
+		if(label instanceof ScalarLabel){
+			ScalarLabel scalarLabel = (ScalarLabel)label;
+
+			if(scalarLabel.isAnonymous()){
+				return scalarLabel.typeString();
+			}
+
+			return scalarLabel.typeString() + " " + formatName(scalarLabel.getName());
+		} else
+
+		if(label instanceof MultiLabel){
+			MultiLabel multiLabel = (MultiLabel)label;
+
+			String scalarLabels = (multiLabel.getScalarLabels()).stream()
+				.map(scalarLabel -> formatLabel(scalarLabel))
+				.collect(Collectors.joining(", "));
+
+			return multiLabel.typeString() + " [" + scalarLabels + "]";
+		} else
+
+		{
+			throw new IllegalArgumentException();
+		}
+	}
+
 	static
 	public String formatName(Feature feature){
 		return formatName(feature.getName());

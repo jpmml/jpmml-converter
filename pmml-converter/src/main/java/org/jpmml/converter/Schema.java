@@ -224,7 +224,7 @@ public class Schema {
 		try {
 			return (ContinuousLabel)label;
 		} catch(ClassCastException cce){
-			throw new UnsupportedLabelException("Expected a continuous label, got " + label.typeString(), cce);
+			throw new UnsupportedLabelException("Expected a continuous label, got " + ExceptionUtil.formatLabel(label), cce);
 		}
 	}
 
@@ -234,7 +234,7 @@ public class Schema {
 		try {
 			return (CategoricalLabel)label;
 		} catch(ClassCastException cce){
-			throw new UnsupportedLabelException("Expected a categorical label, got " + label.typeString(), cce);
+			throw new UnsupportedLabelException("Expected a categorical label, got " + ExceptionUtil.formatLabel(label), cce);
 		}
 	}
 
@@ -244,7 +244,7 @@ public class Schema {
 		try {
 			return (OrdinalLabel)label;
 		} catch(ClassCastException cce){
-			throw new UnsupportedLabelException("Expected an ordinal label, got " + label.typeString(), cce);
+			throw new UnsupportedLabelException("Expected an ordinal label, got " + ExceptionUtil.formatLabel(label), cce);
 		}
 	}
 
@@ -254,7 +254,7 @@ public class Schema {
 		try {
 			return (ScalarLabel)label;
 		} catch(ClassCastException cce){
-			throw new UnsupportedLabelException("Expected a scalar label, got " + label.typeString(), cce);
+			throw new UnsupportedLabelException("Expected a scalar label, got " + ExceptionUtil.formatLabel(label), cce);
 		}
 	}
 
@@ -264,7 +264,7 @@ public class Schema {
 		try {
 			return (MultiLabel)label;
 		} catch(ClassCastException cce){
-			throw new UnsupportedLabelException("Expected multiple labels, got " + label.typeString(), cce);
+			throw new UnsupportedLabelException("Expected multiple labels, got " + ExceptionUtil.formatLabel(label), cce);
 		}
 	}
 
