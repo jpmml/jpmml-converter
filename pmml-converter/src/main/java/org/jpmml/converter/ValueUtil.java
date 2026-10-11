@@ -85,17 +85,31 @@ public class ValueUtil {
 	static
 	public int asInt(Number number){
 
+		if((number instanceof Byte) || (number instanceof Short)){
+			return number.intValue();
+		} else
+
 		if(number instanceof Integer){
 			return (Integer)number;
+		} else
+
+		if(number instanceof Long){
+			long value = number.longValue();
+
+			if(value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE){
+				return (int)value;
+			}
+		} else
+
+		{
+			double value = number.doubleValue();
+
+			if(DoubleMath.isMathematicalInteger(value) && (value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE)){
+				return (int)value;
+			}
 		}
 
-		double value = number.doubleValue();
-
-		if(DoubleMath.isMathematicalInteger(value)){
-			return Math.toIntExact((long)value);
-		}
-
-		throw new ConversionException("Expected integer, got " + number);
+		throw new ConversionException("Expected an integer in the signed 32-bit range, got " + number);
 	}
 
 	static

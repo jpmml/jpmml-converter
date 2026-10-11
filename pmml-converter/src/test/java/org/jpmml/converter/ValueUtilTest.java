@@ -74,14 +74,24 @@ public class ValueUtilTest {
 	}
 
 	@Test
-	public void asInteger(){
-		assertEquals((Integer)0, ValueUtil.asInteger((Integer)0));
-		assertEquals((Integer)0, ValueUtil.asInteger((Long)0L));
-		assertEquals((Integer)0, ValueUtil.asInteger((Float)0f));
-		assertEquals((Integer)0, ValueUtil.asInteger((Double)0d));
+	public void asInt(){
+		assertEquals(-1, ValueUtil.asInt((byte)-1));
+		assertEquals(-1, ValueUtil.asInt((short)-1));
 
-		assertThrows(ConversionException.class, () -> ValueUtil.asInteger((Double)0.5d));
-		assertThrows(ConversionException.class, () -> ValueUtil.asInteger((Double)(Integer.MAX_VALUE + 0.5d)));
+		assertEquals(0, ValueUtil.asInt(0));
+
+		assertEquals(0, ValueUtil.asInt(0L));
+		assertEquals(Integer.MAX_VALUE, ValueUtil.asInt((long)Integer.MAX_VALUE));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MAX_VALUE + 1L));
+
+		assertEquals(0, ValueUtil.asInt(0f));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(0.5f));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MAX_VALUE + 1f));
+
+		assertEquals(0, ValueUtil.asInt(0d));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(0.5d));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MAX_VALUE + 1d));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Double.NaN));
 	}
 
 	@Test
