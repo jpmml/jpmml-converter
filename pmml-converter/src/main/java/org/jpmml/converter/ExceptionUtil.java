@@ -75,53 +75,6 @@ public class ExceptionUtil {
 		return sb.toString();
 	}
 
-	/**
-	 * @see SchemaException
-	 */
-	static
-	public String formatField(Field<?> field){
-		return SchemaUtil.formatTypeString(field.getClass()) + " " + formatName(field.requireName());
-	}
-
-	/**
-	 * @see FeatureException
-	 */
-	static
-	public String formatFeature(Feature feature){
-		return feature.typeString() + " " + formatName(feature);
-	}
-
-	/**
-	 * @see LabelException
-	 */
-	static
-	public String formatLabel(Label label){
-
-		if(label instanceof ScalarLabel){
-			ScalarLabel scalarLabel = (ScalarLabel)label;
-
-			if(scalarLabel.isAnonymous()){
-				return scalarLabel.typeString();
-			}
-
-			return scalarLabel.typeString() + " " + formatName(scalarLabel.getName());
-		} else
-
-		if(label instanceof MultiLabel){
-			MultiLabel multiLabel = (MultiLabel)label;
-
-			String scalarLabels = (multiLabel.getScalarLabels()).stream()
-				.map(scalarLabel -> formatLabel(scalarLabel))
-				.collect(Collectors.joining(", "));
-
-			return multiLabel.typeString() + " [" + scalarLabels + "]";
-		} else
-
-		{
-			throw new IllegalArgumentException();
-		}
-	}
-
 	static
 	public String formatName(Feature feature){
 		return formatName(feature.getName());
@@ -201,5 +154,52 @@ public class ExceptionUtil {
 	static
 	public String formatVersion(String version){
 		return formatName(version);
+	}
+
+	/**
+	 * @see SchemaException
+	 */
+	static
+	public String formatField(Field<?> field){
+		return SchemaUtil.formatTypeString(field.getClass()) + " " + formatName(field.requireName());
+	}
+
+	/**
+	 * @see LabelException
+	 */
+	static
+	public String formatLabel(Label label){
+
+		if(label instanceof ScalarLabel){
+			ScalarLabel scalarLabel = (ScalarLabel)label;
+
+			if(scalarLabel.isAnonymous()){
+				return scalarLabel.typeString();
+			}
+
+			return scalarLabel.typeString() + " " + formatName(scalarLabel.getName());
+		} else
+
+		if(label instanceof MultiLabel){
+			MultiLabel multiLabel = (MultiLabel)label;
+
+			String scalarLabels = (multiLabel.getScalarLabels()).stream()
+				.map(scalarLabel -> formatLabel(scalarLabel))
+				.collect(Collectors.joining(", "));
+
+			return multiLabel.typeString() + " [" + scalarLabels + "]";
+		} else
+
+		{
+			throw new IllegalArgumentException();
+		}
+	}
+
+	/**
+	 * @see FeatureException
+	 */
+	static
+	public String formatFeature(Feature feature){
+		return feature.typeString() + " " + formatName(feature);
 	}
 }
