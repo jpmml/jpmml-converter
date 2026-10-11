@@ -74,6 +74,14 @@ public class ExceptionUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * @see FeatureException
+	 */
+	static
+	public String formatFeature(Feature feature){
+		return feature.typeString() + " " + formatName(feature);
+	}
+
 	static
 	public String formatName(Feature feature){
 		return formatName(feature.getName());
