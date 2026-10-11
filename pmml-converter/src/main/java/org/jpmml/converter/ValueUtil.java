@@ -128,6 +128,29 @@ public class ValueUtil {
 	}
 
 	static
+	public long asLong(Number number){
+
+		if((number instanceof Byte) || (number instanceof Short) || (number instanceof Integer)){
+			return number.longValue();
+		} else
+
+		if(number instanceof Long){
+			return (Long)number;
+		} else
+
+		{
+			double value = number.doubleValue();
+
+			// The upper bound is exclusive, because Long.MAX_VALUE (2^63 - 1) is not representable as a double, and rounds up to 2^63
+			if(DoubleMath.isMathematicalInteger(value) && (value >= Long.MIN_VALUE && value < Long.MAX_VALUE)){
+				return (long)value;
+			}
+		}
+
+		throw new ConversionException("Expected an integer in the signed 64-bit range, got " + number);
+	}
+
+	static
 	public Double asDouble(Number number){
 
 		if(number instanceof Double){

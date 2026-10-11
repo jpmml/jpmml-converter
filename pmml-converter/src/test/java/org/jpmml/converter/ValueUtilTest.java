@@ -75,23 +75,51 @@ public class ValueUtilTest {
 
 	@Test
 	public void asInt(){
-		assertEquals(-1, ValueUtil.asInt((byte)-1));
-		assertEquals(-1, ValueUtil.asInt((short)-1));
+		assertEquals(0, ValueUtil.asInt((byte)0));
+		assertEquals(0, ValueUtil.asInt((short)0));
 
 		assertEquals(0, ValueUtil.asInt(0));
 
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Long.MIN_VALUE));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MIN_VALUE - 1L));
+		assertEquals(Integer.MIN_VALUE, ValueUtil.asInt((long)Integer.MIN_VALUE));
 		assertEquals(0, ValueUtil.asInt(0L));
 		assertEquals(Integer.MAX_VALUE, ValueUtil.asInt((long)Integer.MAX_VALUE));
 		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MAX_VALUE + 1L));
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Long.MAX_VALUE));
 
+		assertEquals(Integer.MIN_VALUE, ValueUtil.asInt((float)Integer.MIN_VALUE));
 		assertEquals(0, ValueUtil.asInt(0f));
 		assertThrows(ConversionException.class, () -> ValueUtil.asInt(0.5f));
 		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MAX_VALUE + 1f));
 
+		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MIN_VALUE - 1d));
+		assertEquals(Integer.MIN_VALUE, ValueUtil.asInt((double)Integer.MIN_VALUE));
 		assertEquals(0, ValueUtil.asInt(0d));
 		assertThrows(ConversionException.class, () -> ValueUtil.asInt(0.5d));
+		assertEquals(Integer.MAX_VALUE, ValueUtil.asInt((double)Integer.MAX_VALUE));
 		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Integer.MAX_VALUE + 1d));
 		assertThrows(ConversionException.class, () -> ValueUtil.asInt(Double.NaN));
+	}
+
+	@Test
+	public void asLong(){
+		assertEquals(0L, ValueUtil.asLong((byte)0));
+		assertEquals(0L, ValueUtil.asLong((short)0));
+		assertEquals(0L, ValueUtil.asLong(0));
+
+		assertEquals(0L, ValueUtil.asLong(0L));
+
+		assertEquals(Long.MIN_VALUE, ValueUtil.asLong((float)Long.MIN_VALUE));
+		assertEquals(0L, ValueUtil.asLong(0f));
+		assertThrows(ConversionException.class, () -> ValueUtil.asLong(0.5f));
+		assertThrows(ConversionException.class, () -> ValueUtil.asLong(Long.MAX_VALUE + 1f));
+
+		assertEquals(Long.MIN_VALUE, ValueUtil.asLong((double)Long.MIN_VALUE));
+		assertEquals(0L, ValueUtil.asLong(0d));
+		assertThrows(ConversionException.class, () -> ValueUtil.asLong(0.5d));
+		assertThrows(ConversionException.class, () -> ValueUtil.asLong(Long.MAX_VALUE + 1d));
+		assertThrows(ConversionException.class, () -> ValueUtil.asLong(Double.NaN));
 	}
 
 	@Test
