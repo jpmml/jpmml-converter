@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.InlineTable;
 import org.dmg.pmml.MathContext;
@@ -210,7 +211,7 @@ public class ModelEncoder extends PMMLEncoder {
 
 		ListMultimap<Feature, Number> modelFeatureImportances = featureImportances.get(model);
 		if(modelFeatureImportances == null){
-			modelFeatureImportances = ArrayListMultimap.create();
+			modelFeatureImportances = MultimapBuilder.linkedHashKeys().arrayListValues().build();
 
 			featureImportances.put(model, modelFeatureImportances);
 		}
