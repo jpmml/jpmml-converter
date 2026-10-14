@@ -20,7 +20,12 @@ package org.jpmml.converter;
 
 import org.dmg.pmml.PMML;
 
-public interface Encodable {
+/**
+ * <p>
+ * An object that can encode itself into a PMML document.
+ * </p>
+ */
+public interface PMMLEncodable {
 
 	PMML encodePMML();
 }
