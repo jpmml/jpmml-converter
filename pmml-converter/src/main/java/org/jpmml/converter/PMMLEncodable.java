@@ -18,6 +18,9 @@
  */
 package org.jpmml.converter;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.dmg.pmml.PMML;
 
 /**
@@ -27,5 +30,10 @@ import org.dmg.pmml.PMML;
  */
 public interface PMMLEncodable {
 
-	PMML encodePMML();
+	PMML encodePMML(Map<String, ?> options);
+
+	default
+	public PMML encodePMML(){
+		return encodePMML(Collections.emptyMap());
+	}
 }
